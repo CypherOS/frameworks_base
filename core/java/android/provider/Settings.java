@@ -4441,6 +4441,15 @@ public final class Settings {
         }
 
         /**
+         * show the membar in recents
+         *  @hide
+         */
+         public static final String SYSTEMUI_RECENTS_MEM_DISPLAY = "systemui_recents_mem_display";
+ 
+          /**
+		
+		
+		/**
          * These are all hidden system settings.
          *
          * @hide

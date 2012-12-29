@@ -24,4 +24,7 @@
 	<dimen name="keyguard_shortcut_item_margin">10dp</dimen>
     <dimen name="omni_battery_level_text_size_small">12sp</dimen>
     <dimen name="omni_battery_level_text_size">14sp</dimen>
+	
+	<!-- FAB Icon -->
+    <dimen name="floating_action_button_translation_z">11dp</dimen>
 </resources>
