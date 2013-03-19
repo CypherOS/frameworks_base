@@ -6145,6 +6145,24 @@ public final class Settings {
          * @hide
          */
         public static final String WAKE_GESTURE_ENABLED = "wake_gesture_enabled";
+		
+		/**
+         * Whether to sound when charger power is connected/disconnected
+         * @hide
+         */
+        public static final String POWER_NOTIFICATIONS_ENABLED = "power_notifications_enabled";
+
+        /**
+         * Whether to vibrate when charger power is connected/disconnected
+         * @hide
+         */
+        public static final String POWER_NOTIFICATIONS_VIBRATE = "power_notifications_vibrate";
+
+        /**
+         * URI for power notification sounds
+         * @hide
+         */
+        public static final String POWER_NOTIFICATIONS_RINGTONE = "power_notifications_ringtone";
 
         /**
          * Whether the device should doze if configured.
