@@ -3222,6 +3222,19 @@ public final class Settings {
          * @hide
          */
         public static final String USE_EDGE_SERVICE_FOR_GESTURES = "edge_service_for_gestures";
+		
+		/**
+         * Control the type of rotation which can be performed using the accelerometer
+         * if ACCELEROMETER_ROTATION is enabled.
+         * Value is a bitwise combination of
+         * 1 = 0 degrees (portrait)
+         * 2 = 90 degrees (left)
+         * 4 = 180 degrees (inverted portrait)
+         * 8 = 270 degrees (right)
+         * Setting to 0 is effectively orientation lock
+         * @hide
+         */
+        public static final String ACCELEROMETER_ROTATION_ANGLES = "accelerometer_rotation_angles";
 
         /**
          * Control whether the accelerometer will be used to change screen
