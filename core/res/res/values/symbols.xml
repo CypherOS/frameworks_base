@@ -2903,4 +2903,6 @@
   <!-- Package Manager -->
   <java-symbol type="array" name="config_disabledComponents" />
   <java-symbol type="array" name="config_forceEnabledComponents" />
+  
+  <java-symbol type="bool" name="config_samsung_stk" />
 </resources>
