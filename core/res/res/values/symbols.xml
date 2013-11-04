@@ -2803,6 +2803,8 @@
   <!-- Gesture Sensor -->
   <java-symbol type="bool" name="config_enableGestureService" />
   
+  <java-symbol type="bool" name="config_samsung_stk" />
+
   <!-- Developer settings - Kill app back press -->
   <java-symbol type="string" name="app_killed_message" />
 
