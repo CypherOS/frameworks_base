@@ -2046,10 +2046,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (!deviceKeyHandlerLib.isEmpty() && !deviceKeyHandlerClass.isEmpty()) {
             PathClassLoader loader =  new PathClassLoader(deviceKeyHandlerLib,
                     getClass().getClassLoader());
-            DexClassLoader loader =  new DexClassLoader(deviceKeyHandlerLib,
-                    new ContextWrapper(mContext).getCacheDir().getAbsolutePath(),
-                    null,
-                    ClassLoader.getSystemClassLoader());
             try {
                 Class<?> klass = loader.loadClass(deviceKeyHandlerClass);
                 Constructor<?> constructor = klass.getConstructor(Context.class);
