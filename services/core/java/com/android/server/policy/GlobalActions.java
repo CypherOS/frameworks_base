@@ -185,6 +185,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 com.android.internal.R.bool.config_useFixedVolume);
 
         updatePowerMenuActions();
+
+        // Set the initial status of airplane mode toggle
+        mAirplaneState = getUpdatedAirplaneToggleState();
     }
 
     /**
