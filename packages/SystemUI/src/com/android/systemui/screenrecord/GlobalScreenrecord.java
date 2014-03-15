@@ -249,6 +249,7 @@ class GlobalScreenrecord {
             .setContentTitle(mNotifContent)
             .setSmallIcon(R.drawable.ic_capture_video)
             .setWhen(System.currentTimeMillis())
+            .setUsesChronometer(true)
             .setOngoing(true);
 
         Intent stopIntent = new Intent(mContext, TakeScreenrecordService.class)
