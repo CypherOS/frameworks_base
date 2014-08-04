@@ -3990,6 +3990,12 @@ public final class Settings {
          * the setting value. See an example above.
          */
 		 
+		/**
+         * Whether to scramble a pin unlock layout
+         * @hide
+         */
+        public static final String LOCKSCREEN_PIN_SCRAMBLE_LAYOUT = "lockscreen_scramble_pin_layout"; 
+		 
     	/**
          * Control whether the accelerometer will be used to change lockscreen
          * orientation.  If 0, it will not be used; if 1, it will be used by default.
