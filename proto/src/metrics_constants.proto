@@ -2250,6 +2250,9 @@ message MetricsEvent {
     // Add new aosp constants above this line.
     // END OF AOSP CONSTANTS
 
+	// Settings -> Backup & Reset -> Feature Reset
+    FEATURE_PREFERENCES = 500;
+	
     // Immersive mode
     QS_IMMERSIVE = 501;
     QS_IMMERSIVE_DETAILS = 502;
