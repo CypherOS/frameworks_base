@@ -1270,6 +1270,27 @@ public interface WindowManager extends ViewManager {
          * @hide
          */
         public static final int PRIVATE_FLAG_SUSTAINED_PERFORMANCE_MODE = 0x00040000;
+		
+		/**
+         * Flag to force hide the Status Bar
+         *
+         * {@hide}
+         */
+        public static final int PRIVATE_FLAG_STATUS_HIDE_FORCED = 0x00800000;
+
+        /**
+         * Flag to force hide the Navigation Bar
+         *
+         * {@hide}
+         */
+        public static final int PRIVATE_FLAG_NAV_HIDE_FORCED = 0x01000000;
+
+        /**
+         * The window had not set FULLSCREEN flag so don't handle it as fullscreen in layoutWindowLw
+         *
+         * {@hide}
+         */
+        public static final int PRIVATE_FLAG_WAS_NOT_FULLSCREEN = 0x02000000;
 
         /**
          * Window flag: Overrides default power key behavior
