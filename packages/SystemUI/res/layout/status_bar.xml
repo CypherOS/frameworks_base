@@ -101,14 +101,15 @@
         android:layout_height="match_parent"
         >
 
-        <com.android.systemui.statusbar.policy.Clock
+        <com.android.systemui.statusbar.policy.ClockCenter
             android:id="@+id/center_clock"
             android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:singleLine="true"
-            android:gravity="center"
             android:visibility="gone"
+            android:singleLine="true"
             />
     </com.android.keyguard.AlphaOptimizedLinearLayout>
+
 </com.android.systemui.statusbar.phone.PhoneStatusBarView>
