@@ -88,6 +88,7 @@ import android.util.MemoryIntArray;
 import android.view.textservice.TextServicesManager;
 
 import com.android.internal.annotations.GuardedBy;
+import com.android.internal.util.ArrayUtils;
 import com.android.internal.app.ColorDisplayController;
 import com.android.internal.widget.ILockSettings;
 
@@ -2823,6 +2824,59 @@ public final class Settings {
             putIntForUser(cr, SHOW_GTALK_SERVICE_STATUS, flag ? 1 : 0, userHandle);
         }
 
+        private static final class DiscreteValueValidator implements Validator {
+            private final String[] mValues;
+
+            public DiscreteValueValidator(String[] values) {
+                mValues = values;
+            }
+
+            @Override
+            public boolean validate(String value) {
+                return ArrayUtils.contains(mValues, value);
+            }
+        }
+
+        private static final class InclusiveIntegerRangeValidator implements Validator {
+            private final int mMin;
+            private final int mMax;
+
+            public InclusiveIntegerRangeValidator(int min, int max) {
+                mMin = min;
+                mMax = max;
+            }
+
+            @Override
+            public boolean validate(String value) {
+                try {
+                    final int intValue = Integer.parseInt(value);
+                    return intValue >= mMin && intValue <= mMax;
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
+        }
+
+        private static final class InclusiveFloatRangeValidator implements Validator {
+            private final float mMin;
+            private final float mMax;
+
+            public InclusiveFloatRangeValidator(float min, float max) {
+                mMin = min;
+                mMax = max;
+            }
+
+            @Override
+            public boolean validate(String value) {
+                try {
+                    final float floatValue = Float.parseFloat(value);
+                    return floatValue >= mMin && floatValue <= mMax;
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
+        }
+
         /**
          * @deprecated Use {@link android.provider.Settings.Global#STAY_ON_WHILE_PLUGGED_IN} instead
          */
@@ -4093,13 +4147,15 @@ public final class Settings {
         /**
          * Setting to determine whether or not to show the battery percentage in the status bar.
          *    0 - Don't show percentage
-         *    1 - Show percentage
+         *    1 - Show percentage outside the battery icon
+         *    2 - Show percentage inside the battery icon
          * @hide
          */
         public static final String SHOW_BATTERY_PERCENT = "status_bar_show_battery_percent";
 
         /** @hide */
-        private static final Validator SHOW_BATTERY_PERCENT_VALIDATOR = BOOLEAN_VALIDATOR;
+        private static final Validator SHOW_BATTERY_PERCENT_VALIDATOR =
+                new InclusiveIntegerRangeValidator(0, 2);
 
         /**
          * Whether user can enable/disable navigation bar.
@@ -8112,6 +8168,17 @@ public final class Settings {
                 return valid;
             }
         };
+
+        /**
+         * Display style of the status bar battery information
+         * 0: Display the battery an icon in portrait mode
+         * 1: Display the battery an icon in landscape mode
+         * 2: Display the battery as a circle
+         * 4: Display the battery as text
+         * default: 0
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY_STYLE = "status_bar_battery_style";
 
         /**
          * Whether the Lockdown button should be shown in the power menu.
