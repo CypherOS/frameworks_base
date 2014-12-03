@@ -4007,6 +4007,12 @@ public final class Settings {
         public static final String DOUBLE_TAP_SLEEP_ANYWHERE = "double_tap_sleep_anywhere";
 		
 		/**
+         * Quick Settings Smart Pulldown
+         * @hide
+         */
+        public static final String QS_SMART_PULLDOWN = "qs_smart_pulldown";
+		
+		/**
          * Show or hide clock
          * 0 - hide
          * 1 - show (default)
