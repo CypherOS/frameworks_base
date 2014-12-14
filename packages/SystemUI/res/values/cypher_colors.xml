@@ -19,4 +19,7 @@
     <color name="navbutton_ripple_color">#FFFFFFFF</color>
     <!-- QS edit page background color -->
     <color name="qs_edit_item_decoration_bg">#ff384248</color>
+	<!-- Gesture Anywhere specific colors -->
+    <color name="gesture_overlay_background_fill_color">#80000000</color>
+    <color name="gesture_color">@android:color/holo_blue_light</color>
 </resources>
