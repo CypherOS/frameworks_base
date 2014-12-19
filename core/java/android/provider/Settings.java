@@ -6367,11 +6367,6 @@ public final class Settings {
         public static final String WEB_ACTION_ENABLED = "web_action_enabled";
 
         /**
-         * Beginning of Pure Secure Settings Additions
-         * @hide
-         */
-
-        /**
          * Whether to display the ADB notification.
          * @hide
          */
@@ -8914,6 +8909,13 @@ public final class Settings {
          * @hide
          */
         public static final String DATABASE_DOWNGRADE_REASON = "database_downgrade_reason";
+
+        /**
+         * String to contain power menu actions
+         * @hide
+         */
+        public static final String POWER_MENU_ACTIONS = "power_menu_actions";
+
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings

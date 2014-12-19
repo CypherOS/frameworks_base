@@ -48,6 +48,7 @@ import android.os.Vibrator;
 import android.os.SystemVibrator;
 import android.os.storage.IMountService;
 import android.os.storage.IMountShutdownObserver;
+import android.provider.Settings;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.widget.ListView;
@@ -80,7 +81,7 @@ public final class ShutdownThread extends Thread {
     private static final int PACKAGE_MANAGER_STOP_PERCENT = 6;
     private static final int RADIO_STOP_PERCENT = 18;
     private static final int MOUNT_SERVICE_STOP_PERCENT = 20;
-    private static final String SOFT_REBOOT = "soft_reboot";
+    private static final String SOFT_REBOOT = "soft_restart";
 
     // length of vibration before shutting down
     private static final int SHUTDOWN_VIBRATE_MS = 500;
@@ -161,10 +162,19 @@ public final class ShutdownThread extends Thread {
         }
 
         boolean showRebootOption = false;
-        String[] defaultActions = context.getResources().getStringArray(
-                com.android.internal.R.array.config_globalActionsList);
-        for (int i = 0; i < defaultActions.length; i++) {
-            if (defaultActions[i].equals("reboot")) {
+
+        String[] actionsArray;
+        String actions = Settings.Global.getStringForUser(context.getContentResolver(),
+                Settings.Global.POWER_MENU_ACTIONS, UserHandle.USER_CURRENT);
+        if (actions == null) {
+            actionsArray = context.getResources().getStringArray(
+                    com.android.internal.R.array.config_globalActionsList);
+        } else {
+            actionsArray = actions.split("\\|");
+        }
+
+        for (int i = 0; i < actionsArray.length; i++) {
+            if (actionsArray[i].equals("restart")) {
                 showRebootOption = true;
                 break;
             }
