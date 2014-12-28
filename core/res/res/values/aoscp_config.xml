@@ -138,4 +138,7 @@
 
     <!-- Whether device has a custom overlay directory such as /system/overlay -->
     <bool name="config_hasCustomOverlayDir">false</bool>
+	
+	<!-- If this is true, key chords can be used to take a screen record on the device. -->
+    <bool name="config_enableScreenrecordChord">true</bool>
 </resources>

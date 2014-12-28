@@ -112,4 +112,7 @@
 
     <!-- Whether device has a custom overlay directory such as /system/overlay -->
     <java-symbol type="bool" name="config_hasCustomOverlayDir" />
+	
+	<!-- Screenrecord -->
+	<java-symbol type="bool" name="config_enableScreenrecordChord" />
 </resources>
