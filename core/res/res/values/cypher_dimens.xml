@@ -14,14 +14,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-
-    <!-- Vendor mismatched fingerprint warning [CHAR LIMIT=NONE] -->
-    <string name="system_error_vendorprint">Your vendor image does not match the system. Please flash the <xliff:g id="string">%s</xliff:g> vendor image for your device</string>
-	
-	<!-- Global Actions -->
-	<string name="global_action_current_user">Current</string>
-    <string name="global_action_screenshot">Screenshot</string>
-    <string name="global_action_search">Search</string>
-    <string name="global_action_voicesearch">Voice Search</string>
+<resources>
+     <!-- Largest size an avatar might need to be drawn in the power menu user picker -->
+     <dimen name="global_actions_avatar_size">40dp</dimen>
 </resources>

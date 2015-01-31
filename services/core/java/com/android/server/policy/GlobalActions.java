@@ -668,9 +668,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                             createCircularClip(rawAvatar, avatarSize, avatarSize));
 
                     SinglePressAction switchToUser = new SinglePressAction(
-                            com.android.internal.R.drawable.ic_lock_user, icon,
-                            (user.name != null ? user.name : "Primary")
-                            + (isCurrentUser ? " \u2714" : "")) {
+                            com.android.internal.R.drawable.ic_lock_user, avatar,
+                            (user.name != null ? user.name : "Primary")) {
                         public void onPress() {
                             try {
                                 ActivityManagerNative.getDefault().switchUser(user.id);
