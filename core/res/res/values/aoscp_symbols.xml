@@ -183,4 +183,7 @@
   <!-- Doze Addon: should the TYPE_PROXIMITY sensor be used as a pulse signal. -->
   <java-symbol type="bool" name="config_dozePulseHandWave" />
 
+  <!-- Battery Light -->
+  <java-symbol type="bool" name="config_multiColorBatteryLed" />
+  <java-symbol type="bool" name="config_intrusiveBatteryLed" />
 </resources>
