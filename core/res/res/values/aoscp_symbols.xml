@@ -47,4 +47,7 @@
 
   <!-- Internal default to navigation bar value -->
   <java-symbol type="bool" name="config_defaultToNavigationBar" />
+
+  <!-- Automatic brightness enhancements -->
+  <java-symbol type="integer" name="config_autoBrightnessBrighteningLightFastDebounce"/>
 </resources>
