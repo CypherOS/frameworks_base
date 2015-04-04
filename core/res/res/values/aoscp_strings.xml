@@ -49,4 +49,7 @@
 
     <!-- Vendor mismatched fingerprint warning [CHAR LIMIT=NONE] -->
     <string name="system_error_vendorprint">Your vendor image does not match the system. Please install the <xliff:g id="string">%s</xliff:g> vendor image for your device</string>
+	
+	<!-- Notify user that they are in Lock-to-app (for devices without navbar) -->
+    <string name="lock_to_app_toast_no_navbar">To unpin this screen, touch and hold the Back button.</string>
 </resources>

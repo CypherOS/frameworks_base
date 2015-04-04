@@ -64,4 +64,7 @@
   
   <!-- Carrier Apps -->
   <java-symbol type="array" name="config_enabledPreinstalledCarrierApps" />
+  
+  <!-- Screen unpinning -->
+  <java-symbol type="string" name="lock_to_app_toast_no_navbar" />
 </resources>
