@@ -112,7 +112,7 @@
 
     <!-- Tiles native to System UI. Order should match "quick_settings_tiles_default" -->
     <string name="quick_settings_tiles_stock" translatable="false">
-        wifi,cell,battery,dnd,flashlight,rotation,bt,airplane,location,hotspot,inversion,saver,work,cast,night
+        wifi,cell,battery,dnd,flashlight,rotation,bt,airplane,location,hotspot,inversion,saver,work,cast,night,heads_up
     </string>
 
     <!-- The tiles to display in QuickSettings -->
@@ -236,7 +236,6 @@
     <!-- Doze: a list of pickup sensor subtypes that perform a proximity check before they trigger.
                If not empty, either * or !* must appear to specify the default.
                If empty, falls back to doze_pickup_performs_proximity_check.
-
                Examples: 1,2,3,!* -> subtypes 1,2 and 3 perform the check, all others don't.
                          !1,!2,*  -> subtypes 1 and 2 don't perform the check, all others do.
                          !8,*     -> subtype 8 does not perform the check, all others do
