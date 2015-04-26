@@ -35,4 +35,11 @@
 	
 	<!-- Screen pinning dialog description (for devices without navbar) -->
     <string name="screen_pinning_description_no_navbar">This keeps it in view until you unpin. Touch and hold the Back button to unpin.</string>
+
+    <!-- Ambient Display QS tile -->
+    <string name="accessibility_quick_settings_ambient_display_off">Ambient Display off</string>
+    <string name="accessibility_quick_settings_ambient_display_on">Ambient Display on</string>
+    <string name="accessibility_quick_settings_ambient_display_changed_off">Ambient Display turned off</string>
+    <string name="accessibility_quick_settings_ambient_display_changed_on">Ambient Display turned on</string>
+    <string name="quick_settings_ambient_display_label">Ambient Display</string>
 </resources>
