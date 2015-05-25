@@ -123,5 +123,7 @@
   
   <java-symbol type="integer" name="config_deviceHardwareKeys" />
   <java-symbol type="integer" name="config_deviceHardwareWakeKeys" />
+  <java-symbol type="integer" name="config_longPressOnMenuBehavior" />
+  <java-symbol type="integer" name="config_longPressOnAppSwitchBehavior" />
 
 </resources>
