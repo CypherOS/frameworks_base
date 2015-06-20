@@ -3988,5 +3988,8 @@ message MetricsEvent {
 
     // Settings -> System -> Tuning
     TUNING_SETTINGS = 952;
+
+    // Location detail adapter
+    QS_LOCATION_DETAIL = 953;
   }
 }
