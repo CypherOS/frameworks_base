@@ -2213,6 +2213,9 @@ message MetricsEvent {
 	
 	// AOSCP additions
     ADDITIONS = 497;
+	
+	// Location detail adapter
+    QS_LOCATION_DETAIL = 498;
 
     // ---- End N-MR1 Constants, all N-MR1 constants go above this line ----
 
