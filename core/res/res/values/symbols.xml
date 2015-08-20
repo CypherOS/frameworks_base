@@ -2837,6 +2837,11 @@
   <java-symbol type="drawable" name="lockscreen_notselected" />
   <java-symbol type="drawable" name="lockscreen_selected" />
 
+  <!-- EdgeGesture service -->
+  <java-symbol type="dimen" name="edge_gesture_trigger_distance" />
+  <java-symbol type="dimen" name="edge_gesture_perpendicular_distance" />
+  <java-symbol type="dimen" name="edge_gesture_trigger_thickness" />
+  
   <java-symbol type="string" name="notification_header_divider_symbol_with_spaces" />
   <java-symbol type="string" name="config_defaultCellBroadcastReceiverPkg" />
 
@@ -3027,5 +3032,4 @@
 
   <java-symbol type="array" name="config_batteryPackageTypeSystem" />
   <java-symbol type="array" name="config_batteryPackageTypeService" />
-
 </resources>

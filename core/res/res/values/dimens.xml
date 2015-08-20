@@ -512,6 +512,16 @@
     <!-- Minimum "smallest width" of the display for cascading menus to be enabled. -->
     <dimen name="cascading_menus_min_smallest_width">720dp</dimen>
 
+	<!-- EdgeGesture service: Distance a swipe must travel to be recognized as swipe. -->
+    <dimen name="edge_gesture_trigger_distance">12dp</dimen>
+
+    <!-- EdgeGesture service: This is the distance a swipe can travel orthogonally to its actual swipe
+         direction to be still recognized as swipe. -->
+    <dimen name="edge_gesture_perpendicular_distance">15dp</dimen>
+
+    <!-- EdgeGesture service: Thickness of the active trigger fields around the screen border -->
+    <dimen name="edge_gesture_trigger_thickness">12dp</dimen>
+	
     <!-- Tooltip dimensions. -->
     <!-- Vertical offset from the edge of the anchor view for a touch-triggered tooltip. -->
     <dimen name="tooltip_y_offset_touch">16dp</dimen>
@@ -539,5 +549,4 @@
 
     <!-- Max width/height of the autofill data set picker as a fraction of the screen width/height -->
     <dimen name="autofill_dataset_picker_max_size">90%</dimen>
-
 </resources>
