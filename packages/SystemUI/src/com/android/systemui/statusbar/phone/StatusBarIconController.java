@@ -18,6 +18,7 @@ package com.android.systemui.statusbar.phone;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -28,6 +29,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.TypedValue;
@@ -46,6 +48,7 @@ import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.SignalClusterView;
 import com.android.systemui.statusbar.StatusBarIconView;
 import com.android.systemui.statusbar.policy.NetworkTraffic;
+import com.android.systemui.statusbar.policy.Clock;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.tuner.TunerService.Tunable;
 
@@ -80,6 +83,12 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private ClockController mClockController;
     private View mCenterClockLayout;
     private NetworkTraffic mNetworkTraffic;
+    private TextView mClock;
+    // Center clock
+    private LinearLayout mCenterClockLayout;
+    private TextView mCclock;
+    private boolean mShowClock;
+    private int mClockLocation;
 
     private int mIconSize;
     private int mIconHPadding;
@@ -136,7 +145,12 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mBatteryMeterView = (BatteryMeterView) statusBar.findViewById(R.id.battery);
         mBatteryMeterViewKeyguard = (BatteryMeterView) keyguardStatusBar.findViewById(R.id.battery);
         scaleBatteryMeterViews(context);
+		
         mNetworkTraffic = (NetworkTraffic) statusBar.findViewById(R.id.networkTraffic);
+
+        mClock = (TextView) statusBar.findViewById(R.id.clock);
+        mCenterClockLayout = (LinearLayout)statusBar.findViewById(R.id.center_clock_layout);
+        mClock = (TextView) statusBar.findViewById(R.id.center_clock);
         mDarkModeIconColorSingleTone = context.getColor(R.color.dark_mode_icon_color_single_tone);
         mLightModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
         mHandler = new Handler();
@@ -352,9 +366,6 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
             mClock.setVisibility(visible ? (showClock ? View.VISIBLE : View.GONE) : View.GONE);
         }
         if (clockLocation == 1 && mCclock != null) {
-            mCclock.setVisibility(visible ? (showClock ? View.VISIBLE : View.GONE) : View.GONE);
-        }
-        if (clockLocation == 2 && mCclock != null) {
             mCclock.setVisibility(visible ? (showClock ? View.VISIBLE : View.GONE) : View.GONE);
         }
     }
