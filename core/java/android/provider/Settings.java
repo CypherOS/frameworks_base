@@ -4027,6 +4027,12 @@ public final class Settings {
          */
         public static final String STATUS_BAR_CLOCK_SECONDS = "status_bar_clock_seconds";
 
+        /** 
+         * Whether to allow one finger quick settings expansion on the right side of the statusbar.
+         * @hide
+         */
+        public static final String STATUS_BAR_QUICK_QS_PULLDOWN = "status_bar_quick_qs_pulldown";
+
         /**
          * AM/PM Style for clock options
          * 0 - Normal AM/PM
