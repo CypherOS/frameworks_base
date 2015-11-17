@@ -102,4 +102,9 @@
 
   <!-- Determines whether the device supports fingerprint navigation -->
   <java-symbol type="bool" name="config_supportsFingerprintNavigation" />
+
+  <!-- Immersive cling -->
+  <java-symbol type="color" name="immersive_cling_bg_color" />
+  <java-symbol type="color" name="immersive_cling_text_color" />
+  <java-symbol type="color" name="immersive_cling_button_text_color" />
 </resources>
