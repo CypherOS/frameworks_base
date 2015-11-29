@@ -52,6 +52,9 @@
     <string name="accessibility_quick_settings_ambient_display_changed_on">Ambient Display turned on</string>
     <string name="quick_settings_ambient_display_label">Ambient Display</string>
 
+    <!-- Brightness QS Tile -->
+    <string name="quick_settings_brightness">Brightness</string>
+
     <!-- Caffeine QS Tile -->
     <string name="quick_settings_caffeine_label">Caffeine</string>
     <string name="accessibility_quick_settings_caffeine_off">Caffeine off.</string>
