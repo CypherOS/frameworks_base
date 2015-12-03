@@ -90,4 +90,9 @@
   <java-symbol type="string" name="global_action_search" />
   <java-symbol type="string" name="global_action_torch" />
   <java-symbol type="string" name="global_action_voicesearch" />
+  
+  <!-- Unlink notification images -->
+  <java-symbol type="drawable" name="ic_audio_notification_new" />
+  <java-symbol type="drawable" name="ic_audio_notification_mute_new" />
+  <java-symbol type="drawable" name="ic_audio_notification_mute_alpha" />
 </resources>
