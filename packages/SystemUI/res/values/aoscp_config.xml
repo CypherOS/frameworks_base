@@ -17,8 +17,4 @@
     <!-- Nav bar button swapped ordering/layout -->
     <string name="config_navBarLayoutSwapped" translatable="false">menu_ime,recent;home;back,space</string>
 
-    <!-- [CHAR LIMIT=NONE] Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
-    <string name="permlab_preventpower">override power key</string>
-    <!-- [CHAR LIMIT=NONE] Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
-    <string name="permdesc_preventpower">Allows an app to override the power key.</string>
 </resources>
