@@ -59,12 +59,18 @@ public class KeyButtonView extends ImageView implements ButtonInterface {
     private int mCode;
     private int mTouchSlop;
     private boolean mSupportsLongpress = true;
-    private AudioManager mAudioManager;
     private boolean mGestureAborted;
     private boolean mLongClicked;
     private OnClickListener mOnClickListener;
     private final KeyButtonRipple mRipple;
     private final MetricsLogger mMetricsLogger = Dependency.get(MetricsLogger.class);
+
+    static AudioManager mAudioManager;
+    static AudioManager getAudioManager(Context context) {
+		if (mAudioManager == null)
+		    mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+		return mAudioManager;
+	}
 
     private final Runnable mCheckLongPress = new Runnable() {
         public void run() {
@@ -107,7 +113,7 @@ public class KeyButtonView extends ImageView implements ButtonInterface {
 
         setClickable(true);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = getAudioManager(context);
 
         mRipple = new KeyButtonRipple(context, this);
         setBackground(mRipple);
