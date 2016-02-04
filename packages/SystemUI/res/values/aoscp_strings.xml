@@ -52,6 +52,11 @@
     <string name="accessibility_quick_settings_ambient_display_changed_on">Ambient Display turned on</string>
     <string name="quick_settings_ambient_display_label">Ambient Display</string>
 
+    <!-- Caffeine QS Tile -->
+    <string name="quick_settings_caffeine_label">Caffeine</string>
+    <string name="accessibility_quick_settings_caffeine_off">Caffeine off.</string>
+    <string name="accessibility_quick_settings_caffeine_on">Caffeine on.</string>
+
     <!-- Music QS Tile -->
     <string name="quick_settings_music_label">Music</string>
     <string name="quick_settings_music_play">Play</string>
