@@ -204,6 +204,7 @@ public:
     void setSystemUiVisibility(int32_t visibility);
     void setPointerSpeed(int32_t speed);
     void setShowTouches(bool enabled);
+    void setSwapKeys(bool enabled);
     void setInteractive(bool interactive);
     void reloadCalibration();
     void setPointerIconType(int32_t iconId);
@@ -283,6 +284,9 @@ private:
         // Pointer capture feature enable/disable.
         bool pointerCapture;
 
+        // Swap back with recents buttons.
+        bool swapKeys;
+
         // Sprite controller singleton, created on first use.
         sp<SpriteController> spriteController;
 
@@ -320,6 +324,7 @@ NativeInputManager::NativeInputManager(jobject contextObj,
         mLocked.pointerGesturesEnabled = true;
         mLocked.showTouches = false;
         mLocked.pointerCapture = false;
+        mLocked.swapKeys = false;
     }
     mInteractive = true;
 
@@ -504,6 +509,7 @@ void NativeInputManager::getReaderConfiguration(InputReaderConfiguration* outCon
         outConfig->pointerGesturesEnabled = mLocked.pointerGesturesEnabled;
 
         outConfig->showTouches = mLocked.showTouches;
+        outConfig->swapKeys = mLocked.swapKeys;
 
         outConfig->pointerCapture = mLocked.pointerCapture;
 
@@ -831,6 +837,22 @@ void NativeInputManager::setPointerCapture(bool enabled) {
 
     mInputManager->getReader()->requestRefreshConfiguration(
             InputReaderConfiguration::CHANGE_POINTER_CAPTURE);
+}
+
+void NativeInputManager::setSwapKeys(bool enabled) {
+    { // acquire lock
+        AutoMutex _l(mLock);
+
+        if (mLocked.swapKeys == enabled) {
+            return;
+        }
+
+        ALOGI("Setting swap keys feature to %s.", enabled ? "enabled" : "disabled");
+        mLocked.swapKeys = enabled;
+    } // release lock
+
+    mInputManager->getReader()->requestRefreshConfiguration(
+            InputReaderConfiguration::CHANGE_SWAP_KEYS);
 }
 
 void NativeInputManager::setInteractive(bool interactive) {
@@ -1454,6 +1476,13 @@ static void nativeSetShowTouches(JNIEnv* /* env */,
     im->setShowTouches(enabled);
 }
 
+static void nativeSetSwapKeys(JNIEnv* /* env */,
+        jclass /* clazz */, jlong ptr, jboolean enabled) {
+    NativeInputManager* im = reinterpret_cast<NativeInputManager*>(ptr);
+
+    im->setSwapKeys(enabled);
+}
+
 static void nativeSetInteractive(JNIEnv* env,
         jclass clazz, jlong ptr, jboolean interactive) {
     NativeInputManager* im = reinterpret_cast<NativeInputManager*>(ptr);
@@ -1605,6 +1634,8 @@ static const JNINativeMethod gInputManagerMethods[] = {
             (void*) nativeSetPointerSpeed },
     { "nativeSetShowTouches", "(JZ)V",
             (void*) nativeSetShowTouches },
+    { "nativeSetSwapKeys", "(JZ)V",
+            (void*) nativeSetSwapKeys },
     { "nativeSetInteractive", "(JZ)V",
             (void*) nativeSetInteractive },
     { "nativeReloadCalibration", "(J)V",
