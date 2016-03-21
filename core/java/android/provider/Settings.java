@@ -3753,6 +3753,12 @@ public final class Settings {
         public static final String NOTIFICATION_LIGHT_PULSE_DEFAULT_COLOR =
                 "notification_light_pulse_default_color";
 
+       /**
+        * USB Data automatic unlock
+		* @hide
+        */
+       public static final String USB_DATA_AUTO_UNLOCK = "usb_data_auto_unlock";
+
         /**
          * How long to flash the notification LED by default
          * @hide
