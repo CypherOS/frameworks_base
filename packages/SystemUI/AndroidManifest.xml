@@ -164,6 +164,9 @@
 
     <!-- the ability to rename notifications posted by other apps -->
     <uses-permission android:name="android.permission.SUBSTITUTE_NOTIFICATION_APP_NAME" />
+	
+	<!-- Screen recording -->
+    <uses-permission android:name="android.permission.ACCESS_SURFACE_FLINGER" />
 
     <!-- manage cmsettings -->
     <uses-permission android:name="cyanogenmod.permission.WRITE_SETTINGS" />
@@ -214,6 +217,12 @@
              TODO: Should have an android:permission attribute -->
         <service android:name=".screenshot.TakeScreenshotService"
             android:process=":screenshot"
+            android:exported="false" />
+			
+		<!-- started from PhoneWindowManager
+             TODO: Should have an android:permission attribute -->
+        <service android:name=".cypher.screenrecord.TakeScreenrecordService"
+            android:process=":screenrecord"
             android:exported="false" />
 
         <!-- Called from PhoneWindowManager -->
