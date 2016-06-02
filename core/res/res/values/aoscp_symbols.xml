@@ -58,4 +58,7 @@
 
   <!-- Vendor warning -->
   <java-symbol type="string" name="system_error_vendorprint" />
+  
+  <!-- Usb drive persistent notification -->
+  <java-symbol type="bool" name="config_persistUsbDriveNotification" />
 </resources>
