@@ -120,4 +120,7 @@
 
     <!-- Allow Opa (Pixel navbar) layout -->
     <bool name="config_allowOpaLayout">false</bool>
+
+    <!-- Whether device has dash charging support -->
+    <bool name="config_hasDashCharger">false</bool>
 </resources>

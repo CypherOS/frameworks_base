@@ -99,4 +99,6 @@
 
     <java-symbol type="bool" name="config_allowOpaLayout" />
 
+    <!-- Whether device has dash charging support -->
+    <java-symbol type="bool" name="config_hasDashCharger" />
 </resources>
