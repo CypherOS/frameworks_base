@@ -98,5 +98,7 @@
     <java-symbol type="string" name="global_restart_bootloader_message" />
 
     <java-symbol type="bool" name="config_allowOpaLayout" />
-
+	
+	<!-- Whether device has dash charging support -->
+	<java-symbol type="bool" name="config_hasDashCharger" />
 </resources>
