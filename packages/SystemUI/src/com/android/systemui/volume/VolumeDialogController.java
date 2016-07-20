@@ -363,6 +363,7 @@ public class VolumeDialogController {
         updateRingerModeExternalW(mAudio.getRingerMode());
         updateZenModeW();
         updateEffectsSuppressorW(mNoMan.getEffectsSuppressor());
+        updateLinkNotificationConfigW();
         mCallbacks.onStateChanged(mState);
     }
 
