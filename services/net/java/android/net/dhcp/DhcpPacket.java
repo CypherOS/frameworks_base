@@ -619,7 +619,11 @@ public abstract class DhcpPacket {
 
     private String getHostname() {
         if (testOverrideHostname != null) return testOverrideHostname;
-        return SystemProperties.get("net.hostname");
+        /* the default 'android-dhcp' is there to make sure the hostname is
+         * never empty, because the DHCP standard forbids it (RFC2132, section
+         * 3.14) and certain DHCP forwarders and servers ignore such malformed
+         * requests */
+        return SystemProperties.get("net.hostname", "android-dhcp");
     }
 
     /**
