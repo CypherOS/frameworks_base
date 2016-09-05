@@ -3988,5 +3988,10 @@ message MetricsEvent {
 
     // Settings -> System -> Tuning
     TUNING_SETTINGS = 952;
+	
+    // Immersive mode
+    QS_IMMERSIVE = 953;
+    QS_IMMERSIVE_DETAILS = 954;
+    QS_IMMERSIVE_TOGGLE = 955;
   }
 }

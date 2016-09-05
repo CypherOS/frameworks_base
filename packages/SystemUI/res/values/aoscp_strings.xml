@@ -32,4 +32,29 @@
 
     <!-- Screenshot QS tile -->
     <string name="quick_settings_screenshot_label">Screenshot</string>
+	
+	<!-- Content description of the immersive mode tile -->
+    <string name="accessibility_quick_settings_immersive_mode_off">Immersive mode off</string>
+    <string name="accessibility_quick_settings_immersive_mode_full">Immersive mode fullscreen</string>
+    <string name="accessibility_quick_settings_immersive_mode_hide_status_bar">Immersive mode hide status bar</string>
+    <string name="accessibility_quick_settings_immersive_mode_hide_nav_bar">Immersive mode hide navigation bar</string>
+
+    <!-- Announcement made when immersive mode is toggled on/off -->
+    <string name="accessibility_quick_settings_immersive_mode_changed_on">Immersive mode turned on</string>
+    <string name="accessibility_quick_settings_immersive_mode_changed_off">Immersive mode turned off</string>
+
+    <!-- QuickSettings: Immersive tile -->
+    <string name="quick_settings_immersive_mode_label">Immersive mode</string>
+    <string name="quick_settings_immersive_mode_label_hide_all">Fully immersive</string>
+    <string name="quick_settings_immersive_mode_label_hide_all_twoline">Fully\nimmersive</string>
+    <string name="quick_settings_immersive_mode_label_hide_status">Navigation only</string>
+    <string name="quick_settings_immersive_mode_label_hide_status_twoline">Navigation\nonly</string>
+    <string name="quick_settings_immersive_mode_label_hide_nav">Status bar only</string>
+    <string name="quick_settings_immersive_mode_label_hide_nav_twoline">Status bar\nonly</string>
+    <string name="quick_settings_immersive_mode_detail_hide_all">Fully immersive experience</string>
+    <string name="quick_settings_immersive_mode_detail_hide_status">Navigation bar only</string>
+    <string name="quick_settings_immersive_mode_detail_hide_nav">Status bar only</string>
+    <string name="quick_settings_immersive_introduce_hide_all">Hides both the navigation and status bars for a fully immersive experience.</string>
+    <string name="quick_settings_immersive_introduce_hide_nav">Hides only the status bar, leaving the navigation bar in its original position.</string>
+    <string name="quick_settings_immersive_introduce_hide_status">Hides only the navigation bar, leaving the status bar in its original position.</string>
 </resources>
