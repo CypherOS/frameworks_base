@@ -6429,6 +6429,22 @@ public final class Settings {
         public static final String DEVICE_PAIRED = "device_paired";
 
         /**
+         * Used to store the last used system ui flags to make qs settings stick after reboot
+         * @hide
+         */
+        public static final String LAST_SYSTEM_DESIGN_FLAGS = "last_system_design_flags";
+
+        /**
+         * Setting to record how the look and feel of the system should be tweaked. This
+         * should be used in combination with magic.
+         *
+         * @see android.view.View#SYSTEM_DESIGN_FLAG_IMMERSIVE_NAV
+         * @see android.view.View#SYSTEM_DESIGN_FLAG_IMMERSIVE_STATUS
+         * @hide
+         */
+        public static final String SYSTEM_DESIGN_FLAGS = "system_design_flags";
+
+        /**
          * This are the settings to be backed up.
          *
          * NOTE: Settings are backed up and restored in the order they appear
