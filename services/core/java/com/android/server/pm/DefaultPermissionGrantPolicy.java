@@ -605,6 +605,117 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(nfcTagPkg, CONTACTS_PERMISSIONS, false, userId);
                 grantRuntimePermissionsLPw(nfcTagPkg, PHONE_PERMISSIONS, false, userId);
             }
+
+            // Chromium
+            PackageParser.Package chromiumPackage = getDefaultProviderAuthorityPackageLPr(
+                    "org.chromium.chrome", userId);
+            if (chromiumPackage != null) {
+                grantRuntimePermissionsLPw(chromiumPackage, CONTACTS_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(chromiumPackage, STORAGE_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(chromiumPackage, CAMERA_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(chromiumPackage, LOCATION_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(chromiumPackage, MICROPHONE_PERMISSIONS, true, userId);
+            }
+
+            // Gallery
+            PackageParser.Package gallerypackage = getSystemPackageLPr(
+                    "com.android.gallery3d");
+            if (gallerypackage != null && doesPackageSupportRuntimePermissions(gallerypackage)) {
+                grantRuntimePermissionsLPw(gallerypackage, CAMERA_PERMISSIONS, userId);
+                grantRuntimePermissionsLPw(gallerypackage, CONTACTS_PERMISSIONS, userId);
+                grantRuntimePermissionsLPw(gallerypackage, LOCATION_PERMISSIONS, userId);
+                grantRuntimePermissionsLPw(gallerypackage, MICROPHONE_PERMISSIONS, userId);
+                grantRuntimePermissionsLPw(gallerypackage, STORAGE_PERMISSIONS, userId);
+            }
+
+            // Google Account
+            PackageParser.Package googleaccountPackage = getDefaultProviderAuthorityPackageLPr(
+                    "com.google.android.gsf.login", userId);
+            if (googleaccountPackage != null) {
+                grantRuntimePermissionsLPw(googleaccountPackage, CONTACTS_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(googleaccountPackage, PHONE_PERMISSIONS, true, userId);
+            }
+
+            // Google App
+            PackageParser.Package googleappPackage = getDefaultProviderAuthorityPackageLPr(
+                    "com.google.android.googlequicksearchbox", userId);
+            if (googleappPackage != null) {
+                grantRuntimePermissionsLPw(googleappPackage, CALENDAR_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(googleappPackage, CAMERA_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(googleappPackage, CONTACTS_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(googleappPackage, LOCATION_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(googleappPackage, MICROPHONE_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(googleappPackage, PHONE_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(googleappPackage, SMS_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(googleappPackage, STORAGE_PERMISSIONS, true, userId);
+            }
+
+            // Google Play Services
+            PackageParser.Package gmscorePackage = getDefaultProviderAuthorityPackageLPr(
+                    "com.google.android.gms", userId);
+            if (gmscorePackage != null) {
+                grantRuntimePermissionsLPw(gmscorePackage, SENSORS_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(gmscorePackage, CALENDAR_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(gmscorePackage, CAMERA_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(gmscorePackage, CONTACTS_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(gmscorePackage, LOCATION_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(gmscorePackage, MICROPHONE_PERMISSIONS, true, true, userId);
+                grantRuntimePermissionsLPw(gmscorePackage, PHONE_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(gmscorePackage, SMS_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(gmscorePackage, STORAGE_PERMISSIONS, true, userId);
+            }
+
+            // Google Connectivity Services
+            PackageParser.Package gcsPackage = getSystemPackageLPr(
+                    "com.google.android.apps.gcs");
+            if (gcsPackage != null && doesPackageSupportRuntimePermissions(gcsPackage)) {
+                grantRuntimePermissionsLPw(gcsPackage, CONTACTS_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(gcsPackage, LOCATION_PERMISSIONS, true, userId);
+            }
+
+            // Google Contacts Sync
+            PackageParser.Package googlecontactssyncPackage = getSystemPackageLPr(
+                    "com.google.android.syncadapters.contacts");
+            if (googlecontactssyncPackage != null && doesPackageSupportRuntimePermissions(googlecontactssyncPackage)) {
+                grantRuntimePermissionsLPw(googlecontactssyncPackage, CONTACTS_PERMISSIONS, true, userId);
+            }
+
+            // Google Backup Transport
+            PackageParser.Package googlebackuptransportPackage = getSystemPackageLPr(
+                    "com.google.android.backuptransport");
+            if (googlebackuptransportPackage != null && doesPackageSupportRuntimePermissions(googlebackuptransportPackage)) {
+                grantRuntimePermissionsLPw(googlebackuptransportPackage, CONTACTS_PERMISSIONS, true, userId);
+            }
+
+            // Google Play Framework
+            PackageParser.Package gsfcorePackage = getSystemPackageLPr(
+                    "com.google.android.gsf");
+            if (gsfcorePackage != null && doesPackageSupportRuntimePermissions(gsfcorePackage)) {
+                grantRuntimePermissionsLPw(gsfcorePackage, CONTACTS_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(gsfcorePackage, PHONE_PERMISSIONS, true, userId);
+            }
+
+            // Google Setup Wizard
+            PackageParser.Package setupwizardPackage = getSystemPackageLPr(
+                    "com.google.android.setupwizard");
+            if (setupwizardPackage != null && doesPackageSupportRuntimePermissions(setupwizardPackage)) {
+                grantRuntimePermissionsLPw(setupwizardPackage, CONTACTS_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(setupwizardPackage, PHONE_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(setupwizardPackage, LOCATION_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(setupwizardPackage, CAMERA_PERMISSIONS, true, userId);
+            }
+
+            // Google Play Store
+            PackageParser.Package vendingPackage = getSystemPackageLPr(
+                    "com.android.vending");
+            if (vendingPackage != null && doesPackageSupportRuntimePermissions(vendingPackage)) {
+                grantRuntimePermissionsLPw(vendingPackage, CONTACTS_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(vendingPackage, PHONE_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(vendingPackage, LOCATION_PERMISSIONS, userId);
+                grantRuntimePermissionsLPw(vendingPackage, SMS_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(vendingPackage, STORAGE_PERMISSIONS, true, userId);
+            }
+
             mService.mSettings.onDefaultRuntimePermissionsGrantedLPr(userId);
         }
     }
