@@ -33,6 +33,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.MathUtils;
@@ -56,6 +57,7 @@ import com.android.systemui.classifier.FalsingManager;
 import com.android.systemui.fragments.FragmentHostManager;
 import com.android.systemui.fragments.FragmentHostManager.FragmentListener;
 import com.android.systemui.plugins.qs.QS;
+import com.android.systemui.settings.SettingConfirmationHelper;
 import com.android.systemui.statusbar.ExpandableNotificationRow;
 import com.android.systemui.statusbar.ExpandableView;
 import com.android.systemui.statusbar.FlingAnimationUtils;
@@ -64,6 +66,7 @@ import com.android.systemui.statusbar.KeyguardAffordanceView;
 import com.android.systemui.statusbar.KeyguardIndicationController;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.NotificationShelf;
+import com.android.systemui.statusbar.SettingConfirmationSnackbarViewCreator;
 import com.android.systemui.statusbar.StatusBarState;
 import com.android.systemui.statusbar.notification.NotificationUtils;
 import com.android.systemui.statusbar.policy.HeadsUpManager;
@@ -696,7 +699,7 @@ public class NotificationPanelView extends PanelView implements
                 mInitialTouchX = x;
                 initVelocityTracker();
                 trackMovement(event);
-                if (shouldQuickSettingsIntercept(mInitialTouchX, mInitialTouchY, 0)) {
+                if (shouldQuickSettingsIntercept(mInitialTouchX, mInitialTouchY, 0, true, false)) {
                     getParent().requestDisallowInterceptTouchEvent(true);
                 }
                 if (mQsExpansionAnimator != null) {
@@ -732,7 +735,8 @@ public class NotificationPanelView extends PanelView implements
                     return true;
                 }
                 if (Math.abs(h) > mTouchSlop && Math.abs(h) > Math.abs(x - mInitialTouchX)
-                        && shouldQuickSettingsIntercept(mInitialTouchX, mInitialTouchY, h)) {
+                        && shouldQuickSettingsIntercept(mInitialTouchX, mInitialTouchY, h,
+                                true, false)) {
                     mQsTracking = true;
                     onQsExpansionStarted();
                     notifyExpandingFinished();
@@ -891,8 +895,34 @@ public class NotificationPanelView extends PanelView implements
                 && mQsExpansionEnabled) {
             mTwoFingerQsExpandPossible = true;
         }
-        if (mTwoFingerQsExpandPossible && isOpenQsEvent(event)
-                && event.getY(event.getActionIndex()) < mStatusBarMinHeight) {
+        boolean twoFingerQsEvent = mTwoFingerQsExpandPossible && isOpenQsEvent(event);
+        boolean oneFingerQsOverride = action == MotionEvent.ACTION_DOWN
+                && shouldQuickSettingsIntercept(event.getX(), event.getY(), -1, false, true);
+        if ((twoFingerQsEvent || oneFingerQsOverride)
+                && event.getY(event.getActionIndex()) < mStatusBarMinHeight
+                && mExpandedHeight <= mQsPeekHeight) {
+            if (oneFingerQsOverride) {
+                final SettingConfirmationSnackbarViewCreator
+                        mSnackbarViewCreator = new
+                        SettingConfirmationSnackbarViewCreator(mContext);
+                SettingConfirmationHelper.prompt(
+                        mSnackbarViewCreator.getSnackbarView(),
+                        Settings.Secure.QUICK_SETTINGS_QUICK_PULL_DOWN,
+                        true,
+                        getContext().getString(R.string.quick_settings_quick_pull_down),
+                        new SettingConfirmationHelper.OnSettingChoiceListener() {
+                            @Override
+                            public void onSettingConfirm(final String settingName) {
+                            }
+
+                            @Override
+                            public void onSettingDeny(final String settingName) {
+                                closeQs();
+                            }
+                        },
+                        null);
+            }
+
             MetricsLogger.count(mContext, COUNTER_PANEL_OPEN_QS, 1);
             mQsExpandImmediate = true;
             requestPanelHeightUpdate();
@@ -931,7 +961,7 @@ public class NotificationPanelView extends PanelView implements
 
     private void handleQsDown(MotionEvent event) {
         if (event.getActionMasked() == MotionEvent.ACTION_DOWN
-                && shouldQuickSettingsIntercept(event.getX(), event.getY(), -1)) {
+                && shouldQuickSettingsIntercept(event.getX(), event.getY(), -1, true, false)) {
             mFalsingManager.onQsDown();
             mQsTracking = true;
             onQsExpansionStarted();
@@ -1470,18 +1500,28 @@ public class NotificationPanelView extends PanelView implements
     /**
      * @return Whether we should intercept a gesture to open Quick Settings.
      */
-    private boolean shouldQuickSettingsIntercept(float x, float y, float yDiff) {
-        if (!mQsExpansionEnabled || mCollapsedOnDown) {
+    private boolean shouldQuickSettingsIntercept(float x, float y, float yDiff, boolean useHeader,
+            boolean notSetFallback) {
+        if (!mQsExpansionEnabled || (useHeader && mCollapsedOnDown)) {
             return false;
         }
         View header = mKeyguardShowing ? mKeyguardStatusBar : mQs.getHeader();
-        final boolean onHeader = x >= mQsFrame.getX()
+        final boolean onHeader = useHeader && x >= mQsFrame.getX()
                 && x <= mQsFrame.getX() + mQsFrame.getWidth()
                 && y >= header.getTop() && y <= header.getBottom();
+
+        final float w = getMeasuredWidth();
+        float region = (w * (1.f/4.f)); // TODO overlay region fraction?
+        final boolean showQsOverride = (isLayoutRtl() ? (x < region) : (w - region < x))
+            && !mKeyguardShowing && SettingConfirmationHelper.get(
+                    getContext().getContentResolver(),
+                    Settings.Secure.QUICK_SETTINGS_QUICK_PULL_DOWN,
+                    notSetFallback);
+
         if (mQsExpanded) {
             return onHeader || (yDiff < 0 && isInQsArea(x, y));
         } else {
-            return onHeader;
+            return onHeader || showQsOverride;
         }
     }
 
