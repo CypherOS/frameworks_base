@@ -6576,6 +6576,13 @@ public final class Settings {
          */
         public static final String DOZE_PULSE_ON_PICK_UP = "doze_pulse_on_pick_up";
 
+
+        /**
+         * Enable single click to turn WiFi on or off.
+         * @hide
+         */
+        public static final String QS_WIFI_EASY_TOGGLE = "qs_wifi_easy_toggle";
+
         /**
          * Whether the device should pulse on double tap gesture.
          * @hide

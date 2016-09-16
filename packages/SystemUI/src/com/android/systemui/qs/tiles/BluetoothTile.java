@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.provider.Settings;
+import android.provider.Settings.Secure;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
