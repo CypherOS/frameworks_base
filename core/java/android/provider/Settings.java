@@ -3941,6 +3941,12 @@ public final class Settings {
         public static final String PROXIMITY_AUTO_SPEAKER_INCALL_ONLY = "proximity_auto_speaker_incall_only";
 		
 		/**
+         * Enable statusbar double tap gesture on to put device to sleep
+         * @hide
+         */
+        public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
+		
+		/**
          * Show or hide clock
          * 0 - hide
          * 1 - show (default)
