@@ -31,6 +31,9 @@ import com.android.internal.logging.MetricsLogger;
 import com.android.systemui.R;
 import com.android.systemui.qs.SecureSetting;
 import com.android.systemui.qs.QSTile;
+import com.android.systemui.settings.SettingConfirmationHelper;
+import com.android.systemui.statusbar.SettingConfirmationSnackbarViewCreator;
+import com.android.systemui.statusbar.pie.PieController;
 import com.android.systemui.volume.SegmentedButtons;
 
 /** Quick settings tile: Immersive mode **/
@@ -91,6 +94,40 @@ public class ImmersiveTile extends QSTile<QSTile.BooleanState> {
         return new Intent();
     }
 
+    private void resetPie(boolean reset) {
+        final PieController mPieController;
+        final int gravity = Secure.getInt(mContext.getContentResolver(),
+                Secure.PIE_GRAVITY, 0);
+        mPieController = PieController.getInstance();
+        mPieController.resetPie(reset, gravity);
+    }
+
+    private void selectImmersiveStyle() {
+        final SettingConfirmationSnackbarViewCreator
+                mSnackbarViewCreator = new
+                SettingConfirmationSnackbarViewCreator(mContext);
+        SettingConfirmationHelper.prompt(
+                mSnackbarViewCreator.getSnackbarView(),
+                Secure.PIE_STATE,
+                true,
+                mContext.getString(R.string.enable_pie),
+                new SettingConfirmationHelper.OnSettingChoiceListener() {
+                    @Override
+                    public void onSettingConfirm(final String settingName) {
+                    }
+                    @Override
+                    public void onSettingDeny(final String settingName) {
+                    }
+                },
+                null);
+    }
+
+    private boolean immersiveStyleSelected() {
+        int selection = Secure.getInt(mContext.getContentResolver(),
+                Secure.PIE_STATE, 0);
+        return selection == 1;
+    }
+
     @Override
     public void handleClick() {
         MetricsLogger.action(mContext, getMetricsCategory(), !mState.value);
@@ -107,6 +144,16 @@ public class ImmersiveTile extends QSTile<QSTile.BooleanState> {
 
     private void setEnabled(boolean enabled) {
         mSetting.setValue(enabled ? mLastState : IMMERSIVE_OFF);
+        // calls from handleSecondaryClick can happen outside the UI thread.
+        // for pie we always need to run on the UI thread, so make sure we do.
+        mUiHandler.post(() -> {
+            if (enabled && mLastState != View.SYSTEM_DESIGN_FLAG_IMMERSIVE_STATUS
+                    && immersiveStyleSelected()) {
+                resetPie(true);
+            } else {
+                resetPie(false);
+            }
+        });
     }
 
     @Override
@@ -205,6 +252,13 @@ public class ImmersiveTile extends QSTile<QSTile.BooleanState> {
             }
             setEnabled(state);
             fireToggleStateChanged(state);
+            if (state && mSetting.getValue()
+                    != View.SYSTEM_DESIGN_FLAG_IMMERSIVE_STATUS
+                    && !immersiveStyleSelected()) {
+                selectImmersiveStyle();
+            } else {
+                resetPie(true);
+            }
 
             switch (mLastState) {
                 case IMMERSIVE_FLAGS_FULL:
