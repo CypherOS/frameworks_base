@@ -4057,6 +4057,7 @@ public final class Settings {
         };
 
         /**
+<<<<<<< HEAD
          * Whether to allow fullscreen screenshots or let the user select which area to screenshot
          * @hide
          */
@@ -4132,6 +4133,23 @@ public final class Settings {
          * @hide
          */
         public static final String QS_SHOW_BRIGHTNESS_ICON = "qs_show_brightness_icon";
+=======
+         * Whether user can swap the order of the Alert Slider.
+         * * Whether user can invert the order of the Alert Slider.
+         * 0: Default
+         * 1: Inverted
+         * @hide
+         */
+        public static final String ALERT_SLIDER_ORDER = "alert_slider_order";
+
+        /**
+         * Preferred silent mode for Alert Slider..
+         * 0: Alarms only.
+         * 1: Total silence
+         * @hide
+         */
+        public static final String ALERT_SLIDER_SILENT_MODE = "alert_slider_silent_mode";
+>>>>>>> 2f658e430a4... policy: alert slider integration
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
