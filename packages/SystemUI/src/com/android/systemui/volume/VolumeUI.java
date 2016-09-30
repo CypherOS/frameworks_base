@@ -18,6 +18,7 @@ package com.android.systemui.volume;
 
 import android.content.res.Configuration;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.systemui.R;
@@ -36,6 +37,7 @@ public class VolumeUI extends SystemUI {
     private final Handler mHandler = new Handler();
 
     private boolean mEnabled;
+	private boolean mHasAlertSlider = false;
     private VolumeDialogComponent mVolumeComponent;
 
     @Override
@@ -43,6 +45,9 @@ public class VolumeUI extends SystemUI {
         boolean enableVolumeUi = mContext.getResources().getBoolean(R.bool.enable_volume_ui);
         boolean enableSafetyWarning =
             mContext.getResources().getBoolean(R.bool.enable_safety_warning);
+		mHasAlertSlider = mContext.getResources().getBoolean(com.android.internal.R.bool.config_hasAlertSlider)
+                && !TextUtils.isEmpty(mContext.getResources().getString(com.android.internal.R.string.alert_slider_state_path))
+                && !TextUtils.isEmpty(mContext.getResources().getString(com.android.internal.R.string.alert_slider_uevent_match_path));
         mEnabled = enableVolumeUi || enableSafetyWarning;
         if (!mEnabled) return;
         mVolumeComponent = new VolumeDialogComponent(this, mContext, null);
@@ -70,7 +75,7 @@ public class VolumeUI extends SystemUI {
     }
 
     private void setDefaultVolumeController() {
-        DndTile.setVisible(mContext, true);
+        DndTile.setVisible(mContext, true && !mHasAlertSlider);
         if (LOGD) Log.d(TAG, "Registering default volume controller");
         getVolumeComponent().register();
     }

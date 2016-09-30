@@ -48,6 +48,7 @@ import android.os.Vibrator;
 import android.provider.Settings;
 import android.service.notification.Condition;
 import android.service.notification.ZenModeConfig;
+import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
@@ -126,6 +127,7 @@ public class VolumeDialogControllerImpl implements VolumeDialogController, Dumpa
     private boolean mDestroyed;
     private VolumePolicy mVolumePolicy;
     private boolean mShowDndTile = true;
+    private boolean mHasAlertSlider = false;
     @GuardedBy("this")
     private UserActivityListener mUserActivityListener;
 
@@ -150,6 +152,9 @@ public class VolumeDialogControllerImpl implements VolumeDialogController, Dumpa
         mHasVibrator = mVibrator != null && mVibrator.hasVibrator();
         mAudioService = IAudioService.Stub.asInterface(
                 ServiceManager.getService(Context.AUDIO_SERVICE));
+        mHasAlertSlider = mContext.getResources().getBoolean(com.android.internal.R.bool.config_hasAlertSlider)
+                && !TextUtils.isEmpty(mContext.getResources().getString(com.android.internal.R.string.alert_slider_state_path))
+                && !TextUtils.isEmpty(mContext.getResources().getString(com.android.internal.R.string.alert_slider_uevent_match_path));
         updateStatusBar();
 
         boolean accessibilityVolumeStreamActive = context.getSystemService(
@@ -632,7 +637,7 @@ public class VolumeDialogControllerImpl implements VolumeDialogController, Dumpa
 
     public void showDndTile(boolean visible) {
         if (D.BUG) Log.d(TAG, "showDndTile");
-        DndTile.setVisible(mContext, visible);
+        DndTile.setVisible(mContext, visible && !mHasAlertSlider);
     }
 
     private final class VC extends IVolumeController.Stub {
