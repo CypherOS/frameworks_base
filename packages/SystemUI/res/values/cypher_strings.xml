@@ -87,4 +87,10 @@
 	
 	<!-- Navbar tuner -->
     <string name="navbar_tuner_title">Navbar tuner</string>
+    <!-- statusbar items tuner -->
+    <string name="statusbar_icons_blacklist">Statusbar icons</string>
+    <!-- tuner display color -->
+    <string name="tuner_display_color">Screen color &amp; appearance</string>
+    <!-- notification controls -->
+    <string name="tuner_notification_control">Power notification controls</string>
 </resources>

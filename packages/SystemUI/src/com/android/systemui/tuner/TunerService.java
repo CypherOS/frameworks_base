@@ -37,7 +37,6 @@ import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 
-import com.android.systemui.BatteryMeterDrawable;
 import com.android.systemui.DemoMode;
 import com.android.systemui.R;
 import com.android.systemui.SystemUI;
@@ -49,7 +48,6 @@ import com.android.systemui.statusbar.phone.SystemUIDialog;
 import java.util.HashMap;
 import java.util.Set;
 
-import cyanogenmod.providers.CMSettings;
 
 public class TunerService extends SystemUI {
 
@@ -103,89 +101,28 @@ public class TunerService extends SystemUI {
                 iconBlacklist.add("rotate");
                 iconBlacklist.add("headset");
 
-                setValue(StatusBarIconController.ICON_BLACKLIST,
-                         TextUtils.join(",", iconBlacklist));
+                Settings.Secure.putStringForUser(mContentResolver,
+                        StatusBarIconController.ICON_BLACKLIST,
+                        TextUtils.join(",", iconBlacklist), mCurrentUser);
             }
         }
         setValue(TUNER_VERSION, newVersion);
     }
 
-    private boolean isCMSystem(String key) {
-        return key.startsWith("cmsystem:");
-    }
-
-    private boolean isCMSecure(String key) {
-        return key.startsWith("cmsecure:");
-    }
-
-    private boolean isSystem(String key) {
-        return key.startsWith("system:");
-    }
-
-    private String chomp(String key) {
-        return key.replaceFirst("^(cmsecure|cmsystem|system):", "");
-    }
-
     public String getValue(String setting) {
-        if (isCMSecure(setting)) {
-            return CMSettings.Secure.getStringForUser(
-                    mContentResolver, chomp(setting), mCurrentUser);
-        }
-        if (isCMSystem(setting)) {
-            return CMSettings.System.getStringForUser(
-                    mContentResolver, chomp(setting), mCurrentUser);
-        }
-        if (isSystem(setting)) {
-            return Settings.System.getStringForUser(
-                    mContentResolver, chomp(setting), mCurrentUser);
-        }
         return Settings.Secure.getStringForUser(mContentResolver, setting, mCurrentUser);
     }
 
     public void setValue(String setting, String value) {
-        if (isCMSecure(setting)) {
-            CMSettings.Secure.putStringForUser(
-                    mContentResolver, chomp(setting), value, mCurrentUser);
-        } else if (isCMSystem(setting)) {
-            CMSettings.System.putStringForUser(
-                    mContentResolver, chomp(setting), value, mCurrentUser);
-        } else if (isSystem(setting)) {
-            Settings.System.putStringForUser(
-                    mContentResolver, chomp(setting), value, mCurrentUser);
-        } else {
-            Settings.Secure.putStringForUser(mContentResolver, setting, value, mCurrentUser);
-        }
+         Settings.Secure.putStringForUser(mContentResolver, setting, value, mCurrentUser);
     }
 
     public int getValue(String setting, int def) {
-        if (isCMSecure(setting)) {
-            return CMSettings.Secure.getIntForUser(
-                    mContentResolver, chomp(setting), def, mCurrentUser);
-        }
-        if (isCMSystem(setting)) {
-            return CMSettings.System.getIntForUser(
-                    mContentResolver, chomp(setting), def, mCurrentUser);
-        }
-        if (isSystem(setting)) {
-            return Settings.System.getIntForUser(
-                    mContentResolver, chomp(setting), def, mCurrentUser);
-        }
         return Settings.Secure.getIntForUser(mContentResolver, setting, def, mCurrentUser);
     }
 
     public void setValue(String setting, int value) {
-        if (isCMSecure(setting)) {
-            CMSettings.Secure.putIntForUser(
-                    mContentResolver, chomp(setting), value, mCurrentUser);
-        } else if (isCMSystem(setting)) {
-            CMSettings.System.putIntForUser(
-                    mContentResolver, chomp(setting), value, mCurrentUser);
-        } else if (isSystem(setting)) {
-            Settings.System.putIntForUser(
-                    mContentResolver, chomp(setting), value, mCurrentUser);
-        } else {
-            Settings.Secure.putIntForUser(mContentResolver, setting, value, mCurrentUser);
-        }
+         Settings.Secure.putIntForUser(mContentResolver, setting, value, mCurrentUser);
     }
 
     public void addTunable(Tunable tunable, String... keys) {
@@ -199,22 +136,14 @@ public class TunerService extends SystemUI {
             mTunableLookup.put(key, new ArraySet<Tunable>());
         }
         mTunableLookup.get(key).add(tunable);
-        final Uri uri;
-        if (isCMSecure(key)) {
-            uri = CMSettings.Secure.getUriFor(chomp(key));
-        } else if (isCMSystem(key)) {
-            uri = CMSettings.System.getUriFor(chomp(key));
-        } else if (isSystem(key)) {
-            uri = Settings.System.getUriFor(chomp(key));
-        } else {
-            uri = Settings.Secure.getUriFor(key);
-        }
+        Uri uri = Settings.Secure.getUriFor(key);
         if (!mListeningUris.containsKey(uri)) {
             mListeningUris.put(uri, key);
-            mContentResolver.registerContentObserver(uri, false, mObserver, mCurrentUser);
+            mContentResolver.registerContentObserver(uri, true, mObserver, mCurrentUser);
         }
         // Send the first state.
-        tunable.onTuningChanged(key, getValue(key));
+        String value = Settings.Secure.getStringForUser(mContentResolver, key, mCurrentUser);
+        tunable.onTuningChanged(key, value);
     }
 
     public void removeTunable(Tunable tunable) {
@@ -229,7 +158,7 @@ public class TunerService extends SystemUI {
         }
         mContentResolver.unregisterContentObserver(mObserver);
         for (Uri uri : mListeningUris.keySet()) {
-            mContentResolver.registerContentObserver(uri, false, mObserver, mCurrentUser);
+            mContentResolver.registerContentObserver(uri, true, mObserver, mCurrentUser);
         }
     }
 
@@ -239,7 +168,7 @@ public class TunerService extends SystemUI {
         if (tunables == null) {
             return;
         }
-        String value = getValue(key);
+        String value = Settings.Secure.getStringForUser(mContentResolver, key, mCurrentUser);
         for (Tunable tunable : tunables) {
             tunable.onTuningChanged(key, value);
         }
@@ -247,7 +176,8 @@ public class TunerService extends SystemUI {
 
     private void reloadAll() {
         for (String key : mTunableLookup.keySet()) {
-            String value = getValue(key);
+            String value = Settings.Secure.getStringForUser(mContentResolver, key,
+                    mCurrentUser);
             for (Tunable tunable : mTunableLookup.get(key)) {
                 tunable.onTuningChanged(key, value);
             }
@@ -255,15 +185,8 @@ public class TunerService extends SystemUI {
     }
 
     public void clearAll() {
-        // A couple special cases.
-        Settings.Global.putString(mContentResolver, DemoMode.DEMO_MODE_ALLOWED, null);
-        Settings.System.putString(mContentResolver, BatteryMeterDrawable.SHOW_PERCENT_SETTING, null);
-        Intent intent = new Intent(DemoMode.ACTION_DEMO);
-        intent.putExtra(DemoMode.EXTRA_COMMAND, DemoMode.COMMAND_EXIT);
-        mContext.sendBroadcast(intent);
-
         for (String key : mTunableLookup.keySet()) {
-            setValue(key, null);
+            Settings.Secure.putString(mContentResolver, key, null);
         }
     }
 
@@ -303,13 +226,6 @@ public class TunerService extends SystemUI {
                 context.getString(R.string.guest_exit_guest_dialog_remove), new OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Tell the tuner (in main SysUI process) to clear all its settings.
-                context.sendBroadcast(new Intent(TunerService.ACTION_CLEAR));
-                // Disable access to tuner.
-                TunerService.setTunerEnabled(context, false);
-                // Make them sit through the warning dialog again.
-                Settings.Secure.putInt(context.getContentResolver(),
-                        TunerFragment.SETTING_SEEN_TUNER_WARNING, 0);
                 if (onDisabled != null) {
                     onDisabled.run();
                 }
@@ -318,27 +234,8 @@ public class TunerService extends SystemUI {
         dialog.show();
     }
 
-    public static final void setTunerEnabled(Context context, boolean enabled) {
-        userContext(context).getPackageManager().setComponentEnabledSetting(
-                new ComponentName(context, TunerActivity.class),
-                enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-                        : PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                        PackageManager.DONT_KILL_APP);
-    }
-
     public static final boolean isTunerEnabled(Context context) {
-        return userContext(context).getPackageManager().getComponentEnabledSetting(
-                new ComponentName(context, TunerActivity.class))
-                == PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
-    }
-
-    private static Context userContext(Context context) {
-        try {
-            return context.createPackageContextAsUser(context.getPackageName(), 0,
-                    new UserHandle(ActivityManager.getCurrentUser()));
-        } catch (NameNotFoundException e) {
-            return context;
-        }
+        return true;
     }
 
     private class Observer extends ContentObserver {
