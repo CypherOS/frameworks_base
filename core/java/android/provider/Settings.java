@@ -9621,6 +9621,12 @@ public final class Settings {
          * @hide
          */
         public static final String POWER_NOTIFICATIONS_RINGTONE = "power_notifications_ringtone";
+		
+		/**
+         * Enable single click to turn Bluetooth on or off.
+         * @hide
+         */
+        public static final String QS_BT_EASY_TOGGLE = "qs_bt_easy_toggle";
 
         /**
          * Whether to wake the display when plugging or unplugging the charger
