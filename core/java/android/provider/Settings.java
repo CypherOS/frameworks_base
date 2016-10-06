@@ -4051,6 +4051,12 @@ public final class Settings {
          * @hide
          */
         public static final String SWAP_VOLUME_BUTTONS = "swap_volume_buttons";
+		
+		/**
+         * Show four g instead of lte
+         * @hide
+         */
+        public static final String SHOW_FOURG = "show_fourg";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
