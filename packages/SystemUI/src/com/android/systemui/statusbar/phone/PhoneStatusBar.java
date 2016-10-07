@@ -569,6 +569,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 			if (mHeader != null) {
                 mHeader.updateSettings();
             }
+			
+			if (mNotificationPanel != null) {
+                mNotificationPanel.updateSettings();
+            }
         }
     }
 
@@ -643,6 +647,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         void observe() {
             mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_SHOW),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.LOCK_QS_DISABLED),
                     false, this, UserHandle.USER_ALL);
             update();
         }
