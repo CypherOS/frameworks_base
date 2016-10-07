@@ -120,5 +120,7 @@
   
   <!-- PlatLogo -->
   <java-symbol type="drawable" name="platlogo_aoscp" />
+  
+  <java-symbol type="integer" name="config_deviceHardwareKeys" />
 
 </resources>
