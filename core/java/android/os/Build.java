@@ -162,6 +162,11 @@ public class Build {
          * The user-visible version string.  E.g., "1.0" or "3.4b5".
          */
         public static final String RELEASE = getString("ro.build.version.release");
+		
+		/**
+         * The user-visible version string.  E.g., "1.0" or "3.4b5".
+         */
+        public static final String AOSCP = getString("ro.aoscp.version");
 
         /**
          * The base OS build the product is based on.
