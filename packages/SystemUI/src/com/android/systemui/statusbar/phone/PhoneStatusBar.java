@@ -483,6 +483,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 			resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_SHOW_CARRIER), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                   Settings.Secure.QS_ROWS_PORTRAIT),
+                   false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                   Settings.Secure.QS_ROWS_LANDSCAPE),
+                   false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                   Settings.Secure.QS_COLUMNS),
+                   false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -509,14 +518,22 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     mShow4G = Settings.System.getIntForUser(
                             mContext.getContentResolver(),
                             Settings.System.SHOW_FOURG,
-                            0, UserHandle.USER_CURRENT) == 1;
-                updateRowStates();
-                updateSpeedbump();
-                updateClearAll();
-                updateEmptyShadeView();
-            }
+                            0, UserHandle.USER_CURRENT) == 1;               
+                    mNetworkController.onConfigurationChanged();
+            } else if (uri.equals(Settings.Secure.getUriFor(
+                    Settings.Secure.QS_ROWS_PORTRAIT))
+                    || uri.equals(Settings.Secure.getUriFor(
+                    Settings.Secure.QS_ROWS_LANDSCAPE))) {
+                    updateResources();
+            } else if (uri.equals(Settings.Secure.getUriFor(
+                    Settings.Secure.QS_COLUMNS))) {
+                    updateResources();
 
             update();
+			updateRowStates();
+            updateSpeedbump();
+            updateClearAll();
+            updateEmptyShadeView();
         }
 
         @Override
