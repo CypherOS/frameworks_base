@@ -50,9 +50,7 @@ public class Build {
     /** The name of the underlying board, like "goldfish". */
     public static final String BOARD = getString("ro.product.board");
 
-    /** The build date
-     * @hide
-     */   
+    /** The build date */   
     public static final String DATE = getString("ro.build.date");
 
     /**
@@ -170,7 +168,6 @@ public class Build {
 
         /**
          * The user-visible version string.  E.g., "1.0" or "3.4b5".
-         * @hide
          */
         public static final String AOSCP = getString("ro.aoscp.version");
 
@@ -693,6 +690,9 @@ public class Build {
 
     /** A string that uniquely identifies this build.  Do not attempt to parse this value. */
     public static final String FINGERPRINT = deriveFingerprint();
+
+    /** The api for this build. */
+    public static final String API = getString("ro.aoscp.api");
 
     /**
      * Some devices split the fingerprint components between multiple
