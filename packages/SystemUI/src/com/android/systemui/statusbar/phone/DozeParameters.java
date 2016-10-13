@@ -67,8 +67,8 @@ public class DozeParameters {
     }
 
     public boolean getOverwriteValue() {
-        final int values = Settings.System.getIntForUser(mContext.getContentResolver(),
-               Settings.System.DOZE_OVERWRITE_VALUE, 0,
+        final int values = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+               Settings.Secure.DOZE_OVERWRITE_VALUE, 0,
                     UserHandle.USER_CURRENT);
         return values != 0;
     }
@@ -83,8 +83,8 @@ public class DozeParameters {
 
     public int getPulseInDuration(boolean pickup) {
         if (getOverwriteValue()) {
-            return Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.DOZE_PULSE_DURATION_IN, 500,
+            return Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.DOZE_PULSE_DURATION_IN, 500,
                     UserHandle.USER_CURRENT);
         }
         return pickup
@@ -94,8 +94,8 @@ public class DozeParameters {
 
     public int getPulseVisibleDuration() {
         if (getOverwriteValue()) {
-            return Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.DOZE_PULSE_DURATION_VISIBLE, 3000,
+            return Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.DOZE_PULSE_DURATION_VISIBLE, 3000,
                     UserHandle.USER_CURRENT);
         }
         return getInt("doze.pulse.duration.visible", R.integer.doze_pulse_duration_visible);
@@ -103,8 +103,8 @@ public class DozeParameters {
 
     public int getPulseOutDuration() {
         if (getOverwriteValue()) {
-            return Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.DOZE_PULSE_DURATION_OUT, 500,
+            return Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.DOZE_PULSE_DURATION_OUT, 500,
                     UserHandle.USER_CURRENT);
         }
         return getInt("doze.pulse.duration.out", R.integer.doze_pulse_duration_out);
@@ -120,8 +120,8 @@ public class DozeParameters {
 
     public boolean getPulseOnPickup() {
         if (getOverwriteValue()) {
-            final int values = Settings.System.getIntForUser(mContext.getContentResolver(),
-                   Settings.System.DOZE_PULSE_ON_PICKUP, 1,
+            final int values = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                   Settings.Secure.DOZE_PULSE_ON_PICKUP, 1,
                     UserHandle.USER_CURRENT);
             return values != 0;
         }
@@ -142,8 +142,8 @@ public class DozeParameters {
 
     public boolean getPulseOnNotifications() {
         if (getOverwriteValue()) {
-            final int values = Settings.System.getIntForUser(mContext.getContentResolver(),
-                   Settings.System.DOZE_PULSE_ON_NOTIFICATIONS, 1,
+            final int values = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                   Settings.Secure.DOZE_PULSE_ON_NOTIFICATIONS, 1,
                     UserHandle.USER_CURRENT);
             return values != 0;
         }
@@ -183,8 +183,8 @@ public class DozeParameters {
 	final int dozeBrightnessDefault = mContext.getResources().getInteger(
                     com.android.internal.R.integer.config_screenBrightnessDoze);
         if (getOverwriteValue()) {
-            return Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.DOZE_SCREEN_BRIGHTNESS, dozeBrightnessDefault,
+            return Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.DOZE_SCREEN_BRIGHTNESS, dozeBrightnessDefault,
                     UserHandle.USER_CURRENT);
         }
         return dozeBrightnessDefault;
