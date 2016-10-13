@@ -50,7 +50,9 @@ public class Build {
     /** The name of the underlying board, like "goldfish". */
     public static final String BOARD = getString("ro.product.board");
 
-    /** The build date */
+    /** The build date
+     * @hide
+     */   
     public static final String DATE = getString("ro.build.date");
 
     /**
@@ -165,9 +167,10 @@ public class Build {
          * The user-visible version string.  E.g., "1.0" or "3.4b5".
          */
         public static final String RELEASE = getString("ro.build.version.release");
-		
-		/**
+
+        /**
          * The user-visible version string.  E.g., "1.0" or "3.4b5".
+         * @hide
          */
         public static final String AOSCP = getString("ro.aoscp.version");
 
