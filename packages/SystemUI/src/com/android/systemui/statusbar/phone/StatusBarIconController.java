@@ -85,8 +85,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private View mCenterClockLayout;
     private NetworkTraffic mNetworkTraffic;
     private TextView mClock;
-
-    // Center & Left clock
+    // Center clock
     private LinearLayout mCenterClockLayout;
     private TextView mCclock;
     private TextView mLeftClock;
@@ -579,10 +578,8 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mSignalCluster.setIconTint(mIconTint, mDarkIntensity, mTintArea);
         mBatteryMeterView.setDarkIntensity(
                 isInArea(mTintArea, mBatteryMeterView) ? mDarkIntensity : 0);
-        mClock.setTextColor(getTint(mTintArea, mClock, mIconTint));
-        mLeftClock.setTextColor(getTint(mTintArea, mLeftClock, mIconTint));
-        mCclock.setTextColor(getTint(mTintArea, mCclock, mIconTint));
-        mNetworkTraffic.setDarkIntensity(mDarkIntensity);
+        mClockController.setTextColor(mTintArea, mIconTint);
+	    mNetworkTraffic.setDarkIntensity(mDarkIntensity);
     }
 
     public void appTransitionPending() {
@@ -652,24 +649,8 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     }
 
     private void updateClock() {
-        FontSizeUtils.updateFontSize(mClock, R.dimen.status_bar_clock_size);
-        FontSizeUtils.updateFontSize(mLeftClock, R.dimen.status_bar_clock_size);
-        FontSizeUtils.updateFontSize(mCclock, R.dimen.status_bar_clock_size);
-        mClock.setPaddingRelative(
-                mContext.getResources().getDimensionPixelSize(
-                        R.dimen.status_bar_clock_starting_padding),
-                0,
-                mContext.getResources().getDimensionPixelSize(
-                        R.dimen.status_bar_clock_end_padding),
-                0);
-        mLeftClock.setPaddingRelative(
-                mContext.getResources().getDimensionPixelSize(
-                        R.dimen.status_bar_clock_starting_padding),
-                0,
-                mContext.getResources().getDimensionPixelSize(
-                        R.dimen.status_bar_clock_end_padding),
-                0);
-        mCclock.setPaddingRelative(
+        mClockController.updateFontSize();
+        mClockController.setPaddingRelative(
                 mContext.getResources().getDimensionPixelSize(
                         R.dimen.status_bar_clock_starting_padding),
                 0,
