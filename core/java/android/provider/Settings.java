@@ -3764,6 +3764,7 @@ public final class Settings {
 
        /**
         * USB Data automatic unlock
+		* @hide
         */
        public static final String USB_DATA_AUTO_UNLOCK = "usb_data_auto_unlock";
 
