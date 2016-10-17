@@ -32,9 +32,6 @@ public class IconMerger extends LinearLayout {
 
     private int mIconSize;
     private int mIconHPadding;
-    private int mIconWidth;
-    private int mClockAndDateWidth;
-    private boolean mCenterClock;
 
     private int mClockLocation;
     private View mMoreView;
@@ -51,7 +48,6 @@ public class IconMerger extends LinearLayout {
         Resources res = mContext.getResources();
         mIconSize = res.getDimensionPixelSize(R.dimen.status_bar_icon_size);
         mIconHPadding = res.getDimensionPixelSize(R.dimen.status_bar_icon_padding);
-        mIconWidth = context.getResources().getDimensionPixelSize(R.dimen.status_bar_icon_size);
     }
 
     @Override
@@ -73,14 +69,11 @@ public class IconMerger extends LinearLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         // we need to constrain this to an integral multiple of our children
         int width = getMeasuredWidth();
-        if (mCenterClock) {
-            final int totalWidth = mContext.getResources().getDisplayMetrics().widthPixels;
-            final int usableWidth = (totalWidth - mClockAndDateWidth - 2 * mIconWidth) / 2;
-            if (width > usableWidth) {
-                width = usableWidth;
-            }
+        if (mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
+            int totalWidth = getResources().getDisplayMetrics().widthPixels;
+            width = totalWidth / 2 - getFullIconWidth() * 2;
         }
-        setMeasuredDimension(width - (width % mIconWidth), getMeasuredHeight());
+        setMeasuredDimension(width - (width % getFullIconWidth()), getMeasuredHeight());
     }
 
     @Override
@@ -99,8 +92,15 @@ public class IconMerger extends LinearLayout {
         }
         final boolean overflowShown = (mMoreView.getVisibility() == View.VISIBLE);
         // let's assume we have one more slot if the more icon is already showing
-        if (!mCenterClock && overflowShown) visibleChildren --;
-        final boolean moreRequired = visibleChildren * mIconWidth > width;
+        if (overflowShown) {
+            int totalWidth = getResources().getDisplayMetrics().widthPixels;
+            if ((mClockLocation != ClockController.STYLE_CLOCK_CENTER &&
+                    mClockLocation != ClockController.STYLE_CLOCK_LEFT) ||
+                    (visibleChildren > (totalWidth / getFullIconWidth() / 2 + 1))) {
+                visibleChildren--;
+            }
+        }
+        final boolean moreRequired = visibleChildren * getFullIconWidth() > width;
         if (moreRequired != overflowShown) {
             post(new Runnable() {
                 @Override
@@ -111,8 +111,8 @@ public class IconMerger extends LinearLayout {
         }
     }
 
-    public void setClockAndDateWidth(int width, int mode) {
-        mClockAndDateWidth = width;
-        mCenterClock = mode == Clock.STYLE_CLOCK_CENTER;
+    public void setClockAndDateStatus(int mode) {
+        mClockLocation = mode;
+
     }
 }
