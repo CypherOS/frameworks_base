@@ -20,6 +20,9 @@
 
     <!-- Network traffic monitor multi-line text size -->
     <dimen name="net_traffic_multi_text_size">8dp</dimen>
+	
+	<!-- carrier label text height -->
+    <dimen name="status_bar_carrier_height">14dp</dimen>
 
 	<!-- Animated Nav Dimens -->
     <dimen name="halo_inner_radius">10.0dip</dimen>
