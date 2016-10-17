@@ -3985,7 +3985,7 @@ public final class Settings {
          * 2 - No AM/PM
          * @hide
          */
-        public static final String STATUSBAR_CLOCK_AM_PM_STYLE = "statusbar_clock_am_pm_style";
+        public static final String STATUS_BAR_CLOCK_AM_PM_STYLE = "status_bar_clock_am_pm_style";
 
         /**
          * Style of clock
@@ -3994,13 +3994,13 @@ public final class Settings {
          * 2 - Left Clock
          * @hide
          */
-        public static final String STATUSBAR_CLOCK_STYLE = "statusbar_clock_style";
+        public static final String STATUS_BAR_CLOCK_STYLE = "status_bar_clock_style";
 
         /**
          * Setting for clock color
          * @hide
          */
-        public static final String STATUSBAR_CLOCK_COLOR = "statusbar_clock_color";
+        public static final String STATUS_BAR_CLOCK_COLOR = "status_bar_clock_color";
 
         /**
          * Shows custom date before clock time
@@ -4009,7 +4009,7 @@ public final class Settings {
          * 2 - Normal Date
          * @hide
          */
-        public static final String STATUSBAR_CLOCK_DATE_DISPLAY = "statusbar_clock_date_display";
+        public static final String STATUS_BAR_CLOCK_DATE_DISPLAY = "status_bar_clock_date_display";
 
         /**
          * Sets the date string style
@@ -4018,13 +4018,13 @@ public final class Settings {
          * 2 - Uppercase
          * @hide
          */
-        public static final String STATUSBAR_CLOCK_DATE_STYLE = "statusbar_clock_date_style";
+        public static final String STATUS_BAR_CLOCK_DATE_STYLE = "status_bar_clock_date_style";
 
         /**
          * Stores the java DateFormat string for the date
          * @hide
          */
-        public static final String STATUSBAR_CLOCK_DATE_FORMAT = "statusbar_clock_date_format";
+        public static final String STATUS_BAR_CLOCK_DATE_FORMAT = "status_bar_clock_date_format";
 
         /**
          * Position of date
@@ -4032,7 +4032,7 @@ public final class Settings {
          * 1 - Right of clock
          * @hide
          */
-        public static final String STATUSBAR_CLOCK_DATE_POSITION = "statusbar_clock_date_position";
+        public static final String STATUS_BAR_CLOCK_DATE_POSITION = "status_bar_clock_date_position";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
