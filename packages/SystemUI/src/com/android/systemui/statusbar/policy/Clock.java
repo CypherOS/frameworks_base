@@ -40,7 +40,7 @@ import android.widget.TextView;
 
 import com.android.systemui.DemoMode;
 import com.android.systemui.R;
-import com.android.systemui.statusbar.phone.StatusBarIconController;
+import com.android.systemui.statusbar.phone.PhoneStatusBar;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -96,7 +96,7 @@ public class Clock extends TextView implements DemoMode {
     private int mAmPmStyle;
 
     private SettingsObserver mSettingsObserver;
-    private StatusBarIconController mIconController;
+    private PhoneStatusBar mStatusBar;
 
     protected class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
@@ -396,8 +396,8 @@ public class Clock extends TextView implements DemoMode {
             updateClock();
         }
 
-        if (mIconController != null) {
-            mIconController.setClockAndDateStatus(mClockAndDateWidth, mClockStyle, mShowClock);
+        if (mStatusBar != null) {
+            mStatusBar.setClockAndDateStatus(mClockAndDateWidth, mClockStyle, mShowClock);
         }
 
     }
@@ -488,8 +488,8 @@ public class Clock extends TextView implements DemoMode {
     protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld){
         super.onSizeChanged(xNew, yNew, xOld, yOld);
         mClockAndDateWidth = xNew;
-        if (mIconController != null) {
-            mIconController.setClockAndDateStatus(mClockAndDateWidth, mClockStyle, mShowClock);
+        if (mStatusBar != null) {
+            mStatusBar.setClockAndDateStatus(mClockAndDateWidth, mClockStyle, mShowClock);
         }
     }
 
