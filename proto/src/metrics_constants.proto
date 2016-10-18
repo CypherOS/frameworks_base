@@ -2221,11 +2221,8 @@ message MetricsEvent {
     // Something to do with gestures.
     GESTURES = 411;
 
-    // Something to do with gestures.
+    // AOSCP additions
     ADDITIONS = 412;
-
-    // Something to do with gestures.
-    OWLSNEST = 413;
 
     // Add new aosp constants above this line.
     // END OF AOSP CONSTANTS
