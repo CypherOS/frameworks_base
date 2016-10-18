@@ -159,7 +159,6 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mLightModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
 		mNetworkTraffic = (NetworkTraffic) statusBar.findViewById(R.id.networkTraffic);
         mHandler = new Handler();
-        defineSlots();
         loadDimens();
 
         TunerService.get(mContext).addTunable(this, ICON_BLACKLIST);

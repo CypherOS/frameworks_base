@@ -34,6 +34,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.MathUtils;
@@ -222,10 +223,8 @@ public class NotificationPanelView extends PanelView implements
     private SettingsObserver mSettingsObserver;
 
     private int mOneFingerQuickSettingsIntercept;
-    private boolean mDoubleTapToSleepEnabled;
     private int mQsSmartPullDown;
     private int mStatusBarHeaderHeight;
-    private GestureDetector mDoubleTapGesture;
 
     private boolean mKeyguardWeatherEnabled;
     private TextView mKeyguardWeatherInfo;
@@ -237,15 +236,6 @@ public class NotificationPanelView extends PanelView implements
         mFalsingManager = FalsingManager.getInstance(context);
 
         mSettingsObserver = new SettingsObserver(mHandler);
-        mDoubleTapGesture = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-                if(pm != null)
-                    pm.goToSleep(e.getEventTime());
-                return true;
-            }
-        });
     }
 
     public void setStatusBar(PhoneStatusBar bar) {
@@ -788,11 +778,6 @@ public class NotificationPanelView extends PanelView implements
     public boolean onTouchEvent(MotionEvent event) {
         if (mBlockTouches || mQsContainer.isCustomizing()) {
             return false;
-        }
-        if (mDoubleTapToSleepEnabled
-                && mStatusBarState == StatusBarState.KEYGUARD
-                && event.getY() < mStatusBarHeaderHeight) {
-            mDoubleTapGesture.onTouchEvent(event);
         }
         initDownStates(event);
         if (mListenForHeadsUp && !mHeadsUpTouchHelper.isTrackingHeadsUp()
@@ -2446,10 +2431,6 @@ public class NotificationPanelView extends PanelView implements
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_QUICK_QS_PULLDOWN), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.DOUBLE_TAP_SLEEP_GESTURE), false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.DOUBLE_TAP_SLEEP_ANYWHERE), false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_SMART_PULLDOWN), false, this, UserHandle.USER_ALL);
 			resolver.registerContentObserver(CMSettings.Secure.getUriFor(
                     CMSettings.Secure.LOCK_SCREEN_WEATHER_ENABLED), false, this);
@@ -2476,10 +2457,6 @@ public class NotificationPanelView extends PanelView implements
             mOneFingerQuickSettingsIntercept = Settings.System.getIntForUser(
                     resolver, Settings.System.STATUS_BAR_QUICK_QS_PULLDOWN, 1,
                     UserHandle.USER_CURRENT);
-            mDoubleTapToSleepEnabled = Settings.System.getIntForUser(resolver,
-                    Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 0, UserHandle.USER_CURRENT) == 1;
-            mDoubleTapToSleepAnywhere = Settings.System.getIntForUser(resolver,
-                    Settings.System.DOUBLE_TAP_SLEEP_ANYWHERE, 0, UserHandle.USER_CURRENT) == 1;
             mQsSmartPullDown = Settings.System.getIntForUser(resolver,
                     Settings.System.QS_SMART_PULLDOWN, 0, UserHandle.USER_CURRENT);
 
