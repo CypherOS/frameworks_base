@@ -357,7 +357,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
                 resolver, Settings.System.STATUS_BAR_CLOCK, 1,
                 UserHandle.USER_CURRENT) == 1);
         int clockLocation = Settings.System.getIntForUser(
-                resolver, Settings.System.STATUSBAR_CLOCK_STYLE, 0,
+                resolver, Settings.System.STATUS_BAR_CLOCK_STYLE, 0,
                 UserHandle.USER_CURRENT);
         if (clockLocation == 0 && mClock != null) {
             mClock.setVisibility(visible ? (showClock ? View.VISIBLE : View.GONE) : View.GONE);

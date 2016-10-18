@@ -110,22 +110,22 @@ public class Clock extends TextView implements DemoMode {
                     .getUriFor(Settings.System.STATUS_BAR_CLOCK),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.STATUSBAR_CLOCK_AM_PM_STYLE),
+                    .getUriFor(Settings.System.STATUS_BAR_CLOCK_AM_PM_STYLE),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.STATUSBAR_CLOCK_STYLE), false,
+                    .getUriFor(Settings.System.STATUS_BAR_CLOCK_STYLE), false,
                     this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.STATUSBAR_CLOCK_DATE_DISPLAY), false,
+                    .getUriFor(Settings.System.STATUS_BAR_CLOCK_DATE_DISPLAY), false,
                     this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.STATUSBAR_CLOCK_DATE_STYLE), false,
+                    .getUriFor(Settings.System.STATUS_BAR_CLOCK_DATE_STYLE), false,
                     this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.STATUSBAR_CLOCK_DATE_POSITION), false,
+                    .getUriFor(Settings.System.STATUS_BAR_CLOCK_DATE_POSITION), false,
                     this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.STATUSBAR_CLOCK_DATE_FORMAT), false,
+                    .getUriFor(Settings.System.STATUS_BAR_CLOCK_DATE_FORMAT), false,
                     this, UserHandle.USER_ALL);
             updateSettings();
         }
@@ -282,13 +282,13 @@ public class Clock extends TextView implements DemoMode {
         String dateResult = "";
 
         int clockDatePosition = Settings.System.getInt(getContext().getContentResolver(),
-            Settings.System.STATUSBAR_CLOCK_DATE_POSITION, 0);
+            Settings.System.STATUS_BAR_CLOCK_DATE_POSITION, 0);
 
         if (mClockDateDisplay != CLOCK_DATE_DISPLAY_GONE) {
             Date now = new Date();
 
             String clockDateFormat = Settings.System.getString(getContext().getContentResolver(),
-                    Settings.System.STATUSBAR_CLOCK_DATE_FORMAT);
+                    Settings.System.STATUS_BAR_CLOCK_DATE_FORMAT);
             if (clockDateFormat == null || clockDateFormat.isEmpty()) {
                 // Set dateString to short uppercase Weekday (Default for AOKP) if empty
                 dateString = DateFormat.format("EEE", now);
@@ -359,20 +359,20 @@ public class Clock extends TextView implements DemoMode {
 
         boolean is24hour = DateFormat.is24HourFormat(mContext);
         int amPmStyle = Settings.System.getIntForUser(resolver,
-                Settings.System.STATUSBAR_CLOCK_AM_PM_STYLE,
+                Settings.System.STATUS_BAR_CLOCK_AM_PM_STYLE,
                 AM_PM_STYLE_GONE,
                 UserHandle.USER_CURRENT);
         mAmPmStyle = is24hour ? AM_PM_STYLE_GONE : amPmStyle;
         mClockFormatString = "";
 
         mClockStyle = Settings.System.getIntForUser(resolver,
-                Settings.System.STATUSBAR_CLOCK_STYLE, STYLE_CLOCK_RIGHT,
+                Settings.System.STATUS_BAR_CLOCK_STYLE, STYLE_CLOCK_RIGHT,
                 UserHandle.USER_CURRENT);
         mClockDateDisplay = Settings.System.getIntForUser(resolver,
-                Settings.System.STATUSBAR_CLOCK_DATE_DISPLAY, CLOCK_DATE_DISPLAY_GONE,
+                Settings.System.STATUS_BAR_CLOCK_DATE_DISPLAY, CLOCK_DATE_DISPLAY_GONE,
                 UserHandle.USER_CURRENT);
         mClockDateStyle = Settings.System.getIntForUser(resolver,
-                Settings.System.STATUSBAR_CLOCK_DATE_STYLE, CLOCK_DATE_STYLE_REGULAR,
+                Settings.System.STATUS_BAR_CLOCK_DATE_STYLE, CLOCK_DATE_STYLE_REGULAR,
                 UserHandle.USER_CURRENT);
 
         if (mAttached) {
