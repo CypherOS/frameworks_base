@@ -72,7 +72,6 @@ import com.android.systemui.statusbar.policy.WeatherController;
 import com.android.systemui.statusbar.policy.WeatherControllerImpl;
 import com.android.systemui.statusbar.stack.NotificationStackScrollLayout;
 import com.android.systemui.statusbar.stack.StackStateAnimator;
-import cyanogenmod.providers.CMSettings;
 import cyanogenmod.weather.util.WeatherUtils;
 
 import java.util.List;
