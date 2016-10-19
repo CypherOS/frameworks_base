@@ -81,4 +81,10 @@
     <string name="accessibility_quick_settings_usb_tether_changed_off">USB tethering disattivato</string>
     <string name="accessibility_quick_settings_usb_tether_changed_on">USB tethering attivato</string>
     <string name="quick_settings_usb_tether_label">USB tethering</string>
+	
+	<!-- Gesture Anywhere -->
+    <string name="gestures_message">Disegna i tuoi gesti qui</string>
+	
+	<!-- Navbar tuner -->
+    <string name="navbar_tuner_title">Sintonizzatore barra di navigazione</string>
 </resources>
