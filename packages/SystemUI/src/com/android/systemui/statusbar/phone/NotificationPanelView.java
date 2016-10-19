@@ -835,7 +835,8 @@ public class NotificationPanelView extends PanelView implements
             mTwoFingerQsExpandPossible = true;
         }
         if (mTwoFingerQsExpandPossible && isOpenQsEvent(event)
-                && event.getY(event.getActionIndex()) < mStatusBarMinHeight) {
+                && event.getY(event.getActionIndex()) < mStatusBarMinHeight
+                && mExpandedHeight <= mQsPeekHeight) {
             MetricsLogger.count(mContext, COUNTER_PANEL_OPEN_QS, 1);
             mQsExpandImmediate = true;
             requestPanelHeightUpdate();
@@ -883,8 +884,8 @@ public class NotificationPanelView extends PanelView implements
                 break;
         }
         showQsOverride &= mStatusBarState == StatusBarState.SHADE;
-
-        if (mQsSmartPullDown == 1 && !mStatusBar.hasActiveClearableNotifications()
+		
+		if (mQsSmartPullDown == 1 && !mStatusBar.hasActiveClearableNotifications()
                 || mQsSmartPullDown == 2 && !mStatusBar.hasActiveOngoingNotifications()
                 || mQsSmartPullDown == 3 && !mStatusBar.hasActiveVisibleNotifications()) {
                 showQsOverride = true;
