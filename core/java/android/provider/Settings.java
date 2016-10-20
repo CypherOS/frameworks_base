@@ -3758,109 +3758,7 @@ public final class Settings {
          */
 
         /**
-<<<<<<< HEAD
          * Whether the phone volume up / down effect should be played
-=======
-         * Whether the notification light will be allowed when in zen mode during downtime
-         * @hide
-         */
-        public static final String ALLOW_LIGHTS = "allow_lights";
-
-        /**
-         * What color to use for the battery LED while charging - low
-         * @hide
-         */
-        public static final String BATTERY_LIGHT_LOW_COLOR = "battery_light_low_color";
-
-        /**
-         * What color to use for the battery LED while charging - medium
-         * @hide
-         */
-        public static final String BATTERY_LIGHT_MEDIUM_COLOR = "battery_light_medium_color";
-
-        /**
-         * What color to use for the battery LED while charging - full
-         * @hide
-         */
-        public static final String BATTERY_LIGHT_FULL_COLOR = "battery_light_full_color";
-
-        /**
-         * What color to use for the battery LED while charging - really full (100%)
-         * @hide
-         */
-        public static final String BATTERY_LIGHT_REALLY_FULL_COLOR = "battery_light_really_full_color";
-
-        /**
-         * Whether the battery light should be enabled (if hardware supports it)
-         * The value is boolean (1 or 0).
-         * @hide
-         */
-        public static final String BATTERY_LIGHT_ENABLED = "battery_light_enabled";
-
-        /**
-         * Whether the battery LED should repeatedly flash when the battery is low
-         * on charge. The value is boolean (1 or 0).
-         * @hide
-         */
-        public static final String BATTERY_LIGHT_PULSE = "battery_light_pulse";
-
-        /**
-         * custom carrier label. The value is
-         * String.
-         */
-        public static final String CUSTOM_CARRIER_LABEL = "custom_carrier_label";
-
-        /**
-         * The OpenCNAM paid account ID
-         * @hide
-         */
-        public static final String DIALER_OPENCNAM_ACCOUNT_SID = "dialer_opencnam_account_sid";
-
-        /**
-         * The OpenCNAM authentication token
-         * @hide
-         */
-        public static final String DIALER_OPENCNAM_AUTH_TOKEN = "dialer_opencnam_auth_token";
-
-        /**
-         * Enable looking up of phone numbers of nearby places
-         * @hide
-         */
-        public static final String ENABLE_FORWARD_LOOKUP = "enable_forward_lookup";
-
-        /**
-         * Enable looking up of phone numbers of people
-         * @hide
-         */
-        public static final String ENABLE_PEOPLE_LOOKUP = "enable_people_lookup";
-
-        /**
-         * Enable looking up of information of phone numbers not in the contacts
-         * @hide
-         */
-        public static final String ENABLE_REVERSE_LOOKUP = "enable_reverse_lookup";
-
-        /**
-         * The forward lookup provider
-         * @hide
-         */
-        public static final String FORWARD_LOOKUP_PROVIDER = "forward_lookup_provider";
-
-        /**
-         * The people lookup provider
-         * @hide
-         */
-        public static final String PEOPLE_LOOKUP_PROVIDER = "people_lookup_provider";
-
-        /**
-         * The reverse lookup provider
-         * @hide
-         */
-        public static final String REVERSE_LOOKUP_PROVIDER = "reverse_lookup_provider";
-
-        /**
-         * Enable double tap gesture anywhere on the lock screen put device to sleep
->>>>>>> 66009dc... Custom Carrier Label & Carrier Label Placement [1/2] [Squashed]
          * @hide
          */
         public static final String VOLUME_ADJUST_SOUNDS_ENABLED = "volume_adjust_sounds_enabled";
@@ -4173,73 +4071,10 @@ public final class Settings {
          * 1 - Right of clock
          * @hide
          */
-<<<<<<< HEAD
         public static final String STATUS_BAR_CLOCK_DATE_POSITION = "status_bar_clock_date_position";
 		
 		/**
          * Enable statusbar double tap gesture on to put device to sleep
-=======
-        public static final String STATUSBAR_CLOCK_DATE_POSITION = "statusbar_clock_date_position";
-
-        /**
-         * Show the pending notification counts as overlays on the status bar
-         * @hide
-         */
-        public static final String STATUS_BAR_NOTIF_COUNT = "status_bar_notif_count";
-
-        /** 
-         * Whether to allow one finger quick settings expansion on the right side of the statusbar.
-         * @hide
-         */
-        public static final String STATUS_BAR_QUICK_QS_PULLDOWN = "status_bar_quick_qs_pulldown";
-
-        /**
-         * Status bar carrier label
-         * 0: Hide
-         * 1: Display on keyguard status bar
-         * 2: Display on Normal status bar
-         * 3: Enabled for both
-         * @hide
-         */
-        public static final String STATUS_BAR_SHOW_CARRIER = "status_bar_show_carrier";
-
-        /**
-         * Change volume up and down handlign based on rotation
-         * @hide
-         */
-        public static final String SWAP_VOLUME_BUTTONS = "swap_volume_buttons";
-
-        /**
-         * Whether the phone volume up / down effect should be played
-         * @hide
-         */
-        public static final String VOLUME_ADJUST_SOUNDS_ENABLED = "volume_adjust_sounds_enabled";
-
-        /**
-         * Volume keys control cursor in text fields (default is 0)
-         * 0 - Disabled
-         * 1 - Volume up/down moves cursor left/right
-         * 2 - Volume up/down moves cursor right/left
-         * @hide
-         */
-        public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
-
-        /**
-         * Volume key controls ringtone or media sound stream
-         * @hide
-         */
-        public static final String VOLUME_KEYS_CONTROL_MEDIA_STREAM =
-                "volume_keys_control_media_stream";
-
-        /**
-         * Whether or not volume button music controls should be enabled to seek media tracks
-         * @hide
-         */
-        public static final String VOLBTN_MUSIC_CONTROLS = "volbtn_music_controls";
-
-        /**
-         * Whether to wake the screen with the volume keys, the value is boolean.
->>>>>>> 66009dc... Custom Carrier Label & Carrier Label Placement [1/2] [Squashed]
          * @hide
          */
         public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
