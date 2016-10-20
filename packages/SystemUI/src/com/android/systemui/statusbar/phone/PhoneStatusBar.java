@@ -403,6 +403,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private TextView mCarrierLabel;
     private boolean mShowCarrierInPanel = false;
     boolean mExpandedVisible;
+    private int mShowCarrierLabel;
 
     private int mNavigationBarWindowState = WINDOW_STATE_SHOWING;
 
