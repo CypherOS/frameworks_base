@@ -87,4 +87,10 @@
 	
 	<!-- Navbar tuner -->
     <string name="navbar_tuner_title">Sintonizzatore barra di navigazione</string>
+	<!-- statusbar items tuner -->
+    <string name="statusbar_icons_blacklist">Icone della barra di stato</string>
+    <!-- tuner display color -->
+    <string name="tuner_display_color">Colore dello schermo &amp; aspetto</string>
+    <!-- notification controls -->
+    <string name="tuner_notification_control">Comandi di accensione notifica</string>
 </resources>
