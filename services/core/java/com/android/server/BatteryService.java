@@ -258,9 +258,6 @@ public final class BatteryService extends SystemService {
                         synchronized (mLock) {
                             updateBatteryWarningLevelLocked();
                         }
-					} else if (phase == PHASE_BOOT_COMPLETED) {
-                        SettingsObserver observer = new SettingsObserver(new Handler());
-                        observer.observe();
                     }
                 };
                 final ContentResolver resolver = mContext.getContentResolver();
@@ -269,6 +266,9 @@ public final class BatteryService extends SystemService {
                         false, obs, UserHandle.USER_ALL);
                 updateBatteryWarningLevelLocked();
             }
+		} else if (phase == PHASE_BOOT_COMPLETED) {
+            SettingsObserver observer = new SettingsObserver(new Handler());
+            observer.observe();
         }
     }
 
