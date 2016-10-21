@@ -4171,7 +4171,8 @@ public final class Settings {
             PHONE_BLACKLIST_NOTIFY_ENABLED,
             PHONE_BLACKLIST_PRIVATE_NUMBER_MODE,
             PHONE_BLACKLIST_UNKNOWN_NUMBER_MODE,
-            PHONE_BLACKLIST_REGEX_ENABLED
+            PHONE_BLACKLIST_REGEX_ENABLED,
+            ACCELEROMETER_ROTATION
         };
 
         /**
