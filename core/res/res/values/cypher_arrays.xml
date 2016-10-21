@@ -1,4 +1,4 @@
-=<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
      Copyright (C) 2016 The Pure Nexus Project
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,4 +20,9 @@
     <string-array name="notification_light_package_mapping" translatable="false">
         <item>com.google.android.gsf|com.google.android.talk</item>
     </string-array>
+	
+	<!-- A list of pre-installed applications that will be treated as carrier apps,
+         regardless of the SIM inserted. These applications will be granted phone and
+         location permissions, and must obtain user content through other means -->
+    <string-array name="config_enabledPreinstalledCarrierApps" translatable="false" />
 </resources>
