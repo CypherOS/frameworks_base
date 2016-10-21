@@ -147,10 +147,6 @@ import com.android.server.statusbar.StatusBarManagerInternal;
 import com.android.server.vr.VrManagerInternal;
 import com.android.server.notification.ManagedServices.UserProfiles;
 
-import cyanogenmod.providers.CMSettings;
-import cyanogenmod.util.ColorUtils;
-
-import cyanogenmod.providers.CMSettings;
 import libcore.io.IoUtils;
 
 import org.json.JSONException;
@@ -1161,9 +1157,9 @@ public class NotificationManagerService extends SystemService {
                 DEFAULT_VIBRATE_PATTERN);
 
         mAdjustableNotificationLedBrightness = resources.getBoolean(
-                org.cyanogenmod.platform.internal.R.bool.config_adjustableNotificationLedBrightness);
+                com.android.internal.R.bool.config_adjustableNotificationLedBrightness);
         mMultipleNotificationLeds = resources.getBoolean(
-                org.cyanogenmod.platform.internal.R.bool.config_multipleNotificationLeds);
+                com.android.internal.R.bool.config_multipleNotificationLeds);
 
         mUseAttentionLight = resources.getBoolean(R.bool.config_useAttentionLight);
 
