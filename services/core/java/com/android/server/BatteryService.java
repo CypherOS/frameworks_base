@@ -1124,12 +1124,12 @@ public final class BatteryService extends SystemService {
             ContentResolver resolver = mContext.getContentResolver();
 
             // Battery light enabled
-            resolver.registerContentObserver(CMSettings.System.getUriFor(
-                    CMSettings.System.BATTERY_LIGHT_ENABLED), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.BATTERY_LIGHT_ENABLED), false, this, UserHandle.USER_ALL);
 
             // Low battery pulse
-            resolver.registerContentObserver(CMSettings.System.getUriFor(
-                    CMSettings.System.BATTERY_LIGHT_PULSE), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.BATTERY_LIGHT_PULSE), false, this, UserHandle.USER_ALL);
 
             // Notification LED brightness
             if (mAdjustableNotificationLedBrightness) {
@@ -1149,13 +1149,13 @@ public final class BatteryService extends SystemService {
             if (mMultiColorLed) {
                 // Register observer if we have a multi color led
                 resolver.registerContentObserver(
-                        CMSettings.System.getUriFor(CMSettings.System.BATTERY_LIGHT_LOW_COLOR),
+                        Settings.System.getUriFor(Settings.System.BATTERY_LIGHT_LOW_COLOR),
                         false, this, UserHandle.USER_ALL);
                 resolver.registerContentObserver(
-                        CMSettings.System.getUriFor(CMSettings.System.BATTERY_LIGHT_MEDIUM_COLOR),
+                        Settings.System.getUriFor(Settings.System.BATTERY_LIGHT_MEDIUM_COLOR),
                         false, this, UserHandle.USER_ALL);
                 resolver.registerContentObserver(
-                        CMSettings.System.getUriFor(CMSettings.System.BATTERY_LIGHT_FULL_COLOR),
+                        Settings.System.getUriFor(Settings.System.BATTERY_LIGHT_FULL_COLOR),
                         false, this, UserHandle.USER_ALL);
             }
 
@@ -1171,22 +1171,22 @@ public final class BatteryService extends SystemService {
             Resources res = mContext.getResources();
 
             // Battery light enabled
-            mLightEnabled = CMSettings.System.getInt(resolver,
-                    CMSettings.System.BATTERY_LIGHT_ENABLED, 1) != 0;
+            mLightEnabled = Settings.System.getInt(resolver,
+                    Settings.System.BATTERY_LIGHT_ENABLED, 1) != 0;
 
             // Low battery pulse
-            mLedPulseEnabled = CMSettings.System.getInt(resolver,
-                        CMSettings.System.BATTERY_LIGHT_PULSE, 1) != 0;
+            mLedPulseEnabled = Settings.System.getInt(resolver,
+                        Settings.System.BATTERY_LIGHT_PULSE, 1) != 0;
 
             // Light colors
-            mBatteryLowARGB = CMSettings.System.getInt(resolver,
-                    CMSettings.System.BATTERY_LIGHT_LOW_COLOR, res.getInteger(
+            mBatteryLowARGB = Settings.System.getInt(resolver,
+                    Settings.System.BATTERY_LIGHT_LOW_COLOR, res.getInteger(
                     com.android.internal.R.integer.config_notificationsBatteryLowARGB));
-            mBatteryMediumARGB = CMSettings.System.getInt(resolver,
-                    CMSettings.System.BATTERY_LIGHT_MEDIUM_COLOR, res.getInteger(
+            mBatteryMediumARGB = Settings.System.getInt(resolver,
+                    Settings.System.BATTERY_LIGHT_MEDIUM_COLOR, res.getInteger(
                     com.android.internal.R.integer.config_notificationsBatteryMediumARGB));
-            mBatteryFullARGB = CMSettings.System.getInt(resolver,
-                    CMSettings.System.BATTERY_LIGHT_FULL_COLOR, res.getInteger(
+            mBatteryFullARGB = Settings.System.getInt(resolver,
+                    Settings.System.BATTERY_LIGHT_FULL_COLOR, res.getInteger(
                     com.android.internal.R.integer.config_notificationsBatteryFullARGB));
 
             // Notification LED brightness
