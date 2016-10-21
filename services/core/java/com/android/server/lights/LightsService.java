@@ -138,7 +138,7 @@ public class LightsService extends SystemService {
 
         private void setLightLocked(int color, int mode, int onMS, int offMS, int brightnessMode) {
             if (!mLocked && (mModesUpdate || color != mColor || mode != mMode || onMS != mOnMS ||
-                    offMS != mOffMS || mBrightnessMode != brightnessMode || mReset)) {
+                    offMS != mOffMS || mBrightnessMode != brightnessMode)) {
                 if (DEBUG) Slog.v(TAG, "setLight #" + mId + ": color=#"
                         + Integer.toHexString(color) + ": brightnessMode=" + brightnessMode);
                 mLastColor = mColor;
