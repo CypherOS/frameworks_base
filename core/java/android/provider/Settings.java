@@ -4160,6 +4160,48 @@ public final class Settings {
          * @hide
          */
         public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
+		
+		/**
+         * Enable/disable overwrite default value for ambient display
+         * @hide
+         */
+        public static final String DOZE_OVERWRITE_VALUE = "doze_overwrite_value";
+
+        /**
+         * Duration in for ambient display
+         * @hide
+         */
+        public static final String DOZE_PULSE_DURATION_IN = "doze_pulse_duration_in";
+
+        /**
+         * Duration out for ambient display
+         * @hide
+         */
+        public static final String DOZE_PULSE_DURATION_OUT = "doze_pulse_duration_out";
+
+        /**
+         * Duration visible for ambient display
+         * @hide
+         */
+        public static final String DOZE_PULSE_DURATION_VISIBLE = "doze_pulse_duration_visible";
+
+        /**
+         * Pulse if there is notifications for ambient display
+         * @hide
+         */
+        public static final String DOZE_PULSE_ON_NOTIFICATIONS = "doze_pulse_on_notifications";
+
+        /**
+         * Pulse if the pickup sensor detects movement
+         * @hide
+         */
+        public static final String DOZE_PULSE_ON_PICKUP = "doze_pulse_on_pickup";
+
+        /**
+         * custom screen brightness for doze mode
+         * @hide
+         */
+        public static final String DOZE_SCREEN_BRIGHTNESS = "doze_screen_brightness";
 
         /**
          * Carrier Label Custom Color
@@ -6634,48 +6676,6 @@ public final class Settings {
          * @hide
          */
         public static final String DOZE_ENABLED = "doze_enabled";
-		
-		/**
-         * Enable/disable overwrite default value for ambient display
-         * @hide
-         */
-        public static final String DOZE_OVERWRITE_VALUE = "doze_overwrite_value";
-
-        /**
-         * Duration in for ambient display
-         * @hide
-         */
-        public static final String DOZE_PULSE_DURATION_IN = "doze_pulse_duration_in";
-
-        /**
-         * Duration out for ambient display
-         * @hide
-         */
-        public static final String DOZE_PULSE_DURATION_OUT = "doze_pulse_duration_out";
-
-        /**
-         * Duration visible for ambient display
-         * @hide
-         */
-        public static final String DOZE_PULSE_DURATION_VISIBLE = "doze_pulse_duration_visible";
-
-        /**
-         * Pulse if there is notifications for ambient display
-         * @hide
-         */
-        public static final String DOZE_PULSE_ON_NOTIFICATIONS = "doze_pulse_on_notifications";
-
-        /**
-         * Pulse if the pickup sensor detects movement
-         * @hide
-         */
-        public static final String DOZE_PULSE_ON_PICKUP = "doze_pulse_on_pickup";
-
-        /**
-         * custom screen brightness for doze mode
-         * @hide
-         */
-        public static final String DOZE_SCREEN_BRIGHTNESS = "doze_screen_brightness";
 
         /**
          * The current night mode that has been selected by the user.  Owned
