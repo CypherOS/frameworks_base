@@ -513,6 +513,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 updateClearAll();
                 updateEmptyShadeView();
             }
+
             if (uri.equals(Settings.System.getUriFor(
                     Settings.System.SHOW_FOURG))) {
                     mShow4G = Settings.System.getIntForUser(
@@ -528,9 +529,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.Secure.getUriFor(
                     Settings.Secure.QS_COLUMNS))) {
                     updateResources();
+            }
 
             update();
-			updateRowStates();
+            updateRowStates();
             updateSpeedbump();
             updateClearAll();
             updateEmptyShadeView();
