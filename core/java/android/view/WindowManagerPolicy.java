@@ -1297,7 +1297,7 @@ public interface WindowManagerPolicy {
     public boolean hasNavigationBar();
 
     /**
-     * Device requires a software navigation bar.
+     * Specifies whether the device needs a navigation bar (because it has no hardware buttons)
      */
     public boolean needsNavigationBar();
 
