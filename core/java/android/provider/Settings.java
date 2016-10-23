@@ -4105,6 +4105,15 @@ public final class Settings {
          */
 
         /**
+         * Whether allowing pocket service to register sensors and dispatch informations.
+         *   0 = disabled
+         *   1 = enabled
+         * @author Carlo Savignano
+         * @hide
+         */
+        public static final String POCKET_JUDGE = "pocket_judge";
+
+        /**
          * Controls whether single tap fingerprint gesture is enabled.
          * @hide
          */
@@ -4447,6 +4456,8 @@ public final class Settings {
             PRIVATE_SETTINGS.add(LOCK_TO_APP_ENABLED);
             PRIVATE_SETTINGS.add(EGG_MODE);
             PRIVATE_SETTINGS.add(SHOW_BATTERY_PERCENT);
+            // Pocket mode handler.
+            PRIVATE_SETTINGS.add(POCKET_JUDGE);
             // New private settings.
             PRIVATE_SETTINGS.add(NAVIGATION_BAR_ENABLED);
             PRIVATE_SETTINGS.add(BUTTON_BRIGHTNESS);
@@ -11708,4 +11719,3 @@ public final class Settings {
         return packages[0];
     }
 }
-
