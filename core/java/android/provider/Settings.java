@@ -6997,12 +6997,6 @@ public final class Settings {
                 "managed_profile_contact_remote_search";
 
         /**
-         * Whether to include options in power menu for rebooting into recovery or bootloader
-         * @hide
-         */
-        public static final String ADVANCED_REBOOT = "advanced_reboot";
-
-        /**
          * Boolean value whether to link ringtone and notification volume
          * @hide
          */
@@ -7122,7 +7116,6 @@ public final class Settings {
             TTY_MODE_ENABLED,
             INCALL_POWER_BUTTON_BEHAVIOR,
             WIFI_DISCONNECT_DELAY_DURATION,
-            ADVANCED_REBOOT,
             QS_TILES
         };
 
@@ -7577,14 +7570,6 @@ public final class Settings {
          * Whether ADB is enabled.
          */
         public static final String ADB_ENABLED = "adb_enabled";
-
-        /**
-         * String to contain power menu actions
-         * @deprecated Use {@link CMSettings.Secure#POWER_MENU_ACTIONS} instead
-         * @hide
-         */
-        @Deprecated
-        public static final String POWER_MENU_ACTIONS = "power_menu_actions";
 
         /**
          * Whether Views are allowed to save their attribute data.
