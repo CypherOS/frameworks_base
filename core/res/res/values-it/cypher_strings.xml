@@ -18,4 +18,28 @@
 
     <!-- Vendor mismatched fingerprint warning [CHAR LIMIT=NONE] -->
     <string name="system_error_vendorprint">L\'immagine fornitore non corrisponde a quella di sistema. Si prega di installare la <xliff:g id="string">%s</xliff:g> immagine fornitore per il tuo dispositivo</string>
+
+    <!-- Reboot Dialog -->
+    <string name="global_action_reboot">Riavvio</string>
+    <!-- Button to reboot the phone in reboot menu -->
+    <string name="reboot_reboot">Riavvio</string>
+    <!-- Button to reboot the phone into recovery in reboot menu-->
+    <string name="reboot_recovery">Recovery</string>
+    <!-- Button to reboot the phone into bootloader in reboot menu -->
+    <string name="reboot_bootloader">Bootloader</string>
+    <!-- Button to soft reboot the device in reboot menu -->
+    <string name="reboot_soft">Riavvio veloce</string>
+    <!-- Reboot Confirmation Dialog. -->
+    <string name="reboot_confirm" product="tablet">Il tablet si riavvierà.</string>
+    <string name="reboot_confirm" product="default">Il telefono si riavvierà.</string>
+    <!-- Reboot Progress Dialog. This is shown if the user chooses to reboot the phone. -->
+    <string name="reboot_progress">Riavvio\u2026</string>
+	
+	<!-- Global Actions -->
+	<string name="global_action_current_user">Attuale</string>
+    <string name="global_action_screenshot">Screenshot</string>
+	<string name="global_action_screen_record">Registra schermo</string>
+    <string name="global_action_search">Ricerca</string>
+	<string name="global_action_torch">Torcia elettrica</string>
+    <string name="global_action_voicesearch">Ricerca vocale</string>
 </resources>
