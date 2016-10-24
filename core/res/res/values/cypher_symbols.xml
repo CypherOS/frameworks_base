@@ -67,6 +67,15 @@
   <!-- Quick settings tiles columns and rows config -->
   <java-symbol type="integer" name="config_qs_num_rows_landscape_default"/>
   
+  <!-- Reboot - Advanced Reboot -->
+  <java-symbol type="array" name="shutdown_reboot_options" />
+  <java-symbol type="array" name="shutdown_reboot_actions" />
+  <java-symbol type="bool" name="config_advanced_reboot" />
+  <java-symbol type="drawable" name="ic_lock_power_reboot" />
+  <java-symbol type="string" name="reboot_confirm" />
+  <java-symbol type="string" name="reboot_progress" />
+  <java-symbol type="string" name="global_action_reboot" />
+  
   <!-- Power menu -->
   <java-symbol type="dimen" name="global_actions_avatar_size" />
   <java-symbol type="drawable" name="ic_lock_assist" />
