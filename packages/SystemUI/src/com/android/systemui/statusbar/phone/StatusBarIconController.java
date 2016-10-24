@@ -84,7 +84,6 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private BatteryMeterView mBatteryMeterViewKeyguard;
     private NetworkTraffic mNetworkTraffic;
 	private TextView mCarrierLabel;
-    private TextView mClock;
 	private Clock mClock;
     private Clock mCenterClock;
     private Clock mLeftClock;
@@ -149,7 +148,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mBatteryMeterViewKeyguard = (BatteryMeterView) keyguardStatusBar.findViewById(R.id.battery);
         scaleBatteryMeterViews(context);
 
-        mClock = (TextView) statusBar.findViewById(R.id.clock);
+        mClock = (Clock) statusBar.findViewById(R.id.clock);
         mCenterClockLayout = (LinearLayout)statusBar.findViewById(R.id.center_clock_layout);
 		mCenterClock = (Clock) statusBar.findViewById(R.id.center_clock);
         mLeftClock = (TextView) statusBar.findViewById(R.id.left_clock);
@@ -578,7 +577,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
                 isInArea(mTintArea, mBatteryMeterView) ? mDarkIntensity : 0);
         mClock.setTextColor(getTint(mTintArea, mClock, mIconTint));
         mLeftClock.setTextColor(getTint(mTintArea, mLeftClock, mIconTint));
-        mCenterClock.setTextColor(getTint(mTintArea, mCclock, mIconTint));
+        mCenterClock.setTextColor(getTint(mTintArea, mClock, mIconTint));
         mNetworkTraffic.setDarkIntensity(mDarkIntensity);
 		mCarrierLabel.setTextColor(getTint(mTintArea, mCarrierLabel, mIconTint));
         if (Settings.System.getIntForUser(mContext.getContentResolver(),
@@ -664,7 +663,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private void updateClock() {
         FontSizeUtils.updateFontSize(mClock, R.dimen.status_bar_clock_size);
         FontSizeUtils.updateFontSize(mLeftClock, R.dimen.status_bar_clock_size);
-        FontSizeUtils.updateFontSize(mCclock, R.dimen.status_bar_clock_size);
+        FontSizeUtils.updateFontSize(mClock, R.dimen.status_bar_clock_size);
         mClock.setPaddingRelative(
                 mContext.getResources().getDimensionPixelSize(
                         R.dimen.status_bar_clock_starting_padding),
