@@ -100,7 +100,7 @@ import cyanogenmod.providers.CMSettings;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.android.internal.util.purenexus.PowerMenuConstants.*;
+import static com.android.internal.util.cypher.PowerMenuConstants.*;
 
 /**
  * Helper to show the global actions dialog.  Each item is an {@link Action} that
@@ -405,35 +405,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         public void onPress() {
             // shutdown by making sure radio and power are handled accordingly.
             mWindowManagerFuncs.shutdown(false /* confirm */);
-        }
-    }
-    
-    private final class RebootAction extends SinglePressAction {
-        private RebootAction() {
-            super(com.android.internal.R.drawable.ic_lock_power_reboot,
-                    R.string.global_action_reboot);
-        }
-
-        @Override
-        public boolean showDuringKeyguard() {
-            return true;
-        }
-
-        @Override
-        public boolean showBeforeProvisioning() {
-            return true;
-        }
-
-        @Override
-        public void onPress() {
-            try {
-                IPowerManager pm = IPowerManager.Stub.asInterface(ServiceManager
-                        .getService(Context.POWER_SERVICE));
-                pm.reboot(true, null, false);
-            } catch (RemoteException e) {
-                Log.e(TAG, "PowerManager service died!", e);
-                return;
-            }
         }
     }
 
