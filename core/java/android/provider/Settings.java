@@ -3308,7 +3308,6 @@ public final class Settings {
 
         /**
         * Developer options - Navigation Bar show switch
-        * @deprecated Moved to CMSettings.Secure.DEV_FORCE_SHOW_NAVBAR
         * @hide
         */
         public static final String DEV_FORCE_SHOW_NAVBAR = "dev_force_show_navbar";
@@ -3757,6 +3756,12 @@ public final class Settings {
          * @hide
          */
         public static final String VOLUME_ADJUST_SOUNDS_ENABLED = "volume_adjust_sounds_enabled";
+		
+		/**
+         * Whether or not volume button music controls should be enabled to seek media tracks
+         * @hide
+         */
+        public static final String VOLBTN_MUSIC_CONTROLS = "volbtn_music_controls";
 
         /**
          * IMPORTANT: If you add a new public settings you also have to add it to
@@ -3773,6 +3778,12 @@ public final class Settings {
           * @hide
           */
         public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
+		
+		/**
+         * Whether navigation bar is placed on the left side in landscape mode
+         * @hide
+         */
+        public static final String NAVBAR_LEFT_IN_LANDSCAPE = "navigation_bar_left";
 		 
 		/**
          * Show four g instead of lte

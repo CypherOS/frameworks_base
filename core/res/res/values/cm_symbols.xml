@@ -23,7 +23,6 @@
     <!-- LED pulse -->
     <java-symbol type="bool" name="config_ledCanPulse" />
 
-    <java-symbol type="bool" name="config_singleStageCameraKey" />
     <java-symbol type="integer" name="config_longPressOnMenuBehavior" />
     <java-symbol type="integer" name="config_longPressOnAppSwitchBehavior" />
 
