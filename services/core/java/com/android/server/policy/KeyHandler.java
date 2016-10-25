@@ -149,6 +149,7 @@ public class KeyHandler {
     private long[] mVibePattern;
 
     private boolean mGesturesEnabled;
+    private boolean mIsInPocket;
 
     private SparseIntArray mGestures = new SparseIntArray(MAX_SUPPORTED_GESTURES);
 
@@ -586,12 +587,16 @@ public class KeyHandler {
         }
     }
 
+    protected void setIsInPocket(boolean pocket) {
+        mIsInPocket = pocket;
+    }
+
     public boolean handleKeyEvent(KeyEvent event) {
         if (DEBUG) {
             Log.w(TAG, "handleKeyEvent(): event.toString(): " + event.toString());
         }
 
-        if (!mSystemReady || !mGesturesEnabled || isDisabledByPhoneState()) {
+        if (!mSystemReady || !mGesturesEnabled || isDisabledByPhoneState() || mIsInPocket) {
             return false;
         }
 
