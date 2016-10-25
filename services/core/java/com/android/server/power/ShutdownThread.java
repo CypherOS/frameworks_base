@@ -207,7 +207,6 @@ public final class ShutdownThread extends Thread {
             }
         }
 		
-		boolean showRebootOption = false;
         String[] defaultActions = context.getResources().getStringArray(
                 com.android.internal.R.array.config_globalActionsList);
         for (int i = 0; i < defaultActions.length; i++) {
