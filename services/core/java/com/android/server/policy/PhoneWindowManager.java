@@ -527,6 +527,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mTranslucentDecorEnabled = true;
     boolean mUseTvRouting;
 	
+	int mDeviceHardwareKeys;
+	
     // During wakeup by volume keys, we still need to capture subsequent events
     // until the key is released. This is required since the beep sound is produced
     // post keypressed.
@@ -541,6 +543,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     IApplicationToken mFocusedApp;
 
     // Behavior of volbtn music controls
+	boolean mVolumeWakeScreen;
     boolean mVolBtnMusicControls;
     boolean mIsLongPress;
 
@@ -931,8 +934,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ACCELEROMETER_ROTATION_ANGLES), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.Global.getUriFor(
-                    Settings.Global.DEV_FORCE_SHOW_NAVBAR), false, this,
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DEV_FORCE_SHOW_NAVBAR), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.VOLBTN_MUSIC_CONTROLS), false, this,
@@ -2130,8 +2133,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 updateWakeGestureListenerLp();
             }
 
-            boolean devForceNavbar = Settings.Global.getIntForUser(resolver,
-                    Settings.Global.DEV_FORCE_SHOW_NAVBAR, 0, UserHandle.USER_CURRENT) == 1;
+            boolean devForceNavbar = Settings.System.getIntForUser(resolver,
+                    Settings.System.DEV_FORCE_SHOW_NAVBAR, 0, UserHandle.USER_CURRENT) == 1;
             if (devForceNavbar != mDevForceNavbar) {
                 mDevForceNavbar = devForceNavbar;
                 if (mCMHardware.isSupported(CMHardwareManager.FEATURE_KEY_DISABLE)) {
@@ -6324,14 +6327,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KeyEvent.KEYCODE_VOLUME_MUTE:
                 // Volume keys are still wake keys if the device is docked.
                 return mVolumeWakeScreen || mDockMode != Intent.EXTRA_DOCK_STATE_UNDOCKED;
-            case KeyEvent.KEYCODE_BACK:
-                return mBackWakeScreen;
-            case KeyEvent.KEYCODE_MENU:
-                return mMenuWakeScreen;
-            case KeyEvent.KEYCODE_ASSIST:
-                return mAssistWakeScreen;
-            case KeyEvent.KEYCODE_APP_SWITCH:
-                return mAppSwitchWakeScreen;
         }
         return true;
     }
