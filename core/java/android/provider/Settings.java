@@ -9454,11 +9454,6 @@ public final class Settings {
         public static final String SAFE_BOOT_DISALLOWED = "safe_boot_disallowed";
 
         /**
-         * Beginning of Pure Global Settings Additions
-         * @hide
-         */
-
-        /**
          * String to contain power menu actions
          * @hide
          */
