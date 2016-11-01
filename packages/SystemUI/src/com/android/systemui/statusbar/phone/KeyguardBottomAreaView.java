@@ -877,6 +877,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     @Override
     public void onChange() {
         updateCustomShortcuts();
+    }
 
     public void onKeyguardShowingChanged() {
         updateLeftAffordance();

@@ -102,7 +102,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
         updateResources();
 
         mBrightnessController = new BrightnessController(getContext(),
-                brightnessIcon,
+                mBrightnessIcon,
                 (ToggleSlider) findViewById(R.id.brightness_slider));
 
     }

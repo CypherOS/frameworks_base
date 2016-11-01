@@ -1293,6 +1293,7 @@ public final class SystemServer {
                 | NoSuchMethodException e) {
             Slog.wtf(TAG, "Unable to start  " + externalServer);
             Slog.wtf(TAG, e);
+        }
 
         if (Settings.Global.getInt(mContentResolver, Settings.Global.DEVICE_PROVISIONED, 0) == 0 ||
                 UserManager.isDeviceInDemoMode(mSystemContext)) {

@@ -397,6 +397,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     boolean mExpandedVisible;
     private int mShowCarrierLabel;
+	private TextView mCarrierLabel;
 
     private int mNavigationBarWindowState = WINDOW_STATE_SHOWING;
 	
@@ -1033,8 +1034,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         initSignalCluster(mStatusBarView);
         initSignalCluster(mKeyguardStatusBar);
 
-        mCustomCarrierLabel = (TextView) mStatusBarWindow.findViewById(R.id.statusbar_carrier_text);
-        if (mCustomCarrierLabel != null) {
+        mCarrierLabel = (TextView) mStatusBarWindow.findViewById(R.id.statusbar_carrier_text);
+        if (mCarrierLabel != null) {
             updateCarrier();
         }
  
@@ -2118,7 +2119,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void updateCarrier() {
-        if (mCustomCarrierLabel != null) {
+        if (mCarrierLabel != null) {
             if (mShowCarrierLabel == 2) {
                 mCarrierLabel.setVisibility(View.VISIBLE);
             } else if (mShowCarrierLabel == 3) {

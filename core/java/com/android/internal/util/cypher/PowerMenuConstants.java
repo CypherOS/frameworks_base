@@ -19,7 +19,7 @@ package com.android.internal.util.cypher;
 /* Master list of all actions for the power menu */
 public class PowerMenuConstants {
     public static final String GLOBAL_ACTION_KEY_POWER = "power";
-    public static final String GLOBAL_ACTION_KEY_REBOOT = "reboot";
+    public static final String GLOBAL_ACTION_KEY_RESTART = "restart";
     public static final String GLOBAL_ACTION_KEY_SCREENSHOT = "screenshot";
     public static final String GLOBAL_ACTION_KEY_SCREENRECORD = "screenrecord";
     public static final String GLOBAL_ACTION_KEY_TORCH = "torch";
@@ -34,7 +34,7 @@ public class PowerMenuConstants {
 
     private static String[] ALL_ACTIONS = {
         GLOBAL_ACTION_KEY_POWER,
-        GLOBAL_ACTION_KEY_REBOOT,
+        GLOBAL_ACTION_KEY_RESTART,
         GLOBAL_ACTION_KEY_SCREENSHOT,
         GLOBAL_ACTION_KEY_SCREENRECORD,
         GLOBAL_ACTION_KEY_TORCH,
