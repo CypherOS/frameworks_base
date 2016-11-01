@@ -175,11 +175,11 @@ import java.util.List;
  * part of the platform's application model. For a detailed perspective on the structure of an
  * Android application and how activities behave, please read the
  * <a href="{@docRoot}guide/topics/fundamentals.html">Application Fundamentals</a> and
- * <a href="{@docRoot}guide/topics/fundamentals/tasks-and-back-stack.html">Tasks and Back Stack</a>
+ * <a href="{@docRoot}guide/components/tasks-and-back-stack.html">Tasks and Back Stack</a>
  * developer guides.</p>
  *
  * <p>You can also find a detailed discussion about how to create activities in the
- * <a href="{@docRoot}guide/topics/fundamentals/activities.html">Activities</a>
+ * <a href="{@docRoot}guide/components/activities.html">Activities</a>
  * developer guide.</p>
  * </div>
  *
@@ -3374,7 +3374,7 @@ public class Activity extends ContextThemeWrapper
      * should override the method {@link #onPrepareNavigateUpTaskStack(TaskStackBuilder)}
      * to supply those arguments.</p>
      *
-     * <p>See <a href="{@docRoot}guide/topics/fundamentals/tasks-and-back-stack.html">Tasks and Back Stack</a>
+     * <p>See <a href="{@docRoot}guide/components/tasks-and-back-stack.html">Tasks and Back Stack</a>
      * from the developer guide and <a href="{@docRoot}design/patterns/navigation.html">Navigation</a>
      * from the design guide for more information about navigating within your app.</p>
      *
@@ -4228,6 +4228,7 @@ public class Activity extends ContextThemeWrapper
     public void startActivityForResult(@RequiresPermission Intent intent, int requestCode,
             @Nullable Bundle options) {
         if (mParent == null) {
+            options = transferSpringboardActivityOptions(options);
             Instrumentation.ActivityResult ar =
                 mInstrumentation.execStartActivity(
                     this, mMainThread.getApplicationThread(), mToken, this,
@@ -4276,6 +4277,17 @@ public class Activity extends ContextThemeWrapper
         }
     }
 
+    private Bundle transferSpringboardActivityOptions(Bundle options) {
+        if (options == null && (mWindow != null && !mWindow.isActive())) {
+            final ActivityOptions activityOptions = getActivityOptions();
+            if (activityOptions != null &&
+                    activityOptions.getAnimationType() == ActivityOptions.ANIM_SCENE_TRANSITION) {
+                return activityOptions.toBundle();
+            }
+        }
+        return options;
+    }
+
     /**
      * @hide Implement to provide correct calling token.
      */
@@ -4291,6 +4303,7 @@ public class Activity extends ContextThemeWrapper
         if (mParent != null) {
             throw new RuntimeException("Can't be called from a child");
         }
+        options = transferSpringboardActivityOptions(options);
         Instrumentation.ActivityResult ar = mInstrumentation.execStartActivity(
                 this, mMainThread.getApplicationThread(), mToken, this, intent, requestCode,
                 options, user);
@@ -4326,6 +4339,7 @@ public class Activity extends ContextThemeWrapper
         if (mParent != null) {
             throw new RuntimeException("Can't be called from a child");
         }
+        options = transferSpringboardActivityOptions(options);
         Instrumentation.ActivityResult ar =
                 mInstrumentation.execStartActivity(
                         this, mMainThread.getApplicationThread(), mToken, this,
@@ -4358,6 +4372,7 @@ public class Activity extends ContextThemeWrapper
         if (mParent != null) {
             throw new RuntimeException("Can't be called from a child");
         }
+        options = transferSpringboardActivityOptions(options);
         Instrumentation.ActivityResult ar =
                 mInstrumentation.execStartActivityAsCaller(
                         this, mMainThread.getApplicationThread(), mToken, this,
@@ -4475,7 +4490,7 @@ public class Activity extends ContextThemeWrapper
      *
      * @throws android.content.ActivityNotFoundException
      *
-     * @see {@link #startActivity(Intent, Bundle)}
+     * @see #startActivity(Intent, Bundle)
      * @see #startActivityForResult
      */
     @Override
@@ -4502,7 +4517,7 @@ public class Activity extends ContextThemeWrapper
      *
      * @throws android.content.ActivityNotFoundException
      *
-     * @see {@link #startActivity(Intent)}
+     * @see #startActivity(Intent)
      * @see #startActivityForResult
      */
     @Override
@@ -4524,7 +4539,7 @@ public class Activity extends ContextThemeWrapper
      *
      * @throws android.content.ActivityNotFoundException
      *
-     * @see {@link #startActivities(Intent[], Bundle)}
+     * @see #startActivities(Intent[], Bundle)
      * @see #startActivityForResult
      */
     @Override
@@ -4551,7 +4566,7 @@ public class Activity extends ContextThemeWrapper
      *
      * @throws android.content.ActivityNotFoundException
      *
-     * @see {@link #startActivities(Intent[])}
+     * @see #startActivities(Intent[])
      * @see #startActivityForResult
      */
     @Override
@@ -4797,6 +4812,7 @@ public class Activity extends ContextThemeWrapper
      */
     public void startActivityFromChild(@NonNull Activity child, @RequiresPermission Intent intent,
             int requestCode, @Nullable Bundle options) {
+        options = transferSpringboardActivityOptions(options);
         Instrumentation.ActivityResult ar =
             mInstrumentation.execStartActivity(
                 this, mMainThread.getApplicationThread(), mToken, child,
@@ -4862,6 +4878,7 @@ public class Activity extends ContextThemeWrapper
         if (referrer != null) {
             intent.putExtra(Intent.EXTRA_REFERRER, referrer);
         }
+        options = transferSpringboardActivityOptions(options);
         Instrumentation.ActivityResult ar =
             mInstrumentation.execStartActivity(
                 this, mMainThread.getApplicationThread(), mToken, who,
@@ -4931,7 +4948,7 @@ public class Activity extends ContextThemeWrapper
      * <p>As of {@link android.os.Build.VERSION_CODES#JELLY_BEAN} an alternative
      * to using this with starting activities is to supply the desired animation
      * information through a {@link ActivityOptions} bundle to
-     * {@link #startActivity(Intent, Bundle) or a related function.  This allows
+     * {@link #startActivity(Intent, Bundle)} or a related function.  This allows
      * you to specify a custom animation even when starting an activity from
      * outside the context of the current top activity.
      *
@@ -6113,7 +6130,6 @@ public class Activity extends ContextThemeWrapper
      *      the return value must be checked.
      *
      * @see #onVisibleBehindCanceled()
-     * @see #onBackgroundVisibleBehindChanged(boolean)
      */
     public boolean requestVisibleBehind(boolean visible) {
         if (!mResumed) {
@@ -6141,7 +6157,6 @@ public class Activity extends ContextThemeWrapper
      * process. Otherwise {@link #onStop()} will be called following return.
      *
      * @see #requestVisibleBehind(boolean)
-     * @see #onBackgroundVisibleBehindChanged(boolean)
      */
     @CallSuper
     public void onVisibleBehindCanceled() {

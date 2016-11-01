@@ -184,7 +184,7 @@ public class NotificationManagerService extends SystemService {
             = SystemProperties.getBoolean("debug.child_notifs", true);
 
     static final int MAX_PACKAGE_NOTIFICATIONS = 50;
-    static final float DEFAULT_MAX_NOTIFICATION_ENQUEUE_RATE = 50f;
+    static final float DEFAULT_MAX_NOTIFICATION_ENQUEUE_RATE = 10f;
 
     // message codes
     static final int MESSAGE_TIMEOUT = 2;
@@ -322,6 +322,7 @@ public class NotificationManagerService extends SystemService {
     private float mMaxPackageEnqueueRate = DEFAULT_MAX_NOTIFICATION_ENQUEUE_RATE;
     private PersistableBundle mCarrierConfig;
     private CarrierConfigManager mConfigManager;
+    private String mSystemNotificationSound;
 
     private static class Archive {
         final int mBufferSize;
@@ -729,9 +730,9 @@ public class NotificationManagerService extends SystemService {
                 int changeUserId = intent.getIntExtra(Intent.EXTRA_USER_HANDLE,
                         UserHandle.USER_ALL);
                 String pkgList[] = null;
-                boolean queryReplace = queryRemove &&
-                        intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
-                if (DBG) Slog.i(TAG, "action=" + action + " queryReplace=" + queryReplace);
+                boolean removingPackage = queryRemove &&
+                        !intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
+                if (DBG) Slog.i(TAG, "action=" + action + " removing=" + removingPackage);
                 if (action.equals(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE)) {
                     pkgList = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
                 } else if (action.equals(Intent.ACTION_PACKAGES_SUSPENDED)) {
@@ -780,10 +781,10 @@ public class NotificationManagerService extends SystemService {
                         }
                     }
                 }
-                mListeners.onPackagesChanged(queryReplace, pkgList);
-                mRankerServices.onPackagesChanged(queryReplace, pkgList);
-                mConditionProviders.onPackagesChanged(queryReplace, pkgList);
-                mRankingHelper.onPackagesChanged(queryReplace, pkgList);
+                mListeners.onPackagesChanged(removingPackage, pkgList);
+                mRankerServices.onPackagesChanged(removingPackage, pkgList);
+                mConditionProviders.onPackagesChanged(removingPackage, pkgList);
+                mRankingHelper.onPackagesChanged(removingPackage, pkgList);
             }
         }
     };
@@ -855,6 +856,8 @@ public class NotificationManagerService extends SystemService {
     private final class SettingsObserver extends ContentObserver {
         private final Uri NOTIFICATION_LIGHT_PULSE_URI
                 = Settings.System.getUriFor(Settings.System.NOTIFICATION_LIGHT_PULSE);
+        private final Uri NOTIFICATION_SOUND_URI
+                = Settings.System.getUriFor(Settings.System.NOTIFICATION_SOUND);
         private final Uri NOTIFICATION_RATE_LIMIT_URI
                 = Settings.Global.getUriFor(Settings.Global.MAX_NOTIFICATION_ENQUEUE_RATE);
 		private final Uri ENABLED_NOTIFICATION_LISTENERS_URI
@@ -869,6 +872,8 @@ public class NotificationManagerService extends SystemService {
         void observe() {
             ContentResolver resolver = getContext().getContentResolver();
             resolver.registerContentObserver(NOTIFICATION_LIGHT_PULSE_URI,
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(NOTIFICATION_SOUND_URI,
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(NOTIFICATION_RATE_LIMIT_URI,
                     false, this, UserHandle.USER_ALL);
@@ -941,6 +946,10 @@ public class NotificationManagerService extends SystemService {
                        Settings.System.MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD, 0,
                        UserHandle.USER_CURRENT_OR_SELF);
             }
+			if (uri == null || NOTIFICATION_SOUND_URI.equals(uri)) {
+                mSystemNotificationSound = Settings.System.getString(resolver,
+                        Settings.System.NOTIFICATION_SOUND);
+            }
 
             // Notification lights with screen on
             mScreenOnEnabled = (Settings.System.getIntForUser(resolver,
@@ -997,6 +1006,11 @@ public class NotificationManagerService extends SystemService {
     @VisibleForTesting
     void setHandler(Handler handler) {
         mHandler = handler;
+    }
+
+    @VisibleForTesting
+    void setSystemNotificationSound(String systemNotificationSound) {
+        mSystemNotificationSound = systemNotificationSound;
     }
 
     @Override
@@ -1949,7 +1963,7 @@ public class NotificationManagerService extends SystemService {
             enforceSystemOrSystemUIOrVolume("INotificationManager.setZenMode");
             final long identity = Binder.clearCallingIdentity();
             try {
-                mZenModeHelper.setManualZenMode(mode, conditionId, reason);
+                mZenModeHelper.setManualZenMode(mode, conditionId, null, reason);
             } finally {
                 Binder.restoreCallingIdentity(identity);
             }
@@ -2026,7 +2040,7 @@ public class NotificationManagerService extends SystemService {
             if (zen == -1) throw new IllegalArgumentException("Invalid filter: " + filter);
             final long identity = Binder.clearCallingIdentity();
             try {
-                mZenModeHelper.setManualZenMode(zen, null, "setInterruptionFilter");
+                mZenModeHelper.setManualZenMode(zen, null, pkg, "setInterruptionFilter");
             } finally {
                 Binder.restoreCallingIdentity(identity);
             }
@@ -2384,6 +2398,7 @@ public class NotificationManagerService extends SystemService {
                                         .setFlag(Notification.FLAG_AUTOGROUP_SUMMARY, true)
                                         .setFlag(Notification.FLAG_GROUP_SUMMARY, true)
                                         .setColor(adjustedSbn.getNotification().color)
+                                        .setLocalOnly(true)
                                         .build();
                         summaryNotification.extras.putAll(extras);
                         Intent appIntent = getContext().getPackageManager()
@@ -2635,20 +2650,32 @@ public class NotificationManagerService extends SystemService {
 
         mUsageStats.registerEnqueuedByApp(pkg);
 
+
+        if (pkg == null || notification == null) {
+            throw new IllegalArgumentException("null not allowed: pkg=" + pkg
+                    + " id=" + id + " notification=" + notification);
+        }
+        final StatusBarNotification n = new StatusBarNotification(
+                pkg, opPkg, id, tag, callingUid, callingPid, 0, notification,
+                user);
+
         // Limit the number of notifications that any given package except the android
         // package or a registered listener can enqueue.  Prevents DOS attacks and deals with leaks.
         if (!isSystemNotification && !isNotificationFromListener) {
             synchronized (mNotificationList) {
-                final float appEnqueueRate = mUsageStats.getAppEnqueueRate(pkg);
-                if (appEnqueueRate > mMaxPackageEnqueueRate) {
-                    mUsageStats.registerOverRateQuota(pkg);
-                    final long now = SystemClock.elapsedRealtime();
-                    if ((now - mLastOverRateLogTime) > MIN_PACKAGE_OVERRATE_LOG_INTERVAL) {
-                        Slog.e(TAG, "Package enqueue rate is " + appEnqueueRate
-                                + ". Shedding events. package=" + pkg);
-                        mLastOverRateLogTime = now;
+                if(mNotificationsByKey.get(n.getKey()) != null) {
+                    // this is an update, rate limit updates only
+                    final float appEnqueueRate = mUsageStats.getAppEnqueueRate(pkg);
+                    if (appEnqueueRate > mMaxPackageEnqueueRate) {
+                        mUsageStats.registerOverRateQuota(pkg);
+                        final long now = SystemClock.elapsedRealtime();
+                        if ((now - mLastOverRateLogTime) > MIN_PACKAGE_OVERRATE_LOG_INTERVAL) {
+                            Slog.e(TAG, "Package enqueue rate is " + appEnqueueRate
+                                    + ". Shedding events. package=" + pkg);
+                            mLastOverRateLogTime = now;
+                        }
+                        return;
                     }
-                    return;
                 }
 
                 int count = 0;
@@ -2669,11 +2696,6 @@ public class NotificationManagerService extends SystemService {
                     }
                 }
             }
-        }
-
-        if (pkg == null || notification == null) {
-            throw new IllegalArgumentException("null not allowed: pkg=" + pkg
-                    + " id=" + id + " notification=" + notification);
         }
 
         // Whitelist pending intents.
@@ -2698,9 +2720,6 @@ public class NotificationManagerService extends SystemService {
                 Notification.PRIORITY_MAX);
 
         // setup local book-keeping
-        final StatusBarNotification n = new StatusBarNotification(
-                pkg, opPkg, id, tag, callingUid, callingPid, 0, notification,
-                user);
         final NotificationRecord r = new NotificationRecord(getContext(), n);
         mHandler.post(new EnqueueNotificationRunnable(userId, r));
 
@@ -2966,9 +2985,7 @@ public class NotificationManagerService extends SystemService {
                 soundUri = Settings.System.DEFAULT_NOTIFICATION_URI;
 
                 // check to see if the default notification sound is silent
-                ContentResolver resolver = getContext().getContentResolver();
-                hasValidSound = Settings.System.getString(resolver,
-                       Settings.System.NOTIFICATION_SOUND) != null;
+                hasValidSound = mSystemNotificationSound != null;
             } else if (notification.sound != null) {
                 soundUri = notification.sound;
                 hasValidSound = (soundUri != null);
@@ -3271,6 +3288,12 @@ public class NotificationManagerService extends SystemService {
         }
     }
 
+    private void recordCallerLocked(NotificationRecord record) {
+        if (mZenModeHelper.isCall(record)) {
+            mZenModeHelper.recordCaller(record);
+        }
+    }
+
     // let zen mode evaluate this record
     private void applyZenModeLocked(NotificationRecord record) {
         record.setIntercepted(mZenModeHelper.shouldIntercept(record));
@@ -3414,6 +3437,10 @@ public class NotificationManagerService extends SystemService {
     }
 
     private void cancelNotificationLocked(NotificationRecord r, boolean sendDelete, int reason) {
+
+        // Record caller.
+        recordCallerLocked(r);
+
         // tell the app
         if (sendDelete) {
             if (r.getNotification().deleteIntent != null) {
@@ -4092,14 +4119,14 @@ public class NotificationManagerService extends SystemService {
         }
 
         @Override
-        public void onPackagesChanged(boolean queryReplace, String[] pkgList) {
-            if (DEBUG) Slog.d(TAG, "onPackagesChanged queryReplace=" + queryReplace
+        public void onPackagesChanged(boolean removingPackage, String[] pkgList) {
+            if (DEBUG) Slog.d(TAG, "onPackagesChanged removingPackage=" + removingPackage
                     + " pkgList=" + (pkgList == null ? null : Arrays.asList(pkgList)));
             if (mRankerServicePackageName == null) {
                 return;
             }
 
-            if (pkgList != null && (pkgList.length > 0)) {
+            if (pkgList != null && (pkgList.length > 0) && !removingPackage) {
                 for (String pkgName : pkgList) {
                     if (mRankerServicePackageName.equals(pkgName)) {
                         registerRanker();

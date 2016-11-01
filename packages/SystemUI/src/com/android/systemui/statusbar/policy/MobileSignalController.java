@@ -197,19 +197,14 @@ public class MobileSignalController extends SignalController<
         mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_HSUPA, hGroup);
         mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_HSPA, hGroup);
         mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_HSPAP, hGroup);
+		if (mConfig.hspaDataDistinguishable) {
+            hGroup = TelephonyIcons.HP;
+        }
+        mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_HSPAP, hGroup);
 
         if (Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.SHOW_FOURG, 0) == 1) {
-            if (mContext.getResources().getBoolean(R.bool.show_4glte_icon_for_lte)) {
-                mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE,
-                        TelephonyIcons.FOUR_G_LTE);
-            } else if (mContext.getResources().getBoolean(R.bool.show_network_indicators)) {
-                mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE, TelephonyIcons.LTE);
-            } else {
-                mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE, TelephonyIcons.FOUR_G);
-            }
-            mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE_CA,
-                TelephonyIcons.FOUR_G_PLUS);
+            mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE, TelephonyIcons.FOUR_G);
         } else {
             mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE, TelephonyIcons.LTE);
         }
@@ -477,6 +472,10 @@ public class MobileSignalController extends SignalController<
             }
             mServiceState = state;
             mDataNetType = state.getDataNetworkType();
+            if (mDataNetType == TelephonyManager.NETWORK_TYPE_LTE && mServiceState != null &&
+                    mServiceState.isUsingCarrierAggregation()) {
+                mDataNetType = TelephonyManager.NETWORK_TYPE_LTE_CA;
+            }
             updateTelephony();
         }
 
@@ -488,6 +487,10 @@ public class MobileSignalController extends SignalController<
             }
             mDataState = state;
             mDataNetType = networkType;
+            if (mDataNetType == TelephonyManager.NETWORK_TYPE_LTE && mServiceState != null &&
+                    mServiceState.isUsingCarrierAggregation()) {
+                mDataNetType = TelephonyManager.NETWORK_TYPE_LTE_CA;
+            }
             updateTelephony();
         }
 
