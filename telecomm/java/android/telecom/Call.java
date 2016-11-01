@@ -319,11 +319,10 @@ public final class Call {
          */
         public static final int PROPERTY_IS_EXTERNAL_CALL = 0x00000040;
 
-        /**
-         * Whether the call was forwarded from another party (GSM only)
-         * @hide
+	/**
+         * Indicates that the call has CDMA Enhanced Voice Privacy enabled.
          */
-        public static final int PROPERTY_WAS_FORWARDED = 0x00000080;
+        public static final int PROPERTY_HAS_CDMA_VOICE_PRIVACY = 0x00000080;
 
         /**
          * Whether the call is held remotely
@@ -348,12 +347,13 @@ public final class Call {
          * @hide
          */
         public static final int PROPERTY_REMOTE_INCOMING_CALLS_BARRED = 0x00000800;
-		
-		/**
-         * Indicates that the call has CDMA Enhanced Voice Privacy enabled.
-         */
-        public static final int PROPERTY_HAS_CDMA_VOICE_PRIVACY = 0x00000080;
 
+        /**
+         * Whether the call was forwarded from another party (GSM only)
+         * @hide
+         */
+        public static final int PROPERTY_WAS_FORWARDED = 0x00001000;
+		
         //******************************************************************************************
         // Next PROPERTY value: 0x00001000
         //******************************************************************************************
