@@ -1204,5 +1204,4 @@ interface ITelephony {
      * @hide
      */
     void setPolicyDataEnabled(boolean enabled, int subId);
->>>>>>> android-7.1.0_r4
 }
