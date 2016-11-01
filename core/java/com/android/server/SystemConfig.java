@@ -197,6 +197,7 @@ public class SystemConfig {
 
     public ArrayMap<Signature, ArraySet<String>> getSignatureAllowances() {
         return mSignatureAllowances;
+    }
 
     public ArrayMap<String, List<String>> getDisabledUntilUsedPreinstalledCarrierAssociatedApps() {
         return mDisabledUntilUsedPreinstalledCarrierAssociatedApps;

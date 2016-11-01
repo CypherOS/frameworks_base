@@ -819,8 +819,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * without throwing
      */
     static boolean sTextureViewIgnoresDrawableSetters = false;
-	
-	/**
+
+    /**
      * Prior to N, some ViewGroups would not convert LayoutParams properly even though both extend
      * MarginLayoutParams. For instance, converting LinearLayout.LayoutParams to
      * RelativeLayout.LayoutParams would lose margin information. This is fixed on N but target API
@@ -2446,7 +2446,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      *          1                        PFLAG3_OVERLAPPING_RENDERING_FORCED_VALUE
      *         1                         PFLAG3_HAS_OVERLAPPING_RENDERING_FORCED
      *        1                          PFLAG3_TEMPORARY_DETACH
-	 *       1                           PFLAG3_NO_REVEAL_ON_FOCUS
+     *       1                           PFLAG3_NO_REVEAL_ON_FOCUS
      * |-------|-------|-------|-------|
      */
 
@@ -2687,8 +2687,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @see #onFinishTemporaryDetach()
      */
     static final int PFLAG3_TEMPORARY_DETACH = 0x2000000;
-	
-	/**
+
+    /**
      * Flag indicating that the view does not wish to be revealed within its parent
      * hierarchy when it gains focus. Expressed in the negative since the historical
      * default behavior is to reveal on focus; this flag suppresses that behavior.
@@ -4001,8 +4001,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @hide
      */
     String mStartActivityRequestWho;
-	
-	@Nullable
+
+    @Nullable
     private RoundScrollbarRenderer mRoundScrollbarRenderer;
 
     /**
@@ -4061,8 +4061,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
             // Prior to N, TextureView would silently ignore calls to setBackground/setForeground.
             // On N+, we throw, but that breaks compatibility with apps that use these methods.
             sTextureViewIgnoresDrawableSetters = targetSdkVersion <= M;
-			
-			// Prior to N, we would drop margins in LayoutParam conversions. The fix triggers bugs
+
+            // Prior to N, we would drop margins in LayoutParam conversions. The fix triggers bugs
             // in apps so we target check it to avoid breaking existing apps.
             sPreserveMarginParamsInLayoutParamConversion = targetSdkVersion >= N;
 
@@ -5968,8 +5968,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
             refreshDrawableState();
         }
     }
-	
-	/**
+
+    /**
      * Sets this view's preference for reveal behavior when it gains focus.
      *
      * <p>When set to true, this is a signal to ancestor views in the hierarchy that
@@ -9851,7 +9851,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     }
 
     /**
-	 * Tells whether the {@link View} is in the state between {@link #onStartTemporaryDetach()}
+     * Tells whether the {@link View} is in the state between {@link #onStartTemporaryDetach()}
      * and {@link #onFinishTemporaryDetach()}.
      *
      * <p>This method always returns {@code true} when called directly or indirectly from
@@ -9898,7 +9898,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     @CallSuper
     public void dispatchFinishTemporaryDetach() {
         mPrivateFlags3 &= ~PFLAG3_TEMPORARY_DETACH;
-		onFinishTemporaryDetach();
+        onFinishTemporaryDetach();
         if (hasWindowFocus() && hasFocus()) {
             InputMethodManager.getInstance().focusIn(this);
         }
@@ -12392,7 +12392,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     public void setAlpha(@FloatRange(from=0.0, to=1.0) float alpha) {
         ensureTransformationInfo();
         if (mTransformationInfo.mAlpha != alpha) {
-			// Report visibility changes, which can affect children, to accessibility
+            // Report visibility changes, which can affect children, to accessibility
             if ((alpha == 0) ^ (mTransformationInfo.mAlpha == 0)) {
                 notifySubtreeAccessibilityStateChangedIfNeeded();
             }
@@ -14805,7 +14805,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     }
 
     private void getVerticalScrollBarBounds(Rect bounds) {
-		if (mRoundScrollbarRenderer == null) {
+        if (mRoundScrollbarRenderer == null) {
             getStraightVerticalScrollBarBounds(bounds);
         } else {
             getRoundVerticalScrollBarBounds(bounds);
@@ -14858,7 +14858,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     protected final void onDrawScrollBars(Canvas canvas) {
         // scrollbars are drawn only when the animation is running
         final ScrollabilityCache cache = mScrollCache;
-		
+
         if (cache != null) {
 
             int state = cache.state;
@@ -14899,8 +14899,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
             final boolean drawVerticalScrollBar = isVerticalScrollBarEnabled()
                     && !isVerticalScrollBarHidden();
 
-            if (drawVerticalScrollBar || drawHorizontalScrollBar) {
-			// Fork out the scroll bar drawing for round wearable devices.
+            // Fork out the scroll bar drawing for round wearable devices.
             if (mRoundScrollbarRenderer != null) {
                 if (drawVerticalScrollBar) {
                     final Rect bounds = cache.mScrollBarBounds;
@@ -17642,15 +17641,15 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
 
         if (changed || (mPrivateFlags & PFLAG_LAYOUT_REQUIRED) == PFLAG_LAYOUT_REQUIRED) {
             onLayout(changed, l, t, r, b);
-			
-			if (shouldDrawRoundScrollbar()) {
+
+            if (shouldDrawRoundScrollbar()) {
                 if(mRoundScrollbarRenderer == null) {
                     mRoundScrollbarRenderer = new RoundScrollbarRenderer(this);
                 }
             } else {
                 mRoundScrollbarRenderer = null;
             }
-			
+
             mPrivateFlags &= ~PFLAG_LAYOUT_REQUIRED;
 
             ListenerInfo li = mListenerInfo;
@@ -23868,8 +23867,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
         stream.addProperty("accessibility:labelFor", getLabelFor());
         stream.addProperty("accessibility:importantForAccessibility", getImportantForAccessibility());
     }
-	
-	/**
+
+    /**
      * Determine if this view is rendered on a round wearable device and is the main view
      * on the screen.
      */
