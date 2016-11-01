@@ -18,10 +18,13 @@ package com.android.systemui.statusbar.phone;
 
 import android.content.Context;
 import android.os.SystemProperties;
+import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.MathUtils;
 import android.util.SparseBooleanArray;
+
+import android.provider.Settings;
 
 import com.android.systemui.R;
 
@@ -62,6 +65,13 @@ public class DozeParameters {
         pw.print("    getPickupVibrationThreshold(): "); pw.println(getPickupVibrationThreshold());
         pw.print("    getPickupSubtypePerformsProxCheck(): ");pw.println(
                 dumpPickupSubtypePerformsProxCheck());
+    }
+
+    public boolean getOverwriteValue() {
+        final int values = Settings.System.getIntForUser(mContext.getContentResolver(),
+               Settings.System.DOZE_OVERWRITE_VALUE, 0,
+               UserHandle.USER_CURRENT);
+        return values != 0;
     }
 
     private String dumpPickupSubtypePerformsProxCheck() {

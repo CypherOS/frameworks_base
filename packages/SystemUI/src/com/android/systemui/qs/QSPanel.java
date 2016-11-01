@@ -90,8 +90,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
 
         mBrightnessView = LayoutInflater.from(context).inflate(
                 R.layout.quick_settings_brightness_dialog, this, false);
-        ImageView brightnessIcon = (ImageView) mBrightnessView.findViewById(R.id.brightness_icon);
-        brightnessIcon.setVisibility(View.VISIBLE);
+        mBrightnessIcon = (ImageView) mBrightnessView.findViewById(R.id.brightness_icon);
+        mBrightnessIcon.setVisibility(View.VISIBLE);
         addView(mBrightnessView);
 
         setupTileLayout();
