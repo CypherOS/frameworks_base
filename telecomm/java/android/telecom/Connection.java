@@ -378,13 +378,13 @@ public abstract class Connection extends Conferenceable {
      * manifest will see external connections.
      */
     public static final int PROPERTY_IS_EXTERNAL_CALL = 1<<4;
-	
-	/**
+
+    /**
      * Indicates that the connection has CDMA Enhanced Voice Privacy enabled.
      */
     public static final int PROPERTY_HAS_CDMA_VOICE_PRIVACY = 1<<5;
-	
-	/**
+
+    /**
      * Indicates that the connection represents a downgraded IMS conference.
      * @hide
      */
