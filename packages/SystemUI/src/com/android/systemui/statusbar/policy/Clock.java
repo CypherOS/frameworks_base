@@ -387,6 +387,10 @@ public class Clock extends TextView implements DemoMode {
 		mShowSeconds = Settings.System.getIntForUser(resolver,
                 Settings.System.STATUS_BAR_CLOCK_SECONDS, 0,
                 UserHandle.USER_CURRENT) == 1;
+				
+		mClockStyle = Settings.System.getIntForUser(resolver,
+                Settings.System.STATUS_BAR_CLOCK_STYLE, STYLE_CLOCK_RIGHT,
+                UserHandle.USER_CURRENT);
 
         boolean is24hour = DateFormat.is24HourFormat(mContext);
         int amPmStyle = Settings.System.getIntForUser(resolver,
@@ -396,9 +400,6 @@ public class Clock extends TextView implements DemoMode {
         mAmPmStyle = is24hour ? AM_PM_STYLE_GONE : amPmStyle;
         mClockFormatString = "";
 
-        mClockStyle = Settings.System.getIntForUser(resolver,
-                Settings.System.STATUS_BAR_CLOCK_STYLE, STYLE_CLOCK_RIGHT,
-                UserHandle.USER_CURRENT);
         mClockDateDisplay = Settings.System.getIntForUser(resolver,
                 Settings.System.STATUS_BAR_CLOCK_DATE_DISPLAY, CLOCK_DATE_DISPLAY_GONE,
                 UserHandle.USER_CURRENT);

@@ -500,10 +500,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_SHOW_CARRIER))) {
                 update();
                 updateCarrier();
-				updateRowStates();
-                updateSpeedbump();
-                updateClearAll();
-                updateEmptyShadeView();
             }
 
             if (uri.equals(Settings.System.getUriFor(
@@ -524,6 +520,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
 
             update();
+			updateCarrier();
             updateRowStates();
             updateSpeedbump();
             updateClearAll();

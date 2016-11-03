@@ -115,19 +115,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private static final boolean SHOW_SILENT_TOGGLE = true;
 
-    /* Valid settings for global actions keys.
-     * see config.xml config_globalActionList */
-    private static final String GLOBAL_ACTION_KEY_POWER = "power";
-    private static final String GLOBAL_ACTION_KEY_AIRPLANE = "airplane";
-    private static final String GLOBAL_ACTION_KEY_BUGREPORT = "bugreport";
-    private static final String GLOBAL_ACTION_KEY_SILENT = "silent";
-    private static final String GLOBAL_ACTION_KEY_USERS = "users";
-    private static final String GLOBAL_ACTION_KEY_SETTINGS = "settings";
-    private static final String GLOBAL_ACTION_KEY_LOCKDOWN = "lockdown";
-    private static final String GLOBAL_ACTION_KEY_VOICEASSIST = "voiceassist";
-    private static final String GLOBAL_ACTION_KEY_ASSIST = "assist";
-    private static final String GLOBAL_ACTION_KEY_RESTART = "restart";
-
     private final Context mContext;
     private final WindowManagerFuncs mWindowManagerFuncs;
     private final AudioManager mAudioManager;
@@ -587,6 +574,35 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 return true;
             }
         };
+    }
+	
+	private final class RebootAction extends SinglePressAction {
+        private RebootAction() {
+            super(com.android.internal.R.drawable.ic_restart,
+                    R.string.global_action_restart);
+        }
+
+        @Override
+        public boolean showDuringKeyguard() {
+            return true;
+        }
+
+        @Override
+        public boolean showBeforeProvisioning() {
+            return true;
+        }
+
+        @Override
+        public void onPress() {
+            try {
+                IPowerManager pm = IPowerManager.Stub.asInterface(ServiceManager
+                        .getService(Context.POWER_SERVICE));
+                pm.reboot(true, null, false);
+            } catch (RemoteException e) {
+                Log.e(TAG, "PowerManager service died!", e);
+                return;
+            }
+        }
     }
 
     private class BugReportAction extends SinglePressAction implements LongPressAction {

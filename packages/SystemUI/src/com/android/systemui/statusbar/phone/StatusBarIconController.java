@@ -375,8 +375,8 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     }
 
     public void setClockAndDateStatus(int width, int mode, boolean enabled) {
-        if (mNotificationIcons != null) {
-            mNotificationIcons.setClockAndDateStatus(width, mode, enabled);
+        if (mNotificationIconAreaController != null) {
+            mNotificationIconAreaController.setClockAndDateStatus(width, mode, enabled);
         }
         mClockLocation = mode;
         mShowClock = enabled;
@@ -577,8 +577,8 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mBatteryMeterView.setDarkIntensity(
                 isInArea(mTintArea, mBatteryMeterView) ? mDarkIntensity : 0);
         mClock.setTextColor(getTint(mTintArea, mClock, mIconTint));
+		mCenterClock.setTextColor(getTint(mTintArea, mCenterClock, mIconTint));
         mLeftClock.setTextColor(getTint(mTintArea, mLeftClock, mIconTint));
-        mCenterClock.setTextColor(getTint(mTintArea, mClock, mIconTint));
         mNetworkTraffic.setDarkIntensity(mDarkIntensity);
 		mCarrierLabel.setTextColor(getTint(mTintArea, mCarrierLabel, mIconTint));
         if (Settings.System.getIntForUser(mContext.getContentResolver(),
@@ -663,8 +663,8 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
 
     private void updateClock() {
         FontSizeUtils.updateFontSize(mClock, R.dimen.status_bar_clock_size);
+		FontSizeUtils.updateFontSize(mCenterClock, R.dimen.status_bar_clock_size);
         FontSizeUtils.updateFontSize(mLeftClock, R.dimen.status_bar_clock_size);
-        FontSizeUtils.updateFontSize(mClock, R.dimen.status_bar_clock_size);
         mClock.setPaddingRelative(
                 mContext.getResources().getDimensionPixelSize(
                         R.dimen.status_bar_clock_starting_padding),

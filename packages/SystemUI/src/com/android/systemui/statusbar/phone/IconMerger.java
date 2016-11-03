@@ -75,6 +75,7 @@ public class IconMerger extends LinearLayout {
         int width = getMeasuredWidth();
 		final ViewGroup parent = (ViewGroup)getParent();
         View label = parent.findViewById(R.id.statusbar_carrier_text);
+		
         if (mCenterClock) {
             final int totalWidth = mContext.getResources().getDisplayMetrics().widthPixels;
             int usableWidth = (totalWidth - mClockAndDateWidth - 2 * getFullIconWidth()) / 2;

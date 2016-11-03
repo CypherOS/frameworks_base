@@ -185,15 +185,6 @@ public final class ShutdownThread extends Thread {
                 break;
             }
         }
-		
-        String[] defaultActions = context.getResources().getStringArray(
-                com.android.internal.R.array.config_globalActionsList);
-        for (int i = 0; i < defaultActions.length; i++) {
-            if (defaultActions[i].equals("reboot")) {
-                showRebootOption = true;
-                break;
-            }
-        }
         final int longPressBehavior = context.getResources().getInteger(
                         com.android.internal.R.integer.config_longPressOnPowerBehavior);
         int resourceId = mRebootSafeMode
@@ -221,7 +212,7 @@ public final class ShutdownThread extends Thread {
                             : showRebootOption
                                     ? com.android.internal.R.string.reboot_title
                                     : showRebootOption
-                                    ? com.android.internal.R.string.global_action_reboot
+                                    ? com.android.internal.R.string.global_action_restart
                                     : com.android.internal.R.string.power_off);
 
             if (!advancedReboot) {
@@ -401,11 +392,11 @@ public final class ShutdownThread extends Thread {
             }
         } else if (PowerManager.REBOOT_RECOVERY.equals(mReason) && mRebootWipe) {
             // Factory reset path. Set the dialog message accordingly.
-            pd.setTitle(context.getText(com.android.internal.R.string.global_action_reboot));
+            pd.setTitle(context.getText(com.android.internal.R.string.global_action_restart));
             pd.setMessage(context.getText(
                         com.android.internal.R.string.reboot_progress));
         } else if (mReboot) {
-            pd.setTitle(context.getText(com.android.internal.R.string.global_action_reboot));
+            pd.setTitle(context.getText(com.android.internal.R.string.global_action_restart));
             pd.setMessage(context.getText(com.android.internal.R.string.reboot_progress));
             pd.setIndeterminate(true);
         } else {
