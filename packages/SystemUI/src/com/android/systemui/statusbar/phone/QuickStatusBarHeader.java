@@ -222,7 +222,6 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
 
     @Override
     public void setExpanded(boolean expanded) {
-        if (mExpanded == expanded) return;
         mExpanded = expanded;
         mHeaderQsPanel.setExpanded(expanded);
         updateEverything();
@@ -283,6 +282,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
     public void updateEverything() {
         post(() -> {
             updateVisibilities();
+			updateDateTimePosition();
             setClickable(false);
         });
     }
