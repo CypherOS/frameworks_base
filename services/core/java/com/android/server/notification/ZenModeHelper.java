@@ -75,6 +75,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import cyanogenmod.providers.CMSettings;
+
 /**
  * NotificationManagerService helper for functionality related to zen mode.
  */
