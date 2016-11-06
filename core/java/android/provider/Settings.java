@@ -4136,6 +4136,12 @@ public final class Settings {
         public static final String VOLUME_LINK_NOTIFICATION = "volume_link_notification";
 
         /**
+         * Whether to allow fullscreen screenshots or let the user select which area to screenshot
+         * @hide
+         */
+        public static final String SCREENSHOT_TYPE = "screenshot_type";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
