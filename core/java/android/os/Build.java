@@ -173,6 +173,7 @@ public class Build {
 		
 		/**
          * The user-visible release id string.  E.g., "CNRC1110".
+		 * @Hide
          */
         public static final String AOSCPID = getString("ro.aoscp.release.id");
 
