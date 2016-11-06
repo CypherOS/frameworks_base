@@ -46,18 +46,6 @@
     <!-- Do the battery/notification LEDs support pulsing?
          Used to decide if we show pulse settings -->
     <bool name="config_ledCanPulse">true</bool>
-	
-	<!-- Does the device support CMActions?
-         Decides if CMActions shows in the Gestures menu
-         Note: Disabled by default, set it to true in your device
-         overlay if support is given -->
-    <bool name="config_isCmActionsSupported">false</bool>
-	
-	<!-- Does the device support OnePlusDoze?
-         Decides if OnePlusDoze shows in the Gestures menu
-         Note: Disabled by default, set it to true in your device
-         overlay if support is given -->
-    <bool name="config_isOnePlusDozeSupported">false</bool>
 
     <!-- Vibrator pattern for notifications while alerts
          are disabled -->
