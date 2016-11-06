@@ -89,12 +89,28 @@
     <string name="accessibility_quick_settings_heads_up_changed_off">Notifiche fluttuanti disattivate.</string>
     <string name="accessibility_quick_settings_heads_up_changed_on">Notifiche fluttuanti attivate.</string>
 	
+	<!-- Expanded Desktop QS Tile -->
+    <string name="quick_settings_expanded_desktop">Esteso</string>
+    <string name="quick_settings_expanded_desktop_off">Normale</string>
+	
 	<!-- Heads up snooze toast -->
     <string name="heads_up_snooze_message_one_minute"><xliff:g id="string">%s</xliff:g> - la notifica è posticipata per 1 minuto.</string>
     <string name="heads_up_snooze_message"><xliff:g id="string">%s</xliff:g> - le notifiche saranno posticipate per <xliff:g id="number">%d</xliff:g> minuti.</string>
 	
 	<!-- Gesture Anywhere -->
     <string name="gestures_message">Disegna i tuoi gesti qui</string>
+	
+	<!-- Screenrecord Notification Ticker -->
+     <string name="screenrecord_notif_ticker">Lo schermo è in fase di registrazione</string>
+     <!-- Screenrecord notification title -->
+     <string name="screenrecord_notif_title">Registrazione schermata</string>
+     <!-- Screenrecord notification action: Stop -->
+     <string name="screenrecord_notif_stop">Ferma</string>
+     <!-- Screenrecord notification action: show/hide pointer -->
+     <string name="screenrecord_notif_pointer_on">Visualizza puntatore</string>
+     <string name="screenrecord_notif_pointer_off">Nascondi puntatore</string>
+     <!-- Screen record notification error title -->
+     <string name="screenrecord_notif_error">Impossibile registrare lo schermo</string>
 	
 	<!-- Navbar tuner -->
     <string name="navbar_tuner_title">Sintonizzatore barra di navigazione</string>
@@ -104,4 +120,5 @@
     <string name="tuner_display_color">Colore dello schermo &amp; aspetto</string>
     <!-- notification controls -->
     <string name="tuner_notification_control">Comandi di accensione notifica</string>
+	
 </resources>
