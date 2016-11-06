@@ -3905,6 +3905,12 @@ public final class Settings {
          * @hide
          */
         public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
+		
+		/**
+         * Whether to allow fullscreen screenshots or let the user select which area to screenshot
+         * @hide
+         */
+        public static final String SCREENSHOT_TYPE = "screenshot_type";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
