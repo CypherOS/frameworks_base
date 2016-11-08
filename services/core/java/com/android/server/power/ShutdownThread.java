@@ -210,8 +210,6 @@ public final class ShutdownThread extends Thread {
                     .setTitle(mRebootSafeMode
                             ? com.android.internal.R.string.reboot_safemode_title
                             : showRebootOption
-                                    ? com.android.internal.R.string.reboot_title
-                                    : showRebootOption
                                     ? com.android.internal.R.string.global_action_restart
                                     : com.android.internal.R.string.power_off);
 
