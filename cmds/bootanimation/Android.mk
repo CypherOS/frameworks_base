@@ -25,7 +25,7 @@ LOCAL_SHARED_LIBRARIES := \
     libEGL \
     libGLESv1_CM \
     libgui \
-	libOpenSLES \
+    libOpenSLES \
     libtinyalsa \
     libregionalization
 
