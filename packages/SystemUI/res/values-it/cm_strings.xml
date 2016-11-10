@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright (c) 2009, The Android Open Source Project
+ * Copyright (c) 2015, The CyanogenMod Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Content description of the data connection type HSPA+ for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_data_connection_hspap">HSPA+</string>
+
+    <!-- Weather string format in expanded statusbar header -->
+    <string name="status_bar_expanded_header_weather_format"><xliff:g id="temp">%1$s</xliff:g> - <xliff:g id="condition">%2$s</xliff:g></string>
+
+    <!-- Content description of the superuser tile -->
+    <string name="accessibility_su_active">Sessione SuperUser attiva</string>
+
+    <!-- Notification which notifies user flashlight is enabled -->
+    <string name="quick_settings_tile_flashlight_not_title">Torcia accesa</string>
+    <string name="quick_settings_tile_flashlight_not_summary">Toccare per spegnere</string>
+
+    <!-- [CHAR LIMIT=NONE] Importance Tuner setting title -->
+    <string name="cm_power_notification_controls_description">Con i poteri di controllo delle notifiche, è possibile impostare un livello di importanza da 0 a 6 per le notifiche di un\'app.
+        \n\n<b>Livello 6</b>
+        \n- Mostra in cima alla lista di notifica
+        \n- Consenti interruzione a schermo intero
+        \n- Mostra sempre
+        \n\n<b>Livello 5</b>
+        \n- Evitare l\'interruzione a schermo intero
+        \n- Mostra sempre
+        \n\n<b>Livello 4</b>
+        \n- Evitare l\'interruzione a schermo intero
+        \n- Non mostrare mai
+        \n\n<b>Livello 3</b>
+        \n- Evitare l\'interruzione a schermo intero
+        \n- Non mostrare mai
+        \n- Nessun suono o vibrazione
+        \n\n<b>Livello 2</b>
+        \n- Evitare l\'interruzione a schermo intero
+        \n- Non mostrare mai
+        \n- Nessun suono o vibrazione
+        \n- Nascondi dalla schermata di blocco
+        \n- Mostra in fondo alla lista di notifica
+        \n\n<b>Livello 1</b>
+        \n- Evitare l\'interruzione a schermo intero
+        \n- Non mostrare mai
+        \n- Nessun suono o vibrazione
+        \n- Nascondi dalla schermata di blocco e la barra di stato
+        \n- Mostra in fondo alla lista di notifica
+        \n\n<b>Livello 0</b>
+        \n- Bloccare tutte le notifiche dall\'app
+    </string>
+
+    <!-- Notification importance level title-->
+    <string name="importance_level_title">Importanza: Levello %1$d</string>
+
+    <!-- [CHAR LIMIT=100] Notification Importance slider: very low importance level description -->
+    <string name="notification_importance_very_low">Nessuna interruzione a schermo intero, peeking, suono o vibrazione. Nascondi nella schermata di blocco.</string>
+
+    <!-- Screen pinning dialog description (for devices without navbar) -->
+    <string name="screen_pinning_description_no_navbar">Questo sarà visualizzato fino a quando non si rimuove. Toccare e tenere premuto il pulsante indietro per sbloccare.</string>
+
+    <!-- Strings for lockscreen shortcut hints -->
+    <string name="left_shortcut_hint">Scorri a destra per %1$s</string>
+    <string name="right_shortcut_hint">Scorri a sinistra per %1$s</string>
+
+    <string name="lockscreen_message">Tocca un\'icona di sinistra o di destra per assegnare una scorciatoia nella schermata di blocco.</string>
+    <string name="lockscreen_default_target">Predefinito</string>
+    <string name="select_application">Seleziona un\'applicazione</string>
+    <string name="lockscreen_choose_action_title">Scegli un\'azione</string>
+    <string name="lockscreen_none_target">Nessuna</string>
+
+    <!-- Play queue -->
+    <string name="play_queue_extension">Visualizza coda di riproduzione</string>
+
+    <!-- Weather string format in keyguard -->
+    <string name="keyguard_status_view_weather_format"><xliff:g id="temp">%1$s</xliff:g> <xliff:g id="condition">%2$s</xliff:g></string>
+</resources>
