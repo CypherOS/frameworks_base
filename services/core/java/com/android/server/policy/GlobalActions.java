@@ -516,7 +516,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 Log.e(TAG, "PowerManager service died!", e);
                 return;
             }
-			mWindowManagerFuncs.reboot(false /* confirm */);
         }
     }
 
