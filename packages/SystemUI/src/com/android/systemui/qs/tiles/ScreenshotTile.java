@@ -90,7 +90,7 @@ public class ScreenshotTile extends QSTile<QSTile.BooleanState> {
         } catch (InterruptedException ie) {
              // Do nothing
         }
-        takeScreenshot();
+        takeScreenshot(mScreenshotFullscreen);
     }
 
     @Override
