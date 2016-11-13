@@ -3756,7 +3756,7 @@ public final class Settings {
          * Show four g instead of lte
          * @hide
          */
-        public static final String SHOW_FOURG = "show_fourg"; 
+        public static final String SHOW_LTE_FOURGEE = "show_lte_fourgee"; 
 
        /**
         * USB Data automatic unlock

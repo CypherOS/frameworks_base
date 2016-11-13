@@ -19,6 +19,10 @@
     <com.android.systemui.tuner.StatusBarSwitch
         android:key="rotate"
         android:title="@string/status_bar_settings_auto_rotation" />
+		
+	<SwitchPreference
+        android:key="show_lte_fourgee"
+        android:title="@string/show_lte_fourgee_title" />
 
     <com.android.systemui.tuner.StatusBarSwitch
         android:key="headset"
