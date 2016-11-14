@@ -501,6 +501,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 			resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SHOW_LTE_FOURGEE),
                     false, this, UserHandle.USER_ALL);
+			resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_LAYOUT_COLUMNS),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -543,6 +546,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         @Override
         public void update() {
+			if (mHeader != null) {
+                mHeader.updateSettings();
+            }
             ContentResolver resolver = mContext.getContentResolver();
             int mode = Settings.System.getIntForUser(mContext.getContentResolver(),
                             Settings.System.SCREEN_BRIGHTNESS_MODE,
