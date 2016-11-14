@@ -3941,6 +3941,12 @@ public final class Settings {
          */
         public static final String NOTIFICATION_LIGHT_SCREEN_ON =
                 "notification_light_screen_on_enable";
+				
+		/**
+         * Quick Settings number of culumns 
+         * @hide
+         */
+        public static final String QS_LAYOUT_COLUMNS = "qs_layout_columns";
 
         /**
          * Quick Settings Smart Pulldown
