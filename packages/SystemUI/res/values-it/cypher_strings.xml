@@ -121,4 +121,13 @@
     <!-- notification controls -->
     <string name="tuner_notification_control">Comandi di accensione notifica</string>
 	
+        <!-- Show lte/4g switch -->
+    <string name="show_lte_fourgee_title">4G</string>
+	
+	<!-- Quick settings customization -->
+    <string name="qs_menu_item_columns">Colonne</string>
+    <string name="qs_menu_item_columns_three">3</string>
+    <string name="qs_menu_item_columns_four">4</string>
+    <string name="qs_menu_item_columns_five">5</string>
+    <string name="qs_menu_item_reset">Ripristina</string>
 </resources>
