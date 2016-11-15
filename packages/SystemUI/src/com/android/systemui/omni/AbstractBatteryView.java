@@ -59,8 +59,8 @@ public abstract class AbstractBatteryView extends View implements BatteryControl
     protected int mLightModeBackgroundColor;
     protected int mLightModeFillColor;
     protected int mIconTint = Color.WHITE;
-    protected final Paint mBoltPaint;
-    protected final Paint mTextPaint;
+    protected float mOldDarkIntensity = 0f;
+    protected final Paint mBoltPaint, mTextPaint;
     protected int mTextSize;
     protected int mTextWidth;
 
@@ -268,12 +268,16 @@ public abstract class AbstractBatteryView extends View implements BatteryControl
     protected abstract void applyStyle();
 
     protected void setDarkIntensity(float darkIntensity) {
+		if (darkIntensity == mOldDarkIntensity) {
+            return;
+        }
         int backgroundColor = getBackgroundColor(darkIntensity);
         int fillColor = getFillColor(darkIntensity);
         mIconTint = fillColor;
         mFrameColor = backgroundColor;
         mBoltPaint.setColor(fillColor);
         invalidate();
+		mOldDarkIntensity = darkIntensity;
     }
 
     protected int getBackgroundColor(float darkIntensity) {
