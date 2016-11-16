@@ -36,10 +36,16 @@
     <string name="reboot_progress">Ponowne uruchamianie\u2026</string>
 	
 	<!-- Global Actions -->
-	<string name="global_action_current_user">Użytkownik</string>
+    <string name="global_action_current_user">Użytkownik</string>
     <string name="global_action_screenshot">Zrzut ekranu</string>
-	<string name="global_action_screen_record">Nagrywanie ekranu</string>
+    <string name="global_action_screen_record">Nagrywanie ekranu</string>
     <string name="global_action_search">Wyszukiwanie</string>
-	<string name="global_action_torch">Latarka</string>
+    <string name="global_action_torch">Latarka</string>
     <string name="global_action_voicesearch">Wyszukiwanie głosowe</string>
+  
+    <!-- Battery styles -->
+    <string name="battery_style_text">Tekst</string>
+    <string name="battery_style_default">Tryb portretu</string>
+    <string name="battery_style_meter_horizontal">Tryb krajobrazu</string>
+    <string name="battery_style_circle">Okrąg</string>
 </resources>
