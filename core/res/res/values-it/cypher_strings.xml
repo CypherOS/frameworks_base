@@ -42,4 +42,10 @@
     <string name="global_action_search">Ricerca</string>
 	<string name="global_action_torch">Torcia elettrica</string>
     <string name="global_action_voicesearch">Ricerca vocale</string>
+  
+     <!-- Battery styles -->
+    <string name="battery_style_text">Testo</string>
+    <string name="battery_style_default">Verticale</string>
+    <string name="battery_style_meter_horizontal">Orizzontale</string>
+    <string name="battery_style_circle">Cerchio</string>
 </resources>
