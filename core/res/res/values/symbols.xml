@@ -2811,4 +2811,8 @@
   <java-symbol type="integer" name="config_backKillTimeout" />
   
   <java-symbol type="bool" name="config_useSystemClockforRotationSensor" />
+  
+  <!-- config softap extention feature -->
+  <java-symbol type="bool" name="config_softap_extention" />
+
 </resources>
