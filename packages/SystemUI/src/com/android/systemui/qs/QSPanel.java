@@ -90,9 +90,9 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
 
         mBrightnessView = LayoutInflater.from(context).inflate(
                 R.layout.quick_settings_brightness_dialog, this, false);
-        mBrightnessIcon = (ImageView) mBrightnessView.findViewById(R.id.brightness_icon);
-        mBrightnessIcon.setVisibility(View.VISIBLE);
         addView(mBrightnessView);
+		
+		mBrightnessIcon = (ImageView) mBrightnessView.findViewById(R.id.brightness_icon);
 
         setupTileLayout();
 
@@ -162,6 +162,14 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
             }
         }
         return mHost.createTile(subPanel);
+    }
+	
+	private void setBrightnessIcon() {
+        boolean brightnessIconEnabled = Settings.System.getIntForUser(
+            mContext.getContentResolver(), Settings.System.QS_SHOW_BRIGHTNESS_ICON,
+                0, UserHandle.USER_CURRENT) == 1;
+        mBrightnessIcon.setVisibility(brightnessIconEnabled ? View.VISIBLE : View.GONE);
+        updateResources();
     }
 
     public void setBrightnessMirror(BrightnessMirrorController c) {
@@ -260,6 +268,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
                 mBrightnessController.unregisterCallbacks();
             }
         }
+		setBrightnessIcon();
     }
 
     public void refreshAllTiles() {
