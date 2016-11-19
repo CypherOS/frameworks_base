@@ -182,6 +182,13 @@
 
     <!-- shortcut manager -->
     <uses-permission android:name="android.permission.RESET_SHORTCUT_MANAGER_THROTTLING" />
+	
+	<uses-permission android:name="cyanogenmod.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="cyanogenmod.permission.WRITE_SETTINGS" />
+
+    <!-- Visualizer -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:name=".SystemUIApplication"
