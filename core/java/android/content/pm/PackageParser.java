@@ -2066,14 +2066,11 @@ public class PackageParser {
                 String name = sa.getNonResourceString(
                         com.android.internal.R.styleable.AndroidManifestProtectedBroadcast_name);
 
-                String permission = sa.getNonResourceString(
-                        com.android.internal.R.styleable.AndroidManifestProtectedBroadcast_permission);
-
                 sa.recycle();
 
                 if (name != null && (flags&PARSE_IS_SYSTEM) != 0) {
                     if (pkg.protectedBroadcasts == null) {
-                        pkg.protectedBroadcasts = new ArrayMap<>();
+                        pkg.protectedBroadcasts = new ArrayList<String>();
                     }
                     if (!pkg.protectedBroadcasts.containsKey(name)) {
                         pkg.protectedBroadcasts.put(name.intern(),
@@ -4835,10 +4832,7 @@ public class PackageParser {
 
         public final ArrayList<String> requestedPermissions = new ArrayList<String>();
 
-        /**
-         * Maps from package -> permission, null for system (default behavior)
-         */
-        public ArrayMap<String,String> protectedBroadcasts;
+        public ArrayList<String> protectedBroadcasts;
 
         public Package parentPackage;
         public ArrayList<Package> childPackages;
@@ -5411,12 +5405,6 @@ public class PackageParser {
                 && p.usesLibraryFiles != null) {
             return true;
         }
-        if (state.protectedComponents != null) {
-            boolean protect = state.protectedComponents.size() > 0;
-            if (p.applicationInfo.protect != protect) {
-                return true;
-            }
-        }
         return false;
     }
 
@@ -5455,9 +5443,6 @@ public class PackageParser {
             ai.enabled = false;
         }
         ai.enabledSetting = state.enabled;
-        if (state.protectedComponents != null) {
-            ai.protect = state.protectedComponents.size() > 0;
-        }
     }
 
     public static ApplicationInfo generateApplicationInfo(Package p, int flags,
