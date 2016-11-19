@@ -52,11 +52,6 @@
     <!-- Carrier Apps -->
     <java-symbol type="array" name="config_enabledPreinstalledCarrierApps" />
 
-    <!-- Protected Apps -->
-    <java-symbol type="drawable" name="stat_notify_protected" />
-    <java-symbol type="string" name="notify_package_component_protected_title" />
-    <java-symbol type="string" name="notify_package_component_protected_text" />
-
     <!-- Screen unpinning -->
     <java-symbol type="string" name="lock_to_app_toast_no_navbar" />
 
@@ -69,5 +64,4 @@
     <!-- Support Samsung docks -->
     <java-symbol type="bool" name="config_forceAnalogCarDock" />
     <java-symbol type="bool" name="config_forceAnalogDeskDock" />
-
 </resources>
