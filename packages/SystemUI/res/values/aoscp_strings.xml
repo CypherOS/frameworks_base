@@ -33,6 +33,13 @@
     <string name="accessibility_quick_settings_immersive_mode_hide_status_bar">Immersive mode hide status bar</string>
     <string name="accessibility_quick_settings_immersive_mode_hide_nav_bar">Immersive mode hide navigation bar</string>
 
+	<!-- Navbar tuner -->
+    <string name="navbar_tuner_title">Navbar tuner</string>
+    <!-- statusbar items tuner -->
+    <string name="statusbar_icons_blacklist">Status bar icons</string>
+    <!-- notification controls -->
+    <string name="tuner_notification_control">Power notification controls</string>
+	
     <!-- Announcement made when immersive mode is toggled on/off -->
     <string name="accessibility_quick_settings_immersive_mode_changed_on">Immersive mode turned on</string>
     <string name="accessibility_quick_settings_immersive_mode_changed_off">Immersive mode turned off</string>
