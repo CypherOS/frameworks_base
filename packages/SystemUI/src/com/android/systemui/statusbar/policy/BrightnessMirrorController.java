@@ -59,8 +59,11 @@ public class BrightnessMirrorController {
         mStackScroller = (NotificationStackScrollLayout) statusBarWindow.findViewById(
                 R.id.notification_stack_scroller);
         mIcon = (ImageView) statusBarWindow.findViewById(R.id.brightness_icon);
+<<<<<<< HEAD
         // enable the brightness icon
         mIcon.setVisibility(View.VISIBLE);
+=======
+>>>>>>> aicp/n7.1
     }
 
     public void showMirror() {
@@ -137,14 +140,28 @@ public class BrightnessMirrorController {
     }
 
     private void updateIcon() {
+<<<<<<< HEAD
+=======
+        // enable the brightness icon
+        boolean brightnessIconEnabled = Settings.System.getIntForUser(
+                mContext.getContentResolver(), Settings.System.BRIGHTNESS_ICON,
+                1, UserHandle.USER_CURRENT) == 1;
+        mIcon.setVisibility(brightnessIconEnabled? View.VISIBLE : View.GONE);
+
+>>>>>>> aicp/n7.1
         if (mIcon != null) {
             boolean automatic = Settings.System.getIntForUser(mContext.getContentResolver(),
                     Settings.System.SCREEN_BRIGHTNESS_MODE,
                     Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL,
                     UserHandle.USER_CURRENT) != Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
             mIcon.setImageResource(automatic ?
+<<<<<<< HEAD
                     com.android.systemui.R.drawable.ic_qs_brightness_auto_on :
                     com.android.systemui.R.drawable.ic_qs_brightness_auto_off);
+=======
+                    com.android.systemui.R.drawable.ic_qs_brightness_auto_on_new :
+                    com.android.systemui.R.drawable.ic_qs_brightness_auto_off_new);
+>>>>>>> aicp/n7.1
         }
     }
 }
