@@ -324,6 +324,10 @@ public class VolumeDialogController {
                 mWorker.removeMessages(W.PLAY_SOUND);
                 onStopSoundsW();
             }
+<<<<<<< HEAD
+=======
+
+>>>>>>> aicp/n7.1
         }
         if (changed && fromKey) {
             Events.writeEvent(mContext, Events.EVENT_KEY, stream, lastAudibleStreamVolume);
@@ -737,6 +741,66 @@ public class VolumeDialogController {
         // If preference is no sound - just exit here
         if (Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.VOLUME_ADJUST_SOUNDS_ENABLED, 1) == 0) {
+            return;
+        }
+
+        if (mWorker.hasMessages(W.STOP_SOUNDS)) {
+            mWorker.removeMessages(W.STOP_SOUNDS);
+            // Force stop right now
+            onStopSoundsW();
+        }
+
+        ToneGenerator toneGen = getOrCreateToneGeneratorW(streamType);
+        if (toneGen != null) {
+            toneGen.startTone(ToneGenerator.TONE_PROP_BEEP);
+            mWorker.sendMessageDelayed(mWorker.obtainMessage(W.STOP_SOUNDS), BEEP_DURATION);
+        }
+
+        mWorker.removeMessages(W.FREE_RESOURCES);
+        mWorker.sendMessageDelayed(mWorker.obtainMessage(W.FREE_RESOURCES), FREE_DELAY);
+    }
+
+    protected void onStopSoundsW() {
+        int numStreamTypes = AudioSystem.getNumStreamTypes();
+        for (int i = numStreamTypes - 1; i >= 0; i--) {
+            ToneGenerator toneGen = mToneGenerators[i];
+            if (toneGen != null) {
+                toneGen.stopTone();
+            }
+        }
+    }
+
+    private ToneGenerator getOrCreateToneGeneratorW(int streamType) {
+        if (mToneGenerators[streamType] == null) {
+            try {
+                mToneGenerators[streamType] = new ToneGenerator(streamType,
+                        ToneGenerator.MAX_VOLUME);
+            } catch (RuntimeException e) {
+                if (false) {
+                    Log.d(TAG, "ToneGenerator constructor failed with "
+                            + "RuntimeException: " + e);
+                }
+            }
+        }
+        return mToneGenerators[streamType];
+    }
+
+    protected void onFreeResourcesW() {
+        synchronized (this) {
+            for (int i = mToneGenerators.length - 1; i >= 0; i--) {
+                if (mToneGenerators[i] != null) {
+                    mToneGenerators[i].release();
+                }
+                mToneGenerators[i] = null;
+            }
+        }
+    }
+
+    protected void onPlaySoundW(int streamType, int flags) {
+
+        // If preference is no sound - just exit here
+        if (CMSettings.System.getInt(mContext.getContentResolver(),
+                CMSettings.System.VOLUME_ADJUST_SOUNDS_ENABLED, 1) == 0) {
             return;
         }
 
