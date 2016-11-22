@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright (c) 2009, The Android Open Source Project
+ * Copyright (c) 2015, The CyanogenMod Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Content description of the data connection type HSPA+ for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_data_connection_hspap">HSPA+</string>
+
+    <!-- Weather string format in expanded statusbar header -->
+    <string name="status_bar_expanded_header_weather_format"><xliff:g id="temp">%1$s</xliff:g> - <xliff:g id="condition">%2$s</xliff:g></string>
+
+    <!-- Content description of the superuser tile -->
+    <string name="accessibility_su_active">A sessão do superusuário está ativa</string>
+
+    <!-- Notification which notifies user flashlight is enabled -->
+    <string name="quick_settings_tile_flashlight_not_title">A lanterna está ligada</string>
+    <string name="quick_settings_tile_flashlight_not_summary">Toque para desativar</string>
+
+    <!-- [CHAR LIMIT=NONE] Importance Tuner setting title -->
+    <string name="cm_power_notification_controls_description">Com os controles de notificação de energia, você pode definir um nível de importância de 0 a 6 para as notificações de uma aplicação.
+        \n\n<b>Nível 6</b>
+        \n- Mostrar na parte superior da lista de notificações
+        \n- Permitir interrupção de tela cheia
+        \n- Sempre espiar
+        \n\n<b>Nível 5</b>
+        \n- Impedir a interrupção de tela cheia
+        \n- Sempre espiar
+        \n\n<b>Nível 4</b>
+        \n- Impedir a interrupção de tela cheia
+        \n- Nunca espiar
+        \n\n<b>Nível 3</b>
+        \n- Impedir a interrupção de tela cheia
+        \n- Nunca espiar
+        \n- Nunca faça som e vibração
+        \n\n<b>Nível 2</b>
+        \n- Impedir a interrupção de tela cheia
+        \n- Nunca espiar
+        \n- Nunca faça som ou vibre
+        \n- Ocultar da tela de bloqueio
+        \n- Mostrar na parte inferior da lista de notificações
+        \n\n<b>Nível 1</b>
+        \n- Impedir a interrupção de tela cheia
+        \n- Nunca espiar
+        \n- Nunca faça som ou vibre
+        \n- Ocultar da tela de bloqueio e da barra de status
+        \n- Mostrar na parte inferior da lista de notificações
+        \n\n<b>Nível 0</b>
+        \n- Bloquear todas as notificações da aplicação
+    </string>
+
+    <!-- Notification importance level title-->
+    <string name="importance_level_title">Importância: Nível %1$d</string>
+
+    <!-- [CHAR LIMIT=100] Notification Importance slider: very low importance level description -->
+    <string name="notification_importance_very_low">Sem interrupção de tela cheia, espreitar, som ou vibração. Ocultar da tela de bloqueio.</string>
+
+    <!-- Screen pinning dialog description (for devices without navbar) -->
+    <string name="screen_pinning_description_no_navbar">Isso será exibido até que seja removido. Toque e segure o botão voltar para desbloquear.</string>
+
+    <!-- Strings for lockscreen shortcut hints -->
+    <string name="left_shortcut_hint">Deslize para a direita para %1$s</string>
+    <string name="right_shortcut_hint">Deslize para a esquerda para %1$s</string>
+
+    <string name="lockscreen_message">Toque em um ícone à esquerda ou à direita para atribuir um atalho à tela de bloqueio.</string>
+    <string name="lockscreen_default_target">Padrão</string>
+    <string name="select_application">Selecionar aplicativo</string>
+    <string name="lockscreen_choose_action_title">Escolha a ação</string>
+    <string name="lockscreen_none_target">Nenhum</string>
+
+    <!-- Play queue -->
+    <string name="play_queue_extension">Mostrar fila de reprodução</string>
+
+    <!-- Weather string format in keyguard -->
+    <string name="keyguard_status_view_weather_format"><xliff:g id="temp">%1$s</xliff:g> <xliff:g id="condition">%2$s</xliff:g></string>
+</resources>
