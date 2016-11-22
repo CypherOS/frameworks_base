@@ -43,7 +43,7 @@ public class DisplayDensityUtils {
     private static final float MIN_SCALE_INTERVAL = 0.09f;
 
     /** Minimum density scale. This is available on all devices. */
-    private static final float MIN_SCALE = 0.85f;
+    private static final float MIN_SCALE = 0.76f;
 
     /** Maximum density scale. The actual scale used depends on the device. */
     private static final float MAX_SCALE = 1.50f;
@@ -59,7 +59,8 @@ public class DisplayDensityUtils {
      * largest.
      */
     private static final int[] SUMMARIES_SMALLER = new int[] {
-            R.string.screen_zoom_summary_small
+            R.string.screen_zoom_summary_small,
+            R.string.screen_zoom_summary_smallest
     };
 
     /**
@@ -68,16 +69,15 @@ public class DisplayDensityUtils {
      */
     private static final int[] SUMMARIES_LARGER = new int[] {
             R.string.screen_zoom_summary_large,
-            R.string.screen_zoom_summary_very_large,
-            R.string.screen_zoom_summary_extremely_large,
+            R.string.screen_zoom_summary_largest
     };
 
     /**
      * Minimum allowed screen dimension, corresponds to resource qualifiers
-     * "small" or "sw320dp". This value must be at least the minimum screen
+     * "small" or "sw300dp". This value must be at least the minimum screen
      * size required by the CDD so that we meet developer expectations.
      */
-    private static final int MIN_DIMENSION_DP = 320;
+    private static final int MIN_DIMENSION_DP = 300;
 
     private final String[] mEntries;
     private final int[] mValues;
