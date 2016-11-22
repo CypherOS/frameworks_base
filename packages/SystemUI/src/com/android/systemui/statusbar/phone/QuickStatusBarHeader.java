@@ -54,7 +54,6 @@ import com.android.systemui.statusbar.policy.NextAlarmController;
 import com.android.systemui.statusbar.policy.NextAlarmController.NextAlarmChangeCallback;
 import com.android.systemui.statusbar.policy.UserInfoController;
 import com.android.systemui.statusbar.policy.UserInfoController.OnUserInfoChangedListener;
-import com.android.systemui.statusbar.policy.WeatherController;
 
 public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         NextAlarmChangeCallback, OnClickListener, OnLongClickListener, OnUserInfoChangedListener {
@@ -452,10 +451,5 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         if (mHeaderQsPanel != null) {
             mHeaderQsPanel.updateSettings();
         }
-    }
-
-    @Override
-    public void setWeatherController(WeatherController weatherController) {
-        // not used
     }
 }
