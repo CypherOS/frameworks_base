@@ -22,10 +22,7 @@
     <!-- Content description of the data connection type HSPA+ for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_data_connection_hspap">HSPA+</string>
 
-    <!-- Weather string format in expanded statusbar header -->
-    <string name="status_bar_expanded_header_weather_format"><xliff:g id="temp">%1$s</xliff:g> - <xliff:g id="condition">%2$s</xliff:g></string>
-
-    <!-- Content description of the superuser tile -->
+   <!-- Content description of the superuser tile -->
     <string name="accessibility_su_active">Sessione SuperUser attiva</string>
 
     <!-- Notification which notifies user flashlight is enabled -->
@@ -61,7 +58,7 @@
         \n- Nascondi dalla schermata di blocco e la barra di stato
         \n- Mostra in fondo alla lista di notifica
         \n\n<b>Livello 0</b>
-        \n- Bloccare tutte le notifiche dall\'app
+        \n- Blocca tutte le notifiche dall\'app
     </string>
 
     <!-- Notification importance level title-->
@@ -86,6 +83,4 @@
     <!-- Play queue -->
     <string name="play_queue_extension">Visualizza coda di riproduzione</string>
 
-    <!-- Weather string format in keyguard -->
-    <string name="keyguard_status_view_weather_format"><xliff:g id="temp">%1$s</xliff:g> <xliff:g id="condition">%2$s</xliff:g></string>
 </resources>
