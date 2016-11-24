@@ -177,4 +177,7 @@
 
     <!-- Is the battery LED intrusive? Used to decide if there should be a disable option -->
     <bool name="config_intrusiveBatteryLed">true</bool>
+
+    <!-- Single handed mode config -->
+    <bool name="single_hand_mode">true</bool>
 </resources>
