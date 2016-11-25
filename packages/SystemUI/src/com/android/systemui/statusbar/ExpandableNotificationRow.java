@@ -1078,8 +1078,8 @@ public class ExpandableNotificationRow extends ActivatableNotificationView {
     }
 
     public boolean isUserExpanded() {
-        if (Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.FORCE_EXPANDED_NOTIFICATIONS, 0, UserHandle.USER_CURRENT) != 1) {
+        if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.FORCE_EXPANDED_NOTIFICATIONS, 0) != 1) {
             return mUserExpanded;
         } else {
             return true;

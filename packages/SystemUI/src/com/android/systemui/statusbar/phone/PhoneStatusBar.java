@@ -536,11 +536,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 			}
 			
             update();
-			updateCarrier();
-            updateRowStates();
-            updateSpeedbump();
-            updateClearAll();
-            updateEmptyShadeView();
         }
 
         @Override
