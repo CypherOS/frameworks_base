@@ -375,6 +375,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     // settings
     private QSPanel mQSPanel;
+	private NavBarVisibilityObserver mNavBarVisibilityObserver;
 
     // show lte/4g switch
     private boolean mShowLteFourGee;
@@ -461,6 +462,42 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private int mNavigationIconHints = 0;
     private HandlerThread mHandlerThread;
+	
+	class NavBarVisibilityObserver extends ContentObserver {
+        NavBarVisibilityObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_BAR_VISIBILITY), false, this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            boolean visible = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.NAV_BAR_VISIBILITY, 0, UserHandle.USER_CURRENT) == 1;
+            if (visible) {
+                enableNavigationBar();
+            } else {
+                disableNavigationBar();
+            }
+        }
+    }
+
+    private void enableNavigationBar() {
+        // If we have no Navbar view and we should have one, create it
+        if (mNavigationBarView != null) {
+            return;
+        }
+
+        mNavigationBarView =
+                (NavigationBarView) View.inflate(mContext, R.layout.navigation_bar, null);
+
+        mNavigationBarView.setDisabledFlags(mDisabled1);
+        addNavigationBar();
+    }
 	
 	Runnable mLongPressBrightnessChange = new Runnable() {
         @Override
@@ -835,6 +872,17 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         // in session state
 
         addNavigationBar();
+		
+		// Navigation - Enable Navigation bar
+        try {
+            boolean needsNav = mWindowManagerService.needsNavigationBar();
+            if (!needsNav) {
+                mNavBarVisibilityObserver = new NavBarVisibilityObserver(mHandler);
+                mNavBarVisibilityObserver.observe();
+            }
+        } catch (RemoteException ex) {
+            // no window manager? good luck with that
+        }
 		
 		if (mSettingsObserver == null) {
             mSettingsObserver = new SettingsObserver(new Handler());
@@ -1623,6 +1671,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         prepareNavigationBarView();
 
         mWindowManager.addView(mNavigationBarView, getNavigationBarLayoutParams());
+    }
+	
+	private void disableNavigationBar() {
+        if (DEBUG) Log.d(TAG, "disableNavigationBar: about to remove " + mNavigationBarView);
+        if (mNavigationBarView == null) return;
+
+        mWindowManager.removeView(mNavigationBarView);
+        mNavigationBarView = null;
     }
 
     protected void repositionNavigationBar() {
