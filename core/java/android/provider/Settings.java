@@ -3270,6 +3270,12 @@ public final class Settings {
         /** @hide */
         public static final Validator TIME_12_24_VALIDATOR =
                 new DiscreteValueValidator(new String[] {"12", "24"});
+				
+		/**
+         * Navigation - Navigation bar switch
+         * @hide
+         */
+        public static final String NAV_BAR_VISIBILITY = "nav_bar_visibility";
 
 
         /**
