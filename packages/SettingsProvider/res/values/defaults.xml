@@ -313,4 +313,7 @@
 	
 	<!-- Default for Settings.Global.CAPTIVE_PORTAL_DETECTION_ENABLED -->
     <integer name="def_captive_portal_detection_enabled" translatable="false">1</integer>
+	
+	<!-- Defaults for Settings.System.NAV_BAR_VISIBILITY. -->
+    <integer name="def_force_disable_navkeys">0</integer>
 </resources>
