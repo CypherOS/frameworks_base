@@ -314,4 +314,7 @@ public abstract class AbstractBatteryView extends View implements BatteryControl
         mTextWidth = bounds.width();
         requestLayout();
     }
+
+    protected void loadDimens() {
+    }
 }
