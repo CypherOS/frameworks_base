@@ -77,6 +77,7 @@ import com.android.internal.os.SomeArgs;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.IndentingPrintWriter;
 import com.android.server.SystemService;
+import com.android.server.utils.ServiceHelper;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -189,7 +190,8 @@ public class UsageStatsService extends SystemService implements
                 null, mHandler);
 
         mAppIdleEnabled = getContext().getResources().getBoolean(
-                com.android.internal.R.bool.config_enableAutoPowerModes);
+                com.android.internal.R.bool.config_enableAutoPowerModes) &&
+                ServiceHelper.isGMSInstalled(getContext());
         if (mAppIdleEnabled) {
             IntentFilter deviceStates = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
             deviceStates.addAction(BatteryManager.ACTION_DISCHARGING);
