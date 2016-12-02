@@ -276,7 +276,7 @@ public class NavigationBarView extends LinearLayout {
         mBackLandCarModeIcon = mBackCarModeIcon;
         mBackAltCarModeIcon = ctx.getDrawable(R.drawable.ic_sysbar_back_ime_carmode);
         mBackAltLandCarModeIcon = mBackAltCarModeIcon;
-        mHomeCarModeIcon = ctx.getDrawable(R.drawable.ic_sysbar_home_carmode);
+        mHomeCarModeIcon = ctx.getDrawable(R.drawable.ic_sysbar_home_carmode_pixel);
     }
 
     private void updateIcons(Context ctx, Configuration oldConfig, Configuration newConfig) {
