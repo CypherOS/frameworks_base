@@ -84,4 +84,12 @@
     <string name="play_queue_extension">Show play queue</string>
 
     <!-- Weather string format in keyguard -->
+
+
+    <!-- Wi-Fi hotspot label when enabled -->
+    <plurals name="wifi_hotspot_connected_clients_label">
+        <item quantity="one">%1$d client</item>
+        <item quantity="other">%1$d clients</item>
+    </plurals>
+
 </resources>
