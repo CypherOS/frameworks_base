@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright (c) 2009, The Android Open Source Project
+ * Copyright (c) 2015, The CyanogenMod Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Content description of the data connection type HSPA+ for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_data_connection_hspap">HSPA+</string>
+
+    <!-- Content description of the superuser tile -->
+    <string name="accessibility_su_active">Superuser ist aktiv</string>
+
+    <!-- Notification which notifies user flashlight is enabled -->
+    <string name="quick_settings_tile_flashlight_not_title">Taschenlampe ist an</string>
+    <string name="quick_settings_tile_flashlight_not_summary">Tippe um Taschenlampe auszuschalten</string>
+
+    <!-- [CHAR LIMIT=NONE] Importance Tuner setting title -->
+    <string name="cm_power_notification_controls_description">Mit der Benachrichtigungskontrolle kannst du Benachrichtigungen priorisieren
+        \n\n<b>Level 6</b>
+        \n- Zeige Benachrichtigung oben von der Liste
+        \n- Erlaube Unterbrechung auf ganzem Bildschirm
+        \n- Immer Heads-Up Benachrichtigungen
+        \n\n<b>Level 5</b>
+        \n- Verbiete Unterbrechung auf ganzem Bildschirm
+        \n- Immer Heads-Up Benachrichtigungen
+        \n\n<b>Level 4</b>
+        \n- Verbiete Unterbrechung auf ganzem Bildschirm
+        \n- Verbiete Heads-Up Benachrichtigungen
+        \n\n<b>Level 3</b>
+        \n- Verbiete Unterbrechung auf ganzem Bildschirm
+        \n- Verbiete Heads-Up Benachrichtigungen
+        \n- Verbiete Töne oder Vibrieren
+        \n\n<b>Level 2</b>
+        \n- Verbiete Unterbrechung auf ganzem Bildschirm
+        \n- Verbiete Heads-Up Benachrichtigungen
+        \n- Verbiete Töne oder Vibrieren
+        \n- Verstecke vom Sperrbildschirm
+        \n- Zeige Benachrichtigung unten von der Liste
+        \n\n<b>Level 1</b>
+        \n- Verbiete Unterbrechung auf ganzem Bildschirm
+        \n- Verbiete Heads-Up Benachrichtigungen
+        \n- Verbiete Töne oder Vibrieren
+        \n- Verstecke vom Sperrbildschirm
+        \n- Zeige Benachrichtigung unten von der Liste
+        \n\n<b>Level 0</b>
+        \n- Blockiere alle Benachrichtigungen von dieser App
+    </string>
+
+    <!-- Notification importance level title-->
+    <string name="importance_level_title">Priorität: Level %1$d</string>
+
+    <!-- [CHAR LIMIT=100] Notification Importance slider: very low importance level description -->
+    <string name="notification_importance_very_low">Verbiete Unterbrechung auf ganzem Bildschirm, Heads-Up Benachrichtigungen, Töne oder Vibrieren und Verstecke vom Sperrbildschirm.</string>
+
+    <!-- Screen pinning dialog description (for devices without navbar) -->
+    <string name="screen_pinning_description_no_navbar">Dies fixiert die aktuelle Ansicht. Zum Lösen die Zurück-Taste drücken und halten.</string>
+
+    <!-- Strings for lockscreen shortcut hints -->
+    <string name="left_shortcut_hint">Wische rechts für %1$s</string>
+    <string name="right_shortcut_hint">Wische links für %1$s</string>
+
+    <string name="lockscreen_message">Berühre das linke oder rechte Symbol, um eine Sperrbildschirm-Verknüpfung festzulegen.</string>
+    <string name="lockscreen_default_target">Standard</string>
+    <string name="select_application">Wähle App aus</string>
+    <string name="lockscreen_choose_action_title">Wähle Aktion</string>
+    <string name="lockscreen_none_target">Keine</string>
+
+    <!-- Play queue -->
+    <string name="play_queue_extension">Zeige Warteschlange</string>
+
+    <!-- Weather string format in keyguard -->
+
+
+    <!-- Wi-Fi hotspot label when enabled -->
+    <plurals name="wifi_hotspot_connected_clients_label">
+        <item quantity="one">%1$d Client</item>
+        <item quantity="other">%1$d Clients</item>
+    </plurals>
+
+</resources>
