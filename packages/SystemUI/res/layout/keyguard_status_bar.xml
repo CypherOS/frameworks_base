@@ -60,7 +60,6 @@
             android:paddingEnd="@dimen/battery_level_padding_end"
             android:textColor="@color/status_bar_battery_level_text_color"
             android:visibility="gone"
-            android:textColor="@color/status_bar_battery_level_text_color"
             android:importantForAccessibility="noHideDescendants"/>
     </LinearLayout>
 
