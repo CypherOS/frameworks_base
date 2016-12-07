@@ -358,6 +358,17 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         }
     }
 
+    private void startClockActivity(AlarmManager.AlarmClockInfo alarm) {
+        Intent intent = null;
+        if (alarm != null) {
+            PendingIntent showIntent = alarm.getShowIntent();
+            mActivityStarter.startPendingIntentDismissingKeyguard(showIntent);
+        }
+        if (intent == null) {
+            intent = new Intent(AlarmClock.ACTION_SHOW_ALARMS);
+		}
+	}
+	
     @Override
     public boolean onLongClick(View v) {
         if (v == mClock) {
