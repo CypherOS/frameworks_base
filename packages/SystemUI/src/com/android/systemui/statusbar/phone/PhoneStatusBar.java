@@ -301,6 +301,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
      * an update.
      */
     private static final int REMOTE_INPUT_KEPT_ENTRY_AUTO_CANCEL_DELAY = 200;
+	
+	/**
+     * Never let the alpha become zero for surfaces that draw with SRC - otherwise the RenderNode
+     * won't draw anything and uninitialized memory will show through
+     * if mScrimSrcModeEnabled. Note that 0.001 is rounded down to 0 in
+     * libhwui.
+     */
+    private static final float SRC_MIN_ALPHA = 0.002f;
 
     static {
         boolean onlyCoreApps;

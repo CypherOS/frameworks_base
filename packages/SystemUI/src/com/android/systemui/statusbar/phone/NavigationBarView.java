@@ -348,8 +348,9 @@ public class NavigationBarView extends LinearLayout {
         // We have to replace or restore the back and home button icons when exiting or entering
         // carmode, respectively. Recents are not available in CarMode in nav bar so change
         // to recent icon is not required.
-        BackButtonDrawable backIcon = getBackIcon(mUseCarModeUi, mVertical);
-        backIcon.setImeVisible(backAlt);
+        Drawable backIcon = (backAlt)
+                ? getBackIconWithAlt(mUseCarModeUi, mVertical)
+                : getBackIcon(mUseCarModeUi, mVertical);
 
         getBackButton().setImageDrawable(backIcon);
 
