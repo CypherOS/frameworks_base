@@ -56,5 +56,6 @@
     <style name="BatteryMeterViewDrawable.Circle">
         <item name="blendMode">overlay</item>
     </style>
-	<style name="BatteryMeterViewDrawable.Solid"/>
+    <style name="BatteryMeterViewDrawable.aoscp"/>
+    <style name="BatteryMeterViewDrawable.Solid"/>
 </resources>
