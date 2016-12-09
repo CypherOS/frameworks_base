@@ -74,8 +74,6 @@ import com.android.systemui.statusbar.stack.StackStateAnimator;
 
 import java.util.List;
 
-import cyanogenmod.providers.CMSettings;
-
 public class NotificationPanelView extends PanelView implements
         ExpandableView.OnHeightChangedListener,
         View.OnClickListener, NotificationStackScrollLayout.OnOverscrollTopChangedListener,
@@ -1988,9 +1986,13 @@ public class NotificationPanelView extends PanelView implements
         });
         rightIcon = getLayoutDirection() == LAYOUT_DIRECTION_RTL ? !rightIcon : rightIcon;
         if (rightIcon) {
-            mStatusBar.onCameraHintStarted(mKeyguardBottomArea.getRightHint());
+            mStatusBar.onCameraHintStarted();
         } else {
-            mStatusBar.onLeftHintStarted(mKeyguardBottomArea.getLeftHint());
+            if (mKeyguardBottomArea.isLeftVoiceAssist()) {
+                mStatusBar.onVoiceAssistHintStarted();
+            } else {
+                mStatusBar.onPhoneHintStarted();
+            }
         }
     }
 
@@ -2351,8 +2353,6 @@ public class NotificationPanelView extends PanelView implements
             mLastCameraLaunchSource = KeyguardBottomAreaView.CAMERA_LAUNCH_SOURCE_POWER_DOUBLE_TAP;
         } else if (source == StatusBarManager.CAMERA_LAUNCH_SOURCE_WIGGLE) {
             mLastCameraLaunchSource = KeyguardBottomAreaView.CAMERA_LAUNCH_SOURCE_WIGGLE;
-        } else if (source == StatusBarManager.CAMERA_LAUNCH_SOURCE_SCREEN_GESTURE) {
-            mLastCameraLaunchSource = KeyguardBottomAreaView.CAMERA_LAUNCH_SOURCE_SCREEN_GESTURE;
         } else {
 
             // Default.
@@ -2362,8 +2362,7 @@ public class NotificationPanelView extends PanelView implements
         // If we are launching it when we are occluded already we don't want it to animate,
         // nor setting these flags, since the occluded state doesn't change anymore, hence it's
         // never reset.
-        if (!isFullyCollapsed() && mLastCameraLaunchSource ==
-                KeyguardBottomAreaView.CAMERA_LAUNCH_SOURCE_AFFORDANCE) {
+        if (!isFullyCollapsed()) {
             mLaunchingAffordance = true;
             setLaunchingAffordance(true);
         } else {

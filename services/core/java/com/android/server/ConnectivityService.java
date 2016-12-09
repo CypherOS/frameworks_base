@@ -150,7 +150,7 @@ import com.android.server.net.LockdownVpnTracker;
 
 import com.google.android.collect.Lists;
 
-import cyanogenmod.providers.CMSettings;
+import android.provider.Settings;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -731,8 +731,8 @@ public class ConnectivityService extends IConnectivityManager.Stub
         //                       android-ANDROID_ID
         //                       android-r-RANDOM_NUMBER
         if (TextUtils.isEmpty(SystemProperties.get("net.hostname"))) {
-            String hostname = CMSettings.Secure.getString(context.getContentResolver(),
-                    CMSettings.Secure.DEVICE_HOSTNAME);
+            String hostname = Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.DEVICE_HOSTNAME);
             String id = Settings.Secure.getString(context.getContentResolver(),
                     Settings.Secure.ANDROID_ID);
             if (!TextUtils.isEmpty(hostname)) {
