@@ -132,7 +132,7 @@ import com.android.server.am.ActivityStackSupervisor.ActivityContainer;
 import com.android.server.wm.TaskGroup;
 import com.android.server.wm.WindowManagerService;
 
-import cyanogenmod.providers.CMSettings;
+import android.provider.Settings;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -2702,9 +2702,9 @@ final class ActivityStack {
 
         boolean privacy = mService.mAppOpsService.getPrivacyGuardSettingForPackage(
                 next.app.uid, next.packageName);
-        boolean privacyNotification = (CMSettings.Secure.getInt(
+        boolean privacyNotification = (Settings.Secure.getInt(
                 mService.mContext.getContentResolver(),
-                CMSettings.Secure.PRIVACY_GUARD_NOTIFICATION, 1) == 1);
+                Settings.Secure.PRIVACY_GUARD_NOTIFICATION, 1) == 1);
 
         if (privacyGuardPackageName != null && !privacy) {
             Message msg = mService.mHandler.obtainMessage(
