@@ -2743,6 +2743,18 @@ public final class Settings {
          */
         public static final String BLUETOOTH_ACCEPT_ALL_FILES =
             "bluetooth_accept_all_files";
+			
+		/**
+         * Whether to scramble a pin unlock layout
+         * 0 = 0ff, 1 = on
+		 * @hide
+         */
+        public static final String LOCKSCREEN_PIN_SCRAMBLE_LAYOUT =
+                "lockscreen_scramble_pin_layout";
+
+        /** @hide */
+        public static final Validator LOCKSCREEN_PIN_SCRAMBLE_LAYOUT_VALIDATOR =
+                sBooleanValidator;
 
         /**
          * Bluetooth discoverability timeout.  If this value is nonzero, then
@@ -3288,7 +3300,6 @@ public final class Settings {
          * @hide
          */
         public static final String NAV_BAR_VISIBILITY = "nav_bar_visibility";
-
 
         /**
          * Date format string
@@ -3915,6 +3926,17 @@ public final class Settings {
                 sBooleanValidator;
 				
 		/**
+         * Show icon when stylus is used
+         * The value is boolean (1 or 0).
+		 * @hide
+         */
+        public static final String STYLUS_ICON_ENABLED = "stylus_icon_enabled";
+
+        /** @hide */
+        public static final Validator STYLUS_ICON_ENABLED_VALIDATOR =
+                sBooleanValidator;
+				
+		/**
          * Swap volume buttons when the screen is rotated
          * 0 - Disabled
          * 1 - Enabled (screen is rotated by 90 or 180 degrees: phone, hybrid)
@@ -4232,6 +4254,28 @@ public final class Settings {
          * @hide
          */
         public static final String DIALER_OPENCNAM_AUTH_TOKEN = "dialer_opencnam_auth_token";
+		
+		/**
+         * Whether to attach a queue to media notifications.
+         * 0 = 0ff, 1 = on
+		 * @hide
+         */
+        public static final String NOTIFICATION_PLAY_QUEUE = "notification_play_queue";
+
+        /** @hide */
+        public static final Validator NOTIFICATION_PLAY_QUEUE_VALIDATOR = sBooleanValidator;
+		
+		/**
+         * Whether the HighTouchSensitivity is activated or not.
+         * 0 = off, 1 = on
+		 * @hide
+         */
+        public static final String HIGH_TOUCH_SENSITIVITY_ENABLE =
+                "high_touch_sensitivity_enable";
+
+        /** @hide */
+        public static final Validator HIGH_TOUCH_SENSITIVITY_ENABLE_VALIDATOR =
+                sBooleanValidator;
 
         /**
          * Show or hide clock
@@ -4305,10 +4349,33 @@ public final class Settings {
         public static final String STATUS_BAR_CLOCK_DATE_POSITION = "status_bar_clock_date_position";
 		
 		/**
+         * Whether vibrations are allowed when in zen priority mode during downtime
+         * 0: no vibrations
+         * 1: vibrations for calls only
+         * 2: vibrations for calls and notifications
+         * @hide
+         */
+        public static final String ZEN_PRIORITY_VIBRATION_MODE = "zen_priority_vibration_mode";
+
+        /** @hide */
+        public static final Validator ZEN_PRIORITY_VIBRATION_VALIDATOR =
+                new InclusiveIntegerRangeValidator(0, 2);
+		
+		/**
          * Enable statusbar double tap gesture on to put device to sleep
          * @hide
          */
         public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
+		
+		/**
+         * Show the pending notification counts as overlays on the status bar
+		 * @hide
+         */
+        public static final String STATUS_BAR_NOTIF_COUNT = "status_bar_notif_count";
+
+        /** @hide */
+        public static final Validator STATUS_BAR_NOTIF_COUNT_VALIDATOR =
+                sBooleanValidator;
 		
 		/**
          * Enable/disable overwrite default value for ambient display
@@ -4386,6 +4453,37 @@ public final class Settings {
 
         /** @hide */ public static final int HEADS_UP_USER_OFF = 0;
         /** @hide */ public static final int HEADS_UP_USER_ON = 1;
+		
+		/**
+         * Whether touch hovering is enabled on supported hardware
+         * @hide
+         */
+        public static final String FEATURE_TOUCH_HOVERING = "feature_touch_hovering";
+		
+		/**
+         * Vibrator intensity setting for supported devices
+         * @hide
+         */
+        public static final String VIBRATOR_INTENSITY = "vibrator_intensity";
+		
+		/**
+         * Whether to show the keyguard visualizer.
+         * Boolean setting. 0 = off, 1 = on.
+         * @hide
+         */
+        public static final String LOCKSCREEN_VISUALIZER_ENABLED = "lockscreen_visualizer";
+		
+		/**
+         * Whether newly installed apps should run with privacy guard by default
+         * @hide
+         */
+        public static final String PRIVACY_GUARD_DEFAULT = "privacy_guard_default";
+
+        /**
+         * Whether a notification should be shown if privacy guard is enabled
+         * @hide
+         */
+        public static final String PRIVACY_GUARD_NOTIFICATION = "privacy_guard_notification";
 
         /**
          * Carrier Label Custom Color
@@ -6890,6 +6988,32 @@ public final class Settings {
          * @hide
          */
         public static final String WAKE_GESTURE_ENABLED = "wake_gesture_enabled";
+		
+		/**
+         * Whether to display the ADB notification.
+         * @hide
+         */
+        public static final String ADB_NOTIFY = "adb_notify";
+		
+		/**
+         * The TCP/IP port to run ADB on, or -1 for USB
+         * @hide
+         */
+        public static final String ADB_PORT = "adb_port";
+		
+		/**
+         * The hostname for this device
+         * @hide
+         */
+        public static final String DEVICE_HOSTNAME = "device_hostname";
+		
+		/**
+         * Whether to wake the display when plugging or unplugging the charger
+         *
+         * @hide
+         */
+        public static final String WAKE_WHEN_PLUGGED_OR_UNPLUGGED =
+                "wake_when_plugged_or_unplugged";
 		
 		/**
          * Whether to sound when charger power is connected/disconnected

@@ -80,7 +80,7 @@ import com.android.server.lights.LightsManager;
 import com.android.server.vr.VrManagerService;
 import libcore.util.Objects;
 
-import cyanogenmod.providers.CMSettings;
+import android.provider.Settings;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -718,20 +718,20 @@ public final class PowerManagerService extends SystemService
                 Slog.e(TAG, "Failed to register VR mode state listener: " + e);
             }
 
-            resolver.registerContentObserver(CMSettings.Secure.getUriFor(
-                    CMSettings.Secure.BUTTON_BRIGHTNESS),
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.BUTTON_BRIGHTNESS),
                     false, mSettingsObserver, UserHandle.USER_ALL);
-            resolver.registerContentObserver(CMSettings.Secure.getUriFor(
-                    CMSettings.Secure.KEYBOARD_BRIGHTNESS),
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.KEYBOARD_BRIGHTNESS),
                     false, mSettingsObserver, UserHandle.USER_ALL);
-            resolver.registerContentObserver(CMSettings.Secure.getUriFor(
-                    CMSettings.Secure.BUTTON_BACKLIGHT_TIMEOUT),
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.BUTTON_BACKLIGHT_TIMEOUT),
                     false, mSettingsObserver, UserHandle.USER_ALL);
-            resolver.registerContentObserver(CMSettings.Global.getUriFor(
-                    CMSettings.Global.WAKE_WHEN_PLUGGED_OR_UNPLUGGED),
+            resolver.registerContentObserver(Settings.Global.getUriFor(
+                    Settings.Global.WAKE_WHEN_PLUGGED_OR_UNPLUGGED),
                     false, mSettingsObserver, UserHandle.USER_ALL);
-            resolver.registerContentObserver(CMSettings.Global.getUriFor(
-                    CMSettings.Global.DEV_FORCE_SHOW_NAVBAR),
+            resolver.registerContentObserver(Settings.Global.getUriFor(
+                    Settings.Global.NAV_BAR_VISIBILITY),
                     false, mSettingsObserver, UserHandle.USER_ALL);
 
             // Go.
@@ -808,8 +808,8 @@ public final class PowerManagerService extends SystemService
                 Settings.Global.STAY_ON_WHILE_PLUGGED_IN, BatteryManager.BATTERY_PLUGGED_AC);
         mTheaterModeEnabled = Settings.Global.getInt(mContext.getContentResolver(),
                 Settings.Global.THEATER_MODE_ON, 0) == 1;
-        mWakeUpWhenPluggedOrUnpluggedSetting = CMSettings.Global.getInt(resolver,
-                CMSettings.Global.WAKE_WHEN_PLUGGED_OR_UNPLUGGED,
+        mWakeUpWhenPluggedOrUnpluggedSetting = Settings.Global.getInt(resolver,
+                Settings.Global.WAKE_WHEN_PLUGGED_OR_UNPLUGGED,
                 (mWakeUpWhenPluggedOrUnpluggedConfig ? 1 : 0));
 
         if (mSupportsDoubleTapWakeConfig) {
@@ -857,18 +857,18 @@ public final class PowerManagerService extends SystemService
             updateLowPowerModeLocked();
         }
 
-        mButtonTimeout = CMSettings.Secure.getIntForUser(resolver,
-                CMSettings.Secure.BUTTON_BACKLIGHT_TIMEOUT,
+        mButtonTimeout = Settings.Secure.getIntForUser(resolver,
+                Settings.Secure.BUTTON_BACKLIGHT_TIMEOUT,
                 DEFAULT_BUTTON_ON_DURATION, UserHandle.USER_CURRENT);
 
-        mButtonBrightness = CMSettings.Secure.getIntForUser(resolver,
-                CMSettings.Secure.BUTTON_BRIGHTNESS, mButtonBrightnessSettingDefault,
+        mButtonBrightness = Settings.Secure.getIntForUser(resolver,
+                Settings.Secure.BUTTON_BRIGHTNESS, mButtonBrightnessSettingDefault,
                 UserHandle.USER_CURRENT);
-        mKeyboardBrightness = CMSettings.Secure.getIntForUser(resolver,
-                CMSettings.Secure.KEYBOARD_BRIGHTNESS, mKeyboardBrightnessSettingDefault,
+        mKeyboardBrightness = Settings.Secure.getIntForUser(resolver,
+                Settings.Secure.KEYBOARD_BRIGHTNESS, mKeyboardBrightnessSettingDefault,
                 UserHandle.USER_CURRENT);
-        mForceNavbar = CMSettings.Global.getIntForUser(resolver,
-                CMSettings.Global.DEV_FORCE_SHOW_NAVBAR, 0, UserHandle.USER_CURRENT) == 1;
+        mForceNavbar = Settings.Global.getIntForUser(resolver,
+                Settings.Global.NAV_BAR_VISIBILITY, 0, UserHandle.USER_CURRENT) == 1;
         mDirty |= DIRTY_SETTINGS;
     }
 

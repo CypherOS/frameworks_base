@@ -76,7 +76,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import cyanogenmod.providers.CMSettings;
+import android.provider.Settings;
 
 /**
  * NotificationManagerService helper for functionality related to zen mode.
@@ -757,7 +757,7 @@ public class ZenModeHelper {
     public void readVibrationModeFromSettings() {
         final ContentResolver cr = mContext.getContentResolver();
         mVibrationMode = mZenMode == Global.ZEN_MODE_IMPORTANT_INTERRUPTIONS
-                ? CMSettings.System.getInt(cr, CMSettings.System.ZEN_PRIORITY_VIBRATION_MODE, 0)
+                ? Settings.System.getInt(cr, Settings.System.ZEN_PRIORITY_VIBRATION_MODE, 0)
                 : 0;
     }
 
@@ -1066,8 +1066,8 @@ public class ZenModeHelper {
     private final class SettingsObserver extends ContentObserver {
         private final Uri ZEN_MODE = Global.getUriFor(Global.ZEN_MODE);
         private final Uri ALLOW_LIGHTS = Settings.System.getUriFor(Settings.System.ALLOW_LIGHTS);
-        private final Uri ZEN_PRIORITY_VIBRATION_MODE = CMSettings.System.getUriFor(
-                CMSettings.System.ZEN_PRIORITY_VIBRATION_MODE);
+        private final Uri ZEN_PRIORITY_VIBRATION_MODE = Settings.System.getUriFor(
+                Settings.System.ZEN_PRIORITY_VIBRATION_MODE);
 
         public SettingsObserver(Handler handler) {
             super(handler);
