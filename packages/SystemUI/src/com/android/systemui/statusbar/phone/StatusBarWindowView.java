@@ -70,7 +70,6 @@ import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.DragDownHelper;
 import com.android.systemui.statusbar.StatusBarState;
 import com.android.systemui.statusbar.stack.NotificationStackScrollLayout;
-import cyanogenmod.providers.CMSettings;
 
 
 public class StatusBarWindowView extends FrameLayout {
@@ -738,8 +737,8 @@ public class StatusBarWindowView extends FrameLayout {
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(CMSettings.System.getUriFor(
-                            CMSettings.System.DOUBLE_TAP_SLEEP_GESTURE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                            Settings.System.DOUBLE_TAP_SLEEP_GESTURE), false, this);
             update();
         }
 
@@ -760,8 +759,8 @@ public class StatusBarWindowView extends FrameLayout {
 
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
-            mDoubleTapToSleepEnabled = CMSettings.System
-                    .getInt(resolver, CMSettings.System.DOUBLE_TAP_SLEEP_GESTURE, 1) == 1;
+            mDoubleTapToSleepEnabled = Settings.System
+                    .getInt(resolver, Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 1) == 1;
         }
     }
 }

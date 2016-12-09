@@ -114,7 +114,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
-import cyanogenmod.providers.CMSettings;
+import android.provider.Settings;
 
 import libcore.io.IoUtils;
 import libcore.io.Streams;
@@ -1702,7 +1702,7 @@ public class InputManagerService extends IInputManager.Stub
 
     public void registerStylusIconEnabledSettingObserver() {
         mContext.getContentResolver().registerContentObserver(
-                CMSettings.System.getUriFor(CMSettings.System.STYLUS_ICON_ENABLED), false,
+                Settings.System.getUriFor(Settings.System.STYLUS_ICON_ENABLED), false,
                 new ContentObserver(mHandler) {
                     @Override
                     public void onChange(boolean selfChange) {
@@ -1714,9 +1714,9 @@ public class InputManagerService extends IInputManager.Stub
     private int getStylusIconEnabled(int defaultValue) {
         int result = defaultValue;
         try {
-            result = CMSettings.System.getInt(mContext.getContentResolver(),
-                CMSettings.System.STYLUS_ICON_ENABLED);
-        } catch (CMSettings.CMSettingNotFoundException snfe) {
+            result = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STYLUS_ICON_ENABLED);
+        } catch (Settings.SettingNotFoundException snfe) {
         }
         return result;
     }
@@ -1728,7 +1728,7 @@ public class InputManagerService extends IInputManager.Stub
 
     public void registerVolumeKeysRotationSettingObserver() {
         mContext.getContentResolver().registerContentObserver(
-                CMSettings.System.getUriFor(CMSettings.System.SWAP_VOLUME_KEYS_ON_ROTATION), false,
+                Settings.System.getUriFor(Settings.System.SWAP_VOLUME_KEYS_ON_ROTATION), false,
                 new ContentObserver(mHandler) {
                     @Override
                     public void onChange(boolean selfChange) {
@@ -1740,9 +1740,9 @@ public class InputManagerService extends IInputManager.Stub
     private int getVolumeKeysRotationSetting(int defaultValue) {
         int result = defaultValue;
         try {
-            result = CMSettings.System.getIntForUser(mContext.getContentResolver(),
-                    CMSettings.System.SWAP_VOLUME_KEYS_ON_ROTATION, UserHandle.USER_CURRENT);
-        } catch (CMSettings.CMSettingNotFoundException snfe) {
+            result = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.SWAP_VOLUME_KEYS_ON_ROTATION, UserHandle.USER_CURRENT);
+        } catch (Settings.SettingNotFoundException snfe) {
         }
         return result;
     }
