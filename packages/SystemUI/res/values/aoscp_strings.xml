@@ -142,5 +142,20 @@
 
     <!-- Screenshot QS tile -->
     <string name="quick_settings_screenshot_label">Screenshot</string>
+	
+	<!-- QuickSettings: NFC tile [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_nfc_label">NFC</string>
+    <!-- QuickSettings: NFC (off) [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_nfc_off">NFC is disabled</string>
+    <!-- QuickSettings: NFC (on) [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_nfc_on">NFC is enabled</string>
+    <!-- QuickSettings: NFC and Android Beam string [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_nfc_and_beam">NFC and\nAndroid Beam</string>
+    <!-- QuickSettings: NFC only string [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_nfc_no_beam">NFC only</string>
+    <!-- QuickSettings: NFC and Android Beam are enabled string [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_nfc_and_beam_detail">NFC and Android Beam are enabled</string>
+    <!-- QuickSettings: NFC is enabled, Android Beam disabled string [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_nfc_no_beam_detail">NFC is enabled, Android Beam disabled</string>
 
 </resources>
