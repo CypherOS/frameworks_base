@@ -59,8 +59,6 @@ import com.android.server.pm.PackageManagerService;
 import android.util.Log;
 import android.view.WindowManager;
 
-import cyanogenmod.providers.CMSettings;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
