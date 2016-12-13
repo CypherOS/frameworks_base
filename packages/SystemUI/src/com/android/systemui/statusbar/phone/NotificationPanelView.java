@@ -74,8 +74,6 @@ import com.android.systemui.statusbar.stack.StackStateAnimator;
 
 import java.util.List;
 
-import cyanogenmod.providers.CMSettings;
-
 public class NotificationPanelView extends PanelView implements
         ExpandableView.OnHeightChangedListener,
         View.OnClickListener, NotificationStackScrollLayout.OnOverscrollTopChangedListener,

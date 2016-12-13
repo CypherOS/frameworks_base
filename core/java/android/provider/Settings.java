@@ -3754,6 +3754,15 @@ public final class Settings {
         public static final String VOLBTN_MUSIC_CONTROLS = "volbtn_music_controls";
 		
 		/**
+         * Swap volume buttons when the screen is rotated
+         * 0 - Disabled
+         * 1 - Enabled (screen is rotated by 90 or 180 degrees: phone, hybrid)
+         * 2 - Enabled (screen is rotated by 180 or 270 degrees: tablet)
+         * @hide
+         */
+        public static final String SWAP_VOLUME_KEYS_ON_ROTATION = "swap_volume_keys_on_rotation";
+		
+		/**
          * Action to perform when the home key is long-pressed.
          * (Default can be configured via config_longPressOnHomeBehavior)
          * 0 - Nothing
@@ -3913,19 +3922,6 @@ public final class Settings {
         /** @hide */
         public static final Validator APP_SWITCH_WAKE_SCREEN_VALIDATOR =
                 sBooleanValidator;
-				
-		/**
-         * Swap volume buttons when the screen is rotated
-         * 0 - Disabled
-         * 1 - Enabled (screen is rotated by 90 or 180 degrees: phone, hybrid)
-         * 2 - Enabled (screen is rotated by 180 or 270 degrees: tablet)
-		 * @hide
-         */
-        public static final String SWAP_VOLUME_KEYS_ON_ROTATION = "swap_volume_keys_on_rotation";
-
-        /** @hide */
-        public static final Validator SWAP_VOLUME_KEYS_ON_ROTATION_VALIDATOR =
-                new InclusiveIntegerRangeValidator(0, 2);
 
         /**
          * IMPORTANT: If you add a new public settings you also have to add it to
@@ -6921,6 +6917,13 @@ public final class Settings {
          * @hide
          */
         public static final String QS_WIFI_EASY_TOGGLE = "qs_wifi_easy_toggle";
+		
+		/**
+         * Whether to show the keyguard visualizer.
+         * Boolean setting. 0 = off, 1 = on.
+         * @hide
+         */
+        public static final String LOCKSCREEN_VISUALIZER_ENABLED = "lockscreen_visualizer";
 
         /**
          * Whether the device should doze if configured.
