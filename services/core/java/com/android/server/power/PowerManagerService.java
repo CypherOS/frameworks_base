@@ -718,14 +718,14 @@ public final class PowerManagerService extends SystemService
                 Slog.e(TAG, "Failed to register VR mode state listener: " + e);
             }
 
-            resolver.registerContentObserver(CMSettings.Secure.getUriFor(
-                    CMSettings.Secure.BUTTON_BRIGHTNESS),
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.BUTTON_BRIGHTNESS),
                     false, mSettingsObserver, UserHandle.USER_ALL);
-            resolver.registerContentObserver(CMSettings.Secure.getUriFor(
-                    CMSettings.Secure.KEYBOARD_BRIGHTNESS),
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.KEYBOARD_BRIGHTNESS),
                     false, mSettingsObserver, UserHandle.USER_ALL);
-            resolver.registerContentObserver(CMSettings.Secure.getUriFor(
-                    CMSettings.Secure.BUTTON_BACKLIGHT_TIMEOUT),
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.BUTTON_BACKLIGHT_TIMEOUT),
                     false, mSettingsObserver, UserHandle.USER_ALL);
             resolver.registerContentObserver(CMSettings.Global.getUriFor(
                     CMSettings.Global.WAKE_WHEN_PLUGGED_OR_UNPLUGGED),
@@ -857,15 +857,15 @@ public final class PowerManagerService extends SystemService
             updateLowPowerModeLocked();
         }
 
-        mButtonTimeout = CMSettings.Secure.getIntForUser(resolver,
-                CMSettings.Secure.BUTTON_BACKLIGHT_TIMEOUT,
+        mButtonTimeout = Settings.Secure.getIntForUser(resolver,
+                Settings.Secure.BUTTON_BACKLIGHT_TIMEOUT,
                 DEFAULT_BUTTON_ON_DURATION, UserHandle.USER_CURRENT);
 
-        mButtonBrightness = CMSettings.Secure.getIntForUser(resolver,
-                CMSettings.Secure.BUTTON_BRIGHTNESS, mButtonBrightnessSettingDefault,
+        mButtonBrightness = Settings.Secure.getIntForUser(resolver,
+                Settings.Secure.BUTTON_BRIGHTNESS, mButtonBrightnessSettingDefault,
                 UserHandle.USER_CURRENT);
-        mKeyboardBrightness = CMSettings.Secure.getIntForUser(resolver,
-                CMSettings.Secure.KEYBOARD_BRIGHTNESS, mKeyboardBrightnessSettingDefault,
+        mKeyboardBrightness = Settings.Secure.getIntForUser(resolver,
+                Settings.Secure.KEYBOARD_BRIGHTNESS, mKeyboardBrightnessSettingDefault,
                 UserHandle.USER_CURRENT);
         mForceNavbar = CMSettings.Global.getIntForUser(resolver,
                 CMSettings.Global.DEV_FORCE_SHOW_NAVBAR, 0, UserHandle.USER_CURRENT) == 1;
