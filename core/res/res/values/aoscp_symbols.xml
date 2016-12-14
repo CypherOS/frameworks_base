@@ -85,4 +85,11 @@
   
   <!-- config softap extention feature -->
   <java-symbol type="bool" name="config_softap_extention" />
+  
+  <!-- Extended Boosts for QPerformance -->
+
+  <!-- cpu boost on boot -->
+  <java-symbol type="bool" name="config_enableCpuBoostOnBoot" />
+  <java-symbol type="integer" name="onbootboost_duration" />
+  <java-symbol type="array" name="onbootboost_param_value" />
 </resources>
