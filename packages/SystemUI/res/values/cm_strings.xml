@@ -70,12 +70,6 @@
     <!-- Screen pinning dialog description (for devices without navbar) -->
     <string name="screen_pinning_description_no_navbar">This keeps it in view until you unpin. Touch and hold the Back button to unpin.</string>
 
-    <!-- Play queue -->
-    <string name="play_queue_extension">Show play queue</string>
-
-    <!-- Weather string format in keyguard -->
-
-
     <!-- Wi-Fi hotspot label when enabled -->
     <plurals name="wifi_hotspot_connected_clients_label">
         <item quantity="one">%1$d client</item>
