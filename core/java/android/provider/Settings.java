@@ -3997,12 +3997,6 @@ public final class Settings {
          */
         public static final String STATUS_BAR_SHOW_CARRIER = "status_bar_show_carrier";
 		
-		/*
-         * Dyanamic Navbar Switch
-         * @hide
-         */
-        public static final String NAV_BAR_DYNAMIC = "nav_bar_dynamic";
-		
 		/**
          * Three Finger Gesture from Oppo
          *
