@@ -19,7 +19,7 @@
     <!-- Vendor mismatched fingerprint warning [CHAR LIMIT=NONE] -->
     <string name="system_error_vendorprint">A imagem do fornecedor não corresponde ao sistema. Por favor flash o <xliff:g id="string">%s</xliff:g> Imagem do fornecedor para o seu dispositivo</string>
 	
-	<!-- Reboot Dialog -->
+    <!-- Reboot Dialog -->
     <string name="global_action_reboot">Reiniciar</string>
     <!-- Button to reboot the phone in reboot menu -->
     <string name="reboot_reboot">Reiniciar</string>
@@ -35,17 +35,19 @@
     <!-- Reboot Progress Dialog. This is shown if the user chooses to reboot the phone. -->
     <string name="reboot_progress">Reiniciando\u2026</string>
 	
-	<!-- Global Actions -->
-	<string name="global_action_current_user">Atual</string>
+    <!-- Global Actions -->
+    <string name="global_action_current_user">Atual</string>
     <string name="global_action_screenshot">Captura de tela</string>
-	<string name="global_action_screen_record">Gravador de tela</string>
+    <string name="global_action_screen_record">Gravador de tela</string>
     <string name="global_action_search">Pesquisa</string>
-	<string name="global_action_torch">Lanterna</string>
+    <string name="global_action_torch">Lanterna</string>
     <string name="global_action_voicesearch">Pesquisa por voz</string>
 
-	<!-- Battery styles -->
-    <string name="battery_style_text">Texto</string>
-    <string name="battery_style_default">Retrato</string>
-    <string name="battery_style_meter_horizontal">Paisagem</string>
-    <string name="battery_style_circle">Círculo</string>
+    <!-- Smart Dialog Generic -->
+    <string name="sd_ok">Ok</string>
+    <string name="sd_cancel">Cancelar</string>
+    <string name="sd_sure">Claro</string>
+    <string name="sd_thanks">Obrigado</string>
+    <string name="sd_no_thanks">Não, obrigado</string>
+
 </resources>
