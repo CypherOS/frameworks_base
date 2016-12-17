@@ -42,4 +42,11 @@
     <string name="global_action_search">Search</string>
 	<string name="global_action_torch">Flashlight</string>
     <string name="global_action_voicesearch">Voice Search</string>
+	
+	<!-- Smart Dialog Generic -->
+	<string name="sd_ok">Okay</string>
+	<string name="sd_cancel">Cancel</string>
+	<string name="sd_sure">Sure</string>
+	<string name="sd_thanks">Thanks</string>
+	<string name="sd_no_thanks">No Thanks</string>
 </resources>
