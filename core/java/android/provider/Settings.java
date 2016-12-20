@@ -4066,6 +4066,11 @@ public final class Settings {
          * @hide
          */
         public static final String NETWORK_TRAFFIC_AUTOHIDE_THRESHOLD = "network_traffic_autohide_threshold";
+      
+        /**
+         * @hide
+         */
+        public static final String SHOW_SU_INDICATOR = "show_su_indicator";
 
         /**
          * Whether to disable showing arrows in network traffic indicators

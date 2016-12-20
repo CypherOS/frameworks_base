@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.UserInfo;
+import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.RemoteException;
@@ -51,6 +52,7 @@ import com.android.systemui.statusbar.policy.HotspotController;
 import com.android.systemui.statusbar.policy.RotationLockController;
 import com.android.systemui.statusbar.policy.UserInfoController;
 import com.android.systemui.statusbar.policy.SuController;
+
 
 /**
  * This class contains all of the policy about which icons are installed in the status
@@ -86,6 +88,7 @@ public class PhoneStatusBarPolicy implements Callback, RotationLockController.Ro
     private final DataSaverController mDataSaver;
     private StatusBarKeyguardViewManager mStatusBarKeyguardViewManager;
     private final SuController mSuController;
+    private boolean mSuIndicatorVisible;
 
     // Assume it's all good unless we hear otherwise.  We don't always seem
     // to get broadcasts that it *is* there.
@@ -197,6 +200,11 @@ public class PhoneStatusBarPolicy implements Callback, RotationLockController.Ro
         mIconController.setIcon(mSlotSu, R.drawable.stat_sys_su, null);
         mIconController.setIconVisibility(mSlotSu, false);
         mSuController.addCallback(mSuCallback);
+        mSettingsObserver.onChange(true);
+        mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.SHOW_SU_INDICATOR),
+                false, mSettingsObserver);
+                updateSu();
 
         // managed profile
         mIconController.setIcon(mSlotManagedProfile, R.drawable.stat_sys_managed_profile_status,
@@ -209,7 +217,20 @@ public class PhoneStatusBarPolicy implements Callback, RotationLockController.Ro
         mIconController.setIconVisibility(mSlotDataSaver, false);
         mDataSaver.addListener(this);
     }
-
+  
+   private ContentObserver mSettingsObserver = new ContentObserver(null) {
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            mSuIndicatorVisible = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.SHOW_SU_INDICATOR, 1) == 1;
+            updateSu();
+        }
+        @Override
+        public void onChange(boolean selfChange) {
+            onChange(selfChange, null);
+        }
+    };
+    
     public void setStatusBarKeyguardViewManager(
             StatusBarKeyguardViewManager statusBarKeyguardViewManager) {
         mStatusBarKeyguardViewManager = statusBarKeyguardViewManager;
@@ -523,7 +544,7 @@ public class PhoneStatusBarPolicy implements Callback, RotationLockController.Ro
     };
 
     private void updateSu() {
-        mIconController.setIconVisibility(mSlotSu, mSuController.hasActiveSessions());
+        mIconController.setIconVisibility(mSlotSu, mSuController.hasActiveSessions() && mSuIndicatorVisible);
     }
 
     private final CastController.Callback mCastCallback = new CastController.Callback() {
