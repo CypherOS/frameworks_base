@@ -305,13 +305,10 @@
     -->
     <string name="def_enable_input_methods" translatable="false"></string>
 
-    <!-- Default for Settings.System.STATUS_BAR_NOTIF_COUNT. -->
-    <integer name="def_notif_count">0</integer>
-	
 	<!-- Default for Settings.Global.TETHER_DUN_REQUIRED -->
     <integer name="def_tether_dun_required">0</integer>
 	
-	<!-- Default for Settings.Global.CAPTIVE_PORTAL_DETECTION_ENABLED -->
+    <!-- Default for Settings.Global.CAPTIVE_PORTAL_DETECTION_ENABLED -->
     <integer name="def_captive_portal_detection_enabled" translatable="false">1</integer>
 	
 	<!-- Defaults for Settings.System.NAV_BAR_VISIBILITY. -->
