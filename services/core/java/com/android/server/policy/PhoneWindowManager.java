@@ -1025,12 +1025,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 flags |= EdgeGesturePosition.TOP.FLAG;
             }
             if (mNavigationBar != null && !mNavigationBar.isVisibleLw()) {
-		if (mNavigationBarPosition == NAV_BAR_BOTTOM)
+		if (mNavigationBarPosition == NAV_BAR_BOTTOM) {
                     flags |= EdgeGesturePosition.BOTTOM.FLAG;
                 } else {
                     flags |= EdgeGesturePosition.RIGHT.FLAG;
                 }
             }
+        }
         if (mEdgeListenerActivated) {
             mEdgeGestureActivationListener.restoreListenerState();
             mEdgeListenerActivated = false;
