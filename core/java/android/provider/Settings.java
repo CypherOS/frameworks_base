@@ -4215,6 +4215,18 @@ public final class Settings {
         public static final String VIBRATION_ON_CHARGE_STATE_CHANGED = "vibration_on_charge_state_changed";
 
         /**
+         * Wheter to show network traffic indicator in statusbar
+         * @hide
+         */
+        public static final String NETWORK_TRAFFIC_STATE = "network_traffic_state";
+
+        /**
+         * Network traffic inactivity threshold (default is 1 kBs)
+         * @hide
+         */
+        public static final String NETWORK_TRAFFIC_AUTOHIDE_THRESHOLD = "network_traffic_autohide_threshold";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4406,6 +4418,8 @@ public final class Settings {
             PRIVATE_SETTINGS.add(BATTERY_LIGHT_REALLY_FULL_COLOR);
             PRIVATE_SETTINGS.add(FAST_BATTERY_LIGHT_COLOR);
             PRIVATE_SETTINGS.add(FAST_CHARGING_LED_ENABLED);
+            PRIVATE_SETTINGS.add(NETWORK_TRAFFIC_STATE);
+            PRIVATE_SETTINGS.add(NETWORK_TRAFFIC_AUTOHIDE_THRESHOLD);
         }
 
         /**
