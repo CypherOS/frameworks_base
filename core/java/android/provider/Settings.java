@@ -3931,9 +3931,17 @@ public final class Settings {
          * @hide
          */
         public static final String BUTTON_BRIGHTNESS_ENABLED = "button_brightness_enabled";
-		
-		/**
-		 * Action to perform when the home key is long-pressed.
+
+        /**
+         * Whether user can swap navigation lateral keys.
+         * <p>
+         * Type: int (0 for false, 1 for true)
+         * @hide
+         */
+        public static final String SWAP_NAVIGATION_KEYS = "swap_navigation_keys";
+
+        /**
+         * Action to perform when the home key is long-pressed.
          * (Default can be configured via config_longPressOnHardwareHomeBehavior)
          * 0 - Nothing
          * 1 - Menu
