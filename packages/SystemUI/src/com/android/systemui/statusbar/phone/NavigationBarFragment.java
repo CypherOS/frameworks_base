@@ -127,6 +127,9 @@ public class NavigationBarFragment extends Fragment implements Callbacks {
     private LightBarController mLightBarController;
 
     public boolean mHomeBlockedThisTouch;
+	
+	// Enable swapped naviagtion keys.
+    protected boolean mUseSwapKey = false;
 
     // ----- Fragment Lifecycle Callbacks -----
 
@@ -383,6 +386,7 @@ public class NavigationBarFragment extends Fragment implements Callbacks {
     }
 
     private void prepareNavigationBarView() {
+		mNavigationBarView.setSwapKeys(mUseSwapKey);
         mNavigationBarView.reorient();
 
         ButtonDispatcher recentsButton = mNavigationBarView.getRecentsButton();
