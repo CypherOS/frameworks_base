@@ -31,6 +31,10 @@
        Must be in the range specified by minimum and maximum. -->
   <integer name="config_buttonBrightnessSettingDefault">255</integer>
 
-    <!-- Whether notify fingerprint client of successful cancelled authentication -->
-    <bool name="config_notifyClientOnFingerprintCancelSuccess">false</bool>
+  <!-- Whether notify fingerprint client of successful cancelled authentication -->
+  <bool name="config_notifyClientOnFingerprintCancelSuccess">false</bool>
+
+  <!-- sRGB sysfs path -->
+  <string name="config_srgb_path"></string>
+  
 </resources>
