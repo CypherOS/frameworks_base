@@ -166,6 +166,11 @@ public class Build {
          * The user-visible version string.  E.g., "1.0" or "3.4b5".
          */
         public static final String RELEASE = getString("ro.build.version.release");
+		
+	    /**
+         * The user-visible aoscp version from the settings menu.
+         */
+        public static final String AOSCP = getString("ro.aoscp.version");
 
         /**
          * The base OS build the product is based on.
@@ -740,6 +745,14 @@ public class Build {
 
     /** A string that uniquely identifies this build.  Do not attempt to parse this value. */
     public static final String FINGERPRINT = deriveFingerprint();
+	
+	/** The aoscp api system. */
+    public static final String API = getString("ro.aoscp.api");
+	
+	/**
+     * The user-visible aoscp release id string.
+     */
+    public static final String AOSCPID = getString("ro.aoscp.release.id");
 
     /**
      * Some devices split the fingerprint components between multiple
