@@ -18,6 +18,7 @@ package com.android.systemui.statusbar.policy;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
@@ -28,6 +29,8 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.android.systemui.R;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;

@@ -3781,6 +3781,123 @@ public final class Settings {
          * @hide
          */
         public static final String REVERSE_LOOKUP_PROVIDER = "reverse_lookup_provider";
+		
+		/**
+         * Action to perform when the home key is long-pressed.
+         * (Default can be configured via config_longPressOnHomeBehavior)
+         * 0 - Nothing
+         * 1 - Menu
+         * 2 - App-switch
+         * 3 - Search
+         * 4 - Voice search
+         * 5 - In-app search
+         * 6 - Launch Camera
+         * 7 - Action Sleep
+         * 8 - Last app
+         * 9 - Toggle split screen
+		 * @hide
+         */
+        public static final String KEY_HOME_LONG_PRESS_ACTION = "key_home_long_press_action";
+		
+		/**
+         * Action to perform when the home key is double-tapped.
+         * (Default can be configured via config_doubleTapOnHomeBehavior)
+         * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
+		 * @hide
+         */
+        public static final String KEY_HOME_DOUBLE_TAP_ACTION = "key_home_double_tap_action";
+		
+		/**
+         * Action to perform when the menu key is pressed. (Default is 1)
+         * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
+		 * @hide
+         */
+        public static final String KEY_MENU_ACTION = "key_menu_action";
+		
+		/**
+         * Action to perform when the menu key is long-pressed.
+         * (Default is 0 on devices with a search key, 3 on devices without)
+         * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
+		 * @hide
+         */
+        public static final String KEY_MENU_LONG_PRESS_ACTION = "key_menu_long_press_action";
+		
+		/**
+         * Action to perform when the assistant (search) key is pressed. (Default is 3)
+         * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
+		 * @hide
+         */
+        public static final String KEY_ASSIST_ACTION = "key_assist_action";
+
+        /**
+         * Action to perform when the assistant (search) key is long-pressed. (Default is 4)
+         * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
+		 * @hide
+         */
+        public static final String KEY_ASSIST_LONG_PRESS_ACTION = "key_assist_long_press_action";
+		
+		/**
+         * Action to perform when the app switch key is pressed. (Default is 2)
+         * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
+		 * @hide
+         */
+        public static final String KEY_APP_SWITCH_ACTION = "key_app_switch_action";
+
+        /**
+         * Action to perform when the app switch key is long-pressed. (Default is 0)
+         * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
+		 * @hide
+         */
+        public static final String KEY_APP_SWITCH_LONG_PRESS_ACTION = "key_app_switch_long_press_action";
+		
+		/**
+         * Whether or not volume button music controls should be enabled to seek media tracks
+         * 0 = 0ff, 1 = on
+		 * @hide
+         */
+        public static final String VOLBTN_MUSIC_CONTROLS = "volbtn_music_controls";
+		
+		/**
+         * Whether to wake the screen with the back key, the value is boolean.
+         * 0 = 0ff, 1 = on
+		 * @hide
+         */
+        public static final String BACK_WAKE_SCREEN = "back_wake_screen";
+		
+		/**
+         * Whether to wake the screen with the menu key, the value is boolean.
+         * 0 = 0ff, 1 = on
+		 * @hide
+         */
+        public static final String MENU_WAKE_SCREEN = "menu_wake_screen";
+		
+		/**
+         * Whether to wake the screen with the assist key, the value is boolean.
+         * 0 = 0ff, 1 = on
+		 * @hide
+         */
+        public static final String ASSIST_WAKE_SCREEN = "assist_wake_screen";
+
+        /**
+         * Whether to wake the screen with the app switch key, the value is boolean.
+         * 0 = 0ff, 1 = on
+		 * @hide
+         */
+        public static final String APP_SWITCH_WAKE_SCREEN = "app_switch_wake_screen";
+		
+		/**
+         * Whether to wake the screen with the volume keys, the value is boolean.
+         * 0 = 0ff, 1 = on
+		 * @hide
+         */
+        public static final String VOLUME_WAKE_SCREEN = "volume_wake_screen";
+		
+		/**
+         * Whether to wake the screen with the home key, the value is boolean.
+         * 0 = 0ff, 1 = on
+		 * @hide
+         */
+        public static final String HOME_WAKE_SCREEN = "home_wake_screen";
 				
 		/**
          * Force expanded notifications on all apps that support it.

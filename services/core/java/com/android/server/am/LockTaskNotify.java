@@ -22,11 +22,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.android.internal.R;
-import cyanogenmod.providers.CMSettings;
 
 /**
  *  Helper to manage showing/hiding a image to notify them that they are entering
@@ -47,8 +47,8 @@ public class LockTaskNotify {
     private boolean hasNavigationBar() {
         return mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_showNavigationBar)
-                || CMSettings.Secure.getIntForUser(mContext.getContentResolver(),
-                        CMSettings.Secure.DEV_FORCE_SHOW_NAVBAR, 0, UserHandle.USER_CURRENT) == 1;
+                || Settings.System.getIntForUser(mContext.getContentResolver(),
+                        Settings.System.DEV_FORCE_SHOW_NAVBAR, 0, UserHandle.USER_CURRENT) == 1;
     }
 
     public void showToast(int lockTaskModeState) {

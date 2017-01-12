@@ -543,7 +543,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mMenuWakeScreen;
     boolean mAssistWakeScreen;
     boolean mAppSwitchWakeScreen;
-    boolean mVolumeWakeScreen;
 
     // During wakeup by volume keys, we still need to capture subsequent events
     // until the key is released. This is required since the beep sound is produced
@@ -1942,12 +1941,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         }
                     }
                     @Override
-                    public void onSwipeFromLeft() {
-                        if (mNavigationBar != null && mNavigationBarPosition == NAV_BAR_LEFT) {
-                            requestTransientBars(mNavigationBar);
-                        }
-                    }
-                    @Override
                     public void onFling(int duration) {
                         if (mPowerManagerInternal != null) {
                             mPowerManagerInternal.powerHint(
@@ -2088,7 +2081,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mLongPressOnHomeBehavior = KEY_ACTION_NOTHING;
         }
 
-        mDoubleTapOnHomeBehavior = res.getInteger(
+        mDoubleTapOnHomeBehavior = mContext.getResources().getInteger(
                 com.android.internal.R.integer.config_doubleTapOnHomeBehavior);
         if (mDoubleTapOnHomeBehavior < KEY_ACTION_NOTHING ||
                 mDoubleTapOnHomeBehavior > KEY_ACTION_SLEEP) {
@@ -2134,7 +2127,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mShortPressWindowBehavior = SHORT_PRESS_WINDOW_PICTURE_IN_PICTURE;
         }
 
-        mNavBarOpacityMode = res.getInteger(
+        mNavBarOpacityMode = mContext.getResources().getInteger(
                 com.android.internal.R.integer.config_navBarOpacityMode);
     }
 
