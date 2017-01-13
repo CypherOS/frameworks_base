@@ -41,6 +41,7 @@ import android.view.Display;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.systemui.aoscp.UserContentObserver;
 import com.android.systemui.DemoMode;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.StatusBarIconController;

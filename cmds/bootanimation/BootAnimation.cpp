@@ -1038,21 +1038,21 @@ bool BootAnimation::playAnimation(const Animation& animation)
             if(exitPending() && !part.count)
                 break;
         }
+		
+		if (needSaveMem) {
+            glDeleteTextures(1, &mTextureid);
+        }
 
     }
 
     // Free textures created for looping parts now that the animation is done.
     for (const Animation::Part& part : animation.parts) {
-        if (!needSaveMem && part.count != 1) {
+        if (part.count != 1) {
             const size_t fcount = part.frames.size();
             for (size_t j = 0; j < fcount; j++) {
                 const Animation::Frame& frame(part.frames[j]);
                 glDeleteTextures(1, &frame.tid);
             }
-        }
-		
-		if (needSaveMem) {
-            glDeleteTextures(1, &mTextureid);
         }
     }
 
