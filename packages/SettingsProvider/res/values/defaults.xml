@@ -314,5 +314,5 @@
     <integer name="def_force_disable_navkeys">0</integer>
 
     <!-- Default setting for showing the 4G indicator -->
-    <integer name="def_show_4g_for_lte">1</integer>
+    <integer name="def_show_4g_for_lte">0</integer>
 </resources>
