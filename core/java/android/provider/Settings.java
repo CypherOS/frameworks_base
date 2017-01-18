@@ -4221,6 +4221,12 @@ public final class Settings {
          * @hide
          */
         public static final String QS_LAYOUT_COLUMNS = "qs_layout_columns";
+		
+		/**
+         * Number of qs columns on landscape orientation
+         * @hide
+         */
+        public static final String QS_LAYOUT_COLUMNS_LANDSCAPE = "qs_layout_columns_landscape";
 
         /**
          * Whether to allow fullscreen screenshots or let the user select which area to screenshot
