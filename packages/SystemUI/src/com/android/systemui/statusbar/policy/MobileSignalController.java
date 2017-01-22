@@ -280,7 +280,7 @@ public class MobileSignalController extends SignalController<
         }
 
         if (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SHOW_FOURG, 0) == 1) {
+                Settings.System.SHOW_LTE_FOURGEE, 0) == 1) {
             if (mContext.getResources().getBoolean(R.bool.show_4glte_icon_for_lte)) {
                 mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE,
                         TelephonyIcons.FOUR_G_LTE);

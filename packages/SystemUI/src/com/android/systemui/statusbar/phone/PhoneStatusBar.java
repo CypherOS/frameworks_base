@@ -374,7 +374,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private QSPanel mQSPanel;
     private DevForceNavbarObserver mDevForceNavbarObserver;
 	
-	private boolean mShow4G;
+	// show lte/4g switch
+    private boolean mShowLteFourGee;
 
     // top bar
     BaseStatusBarHeader mHeader;
@@ -439,7 +440,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private int mNavigationIconHints = 0;
     private HandlerThread mHandlerThread;
 	
-	class SettingsObserver extends UserContentObserver {
+	private SettingsObserver mSettingsObserver;
+	
+	protected class SettingsObserver extends UserContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
         }
@@ -450,18 +453,19 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
  
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.SHOW_FOURG), false, this, UserHandle.USER_ALL);
+                    Settings.System.SHOW_LTE_FOURGEE),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.SHOW_FOURG))) {
-                    mShow4G = Settings.System.getIntForUser(
-                            mContext.getContentResolver(),
-                            Settings.System.SHOW_FOURG,
-                            0, UserHandle.USER_CURRENT) == 1;
+                    Settings.System.SHOW_LTE_FOURGEE))) {
+                    mShowLteFourGee = Settings.System.getIntForUser(
+                        mContext.getContentResolver(),
+                        Settings.System.SHOW_LTE_FOURGEE,
+                        0, UserHandle.USER_CURRENT) == 1;
                 updateRowStates();
                 updateSpeedbump();
                 updateClearAll();
@@ -482,8 +486,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
 
-            boolean mShow4G = Settings.System.getIntForUser(resolver,
-                    Settings.System.SHOW_FOURG, 0, UserHandle.USER_CURRENT) == 1;
+            boolean mShowLteFourGee = Settings.System.getIntForUser(resolver,
+                    Settings.System.SHOW_LTE_FOURGEE, 0, UserHandle.USER_CURRENT) == 1;
         }
     }
 
@@ -837,8 +841,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             // no window manager? good luck with that
         }
 		
-		SettingsObserver observer = new SettingsObserver(mHandler);
-        observer.observe();
+		if (mSettingsObserver == null) {
+            mSettingsObserver = new SettingsObserver(new Handler());
+        }
+        mSettingsObserver.observe();
 
         // Lastly, call to the icon policy to install/update all the icons.
         mIconPolicy = new PhoneStatusBarPolicy(mContext, mIconController, mCastController,

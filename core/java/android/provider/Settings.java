@@ -4115,7 +4115,7 @@ public final class Settings {
          * Show four g instead of lte
          * @hide
          */
-        public static final String SHOW_FOURG = "show_fourg";
+        public static final String SHOW_LTE_FOURGEE = "show_lte_fourgee";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
