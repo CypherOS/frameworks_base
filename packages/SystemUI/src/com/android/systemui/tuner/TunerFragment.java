@@ -33,7 +33,7 @@ import android.view.MenuItem;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.MetricsProto.MetricsEvent;
-import com.android.internal.util.cypher.AoscpUtils;
+import com.android.internal.util.aoscp.AoscpUtils;
 import com.android.systemui.R;
 
 public class TunerFragment extends PreferenceFragment {
