@@ -104,21 +104,20 @@ public class BluetoothTile extends QSTile<QSTile.BooleanState>  {
     @Override
     protected void handleClick() {
         boolean easyToggle = isBtEasyToggleEnabled();
-            if (easyToggle) {
-                final boolean isEnabled = (Boolean)mState.value;
-                MetricsLogger.action(mContext, getMetricsCategory(), !isEnabled);
+        if (easyToggle) {
+            final boolean isEnabled = (Boolean)mState.value;
+            MetricsLogger.action(mContext, getMetricsCategory(), !isEnabled);
 	        mController.setBluetoothEnabled(!isEnabled);
-            } else {
-                if (!mController.canConfigBluetooth()) {
+        } else {
+            if (!mController.canConfigBluetooth()) {
 	            mHost.startActivityDismissingKeyguard(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS));
-    	            return;
-    	        }
-                if (!mState.value) {
-                    mState.value = true;
+    	        return;
+    	    }
+            if (!mState.value) {
+                mState.value = true;
 	            mController.setBluetoothEnabled(true);
-                }
-            showDetail(true);
             }
+        showDetail(true);
         }
     }
 
