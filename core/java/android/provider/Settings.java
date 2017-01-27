@@ -6569,6 +6569,12 @@ public final class Settings {
          * @hide
          */
         public static final String QS_BATTERY_EASY_TOGGLE = "qs_battery_easy_toggle";
+		
+		/**
+         * Enable single click to turn Bluetooth on or off.
+         * @hide
+         */
+        public static final String QS_BT_EASY_TOGGLE = "qs_bt_easy_toggle";
 
         /**
          * Whether the device should doze if configured.
@@ -9640,12 +9646,6 @@ public final class Settings {
          * @hide
          */
         public static final String POWER_NOTIFICATIONS_RINGTONE = "power_notifications_ringtone";
-		
-		/**
-         * Enable single click to turn Bluetooth on or off.
-         * @hide
-         */
-        public static final String QS_BT_EASY_TOGGLE = "qs_bt_easy_toggle";
 
         /**
          * Whether to wake the display when plugging or unplugging the charger
