@@ -44,11 +44,6 @@ public class QSIconView extends ViewGroup {
     public QSIconView(Context context) {
         super(context);
 
-        if (MobileSignalController.isCarrierOneSupported()) {
-            mStyle = STATUS_BAR_STYLE_EXTENDED;
-        } else {
-            mStyle = mContext.getResources().getInteger(R.integer.status_bar_style);
-        }
         final Resources res = context.getResources();
         mIconSizePx = res.getDimensionPixelSize(R.dimen.qs_tile_icon_size);
         mTilePaddingBelowIconPx =  res.getDimensionPixelSize(R.dimen.qs_tile_padding_below_icon);

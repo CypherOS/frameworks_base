@@ -1956,6 +1956,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             requestTransientBars(mNavigationBar);
                         }
                     }
+					@Override
+                    public void onSwipeFromLeft() {
+                        if (mNavigationBar != null && mNavigationBarPosition == NAV_BAR_LEFT) {
+                            requestTransientBars(mNavigationBar);
+                        }
+                    }
                     @Override
                     public void onFling(int duration) {
                         if (mPowerManagerInternal != null) {

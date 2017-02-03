@@ -128,6 +128,9 @@ public class SystemGesturesPointerEventListener implements PointerEventListener 
                     } else if (swipe == SWIPE_FROM_RIGHT) {
                         if (DEBUG) Slog.d(TAG, "Firing onSwipeFromRight");
                         mCallbacks.onSwipeFromRight();
+                    } else if (swipe == SWIPE_FROM_LEFT) {
+                        if (DEBUG) Slog.d(TAG, "Firing onSwipeFromLeft");
+                        mCallbacks.onSwipeFromLeft();
                     }
                 }
                 break;
@@ -225,6 +228,11 @@ public class SystemGesturesPointerEventListener implements PointerEventListener 
                 && elapsed < SWIPE_TIMEOUT_MS) {
             return SWIPE_FROM_BOTTOM;
         }
+        if (fromX <= mSwipeStartThreshold
+                && x > fromX + mSwipeDistanceThreshold
+                && elapsed < SWIPE_TIMEOUT_MS) {
+            return SWIPE_FROM_LEFT;
+        }
         if (fromX >= screenWidth - mSwipeStartThreshold
                 && x < fromX - mSwipeDistanceThreshold
                 && elapsed < SWIPE_TIMEOUT_MS) {
@@ -271,6 +279,7 @@ public class SystemGesturesPointerEventListener implements PointerEventListener 
         void onSwipeFromTop();
         void onSwipeFromBottom();
         void onSwipeFromRight();
+        void onSwipeFromLeft();
         void onFling(int durationMs);
         void onDown();
         void onUpOrCancel();
