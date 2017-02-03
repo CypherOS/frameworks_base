@@ -123,6 +123,13 @@ public class KeyguardUpdateMonitorCallback {
      */
     public void onSimStateChanged(int subId, int slotId, IccCardConstants.State simState) { }
 
+	/**
+     * Called when the sevice state changes.
+     * @param subId
+     * @param serviceState
+     */
+    public void onServiceStateChanged(int subId, ServiceState state) { }
+ 
     /**
      * Called when the sevice state changes.
      * @param subId

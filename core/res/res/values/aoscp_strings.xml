@@ -32,6 +32,7 @@
     <string name="reboot_progress">Restarting\u2026</string>
 
     <!-- Global Actions -->
+	<string name="global_action_current_user">Current</string>
     <string name="global_action_screenshot">Screenshot</string>
     <string name="global_action_screen_record">Screen record</string>
     <string name="global_action_search">Search</string>
@@ -44,12 +45,12 @@
     <!-- ADB notification message-->
     <string name="adb_active_generic_notification_message">Touch to disable debugging.</string>
 	
-	<!-- Long-press back kill application -->
+    <!-- Long-press back kill application -->
     <string name="app_killed_message">Application killed</string>
 
     <!-- Vendor mismatched fingerprint warning [CHAR LIMIT=NONE] -->
     <string name="system_error_vendorprint">Your vendor image does not match the system. Please install the <xliff:g id="string">%s</xliff:g> vendor image for your device</string>
 	
-	<!-- Notify user that they are in Lock-to-app (for devices without navbar) -->
+    <!-- Notify user that they are in Lock-to-app (for devices without navbar) -->
     <string name="lock_to_app_toast_no_navbar">To unpin this screen, touch and hold the Back button.</string>
 </resources>
