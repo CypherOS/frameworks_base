@@ -75,7 +75,6 @@ public class NetworkControllerImpl extends BroadcastReceiver
     private static final int EMERGENCY_FIRST_CONTROLLER = 100;
     private static final int EMERGENCY_VOICE_CONTROLLER = 200;
     private static final int EMERGENCY_NO_SUB = 300;
-    private static final String ACTION_EMBMS_STATUS = "com.qualcomm.intent.EMBMS_STATUS";
 
     private final Context mContext;
     private final TelephonyManager mPhone;
@@ -138,7 +137,6 @@ public class NetworkControllerImpl extends BroadcastReceiver
     @VisibleForTesting
     ServiceState mLastServiceState;
     private boolean mUserSetup;
-    private boolean mIsEmbmsActive;
 
     /**
      * Construct this controller object and register for updates.
@@ -226,12 +224,7 @@ public class NetworkControllerImpl extends BroadcastReceiver
         filter.addAction(TelephonyIntents.SPN_STRINGS_UPDATED_ACTION);
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         filter.addAction(ConnectivityManager.INET_CONDITION_ACTION);
-        filter.addAction(Intent.ACTION_LOCALE_CHANGED);
         filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-        //TODO:Replace this check when regional specific config is added
-        if (MobileSignalController.isCarrierOneSupported()) {
-            filter.addAction(ACTION_EMBMS_STATUS);
-        }
         mContext.registerReceiver(this, filter, null, mReceiverHandler);
         mListening = true;
 
@@ -402,10 +395,6 @@ public class NetworkControllerImpl extends BroadcastReceiver
         } else if (action.equals(TelephonyIntents.ACTION_SIM_STATE_CHANGED)) {
             // Might have different subscriptions now.
             updateMobileControllers();
-        } else if (action.equals(Intent.ACTION_LOCALE_CHANGED)) {
-            for (MobileSignalController controller : mMobileSignalControllers.values()) {
-                controller.handleBroadcast(intent);
-            }
         } else if (action.equals(TelephonyIntents.ACTION_SERVICE_STATE_CHANGED)) {
             mLastServiceState = ServiceState.newFromBundle(intent.getExtras());
             if (mMobileSignalControllers.size() == 0) {
@@ -413,13 +402,7 @@ public class NetworkControllerImpl extends BroadcastReceiver
                 // emergency state.
                 recalculateEmergency();
             }
-        } else if (action.equals(ACTION_EMBMS_STATUS)) {
-            mIsEmbmsActive = intent.getBooleanExtra("ACTIVE", false);
-            Log.d(TAG,"EMBMS_STATUS On Receive:isEmbmsactive=" + mIsEmbmsActive);
-            for (MobileSignalController controller : mMobileSignalControllers.values()) {
-                 controller.notifyListeners();
-            }
-         } else {
+        } else {
             int subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY,
                     SubscriptionManager.INVALID_SUBSCRIPTION_ID);
             if (SubscriptionManager.isValidSubscriptionId(subId)) {
@@ -452,10 +435,6 @@ public class NetworkControllerImpl extends BroadcastReceiver
             mobileSignalController.setConfiguration(mConfig);
         }
         refreshLocale();
-    }
-
-    public boolean isEmbmsActive() {
-        return mIsEmbmsActive;
     }
 
     private void updateMobileControllers() {
@@ -843,6 +822,7 @@ public class NetworkControllerImpl extends BroadcastReceiver
                             datatype.equals("e") ? TelephonyIcons.E :
                             datatype.equals("g") ? TelephonyIcons.G :
                             datatype.equals("h") ? TelephonyIcons.H :
+                            datatype.equals("h+") ? TelephonyIcons.HP :
                             datatype.equals("lte") ? TelephonyIcons.LTE :
                             datatype.equals("lte+") ? TelephonyIcons.LTE_PLUS :
                             datatype.equals("roam") ? TelephonyIcons.ROAMING :
@@ -920,10 +900,6 @@ public class NetworkControllerImpl extends BroadcastReceiver
         boolean show4gForLte = false;
         boolean hideLtePlus = false;
         boolean hspaDataDistinguishable;
-        boolean readIconsFromXml;
-        boolean showRsrpSignalLevelforLTE;
-        boolean showLocale;
-        boolean showRat;
 
         static Config readConfig(Context context) {
             Config config = new Config();
@@ -934,14 +910,6 @@ public class NetworkControllerImpl extends BroadcastReceiver
                     res.getBoolean(com.android.internal.R.bool.config_alwaysUseCdmaRssi);
             config.hspaDataDistinguishable =
                     res.getBoolean(R.bool.config_hspa_data_distinguishable);
-            config.readIconsFromXml = res.getBoolean(R.bool.config_read_icons_from_xml);
-            config.showRsrpSignalLevelforLTE =
-                    res.getBoolean(R.bool.config_showRsrpSignalLevelforLTE);
-            config.showLocale =
-                    res.getBoolean(com.android.internal.R.bool.config_monitor_locale_change);
-            config.showRat =
-                    res.getBoolean(com.android.internal.R.bool.config_display_rat);
-
             config.hideLtePlus = res.getBoolean(R.bool.config_hideLtePlus);
             return config;
         }
