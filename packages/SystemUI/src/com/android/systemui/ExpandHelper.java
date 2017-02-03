@@ -515,7 +515,7 @@ public class ExpandHelper implements Gefingerpoken {
         boolean canBeExpanded = mCallback.canChildBeExpanded(v);
         if (canBeExpanded) {
             if (DEBUG) Log.d(TAG, "working on an expandable child");
-            mNaturalHeight = mScaler.getNaturalHeight();
+			mNaturalHeight = mScaler.getNaturalHeight();
             mSmallSize = v.getCollapsedHeight();
         } else {
             if (DEBUG) Log.d(TAG, "working on a non-expandable child");
