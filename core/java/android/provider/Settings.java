@@ -3686,6 +3686,12 @@ public final class Settings {
 
         /** @hide */
         public static final Validator LOCK_TO_APP_ENABLED_VALIDATOR = sBooleanValidator;
+		
+		/**
+         * Enable/Disable screenshot sound
+         * @hide
+         */
+        public static final String SCREENSHOT_SOUND = "screenshot_sound";
 
         /**
          * I am the lolrus.
@@ -3902,6 +3908,12 @@ public final class Settings {
 		 * @hide
          */
         public static final String KEY_APP_SWITCH_LONG_PRESS_ACTION = "key_app_switch_long_press_action";
+		
+		/**
+         * Whether the phone volume up / down effect should be played
+         * @hide
+         */
+        public static final String VOLUME_ADJUST_SOUNDS_ENABLED = "volume_adjust_sounds_enabled";
 		
 		/**
          * Whether or not volume button music controls should be enabled to seek media tracks

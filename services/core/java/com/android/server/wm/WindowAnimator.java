@@ -53,6 +53,7 @@ import android.util.TimeUtils;
 import android.view.Choreographer;
 import android.view.Display;
 import android.view.SurfaceControl;
+import android.view.WindowManager;
 import android.view.WindowManagerPolicy;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
