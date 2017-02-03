@@ -33,13 +33,20 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.hardware.fingerprint.FingerprintManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.hardware.fingerprint.FingerprintManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.provider.MediaStore;
 import android.service.media.CameraPrewarmService;
@@ -53,9 +60,7 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
 import com.android.internal.widget.LockPatternUtils;
-import com.android.keyguard.EmergencyButton;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
 import com.android.systemui.EventLogConstants;
@@ -70,13 +75,15 @@ import com.android.systemui.statusbar.policy.AccessibilityController;
 import com.android.systemui.statusbar.policy.FlashlightController;
 import com.android.systemui.statusbar.policy.PreviewInflater;
 
+import java.util.Objects;
+
 /**
  * Implementation for the bottom area of the Keyguard, including camera/phone affordance and status
  * text.
  */
 public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickListener,
-        UnlockMethodCache.OnUnlockMethodChangedListener,
-        AccessibilityController.AccessibilityStateChangedCallback, View.OnLongClickListener {
+        UnlockMethodCache.OnUnlockMethodChangedListener, 
+		AccessibilityController.AccessibilityStateChangedCallback, View.OnLongClickListener {
 
     final static String TAG = "PhoneStatusBar/KeyguardBottomAreaView";
 
@@ -96,7 +103,6 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     private static final int DOZE_ANIMATION_STAGGER_DELAY = 48;
     private static final int DOZE_ANIMATION_ELEMENT_DURATION = 250;
 
-    private EmergencyButton mEmergencyButton;
     private KeyguardAffordanceView mCameraImageView;
     private KeyguardAffordanceView mLeftAffordanceView;
     private LockIcon mLockIcon;
@@ -119,6 +125,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     private boolean mUserSetupComplete;
     private boolean mPrewarmBound;
     private Messenger mPrewarmMessenger;
+
     private final ServiceConnection mPrewarmConnection = new ServiceConnection() {
 
         @Override
@@ -132,7 +139,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         }
     };
 
-    private boolean mLeftIsVoiceAssist;
+	private boolean mLeftIsVoiceAssist;
     private AssistManager mAssistManager;
 
     public KeyguardBottomAreaView(Context context) {
@@ -195,7 +202,6 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         super.onFinishInflate();
         mLockPatternUtils = new LockPatternUtils(mContext);
         mPreviewContainer = (ViewGroup) findViewById(R.id.preview_container);
-        mEmergencyButton = (EmergencyButton) findViewById(R.id.emergency_call_button);
         mCameraImageView = (KeyguardAffordanceView) findViewById(R.id.camera_button);
         mLeftAffordanceView = (KeyguardAffordanceView) findViewById(R.id.left_button);
         mLockIcon = (LockIcon) findViewById(R.id.lock_icon);
@@ -205,11 +211,10 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         mUnlockMethodCache = UnlockMethodCache.getInstance(getContext());
         mUnlockMethodCache.addListener(this);
         mLockIcon.update();
-        updateEmergencyButton();
         setClipChildren(false);
         setClipToPadding(false);
         mPreviewInflater = new PreviewInflater(mContext, new LockPatternUtils(mContext));
-        inflateCameraPreview();
+		inflateCameraPreview();
         mLockIcon.setOnClickListener(this);
         mLockIcon.setOnLongClickListener(this);
         mCameraImageView.setOnClickListener(this);
@@ -256,7 +261,6 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         lp.height = getResources().getDimensionPixelSize(R.dimen.keyguard_affordance_height);
         mLeftAffordanceView.setLayoutParams(lp);
         updateLeftAffordanceIcon();
-        updateEmergencyButton();
     }
 
     public void setActivityStarter(ActivityStarter activityStarter) {
@@ -615,6 +619,9 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         if (mAffordanceHelper != null) {
             mAffordanceHelper.updatePreviews();
         }
+        if (mAffordanceHelper != null) {
+            mAffordanceHelper.updatePreviews();
+        }
     }
 
     private void updateLeftPreview() {
@@ -743,12 +750,9 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         updateLeftPreview();
     }
 
-    private void updateEmergencyButton() {
-        if (SystemProperties.getBoolean("persist.radio.emgcy_btn_onswipe",false)) {
-            if (mEmergencyButton != null) {
-                mEmergencyButton.updateEmergencyCallButton();
-            }
-        }
+    public void onKeyguardShowingChanged() {
+        updateLeftAffordance();
+        inflateCameraPreview();
     }
 
     public void onKeyguardShowingChanged() {

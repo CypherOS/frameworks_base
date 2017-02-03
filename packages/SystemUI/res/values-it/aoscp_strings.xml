@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2016 CypherOS
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Screenshot Delete Toast -->
+    <string name="delete_screenshot_toast">Screenshot cancellato</string>
+
+    <!-- ADB over network Tile -->
+    <string name="quick_settings_adb_network">Rete ADB</string>
+    <string name="quick_settings_network_adb_enabled_label">Abilitato</string>
+    <string name="quick_settings_network_adb_disabled_label">Disabilitato</string>
+    <string name="accessibility_quick_settings_network_adb_off">ADB sulla rete spento.</string>
+    <string name="accessibility_quick_settings_network_adb_on">ADB sulla rete acceso.</string>
+    <string name="accessibility_quick_settings_network_adb_changed_off">ADB sulla rete disattivato.</string>
+    <string name="accessibility_quick_settings_network_adb_changed_on">ADB sulla rete attivato.</string>
+
+    <!-- Ambient Display QS tile -->
+    <string name="accessibility_quick_settings_ambient_display_off">Display Ambient spento</string>
+    <string name="accessibility_quick_settings_ambient_display_on">Display Ambient acceso</string>
+    <string name="accessibility_quick_settings_ambient_display_changed_off">Display Ambient disattivato</string>
+    <string name="accessibility_quick_settings_ambient_display_changed_on">Display Ambient attivato</string>
+    <string name="quick_settings_ambient_display_label">Display Ambient</string>
+
+    <!-- Brightness QS Tile -->
+    <string name="quick_settings_brightness">Luminosità</string>
+
+    <!-- Caffeine QS Tile -->
+    <string name="quick_settings_caffeine_label">Caffeina</string>
+    <string name="accessibility_quick_settings_caffeine_off">Caffeina spenta.</string>
+    <string name="accessibility_quick_settings_caffeine_on">Caffeina accesa.</string>
+
+    <!-- IME selector Tile -->
+    <string name="quick_settings_ime_label">Metodo di immissione</string>
+
+    <!-- Music QS Tile -->
+    <string name="quick_settings_music_label">Musica</string>
+    <string name="quick_settings_music_play">Play</string>
+    <string name="quick_settings_music_pause">Pausa</string>
+
+    <!-- NFC QS tile -->
+    <string name="quick_settings_nfc_label">NFC</string>
+    <string name="accessibility_quick_settings_nfc_off">NFC spento.</string>
+    <string name="accessibility_quick_settings_nfc_on">NFC acceso.</string>
+    <string name="accessibility_quick_settings_nfc_changed_off">NFC disattivato.</string>
+    <string name="accessibility_quick_settings_nfc_changed_on">NFC attivato.</string>
+
+    <!-- Reboot/Recovery QS Tile -->
+    <string name="quick_settings_reboot_label">Riavvio</string>
+    <string name="quick_settings_reboot_recovery_label">Recovery</string>
+
+    <!-- Screenshot QS tile -->
+    <string name="quick_settings_screenshot_label">Screenshot</string>
+
+    <!-- Sound QS Tile -->
+    <string name="quick_settings_sound_label">Souno</string>
+    <string name="quick_settings_sound_ring">Suoneria</string>
+    <string name="quick_settings_sound_vibrate">Vibrazione</string>
+    <string name="quick_settings_sound_dnd">Non disturbare</string>
+
+    <!-- Sync QS tile -->
+    <string name="quick_settings_sync_label">Sincronizzazione</string>
+    <string name="accessibility_quick_settings_sync_off">Sincronizzazione spenta</string>
+    <string name="accessibility_quick_settings_sync_on">Sincronizzazione accesa</string>
+    <string name="accessibility_quick_settings_sync_changed_off">Sincronizzazione disattivata</string>
+    <string name="accessibility_quick_settings_sync_changed_on">Sincronizzazione attivata</string>
+	
+    <!-- USB tether QS tile -->
+    <string name="accessibility_quick_settings_usb_tether_off">USB tethering spento</string>
+    <string name="accessibility_quick_settings_usb_tether_on">USB tethering acceso</string>
+    <string name="accessibility_quick_settings_usb_tether_changed_off">USB tethering disattivato</string>
+    <string name="accessibility_quick_settings_usb_tether_changed_on">USB tethering attivato</string>
+    <string name="quick_settings_usb_tether_label">USB tethering</string>
+	
+    <!-- Heads Up QS Tile -->
+    <string name="quick_settings_heads_up_label">Notifiche Fluttuanti</string>
+    <string name="accessibility_quick_settings_heads_up_off">Notifiche fluttuanti spente.</string>
+    <string name="accessibility_quick_settings_heads_up_on">Notifiche fluttuanti accese.</string>
+    <string name="accessibility_quick_settings_heads_up_changed_off">Notifiche fluttuanti disattivate.</string>
+    <string name="accessibility_quick_settings_heads_up_changed_on">Notifiche fluttuanti attivate.</string>
+	
+    <!-- Expanded Desktop QS Tile -->
+    <string name="quick_settings_expanded_desktop">Esteso</string>
+    <string name="quick_settings_expanded_desktop_off">Normale</string>
+	
+    <!-- Heads up snooze toast -->
+    <string name="heads_up_snooze_message_one_minute"><xliff:g id="string">%s</xliff:g> - la notifica è posticipata per 1 minuto.</string>
+    <string name="heads_up_snooze_message"><xliff:g id="string">%s</xliff:g> - le notifiche saranno posticipate per <xliff:g id="number">%d</xliff:g> minuti.</string>
+	
+    <!-- Gesture Anywhere -->
+    <string name="gestures_message">Disegna i tuoi gesti qui</string>
+	
+    <!-- Screenrecord Notification Ticker -->
+    <string name="screenrecord_notif_ticker">Lo schermo è in fase di registrazione</string>
+    <!-- Screenrecord notification title -->
+    <string name="screenrecord_notif_title">Registrazione schermata</string>
+    <!-- Screenrecord notification action: Stop -->
+    <string name="screenrecord_notif_stop">Ferma</string>
+    <!-- Screenrecord notification action: show/hide pointer -->
+    <string name="screenrecord_notif_pointer_on">Visualizza puntatore</string>
+    <string name="screenrecord_notif_pointer_off">Nascondi puntatore</string>
+    <!-- Screen record notification error title -->
+    <string name="screenrecord_notif_error">Impossibile registrare lo schermo</string>
+	
+    <!-- Navbar tuner -->
+    <string name="navbar_tuner_title">Sintonizzatore barra di navigazione</string>
+    <!-- statusbar items tuner -->
+    <string name="statusbar_icons_blacklist">Icone della barra di stato</string>
+    <!-- tuner display color -->
+    <string name="tuner_display_color">Colore dello schermo &amp; aspetto</string>
+    <!-- notification controls -->
+    <string name="tuner_notification_control">Comandi di accensione notifica</string>
+	
+    <!-- Show lte/4g switch -->
+    <string name="show_lte_fourgee_title">4G</string>
+	
+    <!-- Quick settings customization -->
+    <string name="qs_menu_item_columns">Colonne</string>
+    <string name="qs_menu_item_columns_three">3</string>
+    <string name="qs_menu_item_columns_four">4</string>
+    <string name="qs_menu_item_columns_five">5</string>
+    <string name="qs_menu_item_reset">Ripristina</string>
+  
+    <!-- OnTheSpot: Action denial button text. [CHAR LIMIT=NONE] -->
+    <string name="on_the_spot_deny">No</string>
+    <!-- OnTheSpot: Action confirmation button text. [CHAR LIMIT=NONE] -->
+    <string name="on_the_spot_confirm">Si</string>
+</resources>
