@@ -104,8 +104,8 @@ public class BrightnessTile extends QSTile<QSTile.BooleanState> {
             getBrightnessState() == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
         state.label = mContext.getString(R.string.quick_settings_brightness);
         state.icon = autoBrightness
-                ? ResourceIcon.get(R.drawable.ic_qs_brightness_auto_on_alpha)
-                : ResourceIcon.get(R.drawable.ic_qs_brightness_auto_off_alpha);
+                ? ResourceIcon.get(R.drawable.ic_qs_brightness_auto_on_new)
+                : ResourceIcon.get(R.drawable.ic_qs_brightness_auto_off_new);
     }
 
     protected void toggleState() {
