@@ -28,8 +28,6 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.telephony.ServiceState;
 import android.telephony.SubscriptionInfo;
-import android.telephony.SubscriptionManager;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.method.SingleLineTransformationMethod;
 import android.util.AttributeSet;
@@ -157,8 +155,6 @@ public class CarrierText extends TextView {
     protected void updateCarrierText() {
         boolean allSimsMissing = true;
         boolean anySimReadyAndInService = false;
-        boolean showLocale = getContext().getResources().getBoolean(
-                com.android.internal.R.bool.config_monitor_locale_change);
         CharSequence displayText = null;
 
         List<SubscriptionInfo> subs = mKeyguardUpdateMonitor.getSubscriptionInfo(false);
@@ -183,51 +179,9 @@ public class CarrierText extends TextView {
             }
         }
         for (int i = 0; i < N; i++) {
-            CharSequence networkClass = "";
             int subId = subs.get(i).getSubscriptionId();
             State simState = mKeyguardUpdateMonitor.getSimState(subId);
-            boolean showRat = SubscriptionManager.getResourcesForSubId(mContext,
-                    subId).getBoolean(com.android.internal.R.bool.config_display_rat);
-            if (showRat) {
-                ServiceState ss = mKeyguardUpdateMonitor.mServiceStates.get(subId);
-                if (ss != null && (ss.getDataRegState() == ServiceState.STATE_IN_SERVICE
-                        || ss.getVoiceRegState() == ServiceState.STATE_IN_SERVICE)) {
-                    int networkType = TelephonyManager.NETWORK_TYPE_UNKNOWN;
-                    if (ss.getRilDataRadioTechnology() !=
-                            ServiceState.RIL_RADIO_TECHNOLOGY_UNKNOWN) {
-                        networkType = ss.getDataNetworkType();
-                    } else if (ss.getRilVoiceRadioTechnology() !=
-                                ServiceState.RIL_RADIO_TECHNOLOGY_UNKNOWN) {
-                        networkType = ss.getVoiceNetworkType();
-                    }
-                    networkClass = networkClassToString(TelephonyManager
-                            .getNetworkClass(networkType));
-                }
-            }
             CharSequence carrierName = subs.get(i).getCarrierName();
-            if (showLocale || showRat) {
-                String[] names = carrierName.toString().split(mSeparator.toString(), 2);
-                StringBuilder newCarrierName = new StringBuilder();
-                for (int j = 0; j < names.length; j++) {
-                    if (showLocale) {
-                        names[j] = android.util.NativeTextHelper.getLocalString(getContext(),
-                                names[j], com.android.internal.R.array.origin_carrier_names,
-                                com.android.internal.R.array.locale_carrier_names);
-                    }
-                    if (!TextUtils.isEmpty(names[j])) {
-                        if (!TextUtils.isEmpty(networkClass) && showRat) {
-                            names[j] = new StringBuilder().append(names[j]).append(" ")
-                                    .append(networkClass).toString();
-                        }
-                        if (j > 0 && names[j].equals(names[j-1])) {
-                            continue;
-                        }
-                        if (j > 0) newCarrierName.append(mSeparator);
-                        newCarrierName.append(names[j]);
-                    }
-                }
-                carrierName = newCarrierName.toString();
-            }
             CharSequence carrierTextForSimState = getCarrierTextForSimState(simState, carrierName);
             if (DEBUG) {
                 Log.d(TAG, "Handling (subId=" + subId + "): " + simState + " " + carrierName);
@@ -253,38 +207,7 @@ public class CarrierText extends TextView {
                 }
             }
         }
-        /*
-         * In the case where there is only one sim inserted in a multisim device, if
-         * the voice registration service state is reported as 12 (no service with emergency)
-         * for at least one of the sim concatenate the sim state with "Emergency calls only"
-         */
-        if (N < TelephonyManager.getDefault().getPhoneCount() &&
-                 mKeyguardUpdateMonitor.isEmergencyOnly()) {
-            int presentSubId = mKeyguardUpdateMonitor.getPresentSubId();
-
-            if (DEBUG) {
-                Log.d(TAG, " Present sim - sub id: " + presentSubId);
-            }
-            if (presentSubId != -1) {
-                CharSequence text =
-                        getContext().getText(com.android.internal.R.string.emergency_calls_only);
-                Intent spnUpdatedIntent = getContext().registerReceiver(null,
-                        new IntentFilter(TelephonyIntents.SPN_STRINGS_UPDATED_ACTION));
-                if (spnUpdatedIntent != null) {
-                    String spn = "";
-                    if (spnUpdatedIntent.getBooleanExtra(TelephonyIntents.EXTRA_SHOW_SPN, false) &&
-                            spnUpdatedIntent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY, -1) ==
-                                presentSubId) {
-                        spn = spnUpdatedIntent.getStringExtra(TelephonyIntents.EXTRA_SPN);
-                        if (!spn.equals(text.toString())) {
-                            text = concatenate(text, spn);
-                        }
-                    }
-                }
-                displayText = getCarrierTextForSimState(
-                        mKeyguardUpdateMonitor.getSimState(presentSubId), text);
-            }
-        }
+		
         if (allSimsMissing) {
             if (N != 0) {
                 // Shows "No SIM card | Emergency calls only" on devices that are voice-capable.
@@ -293,9 +216,7 @@ public class CarrierText extends TextView {
                 // "No SIM card"
                 // Grab the first subscripton, because they all should contain the emergency text,
                 // described above.
-                displayText =  makeCarrierStringOnEmergencyCapable(
-                        getContext().getText(R.string.keyguard_missing_sim_message_short),
-                        subs.get(0).getCarrierName());
+                displayText =  null;
             } else {
                 // We don't have a SubscriptionInfo to get the emergency calls only from.
                 // Grab it from the old sticky broadcast if possible instead. We can use it
@@ -321,8 +242,7 @@ public class CarrierText extends TextView {
                         text = concatenate(plmn, spn);
                     }
                 }
-                displayText =  makeCarrierStringOnEmergencyCapable(
-                        getContext().getText(R.string.keyguard_missing_sim_message_short), text);
+                displayText =  null;
             }
         }
 
@@ -541,18 +461,5 @@ public class CarrierText extends TextView {
 
             return source;
         }
-    }
-
-    private String networkClassToString (int networkClass) {
-        final int[] classIds =
-            {com.android.internal.R.string.config_rat_unknown,
-            com.android.internal.R.string.config_rat_2g,
-            com.android.internal.R.string.config_rat_3g,
-            com.android.internal.R.string.config_rat_4g };
-        String classString = null;
-        if (networkClass < classIds.length) {
-            classString = getContext().getResources().getString(classIds[networkClass]);
-        }
-        return (classString == null) ? "" : classString;
     }
 }
