@@ -566,7 +566,7 @@ public class InputManagerService extends IInputManager.Stub
                 mInputFilterChain.add(0, mInputFilterHost);
             }
 
-            nativeSetInputFilterEnabled(mPtr, !mInputFilterChain.isEmpty());
+    }  else { nativeSetInputFilterEnabled(mPtr, !mInputFilterChain.isEmpty()); }
         }
     }
 
