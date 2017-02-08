@@ -12,9 +12,32 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Navbar tuner -->
+    <string name="navbar_tuner_title">Sintonizzatore barra di navigazione</string>
+    <!-- statusbar items tuner -->
+    <string name="statusbar_icons_blacklist">Icone barra di stato</string>
+    <!-- notification controls -->
+    <string name="tuner_notification_control">Controlli alimentazione di notifica</string>
 
-    <!-- Screenshot Delete Toast -->
-    <string name="delete_screenshot_toast">Screenshot cancellato</string>
+   <string name="delete_screenshot_toast">Elimina Screenshot</string>
+
+    <!-- Content description of the data connection type HSPA+ for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_data_connection_hspap">HSPA+</string>
+
+    <!-- Screenrecord Notification Ticker -->
+    <string name="screenrecord_notif_ticker">Lo schermo è in fase di registrazione</string>
+    <!-- Screenrecord notification title -->
+    <string name="screenrecord_notif_title">Schermata di registrazione</string>
+    <!-- Screenrecord notification action: Stop -->
+    <string name="screenrecord_notif_stop">Ferma</string>
+    <!-- Screenrecord notification action: show/hide pointer -->
+    <string name="screenrecord_notif_pointer_on">Visualizza puntatore</string>
+    <string name="screenrecord_notif_pointer_off">Nascondi puntatore</string>
+    <!-- Screen record notification error title -->
+    <string name="screenrecord_notif_error">Impossibile registrare lo schermo</string>
+
+    <!-- Screen pinning dialog description (for devices without navbar) -->
+    <string name="screen_pinning_description_no_navbar">Tienilo in vista fino a quando non sblocchi. Tieni premuto il tasto Indietro per sbloccare.</string>
 
     <!-- ADB over network Tile -->
     <string name="quick_settings_adb_network">Rete ADB</string>
@@ -40,14 +63,21 @@
     <string name="accessibility_quick_settings_caffeine_off">Caffeina spenta.</string>
     <string name="accessibility_quick_settings_caffeine_on">Caffeina accesa.</string>
 
-    <!-- IME selector Tile -->
-    <string name="quick_settings_ime_label">Metodo di immissione</string>
-
     <!-- Music QS Tile -->
     <string name="quick_settings_music_label">Musica</string>
     <string name="quick_settings_music_play">Play</string>
     <string name="quick_settings_music_pause">Pausa</string>
 
+    <!-- Screenshot QS tile -->
+    <string name="quick_settings_screenshot_label">Screenshot</string>
+  
+    <!-- Sync QS tile -->
+    <string name="quick_settings_sync_label">Sincronizzazione</string>
+    <string name="accessibility_quick_settings_sync_off">Sincronizzazione off</string>
+    <string name="accessibility_quick_settings_sync_on">Sincronizzazione on</string>
+    <string name="accessibility_quick_settings_sync_changed_off">Sincronizzazione disattivata</string>
+    <string name="accessibility_quick_settings_sync_changed_on">Sincronizzazione attivata</string>
+  
     <!-- NFC QS tile -->
     <string name="quick_settings_nfc_label">NFC</string>
     <string name="accessibility_quick_settings_nfc_off">NFC spento.</string>
@@ -55,84 +85,84 @@
     <string name="accessibility_quick_settings_nfc_changed_off">NFC disattivato.</string>
     <string name="accessibility_quick_settings_nfc_changed_on">NFC attivato.</string>
 
-    <!-- Reboot/Recovery QS Tile -->
-    <string name="quick_settings_reboot_label">Riavvio</string>
-    <string name="quick_settings_reboot_recovery_label">Recovery</string>
+  <!-- [CHAR LIMIT=NONE] Importance Tuner setting title -->
+  <string name="cm_power_notification_controls_description">Con i controlli priorità notifiche, è possibile impostare un livello di priorità da 0 a 6 per le notifiche di un\'app. 
+  \n\n <b>Livello 6</b>
+  \n- Visualizza in cima all\'elenco delle notifiche
+  \n- Consenti interruzioni a schermo intero
+  \n- Mostra sempre anteprima
+  \n\n <b>Livello 5</b>
+  \n- Interruzioni a schermo intero non consentite
+  \n- Mostra sempre anteprima
+  \n\n <b>Livello 4</b>
+  \n- Interruzioni a schermo intero non consentite
+  \n- Nessun\'anteprima
+  \n\n <b>Livello 3</b>
+  \n- Interruzioni a schermo intero non consentite
+  \n- Nessun\'anteprima
+  \n- Nessun suono o vibrazione
+  \n\n <b>Livello 2</b>
+  \n- Interruzioni a schermo intero non consentite
+  \n- Nessun\'anteprima
+  \n- Nessun suono o vibrazione
+  \n- Visualizzazione sulla schermata di blocco non consentita 
+  \n- Visualizza in fondo all\'elenco delle notifiche
+  \n\n <b>Livello 1</b>
+  \n- Interruzioni a schermo intero non consentite
+  \n- Nessun\'anteprima
+  \n- Nessun suono o vibrazione
+  \n- Visualizzazione sulla schermata di blocco e nella barra di stato non consentita 
+  \n- Visualizza in fondo all\'elenco delle notifiche
+  \n\n <b>Livello 0</b>
+  \n- Tutte le notifiche vengono bloccate</string>
+  
+   <!-- Notification importance level title-->
+    <string name="importance_level_title">Importance: Level %1$d</string>
 
-    <!-- Screenshot QS tile -->
-    <string name="quick_settings_screenshot_label">Screenshot</string>
+    <!-- [CHAR LIMIT=100] Notification Importance slider: very low importance level description -->
+    <string name="notification_importance_very_low">Nessuna interruzione a schermo intero, anteprima, soni o vibrazioni. Nascosta nella schermata di blocco.</string>
 
-    <!-- Sound QS Tile -->
-    <string name="quick_settings_sound_label">Souno</string>
-    <string name="quick_settings_sound_ring">Suoneria</string>
-    <string name="quick_settings_sound_vibrate">Vibrazione</string>
-    <string name="quick_settings_sound_dnd">Non disturbare</string>
-
-    <!-- Sync QS tile -->
-    <string name="quick_settings_sync_label">Sincronizzazione</string>
-    <string name="accessibility_quick_settings_sync_off">Sincronizzazione spenta</string>
-    <string name="accessibility_quick_settings_sync_on">Sincronizzazione accesa</string>
-    <string name="accessibility_quick_settings_sync_changed_off">Sincronizzazione disattivata</string>
-    <string name="accessibility_quick_settings_sync_changed_on">Sincronizzazione attivata</string>
-	
-    <!-- USB tether QS tile -->
-    <string name="accessibility_quick_settings_usb_tether_off">USB tethering spento</string>
-    <string name="accessibility_quick_settings_usb_tether_on">USB tethering acceso</string>
-    <string name="accessibility_quick_settings_usb_tether_changed_off">USB tethering disattivato</string>
-    <string name="accessibility_quick_settings_usb_tether_changed_on">USB tethering attivato</string>
-    <string name="quick_settings_usb_tether_label">USB tethering</string>
-	
-    <!-- Heads Up QS Tile -->
-    <string name="quick_settings_heads_up_label">Notifiche Fluttuanti</string>
-    <string name="accessibility_quick_settings_heads_up_off">Notifiche fluttuanti spente.</string>
-    <string name="accessibility_quick_settings_heads_up_on">Notifiche fluttuanti accese.</string>
-    <string name="accessibility_quick_settings_heads_up_changed_off">Notifiche fluttuanti disattivate.</string>
-    <string name="accessibility_quick_settings_heads_up_changed_on">Notifiche fluttuanti attivate.</string>
-	
-    <!-- Expanded Desktop QS Tile -->
-    <string name="quick_settings_expanded_desktop">Esteso</string>
-    <string name="quick_settings_expanded_desktop_off">Normale</string>
-	
-    <!-- Heads up snooze toast -->
-    <string name="heads_up_snooze_message_one_minute"><xliff:g id="string">%s</xliff:g> - la notifica è posticipata per 1 minuto.</string>
-    <string name="heads_up_snooze_message"><xliff:g id="string">%s</xliff:g> - le notifiche saranno posticipate per <xliff:g id="number">%d</xliff:g> minuti.</string>
-	
-    <!-- Gesture Anywhere -->
-    <string name="gestures_message">Disegna i tuoi gesti qui</string>
-	
-    <!-- Screenrecord Notification Ticker -->
-    <string name="screenrecord_notif_ticker">Lo schermo è in fase di registrazione</string>
-    <!-- Screenrecord notification title -->
-    <string name="screenrecord_notif_title">Registrazione schermata</string>
-    <!-- Screenrecord notification action: Stop -->
-    <string name="screenrecord_notif_stop">Ferma</string>
-    <!-- Screenrecord notification action: show/hide pointer -->
-    <string name="screenrecord_notif_pointer_on">Visualizza puntatore</string>
-    <string name="screenrecord_notif_pointer_off">Nascondi puntatore</string>
-    <!-- Screen record notification error title -->
-    <string name="screenrecord_notif_error">Impossibile registrare lo schermo</string>
-	
-    <!-- Navbar tuner -->
-    <string name="navbar_tuner_title">Sintonizzatore barra di navigazione</string>
-    <!-- statusbar items tuner -->
-    <string name="statusbar_icons_blacklist">Icone della barra di stato</string>
-    <!-- tuner display color -->
-    <string name="tuner_display_color">Colore dello schermo &amp; aspetto</string>
-    <!-- notification controls -->
-    <string name="tuner_notification_control">Comandi di accensione notifica</string>
-	
-    <!-- Show lte/4g switch -->
+   <!-- Wi-Fi hotspot label when enabled -->
+    <plurals name="wifi_hotspot_connected_clients_label">
+        <item quantity="one">%1$d client</item>
+        <item quantity="other">%1$d client</item>
+    </plurals>
+   
+  <!-- Show lte/4g switch -->
     <string name="show_lte_fourgee_title">4G</string>
 	
-    <!-- Quick settings customization -->
-    <string name="qs_menu_item_columns">Colonne</string>
-    <string name="qs_menu_item_columns_three">3</string>
-    <string name="qs_menu_item_columns_four">4</string>
-    <string name="qs_menu_item_columns_five">5</string>
-    <string name="qs_menu_item_reset">Ripristina</string>
-  
-    <!-- OnTheSpot: Action denial button text. [CHAR LIMIT=NONE] -->
-    <string name="on_the_spot_deny">No</string>
-    <!-- OnTheSpot: Action confirmation button text. [CHAR LIMIT=NONE] -->
-    <string name="on_the_spot_confirm">Si</string>
+	<!-- Content description of the location tile in quick settings when on, battery saving mode (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_location_battery_saving">Geolocalizzazione: modalità risparmio batteria.</string>
+    <!-- Content description of the location tile in quick settings when on, sensors only mode (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_location_gps_only">Geolocalizzazione: modalità solo dispositivo.</string>
+    <!-- Content description of the location tile in quick settings when on, high accuracy mode (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_location_high_accuracy">Geolocalizzazione: modalità alta precisione.</string>
+
+    <!-- QuickSettings: Location (On, low-power) [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_location_battery_saving_label">Risparmio batteria</string>
+    <string name="quick_settings_location_battery_saving_label_twoline">Risparmio\nbatteria</string>
+    <!-- QuickSettings: Location (On, gps-only) [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_location_gps_only_label">Solo GPS</string>
+    <string name="quick_settings_location_gps_only_label_twoline">Solo\nGPS</string>
+    <!-- QuickSettings: Location (On, high-accuracy) [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_location_high_accuracy_label">Alta precisione</string>
+    <string name="quick_settings_location_high_accuracy_label_twoline">Alta\nprecisione</string>
+
+    <!-- QuickSettings: Location detail panel title [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_location_detail_title">Modalità geolocalizzazione</string>
+    <!-- QuickSettings: Location detail panel menu title [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_location_detail_menu_title">Seleziona modalità:</string>
+    <!-- [CHAR LIMIT=30] Location detail panel, high accuracy location mode -->
+    <string name="quick_settings_location_detail_mode_high_accuracy_title">Alta precisione</string>
+    <!-- [CHAR LIMIT=30] Location detail panel, battery saving location mode -->
+    <string name="quick_settings_location_detail_mode_battery_saving_title">Risparmio batteria</string>
+    <!-- [CHAR LIMIT=30] Location detail panel, device only location mode -->
+    <string name="quick_settings_location_detail_mode_sensors_only_title">Solo dispositivo</string>
+    <!-- [CHAR LIMIT=130] Location detail panel, description for high accuracy mode -->
+    <string name="quick_settings_location_detail_mode_high_accuracy_description">GPS, Wi\u2011Fi, Bluetooth, o reti cellulari saranno solo in grado di determinare la tua posizione me che può avere un effetto negativo sulle prestazioni della batteria</string>
+    <!-- [CHAR LIMIT=130] Location detail panel, description for battery saving mode -->
+    <string name="quick_settings_location_detail_mode_battery_saving_description">Wi\u2011Fi, Bluetooth, o reti cellulari saranno solo in grado di determinare la tua posizione per un migliore utilizzo della batteria</string>
+    <!-- [CHAR LIMIT=130] Location detail panel, description for sensors only mode -->
+    <string name="quick_settings_location_detail_mode_sensors_only_description">Il GPS sarà solo in grado di determinare la tua posizione, anche se è necessaria una connessione dati</string>
+
 </resources>
