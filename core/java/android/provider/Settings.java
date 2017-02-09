@@ -7022,6 +7022,24 @@ public final class Settings {
          */
         public static final String ONE_HANDED_MODE_UI = "one_handed_mode_ui";
 
+		/**
+         * Low brightness level for the advanced night mode tile
+         * @hide
+         */
+        public static final String QS_NIGHT_BRIGHTNESS_VALUE = "qs_night_brightness_value";
+		
+		/**
+         * Allows to store the custom user auto brightness value
+         * @hide
+         */
+        public static final String NIGHT_AUTOBRIGHTNESS_USERVALUE = "night_autobrightness_uservalue";
+
+        /**
+         * Allows to store the custom user manual brightness value
+         * @hide
+         */
+        public static final String NIGHT_MANBRIGHTNESS_USERVALUE = "night_manbrightness_uservalue";
+
         /**
          * Whether preloaded APKs have been installed for the user.
          * @hide
