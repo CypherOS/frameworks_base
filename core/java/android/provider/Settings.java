@@ -4138,6 +4138,12 @@ public final class Settings {
         public static final String STATUSBAR_CLOCK_DATE_POSITION = "statusbar_clock_date_position";
 		
 		/**
+         * Whether to enable the pixel navbar animation
+         * @hide
+         */
+        public static final String PIXEL_NAV_ANIMATION = "pixel_nav_animation";
+		
+		/**
          * Whether the proximity sensor will adjust call to speaker
          * @hide
          */
