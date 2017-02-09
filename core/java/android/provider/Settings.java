@@ -7065,6 +7065,24 @@ public final class Settings {
          * @hide
          */
         public static final String QS_DATA_ADVANCED = "qs_data_advanced";
+		
+		/**
+         * Low brightness level for the advanced night mode tile
+         * @hide
+         */
+        public static final String QS_NIGHT_BRIGHTNESS_VALUE = "qs_night_brightness_value";
+		
+		/**
+         * Allows to store the custom user auto brightness value
+         * @hide
+         */
+        public static final String NIGHT_AUTOBRIGHTNESS_USERVALUE = "night_autobrightness_uservalue";
+
+        /**
+         * Allows to store the custom user manual brightness value
+         * @hide
+         */
+        public static final String NIGHT_MANBRIGHTNESS_USERVALUE = "night_manbrightness_uservalue";
 
         /**
          * Whether preloaded APKs have been installed for the user.
