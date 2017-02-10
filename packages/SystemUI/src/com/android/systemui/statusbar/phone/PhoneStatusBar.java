@@ -481,10 +481,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         mContext.getContentResolver(),
                         Settings.System.SHOW_LTE_FOURGEE,
                         0, UserHandle.USER_CURRENT) == 1;
-                updateRowStates();
-                updateSpeedbump();
-                updateClearAll();
-                updateEmptyShadeView();
+                mNetworkController.onConfigurationChanged();
             }
 
             update();
