@@ -110,4 +110,7 @@
   <java-symbol type="bool" name="config_allowNotificationIconTextTinting" />
   <java-symbol type="color" name="notification_text_default_color" />
   <java-symbol type="color" name="sender_text_color" />
+  
+  <!-- Blur effects -->
+  <java-symbol type="bool" name="config_uiBlurEnabled" />
 </resources>
