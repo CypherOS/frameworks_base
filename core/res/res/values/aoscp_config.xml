@@ -47,4 +47,7 @@
         <item>100</item>
         <item>50</item>
     </integer-array>
+
+    <!-- Single handed mode config -->
+    <bool name="single_hand_mode">true</bool>
 </resources>

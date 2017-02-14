@@ -154,7 +154,6 @@ import com.android.internal.policy.IKeyguardService;
 import com.android.internal.policy.IShortcutService;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.ScreenShapeHelper;
-import com.android.internal.view.RotationPolicy;
 import com.android.internal.widget.PointerLocationView;
 import com.android.server.GestureLauncherService;
 import com.android.server.LocalServices;
@@ -830,6 +829,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int MSG_REQUEST_TRANSIENT_BARS_ARG_NAVIGATION = 1;
     boolean mWifiDisplayConnected = false;
     int mWifiDisplayCustomRotation = -1;
+    int mDesiredRotation = -1;
 
     private class PolicyHandler extends Handler {
         @Override
@@ -6441,8 +6441,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
 
             case KeyEvent.KEYCODE_POWER: {
-                if ((mTopFullscreenOpaqueWindowState.getAttrs().privateFlags
-                        & WindowManager.LayoutParams.PRIVATE_FLAG_PREVENT_POWER_KEY) != 0
+                if (mTopFullscreenOpaqueWindowState != null
+                        && (mTopFullscreenOpaqueWindowState.getAttrs().privateFlags
+                                & WindowManager.LayoutParams.PRIVATE_FLAG_PREVENT_POWER_KEY) != 0
                         && mScreenOnFully) {
                     return result;
                 }
@@ -6699,6 +6700,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     /** {@inheritDoc} */
     @Override
     public int interceptMotionBeforeQueueingNonInteractive(long whenNanos, int policyFlags) {
+        if ((WindowManagerPolicy.POLICY_FLAG_REMOVE_HANDYMODE & policyFlags) !=0) {
+            Slog.i(TAG, "interceptMotionBeforeQueueingNonInteractive policyFlags: "+policyFlags);
+            Settings.Global.putString(mContext.getContentResolver(),
+                Settings.Global.SINGLE_HAND_MODE, "");
+            return 0;
+        }
         if ((policyFlags & FLAG_WAKE) != 0) {
             if (wakeUp(whenNanos / 1000000, mAllowTheaterModeWakeFromMotion,
                     "android.policy:MOTION")) {
@@ -6991,9 +6998,20 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
+    class OverscanTimeout implements Runnable {
+        @Override
+        public void run() {
+            Slog.i(TAG, "OverscanTimeout run");
+            Settings.Global.putString(mContext.getContentResolver(), Settings.Global.SINGLE_HAND_MODE, "");
+        }
+    }
+    OverscanTimeout mOverscanTimeout = new OverscanTimeout();
+
     // Called on the PowerManager's Notifier thread.
     @Override
     public void finishedGoingToSleep(int why) {
+        mHandler.removeCallbacks(mOverscanTimeout);
+        mHandler.postDelayed(mOverscanTimeout, 200);
         EventLog.writeEvent(70000, 0);
         if (DEBUG_WAKEUP) Slog.i(TAG, "Finished going to sleep... (why=" + why + ")");
         MetricsLogger.histogram(mContext, "screen_timeout", mLockScreenTimeout / 1000);
@@ -7385,6 +7403,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
 
             final int preferredRotation;
+            if (mDesiredRotation >= 0) {
+                preferredRotation = mDesiredRotation;
+                Slog.i(TAG, "mDesiredRotation:" + mDesiredRotation);
+                return preferredRotation;
+            }
             if (mLidState == LID_OPEN && mLidOpenRotation >= 0) {
                 // Ignore sensor when lid switch is open and rotation is forced.
                 preferredRotation = mLidOpenRotation;
@@ -7448,11 +7471,28 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mAllowAllRotations = mContext.getResources().getBoolean(
                             com.android.internal.R.bool.config_allowAllRotations) ? 1 : 0;
                 }
+                // Rotation setting bitmask
+                // 1=0 2=90 4=180 8=270
                 boolean allowed = true;
-                if (orientation != ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-                        && orientation != ActivityInfo.SCREEN_ORIENTATION_FULL_USER) {
-                   allowed = RotationPolicy.isRotationAllowed(sensorRotation,
-                           mUserRotationAngles, mAllowAllRotations != 0);
+                if (mUserRotationAngles < 0) {
+                    // Not set by user so use these defaults
+                    mUserRotationAngles = mAllowAllRotations == 1 ?
+                            (1 | 2 | 4 | 8) : // All angles
+                                (1 | 2 | 8); // All except 180
+                }
+                switch (sensorRotation) {
+                    case Surface.ROTATION_0:
+                        allowed = (mUserRotationAngles & 1) != 0;
+                        break;
+                    case Surface.ROTATION_90:
+                        allowed = (mUserRotationAngles & 2) != 0;
+                        break;
+                    case Surface.ROTATION_180:
+                        allowed = (mUserRotationAngles & 4) != 0;
+                        break;
+                    case Surface.ROTATION_270:
+                        allowed = (mUserRotationAngles & 8) != 0;
+                        break;
                 }
                 if (allowed) {
                     preferredRotation = sensorRotation;
@@ -8741,5 +8781,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (mKeyguardDelegate != null) {
             mKeyguardDelegate.dump(prefix, pw);
         }
+    }
+
+    public void freezeOrThawRotation(int rotation) {
+        mDesiredRotation = rotation;
     }
 }

@@ -34,4 +34,7 @@
 	
 	<!-- Navigation button ripple color -->
     <color name="navbutton_ripple_color">#FFFFFFFF</color>
+	
+	<!-- Carrier label color -->
+    <color name="status_bar_carrier_color">#FFFFFFFF</color>
 </resources>

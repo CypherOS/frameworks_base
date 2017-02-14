@@ -22,6 +22,14 @@
         <item name="android:layout_centerVertical">true</item>
     </style>
 	
+	<!-- Custom Carrier Label -->
+    <style name="TextAppearance.StatusBar.CarrierLabel" parent="@*android:style/TextAppearance.StatusBar.Icon">
+        <!-- Note: must be dp to fit in status bar -->
+        <item name="android:textSize">@dimen/status_bar_carrier_height</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/status_bar_carrier_color</item>
+    </style>
+	
 	<!-- Base battery metter drawable style -->
     <style name="BatteryMeterViewDrawable">
         <!-- Gravity used for positioning text within the battery meter -->

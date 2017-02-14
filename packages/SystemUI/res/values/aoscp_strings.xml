@@ -21,6 +21,10 @@
     <string name="statusbar_icons_blacklist">Status bar icons</string>
     <!-- notification controls -->
     <string name="tuner_notification_control">Power notification controls</string>
+	<!-- vpn icon switch -->
+    <string name="status_bar_vpn">VPN</string>
+    <!-- data saver icon switch -->
+    <string name="status_bar_datasaver">Data saver</string>
 	
 	<string name="delete_screenshot_toast">Screenshot deleted</string>
 	
@@ -79,6 +83,7 @@
 
     <!-- Screenshot QS tile -->
     <string name="quick_settings_screenshot_label">Screenshot</string>
+	<string name="quick_settings_region_screenshot_label">Partial screenshot</string>
 
     <!-- Sync QS tile -->
     <string name="quick_settings_sync_label">Sync</string>

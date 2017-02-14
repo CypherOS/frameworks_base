@@ -16,9 +16,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <!-- Vendor mismatched fingerprint warning [CHAR LIMIT=NONE] -->
-    <string name="system_error_vendorprint">L\'immagine fornitore non corrisponde a quella di sistema. Si prega di installare la <xliff:g id="string">%s</xliff:g> immagine fornitore per il tuo dispositivo</string>
-
     <!-- Reboot Dialog -->
     <string name="global_action_reboot">Riavvio</string>
     <!-- Button to reboot the phone in reboot menu -->
@@ -43,10 +40,19 @@
 	<string name="global_action_torch">Torcia elettrica</string>
     <string name="global_action_voicesearch">Ricerca vocale</string>
   
-        <!-- Smart Dialog Generic -->
-	<string name="sd_ok">Ok</string>
-	<string name="sd_cancel">Cancella</string>
-	<string name="sd_sure">Sicuro</string>
-	<string name="sd_thanks">Grazie</string>
-	<string name="sd_no_thanks">No Grazie</string>
+   <!-- ADB over network notification -->
+    <string name="adb_net_active_notification_title">ADB attraverso la rete attivato</string>
+    <!-- ADB over USB and network notification -->
+    <string name="adb_both_active_notification_title">ADB attraverso USB &amp; rete attivato</string>
+    <!-- ADB notification message-->
+    <string name="adb_active_generic_notification_message">Tocca per disattivare il debug.</string>
+
+    <!-- Long-press back kill application -->
+    <string name="app_killed_message">App terminata</string>
+  
+    <!-- Vendor mismatched fingerprint warning [CHAR LIMIT=NONE] -->
+    <string name="system_error_vendorprint">L\'immagine fornitore non corrisponde a quella di sistema. Si prega di installare la <xliff:g id="string">%s</xliff:g> immagine fornitore per il tuo dispositivo</string>
+
+    <!-- Notify user that they are in Lock-to-app (for devices without navbar) -->
+    <string name="lock_to_app_toast_no_navbar">Per sbloccare questo schermo, tocca e tieni premuto il pulsante indietro.</string>
 </resources>

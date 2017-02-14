@@ -661,6 +661,13 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(storageManagerPckg, STORAGE_PERMISSIONS, true, userId);
             }
             mService.mSettings.onDefaultRuntimePermissionsGrantedLPr(userId);
+			
+			// COTA
+			PackageParser.Package cotaPackage = getSystemPackageLPr(
+                    "com.aoscp.cota");
+            if (cotaPackage != null && doesPackageSupportRuntimePermissions(cotaPackage)) {
+                grantRuntimePermissionsLPw(cotaPackage, STORAGE_PERMISSIONS, userId);
+            }
 
             // Google Account
             PackageParser.Package googleaccountPackage = getSystemPackageLPr(

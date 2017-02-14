@@ -31,6 +31,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -49,6 +51,7 @@ import com.android.systemui.RecentsComponent;
 import com.android.systemui.aoscp.UserContentObserver;
 import com.android.systemui.stackdivider.Divider;
 import com.android.systemui.statusbar.policy.DeadZone;
+import com.android.systemui.singlehandmode.SlideTouchEvent;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -104,6 +107,7 @@ public class NavigationBarView extends LinearLayout {
 
     private final SparseArray<ButtonDispatcher> mButtonDisatchers = new SparseArray<>();
     private Configuration mConfiguration;
+    private SlideTouchEvent mSlideTouchEvent;
 
     private NavigationBarInflaterView mNavigationInflaterView;
 
@@ -195,7 +199,7 @@ public class NavigationBarView extends LinearLayout {
         mVertical = false;
         mShowMenu = false;
         mGestureHelper = new NavigationBarGestureHelper(context);
-
+        mSlideTouchEvent = new SlideTouchEvent(context);
         mConfiguration = new Configuration();
         mConfiguration.updateFrom(context.getResources().getConfiguration());
         updateIcons(context, Configuration.EMPTY, mConfiguration);
@@ -224,6 +228,10 @@ public class NavigationBarView extends LinearLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.ONE_HANDED_MODE_UI, 0, UserHandle.USER_CURRENT) == 1) {
+            mSlideTouchEvent.handleTouchEvent(event);
+        }
         if (mGestureHelper.onTouchEvent(event)) {
             return true;
         }
@@ -235,6 +243,10 @@ public class NavigationBarView extends LinearLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
+        if (Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.ONE_HANDED_MODE_UI, 0, UserHandle.USER_CURRENT) == 1) {
+            mSlideTouchEvent.handleTouchEvent(event);
+        }
         return mGestureHelper.onInterceptTouchEvent(event);
     }
 

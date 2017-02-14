@@ -3989,6 +3989,19 @@ public final class Settings {
          * it to PRIVATE_SETTINGS below. Also add a validator that can validate
          * the setting value. See an example above.
          */
+		 
+		/**
+         * Whether to scramble a pin unlock layout
+         * @hide
+         */
+        public static final String LOCKSCREEN_PIN_SCRAMBLE_LAYOUT = "lockscreen_scramble_pin_layout"; 
+		 
+    	/**
+         * Control whether the accelerometer will be used to change lockscreen
+         * orientation.  If 0, it will not be used; if 1, it will be used by default.
+         * @hide
+         */
+        public static final String LOCKSCREEN_ROTATION = "lockscreen_rotation";
 		
 		/**
          * Network traffic indicator, goes from least to greatest significant bitwise
@@ -4065,6 +4078,23 @@ public final class Settings {
         public static final String STATUS_BAR_QUICK_QS_PULLDOWN = "status_bar_quick_qs_pulldown";
 		
 		/**
+         * Custom carrier label. The value is
+         * String.
+		 * @hide
+         */
+        public static final String CUSTOM_CARRIER_LABEL = "custom_carrier_label";
+		
+		/**
+         * Status bar carrier label
+         * 0: Hide
+         * 1: Display on keyguard status bar
+         * 2: Display on Normal status bar
+         * 3: Enabled for both
+         * @hide
+         */
+        public static final String STATUS_BAR_SHOW_CARRIER = "status_bar_show_carrier";
+		
+		/**
          * Whether to show the negociated charger current in the lockscreen
          * @hide
          */
@@ -4119,6 +4149,12 @@ public final class Settings {
          * @hide
          */
         public static final String STATUSBAR_CLOCK_DATE_POSITION = "statusbar_clock_date_position";
+		
+		/**
+         * Whether to enable the pixel navbar animation
+         * @hide
+         */
+        public static final String PIXEL_NAV_ANIMATION = "pixel_nav_animation";
 		
 		/**
          * Whether the proximity sensor will adjust call to speaker
@@ -7044,10 +7080,34 @@ public final class Settings {
         public static final String QS_TILES = "sysui_qs_tiles";
 		
 		/**
+         * One Handed mode toggle
+         * @hide
+         */
+        public static final String ONE_HANDED_MODE_UI = "one_handed_mode_ui";
+		
+		/**
          * Whether to use one tap tile action to enable or disable data 
          * @hide
          */
         public static final String QS_DATA_ADVANCED = "qs_data_advanced";
+		
+		/**
+         * Low brightness level for the advanced night mode tile
+         * @hide
+         */
+        public static final String QS_NIGHT_BRIGHTNESS_VALUE = "qs_night_brightness_value";
+		
+		/**
+         * Allows to store the custom user auto brightness value
+         * @hide
+         */
+        public static final String NIGHT_AUTOBRIGHTNESS_USERVALUE = "night_autobrightness_uservalue";
+
+        /**
+         * Allows to store the custom user manual brightness value
+         * @hide
+         */
+        public static final String NIGHT_MANBRIGHTNESS_USERVALUE = "night_manbrightness_uservalue";
 
         /**
          * Whether preloaded APKs have been installed for the user.
@@ -8983,6 +9043,12 @@ public final class Settings {
          * @see com.android.server.AlarmManagerService.Constants
          */
         public static final String ALARM_MANAGER_CONSTANTS = "alarm_manager_constants";
+
+		/**
+         * This is for One-Handed Mode.
+         * @hide
+         */
+        public static final String SINGLE_HAND_MODE = "single_hand_mode";
 
         /**
          * Job scheduler specific settings.
