@@ -85,26 +85,8 @@ public class ScreenshotTile extends QSTile<QSTile.BooleanState> {
     }
 
     @Override
-    public void handleLongClick() {
-        mHost.collapsePanels();
-        /* wait for the panel to close */
-        try {
-             Thread.sleep(2000);
-        } catch (InterruptedException ie) {
-             // Do nothing
-        }
-        takeScreenshot(mScreenshotFullscreen);
-    }
-
-    @Override
     public Intent getLongClickIntent() {
         return null;
-    }
-
-    @Override
-    protected void handleUpdateState(BooleanState state, Object arg) {
-        state.label = mContext.getString(R.string.quick_settings_screenshot_label);
-        state.icon = ResourceIcon.get(R.drawable.ic_qs_screenshot);
     }
 
     @Override
@@ -115,7 +97,7 @@ public class ScreenshotTile extends QSTile<QSTile.BooleanState> {
     protected void handleUpdateState(BooleanState state, Object arg) {
         if (mRegion) {
             state.label = mContext.getString(R.string.quick_settings_region_screenshot_label);
-            state.icon = ResourceIcon.get(R.drawable.ic_qs_region_screenshot);
+            state.icon = ResourceIcon.get(R.drawable.ic_qs_screenshot_region);
             state.contentDescription =  mContext.getString(
                     R.string.quick_settings_region_screenshot_label);
         } else {

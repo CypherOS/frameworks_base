@@ -2216,6 +2216,9 @@ message MetricsEvent {
 	
 	// Location detail adapter
     QS_LOCATION_DETAIL = 498;
+	
+	// Quick Settings
+	QUICK_SETTINGS = 499;
 
     // ---- End N-MR1 Constants, all N-MR1 constants go above this line ----
 
