@@ -559,8 +559,7 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
                 int n;
                 if (!mIsPressed || mLongClicked) {
                     n = 0;
-                }
-                else {
+                } else {
                     n = 1;
                 }
                 mIsPressed = false;
@@ -618,8 +617,7 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
         int visibility;
         if (b2) {
             visibility = View.VISIBLE;
-        }
-        else {
+        } else {
             visibility = View.INVISIBLE;
         }
         mBlue.setVisibility(visibility);
