@@ -4665,4 +4665,8 @@
 
     <!-- Popup window default title to be read by a screen reader-->
     <string name="popup_window_default_title">Popup Window</string>
+    
+    <java-symbol type="string" name="config_optionalPackageVerifierName" />
+    <java-symbol type="integer" name="config_sms_authorization_timeout_ms" />
+    <java-symbol type="bool" name="config_sms_authorization_enabled" />
 </resources>
