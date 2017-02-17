@@ -104,4 +104,9 @@
 
     <!-- Doze Addon: should the TYPE_PROXIMITY sensor be used as a pulse signal. -->
     <java-symbol type="bool" name="config_dozePulseHandWave" />
+	
+	<!-- IMS -->
+    <java-symbol type="string" name="config_optionalPackageVerifierName" />
+    <java-symbol type="integer" name="config_sms_authorization_timeout_ms" />
+    <java-symbol type="bool" name="config_sms_authorization_enabled" />
 </resources>
