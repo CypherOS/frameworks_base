@@ -166,6 +166,9 @@
 	<!-- Show lte/4g switch -->
     <string name="show_lte_fourgee_title">4G</string>
 	
+	<!-- Data/Wifi activity arrows -->
+    <string name="data_wifi_activity_arrows_title">Network activity</string>
+	
 	<!-- Content description of the location tile in quick settings when on, battery saving mode (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_quick_settings_location_battery_saving">Location reporting: battery saving mode.</string>
     <!-- Content description of the location tile in quick settings when on, sensors only mode (not shown on the screen). [CHAR LIMIT=NONE] -->

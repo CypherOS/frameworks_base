@@ -376,6 +376,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 	
 	// show lte/4g switch
     private boolean mShowLteFourGee;
+	
+	// data/wifi activity arrows
+    private boolean mDataWifiActivityArrows;
 
     // top bar
     BaseStatusBarHeader mHeader;
@@ -460,12 +463,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_SHOW_CARRIER), false, this,
                     UserHandle.USER_ALL);
-            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_ROTATION),
                     false, this, UserHandle.USER_ALL);
-            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ACCELEROMETER_ROTATION),
-                    false, this, UserHandle.USER_ALL);					
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                  Settings.System.DATA_ACTIVITY_ARROWS),
+                  false, this, UserHandle.USER_ALL);					
             update();
         }
 
@@ -475,6 +481,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_SHOW_CARRIER))) {
                 update();
                 updateCarrier();
+			} else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.DATA_ACTIVITY_ARROWS))) {
+                    mDataWifiActivityArrows = Settings.System.getIntForUser(
+                        mContext.getContentResolver(),
+                        Settings.System.DATA_ACTIVITY_ARROWS,
+                        0, UserHandle.USER_CURRENT) == 1;
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.SHOW_LTE_FOURGEE))) {
                     mShowLteFourGee = Settings.System.getIntForUser(
@@ -498,7 +510,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
             boolean mShowLteFourGee = Settings.System.getIntForUser(resolver,
-                    Settings.System.SHOW_LTE_FOURGEE, 0, UserHandle.USER_CURRENT) == 1;					
+                    Settings.System.SHOW_LTE_FOURGEE, 0, UserHandle.USER_CURRENT) == 1;		
+            boolean mDataWifiActivityArrows = Settings.System.getIntForUser(resolver,
+                    Settings.System.DATA_ACTIVITY_ARROWS, 0, UserHandle.USER_CURRENT) == 1;					
 			mShowCarrierLabel = Settings.System.getIntForUser(resolver,
                     Settings.System.STATUS_BAR_SHOW_CARRIER, 1, UserHandle.USER_CURRENT);
 			mStatusBarWindowManager.updateKeyguardScreenRotation();

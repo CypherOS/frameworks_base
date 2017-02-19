@@ -122,6 +122,8 @@ import android.util.Log;
 import android.util.Slog;
 import android.view.Display;
 
+import android.util.BoostFramework;
+
 import com.android.internal.app.IVoiceInteractor;
 import com.android.internal.content.ReferrerIntent;
 import com.android.internal.os.BatteryStatsImpl;
@@ -237,6 +239,10 @@ final class ActivityStack {
     final WindowManagerService mWindowManager;
     private final RecentTasks mRecentTasks;
 
+    public BoostFramework mPerf = null;
+    public boolean mIsAnimationBoostEnabled = false;
+    public int aBoostTimeOut = 0;
+    public int aBoostParamVal[];
     /**
      * The back history of all previous (and possibly still
      * running) activities.  It contains #TaskRecord objects.
@@ -449,6 +455,14 @@ final class ActivityStack {
         mRecentTasks = recentTasks;
         mTaskPositioner = mStackId == FREEFORM_WORKSPACE_STACK_ID
                 ? new LaunchingTaskPositioner() : null;
+        mIsAnimationBoostEnabled = mService.mContext.getResources().getBoolean(
+                   com.android.internal.R.bool.config_enablePerfBoostForAnimation);
+        if (mIsAnimationBoostEnabled) {
+           aBoostTimeOut = mService.mContext.getResources().getInteger(
+                   com.android.internal.R.integer.animationboost_timeout_param);
+           aBoostParamVal = mService.mContext.getResources().getIntArray(
+                   com.android.internal.R.array.animationboost_param_value);
+        }
     }
 
     void attachDisplay(ActivityStackSupervisor.ActivityDisplay activityDisplay, boolean onTop) {
@@ -2358,6 +2372,9 @@ final class ActivityStack {
         // that the previous one will be hidden soon.  This way it can know
         // to ignore it when computing the desired screen orientation.
         boolean anim = true;
+        if (mIsAnimationBoostEnabled == true && mPerf == null) {
+            mPerf = new BoostFramework();
+        }
         if (prev != null) {
             if (prev.finishing) {
                 if (DEBUG_TRANSITION) Slog.v(TAG_TRANSITION,
@@ -2369,6 +2386,9 @@ final class ActivityStack {
                     mWindowManager.prepareAppTransition(prev.task == next.task
                             ? TRANSIT_ACTIVITY_CLOSE
                             : TRANSIT_TASK_CLOSE, false);
+                    if(prev.task != next.task && mPerf != null) {
+                       mPerf.perfLockAcquire(aBoostTimeOut, aBoostParamVal);
+                    }
                 }
                 mWindowManager.setAppVisibility(prev.appToken, false);
             } else {
@@ -2383,6 +2403,9 @@ final class ActivityStack {
                             : next.mLaunchTaskBehind
                                     ? TRANSIT_TASK_OPEN_BEHIND
                                     : TRANSIT_TASK_OPEN, false);
+                    if(prev.task != next.task && mPerf != null) {
+                        mPerf.perfLockAcquire(aBoostTimeOut, aBoostParamVal);
+                    }
                 }
             }
         } else {
