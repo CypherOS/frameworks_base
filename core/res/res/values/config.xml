@@ -2846,4 +2846,6 @@
     <integer name="config_proximityCheckTimeout">250</integer>
     <bool name="config_proximityCheckOnWakeEnabledByDefault">false</bool>
 
+    <!-- Whether to enable HumanInteractionController by default -->
+    <bool name="config_HICEnabledDefault">true</bool>
 </resources>
