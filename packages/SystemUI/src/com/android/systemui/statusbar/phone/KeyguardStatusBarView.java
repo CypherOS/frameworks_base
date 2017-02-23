@@ -16,13 +16,19 @@
 
 package com.android.systemui.statusbar.phone;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -67,9 +73,11 @@ public class KeyguardStatusBarView extends RelativeLayout
     private int mSystemIconsSwitcherHiddenExpandedMargin;
     private int mSystemIconsBaseMargin;
     private View mSystemIconsContainer;
-	
-	private boolean mShowBatteryText;
-	private boolean mForceBatteryText;
+
+    private boolean mShowBatteryText;
+    private boolean mForceBatteryText;
+    private boolean mHideContents;
+    private boolean mTouchStarted;
 
     public KeyguardStatusBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -86,6 +94,23 @@ public class KeyguardStatusBarView extends RelativeLayout
         mCarrierLabel = (TextView) findViewById(R.id.keyguard_carrier_text);
         loadDimens();
         updateUserSwitcher();
+        setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int action = event.getAction();
+                if (action == MotionEvent.ACTION_DOWN) {
+                    mTouchStarted = true;
+                } else if (action == MotionEvent.ACTION_UP) {
+                    if (mTouchStarted) {
+                        toggleContents(!mHideContents);
+                    }
+                    mTouchStarted = false;
+                } else if (action == MotionEvent.ACTION_CANCEL) {
+                    mTouchStarted = false;
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -169,7 +194,7 @@ public class KeyguardStatusBarView extends RelativeLayout
             // we don't show the multi-user avatar unless there is more than 1 user on the device.
             if (mUserSwitcherController != null
                     && mUserSwitcherController.getSwitchableUserCount() > 1) {
-                mMultiUserSwitch.setVisibility(View.VISIBLE);
+                mMultiUserSwitch.setVisibility(mHideContents ? View.INVISIBLE : View.VISIBLE);
             } else {
                 mMultiUserSwitch.setVisibility(View.GONE);
             }
@@ -200,11 +225,11 @@ public class KeyguardStatusBarView extends RelativeLayout
         }
         mBatteryListening = listening;
         if (mBatteryListening) {
-			TunerService.get(getContext()).addTunable(this, STATUS_BAR_SHOW_BATTERY_PERCENT);
+            TunerService.get(getContext()).addTunable(this, STATUS_BAR_SHOW_BATTERY_PERCENT);
             mBatteryController.addStateChangedCallback(this);
         } else {
             mBatteryController.removeStateChangedCallback(this);
-			TunerService.get(getContext()).removeTunable(this);
+            TunerService.get(getContext()).removeTunable(this);
         }
     }
 
@@ -334,11 +359,91 @@ public class KeyguardStatusBarView extends RelativeLayout
         return false;
     }
 
-	@Override
+    public void toggleContents(boolean hideContents) {
+        boolean shouldHideContents = Settings.Secure.getIntForUser(
+                getContext().getContentResolver(), Settings.Secure.LOCK_HIDE_STATUS_BAR, 0,
+                UserHandle.USER_CURRENT) == 1;
+        if (!shouldHideContents) {
+            hideContents = false;
+        }
+        if (mHideContents == hideContents) {
+            return;
+        }
+
+        mHideContents = hideContents;
+        if (mHideContents) {
+            Animator fadeAnimator1 = null;
+            if (mMultiUserSwitch.getVisibility() != View.GONE) {
+                fadeAnimator1 = ObjectAnimator.ofFloat(mMultiUserSwitch, "alpha", 1f, 0f);
+                fadeAnimator1.setDuration(500);
+                fadeAnimator1.setInterpolator(Interpolators.ALPHA_OUT);
+                fadeAnimator1.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mMultiUserSwitch.setVisibility(View.INVISIBLE);
+                    }
+                });
+            }
+            Animator fadeAnimator2 = ObjectAnimator.ofFloat(mSystemIconsSuperContainer, "alpha", 1f, 0f);
+            fadeAnimator2.setDuration(500);
+            fadeAnimator2.setInterpolator(Interpolators.ALPHA_OUT);
+            fadeAnimator2.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mSystemIconsSuperContainer.setVisibility(View.INVISIBLE);
+                }
+            });
+            Animator fadeAnimator3 = ObjectAnimator.ofFloat(mCarrierLabel, "alpha", 1f, 0f);
+            fadeAnimator3.setDuration(500);
+            fadeAnimator3.setInterpolator(Interpolators.ALPHA_OUT);
+            fadeAnimator3.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mCarrierLabel.setVisibility(View.INVISIBLE);
+                }
+            });
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(fadeAnimator2, fadeAnimator3);
+            if (fadeAnimator1 != null) {
+                set.playTogether(fadeAnimator1);
+            }
+            set.start();
+        } else {
+            Animator fadeAnimator1 = null;
+            if (mMultiUserSwitch.getVisibility() != View.GONE) {
+                mMultiUserSwitch.setAlpha(0f);
+                mMultiUserSwitch.setVisibility(View.VISIBLE);
+                fadeAnimator1 = ObjectAnimator.ofFloat(mMultiUserSwitch, "alpha", 0f, 1f);
+                fadeAnimator1.setDuration(500);
+                fadeAnimator1.setInterpolator(Interpolators.ALPHA_IN);
+            }
+
+            mSystemIconsSuperContainer.setAlpha(0f);
+            mSystemIconsSuperContainer.setVisibility(View.VISIBLE);
+            Animator fadeAnimator2 = ObjectAnimator.ofFloat(mSystemIconsSuperContainer, "alpha", 0f, 1f);
+            fadeAnimator2.setDuration(500);
+            fadeAnimator2.setInterpolator(Interpolators.ALPHA_IN);
+
+            mCarrierLabel.setAlpha(0f);
+            mCarrierLabel.setVisibility(View.VISIBLE);
+            Animator fadeAnimator3 = ObjectAnimator.ofFloat(mCarrierLabel, "alpha", 0f, 1f);
+            fadeAnimator3.setDuration(500);
+            fadeAnimator3.setInterpolator(Interpolators.ALPHA_IN);
+
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(fadeAnimator2, fadeAnimator3);
+            if (fadeAnimator1 != null) {
+                set.playTogether(fadeAnimator1);
+            }
+            set.start();
+        }
+    }
+
+    @Override
     public void onTuningChanged(String key, String newValue) {
         if (key.equals(STATUS_BAR_SHOW_BATTERY_PERCENT)) {
             mShowBatteryText = newValue == null ? false : Integer.parseInt(newValue) == 5;
-			mForceBatteryText = Settings.Secure.getInt(getContext().getContentResolver(),
+            mForceBatteryText = Settings.Secure.getInt(getContext().getContentResolver(),
                     Settings.Secure.STATUS_BAR_BATTERY_STYLE, 0) == 8 ? true : false;
             updateVisibilities();
         }
