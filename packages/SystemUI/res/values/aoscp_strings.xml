@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**
-<<<<<<< HEAD:packages/SystemUI/res/values/aoscp_strings.xml
  * Copyright (c) 2017 CypherOS
-=======
- * Copyright (c) 2015, The ParanoidAndroid Project Project
->>>>>>> 6a8a9531f96... policy: introduce global immersive mode:packages/SystemUI/res/values/pa_strings.xml
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -49,6 +45,10 @@
     <string name="quick_settings_immersive_introduce_hide_all">Hides both the navigation and status bars for a fully immersive experience.</string>
     <string name="quick_settings_immersive_introduce_hide_nav">Hides only the status bar, leaving the navigation bar in its original position.</string>
     <string name="quick_settings_immersive_introduce_hide_status">Hides only the navigation bar, leaving the status bar in its original position.</string>
+
+    <!-- QuickSettings: Night Display -->
+    <string name="quick_settings_night_display_warning">Please note that Night Light may increase battery consumption.</string>
+    <string name="quick_settings_night_display_hide">Do not show this warning</string>
 
     <!-- Content description of the location tile in quick settings when on, battery saving mode (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_quick_settings_location_battery_saving">Location reporting: battery saving mode.</string>
