@@ -19293,14 +19293,14 @@ public class ActivityManagerService extends IActivityManager.Stub
                                     forceStopPackageLocked(list[i], -1, false, true, true,
                                             false, false, userId, "storage unmount");
                                 }
-                                mRecentTasks.cleanupLocked(UserHandle.USER_ALL);
+                                mRecentTasks.cleanupLocked(userId);
                                 sendPackageBroadcastLocked(
                                         ApplicationThreadConstants.EXTERNAL_STORAGE_UNAVAILABLE,
                                         list, userId);
                             }
                             break;
                         case Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE:
-                            mRecentTasks.cleanupLocked(UserHandle.USER_ALL);
+                            mRecentTasks.cleanupLocked(userId);
                             break;
                         case Intent.ACTION_PACKAGE_REMOVED:
                         case Intent.ACTION_PACKAGE_CHANGED:
