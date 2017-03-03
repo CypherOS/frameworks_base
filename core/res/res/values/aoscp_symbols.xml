@@ -95,4 +95,11 @@
 	
 	<!-- Whether device has dash charging support -->
 	<java-symbol type="bool" name="config_hasDashCharger" />
+
+    <!-- Keypress Boost -->
+    <java-symbol type="bool" name="config_enableKeypressBoost" />
+    <java-symbol type="array" name="keypressboost_strong_param_value" />
+    <java-symbol type="array" name="keypressboost_weak_param_value" />
+
+
 </resources>

@@ -110,4 +110,12 @@
 	
 	<!-- Whether device has dash charging support -->
     <bool name="config_hasDashCharger">false</bool>
+
+    <!-- Whether Keypress Boost is enabled -->
+    <bool name="config_enableKeypressBoost">false</bool>
+
+    <!-- Boost parameters which get passed to QPerformance -->
+    <integer-array name="keypressboost_strong_param_value"/>
+    <integer-array name="keypressboost_weak_param_value"/>
+
 </resources>
