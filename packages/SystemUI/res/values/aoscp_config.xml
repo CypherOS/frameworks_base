@@ -17,9 +17,4 @@
     <!-- Nav bar button swapped ordering/layout -->
     <string name="config_navBarLayoutSwapped" translatable="false">menu_ime,recent;home;back,space</string>
 
-    <!-- Set to true to enable the classic notification ticker that scrolls
-         Notification.tickerText across the status bar for what seems like an
-         eternity. -->
-    <bool name="enable_ticker">true</bool>
-
 </resources>
