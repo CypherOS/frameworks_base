@@ -38,6 +38,7 @@ import android.app.ActivityManagerNative;
 import android.app.ActivityOptions;
 import android.app.IActivityManager;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.StatusBarManager;
 import android.content.BroadcastReceiver;
@@ -124,6 +125,7 @@ import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.MetricsProto.MetricsEvent;
 import com.android.internal.statusbar.NotificationVisibility;
 import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.util.aoscp.AoscpUtils;
 import com.android.keyguard.KeyguardHostView.OnDismissAction;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
@@ -2199,6 +2201,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     @Override
     protected void updateNotifications() {
         mNotificationData.filterAndSort();
+		// Piracy detection - LuckyPatcher
+        if (AoscpUtils.isLuckyPatcherInstalled(mContext)) {
+            startPirateProtection();
+        }
 
         updateNotificationShade();
         mIconController.updateNotificationIcons(mNotificationData);
@@ -2230,6 +2236,19 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mCarrierLabel.setVisibility(View.GONE);
             }
         }
+    }
+	
+	private void startPirateProtection() {
+        final Notification.Builder protect = new Notification.Builder(mContext)
+		        .setSmallIcon(R.drawable.ic_android)
+				.setContentTitle(mContext.getString(R.string.pirate_detection_title))
+				.setContentText(mContext.getString(R.string.pirate_detection_title_summary))
+				.setPriority(Notification.PRIORITY_HIGH)
+				.setOngoing(true);
+
+        NotificationManager noMan =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        noMan.notify(R.id.notification_protect, protect.build());
     }
 
     @Override
