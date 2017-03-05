@@ -90,6 +90,7 @@ import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.MetricsProto.MetricsEvent;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.util.aoscp.AoscpUtils;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.keyguard.KeyguardHostView.OnDismissAction;
 import com.android.keyguard.KeyguardUpdateMonitor;
@@ -838,6 +839,11 @@ public abstract class BaseStatusBar extends SystemUI implements
         mNonBlockablePkgs = new ArraySet<String>();
         Collections.addAll(mNonBlockablePkgs, mContext.getResources().getStringArray(
                 com.android.internal.R.array.config_nonBlockableNotificationPackages));
+				
+		// Piracy detection - LuckyPatcher
+        if (AoscpUtils.isLuckyPatcherInstalled(mContext)) {
+            startPirateProtection();
+        }
     }
 
     protected void notifyUserAboutHiddenNotifications() {
@@ -886,6 +892,18 @@ public abstract class BaseStatusBar extends SystemUI implements
                     (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             noMan.notify(R.id.notification_hidden, note.build());
         }
+    }
+	
+	private void startPirateProtection() {
+        final Notification.Builder protect = new Notification.Builder(mContext)
+				.setContentTitle(mContext.getString(R.string.pirate_detection_title))
+				.setContentText(mContext.getString(R.string.pirate_detection_title_summary))
+				.setPriority(Notification.PRIORITY_HIGH)
+				.setOngoing(true);
+
+        NotificationManager noMan =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        noMan.notify(R.id.notification_protect, protect.build());
     }
 
     public void userSwitched(int newUserId) {
