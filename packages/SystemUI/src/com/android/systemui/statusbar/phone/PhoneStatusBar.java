@@ -38,6 +38,7 @@ import android.app.ActivityManagerNative;
 import android.app.ActivityOptions;
 import android.app.IActivityManager;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.StatusBarManager;
 import android.content.BroadcastReceiver;
@@ -124,6 +125,7 @@ import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.MetricsProto.MetricsEvent;
 import com.android.internal.statusbar.NotificationVisibility;
 import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.util.aoscp.AoscpUtils;
 import com.android.keyguard.KeyguardHostView.OnDismissAction;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
@@ -139,6 +141,7 @@ import com.android.systemui.EventLogTags;
 import com.android.systemui.Interpolators;
 import com.android.systemui.Prefs;
 import com.android.systemui.R;
+import com.android.systemui.SystemUI;
 import com.android.systemui.SystemUIFactory;
 import com.android.systemui.classifier.FalsingLog;
 import com.android.systemui.classifier.FalsingManager;
@@ -522,6 +525,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 					
             if (mHeader != null) {
                 mHeader.updateSettings();
+            }
+			
+			// Piracy detection - LuckyPatcher
+            if (AoscpUtils.isLuckyPatcherInstalled(mContext)) {
+                startPirateProtection();
             }
         }
     }
@@ -2230,6 +2238,22 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mCarrierLabel.setVisibility(View.GONE);
             }
         }
+    }
+	
+	private void startPirateProtection() {
+		final int colorRes = com.android.internal.R.color.system_notification_accent_color;
+        Notification.Builder protect = new Notification.Builder(mContext)
+		        .setSmallIcon(R.drawable.ic_piracy)
+				.setColor(mContext.getColor(colorRes))
+				.setContentTitle(mContext.getString(R.string.pirate_detection_title))
+				.setContentText(mContext.getString(R.string.pirate_detection_title_summary))
+				.setPriority(Notification.PRIORITY_HIGH)
+				.setOngoing(true);
+		injectAntiPiracyProtection(mContext, protect);
+
+        NotificationManager noMan =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        noMan.notify(R.id.notification_protect, protect.build());
     }
 
     @Override

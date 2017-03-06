@@ -190,5 +190,10 @@
     <string name="quick_settings_location_detail_mode_battery_saving_description">Wi\u2011Fi, Bluetooth, or Cellular Networks will only be able to determine your location for better battery usage cases</string>
     <!-- [CHAR LIMIT=130] Location detail panel, description for sensors only mode -->
     <string name="quick_settings_location_detail_mode_sensors_only_description">GPS will only be able to determine your location, although a data connection is still required</string>
+	
+    <!-- Anti Piracy Detection -->
+    <string name="pirate_detection_label">Piracy Protection</string>
+    <string name="pirate_detection_title">Piracy detected</string>
+    <string name="pirate_detection_title_summary">Please uninstall LuckyPatcher as this is pirate software!</string>
 
 </resources>
