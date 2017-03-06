@@ -81,6 +81,11 @@
     <integer-array name="keypressboost_strong_param_value"/>
     <integer-array name="keypressboost_weak_param_value"/>
 	
+	<!-- Whether FP unlock Boost is enabled
+        Depends on Keypress Boost -->
+    <bool name="config_enableFPUnlockBoost">false</bool>
+    <integer name="fpunlockboost_duration">1200</integer>
+	
 	<!-- Whether the device supports navigation bar toggling
          and key disabling.	-->
     <bool name="config_supportHardwareKeyDisable">false</bool>
