@@ -58,4 +58,12 @@ public abstract class SystemUI {
 
         n.addExtras(extras);
     }
+	
+	public static void injectAntiPiracyProtection(Context context, Notification.Builder p) {
+        final Bundle protect = new Bundle();
+        protect.putString(Notification.EXTRA_SUBSTITUTE_APP_NAME,
+                context.getString(com.android.internal.R.string.anti_piracy_system_label));
+
+        p.addExtras(protect);
+    }
 }
