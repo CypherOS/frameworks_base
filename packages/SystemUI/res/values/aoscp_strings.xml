@@ -33,13 +33,13 @@
     <string name="accessibility_quick_settings_immersive_mode_hide_status_bar">Immersive mode hide status bar</string>
     <string name="accessibility_quick_settings_immersive_mode_hide_nav_bar">Immersive mode hide navigation bar</string>
 
-	<!-- Navbar tuner -->
+    <!-- Navbar tuner -->
     <string name="navbar_tuner_title">Navbar tuner</string>
     <!-- statusbar items tuner -->
     <string name="statusbar_icons_blacklist">Status bar icons</string>
     <!-- notification controls -->
     <string name="tuner_notification_control">Power notification controls</string>
-	
+
     <!-- Announcement made when immersive mode is toggled on/off -->
     <string name="accessibility_quick_settings_immersive_mode_changed_on">Immersive mode turned on</string>
     <string name="accessibility_quick_settings_immersive_mode_changed_off">Immersive mode turned off</string>
@@ -110,17 +110,17 @@
 
     <string name="quick_settings_alert_slider_detail_priority_events_title">Events</string>
     <string name="quick_settings_alert_slider_detail_priority_reminders_title">Reminders</string>
-	
-	<!-- OnTheSpot: Action denial button text. [CHAR LIMIT=NONE] -->
+
+    <!-- OnTheSpot: Action denial button text. [CHAR LIMIT=NONE] -->
     <string name="on_the_spot_no">NO</string>
-	<string name="on_the_spot_no_thanks">NO THANKS</string>
+    <string name="on_the_spot_no_thanks">NO THANKS</string>
     <!-- OnTheSpot: Action confirmation button text. [CHAR LIMIT=NONE] -->
     <string name="on_the_spot_yes">YES</string>
-	<string name="on_the_spot_ok">OK</string>
-	<string name="on_the_spot_sure">SURE</string>
-	<string name="on_the_spot_got_it">GOT IT</string>
+    <string name="on_the_spot_ok">OK</string>
+    <string name="on_the_spot_sure">SURE</string>
+    <string name="on_the_spot_got_it">GOT IT</string>
 
-	<!-- Path data for portrait battery -->
+    <!-- Path data for portrait battery -->
     <string name="battery_portrait_path_full" translatable="false">M 5 2 H 19 V 21 H 5 V 2 Z</string>
     <string name="battery_portrait_path_empty" translatable="false">M 5 21 H 19 V 21 H 5 V 21 Z</string>
     <string name="battery_portrait_clip_path" translatable="false">M6,21V4h3V2h6v2h3v17H6z</string>
@@ -132,18 +132,18 @@
 
     <!-- Path data for circle battery -->
     <string name="battery_circle_path" translatable="false">M 12 3.5 C 16.6944203736 3.5 20.5 7.30557962644 20.5 12 C 20.5 16.6944203736 16.6944203736 20.5 12 20.5 C 7.30557962644 20.5 3.5 16.6944203736 3.5 12 C 3.5 7.30557962644 7.30557962644 3.5 12 3.5 Z</string>
-	
-	<!-- Path data for aoscp circle battery -->
+
+    <!-- Path data for aoscp circle battery -->
     <string name="battery_aoscp_path" translatable="false">M 6.6796875,5.3769531 C 4.8813534,6.9354901 3.5,9.4412956 3.5,12.007813 3.5,16.702232 7.3055796,20.5 12,20.5 16.69442,20.5 20.5,16.69442 20.5,12 20.5,9.449068 19.237065,6.9336934 17.302122,5.3756702 18.866442,3.2507997 19.260154,2.5502147 19.102668,2.547299 18.868788,2.542969 17.423985,4.125 16.783931,5.0045765 15.378983,3.946894 13.794472,3.5078125 12,3.5078125 c -1.906618,0 -3.4170833,0.4363544 -4.835057,1.4964387 C 6.5158055,4.1277013 4.9453125,2.542969 4.7629991,2.5486276 c -0.13261,0.00412 0.2632311,0.7052784 1.9166884,2.8283255 z</string>
-	
+
     <!-- Path data for Solid battery -->
     <string name="battery_solid_full" translatable="false">M 12 2 C 17.5228474983 2 22 6.47715250169 22 12 C 22 17.5228474983 17.5228474983 22 12 22 C 6.47715250169 22 2 17.5228474983 2 12 C 2 6.47715250169 6.47715250169 2 12 2 Z</string>
     <string name="battery_solid_empty" translatable="false">M 12 12 C 12 12 12 12 12 12 C 12 12 12 12 12 12 C 12 12 12 12 12 12 C 12 12 12 12 12 12 Z</string>
 
     <!-- Screenshot QS tile -->
     <string name="quick_settings_screenshot_label">Screenshot</string>
-	
-	<!-- QuickSettings: NFC tile [CHAR LIMIT=NONE] -->
+
+    <!-- QuickSettings: NFC tile [CHAR LIMIT=NONE] -->
     <string name="quick_settings_nfc_label">NFC</string>
     <!-- QuickSettings: NFC (off) [CHAR LIMIT=NONE] -->
     <string name="quick_settings_nfc_off">NFC is disabled</string>
@@ -157,5 +157,16 @@
     <string name="quick_settings_nfc_and_beam_detail">NFC and Android Beam are enabled</string>
     <!-- QuickSettings: NFC is enabled, Android Beam disabled string [CHAR LIMIT=NONE] -->
     <string name="quick_settings_nfc_no_beam_detail">NFC is enabled, Android Beam disabled</string>
+
+    <!-- Heads Up QS Tile -->
+    <string name="quick_settings_heads_up_label">Heads up</string>
+    <string name="accessibility_quick_settings_heads_up_off">Heads up off</string>
+    <string name="accessibility_quick_settings_heads_up_on">Heads up on</string>
+    <string name="accessibility_quick_settings_heads_up_changed_off">Heads up turned off</string>
+    <string name="accessibility_quick_settings_heads_up_changed_on">Heads up turned on</string>
+
+    <!-- Heads up snooze toast -->
+    <string name="heads_up_snooze_message_one_minute"><xliff:g id="string">%s</xliff:g> - Heads up notifications are snoozing for 1 minute.</string>
+    <string name="heads_up_snooze_message"><xliff:g id="string">%s</xliff:g> - Heads up notifications are snoozing for <xliff:g id="number">%d</xliff:g> minutes.</string>
 
 </resources>
