@@ -68,6 +68,7 @@ static const char* kDefaultVendor = "default";
 static const char* kAssetsRoot = "assets";
 static const char* kAppZipName = NULL; //"classes.jar";
 static const char* kSystemAssets = "framework/framework-res.apk";
+static const char* kAoscpFrameworkAssets = "framework/org.aoscp.framework-res.apk";
 static const char* kResourceCache = "resource-cache";
 
 static const char* kExcludeExtension = ".EXCLUDE";
@@ -325,7 +326,16 @@ bool AssetManager::addDefaultAssets()
     String8 path(root);
     path.appendPath(kSystemAssets);
 
-    return addAssetPath(path, NULL, false /* appAsLib */, true /* isSystemAsset */);
+    bool ret = addAssetPath(path, NULL, false /* appAsLib */, true /* isSystemAsset */);
+    if (ret) {
+        String8 pathAoscp(root);
+        pathAoscp.appendPath(kAoscpFrameworkAssets);
+
+        if (!addAssetPath(pathAoscp, NULL, false /* appAsLib */, false /*isSystemAsset */)) {
+            ALOGE("Failed to load AOSCP framework resources");
+        }
+    }
+    return ret;
 }
 
 int32_t AssetManager::nextAssetPath(const int32_t cookie) const
