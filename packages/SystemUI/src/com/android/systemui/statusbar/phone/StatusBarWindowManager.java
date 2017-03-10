@@ -76,7 +76,7 @@ public class StatusBarWindowManager implements RemoteInputController.Callback {
         Resources res = mContext.getResources();
         final boolean configLockRotationValue = res.getBoolean(R.bool.config_enableLockScreenRotation);
         boolean enableLockScreenRotation = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_ROTATION, configLockRotationValue ? 1 : 0, UserHandle.USER_CURRENT) != 0;
+                Settings.System.LOCKSCREEN_ROTATION, configLockRotationValue ? 0 : 1, UserHandle.USER_CURRENT) != 0;
 
         return SystemProperties.getBoolean("lockscreen.rot_override",false)
                || enableLockScreenRotation;
