@@ -2906,7 +2906,7 @@ status_t ResourceTable::flatten(Bundle* bundle, const sp<const ResourceFilter>& 
         String16 packageName(table.getBasePackageName(i));
         if (packageId > 0x01 && packageId != 0x7f && packageId != 0x37 &&
                 packageName != String16("android")
-                && packageName != String16("org.aoscp.framework")) {
+                && packageName != String16("aoscp.framework")) {
             libraryPackages.add(sp<Package>(new Package(packageName, packageId)));
         }
     }
