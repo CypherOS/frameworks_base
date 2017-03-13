@@ -249,6 +249,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int KEY_ACTION_CAMERA = 6;
     private static final int KEY_ACTION_LAST_APP = 7;
     private static final int KEY_ACTION_SPLIT_SCREEN = 8;
+    private static final int KEY_ACTION_SCREEN_OFF = 9;
 
     // Special values, used internal only.
     private static final int KEY_ACTION_HOME = 100;
@@ -3897,6 +3898,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 break;
             case KEY_ACTION_SPLIT_SCREEN:
                 toggleSplitScreen();
+                break;
+            case KEY_ACTION_SCREEN_OFF:
+                mPowerManager.goToSleep(SystemClock.uptimeMillis());
                 break;
         }
     }
