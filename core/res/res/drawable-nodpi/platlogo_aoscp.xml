@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2017 CypherOS
+	
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+        http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="257dp"
+    android:height="256dp"
+    android:viewportWidth="257"
+    android:viewportHeight="256">
+
+    <path
+	    android:pathData="M2301 4979 c-458 -56 -848 -216 -1224 -498 -104 -78 -347 -323 -436 -438 -194 -252 -351 -578 -430 -889 -79 -312 -93 -719 -35 -1024 49 -254 116 -453 225 -666 122 -239 233 -396 404 -572 l90 -93 35 45 c19 25 116 138 215 252 257 295 268 309 248 325 -29 25 -141 174 -190 254 -212 346 -286 771 -204 1172 31 148 65 244 141 398 114 230 270 418 480 575 106 79 330 195 455 235 198 63 434 91 630 74 227 -19 391 -66 600 -169 712 -352 1055 -1177 809 -1945 -37 -117 -142 -327 -215 -430 -35 -49 -110 -137 -166 -195 l-102 -106 141 -185 c78 -101 177 -230 220 -286 43 -56 78 -106 78 -111 0 -5 6 -15 14 -21 18 -15 91 45 236 195 121 124 190 209 279 342 64 95 212 375 230 434 5 18 21 64 36 102 135 358 171 845 95 1257 -33 172 -75 313 -152 504 -58 145 -194 375 -317 538 -74 98 -309 334 -418 420 -252 199 -627 382 -929 452 -196 46 -297 57 -534 60 -129 2 -268 -1 -309 -6z"
+        android:fillColor="#ffffff" />
+        
+    <path
+	    android:pathData="M2470 3869 c-295 -21 -553 -127 -783 -324 -461 -393 -600 -1052 -339 -1609 181 -385 564 -676 987 -751 195 -34 469 -15 654 46 435 143 779 508 890 946 32 127 42 210 42 353 -1 393 -171 761 -468 1015 -280 239 -616 350 -983 324z"
+        android:fillColor="#ffffff" />
+		
+    <path
+	    android:pathData="M1562 1232 c-18 -20 -271 -314 -337 -393 -22 -26 -68 -79 -102 -117 l-63 -69 58 -45 c134 -104 375 -238 551 -308 315 -125 625 -177 980 -167 281 8 497 49 762 144 172 61 529 252 529 282 0 5 -15 27 -32 49 -33 40 -141 179 -230 295 -134 175 -155 202 -181 233 l-28 33 -48 -30 c-74 -45 -247 -124 -336 -153 -320 -105 -680 -105 -1010 0 -112 35 -325 141 -418 208 -74 53 -78 55 -95 38z"
+        android:fillColor="#ffffff" />
+</vector>
