@@ -124,4 +124,7 @@
   <!-- Whether to enable HumanInteractionController by default -->
   <java-symbol type="bool" name="config_HICEnabledDefault" />
   
+  <!-- PlatLogo -->
+  <java-symbol type="drawable" name="platlogo_aoscp" />
+  
 </resources>
