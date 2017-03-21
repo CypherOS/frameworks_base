@@ -68,6 +68,7 @@ static const char* kDefaultVendor = "default";
 static const char* kAssetsRoot = "assets";
 static const char* kAppZipName = NULL; //"classes.jar";
 static const char* kSystemAssets = "framework/framework-res.apk";
+static const char* kAoscpFrameworkAssets = "framework/org.aoscp.framework-res.apk";
 static const char* kResourceCache = "resource-cache";
 
 static const char* kExcludeExtension = ".EXCLUDE";
@@ -328,7 +329,16 @@ bool AssetManager::addDefaultAssets()
     String8 path(root);
     path.appendPath(kSystemAssets);
 
-    return addAssetPath(path, NULL, false /* appAsLib */, true /* isSystemAsset */);
+    bool ret = addAssetPath(path, NULL, false /* appAsLib */, true /* isSystemAsset */);
+    if (ret) {
+        String8 pathAoscp(root);
+        pathAoscp.appendPath(kAoscpFrameworkAssets);
+
+        if (!addAssetPath(pathAoscp, NULL, false /* appAsLib */, false /*isSystemAsset */)) {
+            ALOGE("Failed to load AOSCP framework resources");
+        }
+    }
+    return ret;
 }
 
 int32_t AssetManager::nextAssetPath(const int32_t cookie) const
@@ -750,6 +760,66 @@ Asset* AssetManager::openIdmapLocked(const struct asset_path& ap) const
         }
     }
     return ass;
+}
+
+void AssetManager::addSystemOverlays(const char* pathOverlaysList,
+        const String8& targetPackagePath, ResTable* sharedRes, size_t offset) const
+{
+    FILE* fin = fopen(pathOverlaysList, "r");
+    if (fin == NULL) {
+        return;
+    }
+
+#ifndef _WIN32
+    if (TEMP_FAILURE_RETRY(flock(fileno(fin), LOCK_SH)) != 0) {
+        fclose(fin);
+        return;
+    }
+#endif
+    char buf[1024];
+    while (fgets(buf, sizeof(buf), fin)) {
+        // format of each line:
+        //   <path to apk><space><path to idmap><newline>
+        char* space = strchr(buf, ' ');
+        char* newline = strchr(buf, '\n');
+        asset_path oap;
+
+        if (space == NULL || newline == NULL || newline < space) {
+            continue;
+        }
+
+        oap.path = String8(buf, space - buf);
+        oap.type = kFileTypeRegular;
+        oap.idmap = String8(space + 1, newline - space - 1);
+        oap.isSystemOverlay = true;
+
+        Asset* oass = const_cast<AssetManager*>(this)->
+            openNonAssetInPathLocked("resources.arsc",
+                    Asset::ACCESS_BUFFER,
+                    oap);
+
+        if (oass != NULL) {
+            Asset* oidmap = openIdmapLocked(oap);
+            offset++;
+            sharedRes->add(oass, oidmap, offset + 1, false);
+            const_cast<AssetManager*>(this)->mAssetPaths.add(oap);
+            const_cast<AssetManager*>(this)->mZipSet.addOverlay(targetPackagePath, oap);
+			delete oidmap;
+
+            oidmap->close();
+            ALOGD("close idmap=%s pid=%d\n", oap.idmap.string(), getpid());
+       }
+
+        if (oap.path.find(OVERLAY_DIR) != -1) {
+           const_cast<AssetManager*>(this)->mZipSet.closeZipFromPath(oap.path);
+           ALOGD("close: %s and reset entry\n", oap.path.string());
+      }
+  }
+
+#ifndef _WIN32
+    TEMP_FAILURE_RETRY(flock(fileno(fin), LOCK_UN));
+#endif
+    fclose(fin);
 }
 
 const ResTable& AssetManager::getResources(bool required) const

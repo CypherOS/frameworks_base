@@ -17,8 +17,13 @@
     <!-- statusbar items tuner -->
     <string name="statusbar_icons_blacklist">Icone barra di stato</string>
     <!-- notification controls -->
-    <string name="tuner_notification_control">Controlli alimentazione di notifica</string>
+    <string name="tuner_notification_control">Comandi di accensione notifica</string>
 
+    <!-- vpn icon switch -->
+    <string name="status_bar_vpn">VPN</string>
+    <!-- data saver icon switch -->
+    <string name="status_bar_datasaver">Risparmio dati</string>
+  
    <string name="delete_screenshot_toast">Elimina Screenshot</string>
 
     <!-- Content description of the data connection type HSPA+ for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
@@ -37,7 +42,7 @@
     <string name="screenrecord_notif_error">Impossibile registrare lo schermo</string>
 
     <!-- Screen pinning dialog description (for devices without navbar) -->
-    <string name="screen_pinning_description_no_navbar">Tienilo in vista fino a quando non sblocchi. Tieni premuto il tasto Indietro per sbloccare.</string>
+    <string name="screen_pinning_description_no_navbar">Tienilo in vista fino a quando non sblocchi. Tieni premuto il tasto indietro per sbloccare.</string>
 
     <!-- ADB over network Tile -->
     <string name="quick_settings_adb_network">Rete ADB</string>
@@ -73,8 +78,8 @@
   
     <!-- Sync QS tile -->
     <string name="quick_settings_sync_label">Sincronizzazione</string>
-    <string name="accessibility_quick_settings_sync_off">Sincronizzazione off</string>
-    <string name="accessibility_quick_settings_sync_on">Sincronizzazione on</string>
+    <string name="accessibility_quick_settings_sync_off">Sincronizzazione spento</string>
+    <string name="accessibility_quick_settings_sync_on">Sincronizzazione acceso</string>
     <string name="accessibility_quick_settings_sync_changed_off">Sincronizzazione disattivata</string>
     <string name="accessibility_quick_settings_sync_changed_on">Sincronizzazione attivata</string>
   
@@ -86,29 +91,29 @@
     <string name="accessibility_quick_settings_nfc_changed_on">NFC attivato.</string>
 
   <!-- [CHAR LIMIT=NONE] Importance Tuner setting title -->
-  <string name="cm_power_notification_controls_description">Con i controlli priorità notifiche, è possibile impostare un livello di priorità da 0 a 6 per le notifiche di un\'app. 
+  <string name="cm_power_notification_controls_description">I controlli di gestione delle notifiche ti consentono di impostare un livello di importanza compreso tra 0 e 6 per le notifiche di un\'app. 
   \n\n <b>Livello 6</b>
   \n- Visualizza in cima all\'elenco delle notifiche
-  \n- Consenti interruzioni a schermo intero
+  \n- Consenti l\'interruzione a schermo intero
   \n- Mostra sempre anteprima
   \n\n <b>Livello 5</b>
-  \n- Interruzioni a schermo intero non consentite
+  \n- Impedisci l\'interruzione a schermo intero
   \n- Mostra sempre anteprima
   \n\n <b>Livello 4</b>
-  \n- Interruzioni a schermo intero non consentite
+  \n- Impedisci l\'interruzione a schermo intero
   \n- Nessun\'anteprima
   \n\n <b>Livello 3</b>
-  \n- Interruzioni a schermo intero non consentite
+  \n- Impedisci l\'interruzione a schermo intero
   \n- Nessun\'anteprima
   \n- Nessun suono o vibrazione
   \n\n <b>Livello 2</b>
-  \n- Interruzioni a schermo intero non consentite
+  \n- Impedisci l\'interruzione a schermo intero
   \n- Nessun\'anteprima
   \n- Nessun suono o vibrazione
   \n- Visualizzazione sulla schermata di blocco non consentita 
   \n- Visualizza in fondo all\'elenco delle notifiche
   \n\n <b>Livello 1</b>
-  \n- Interruzioni a schermo intero non consentite
+  \n- Impedisci l\'interruzione a schermo intero
   \n- Nessun\'anteprima
   \n- Nessun suono o vibrazione
   \n- Visualizzazione sulla schermata di blocco e nella barra di stato non consentita 
@@ -117,10 +122,10 @@
   \n- Tutte le notifiche vengono bloccate</string>
   
    <!-- Notification importance level title-->
-    <string name="importance_level_title">Importance: Level %1$d</string>
+    <string name="importance_level_title">Importanza: Livello %1$d</string>
 
     <!-- [CHAR LIMIT=100] Notification Importance slider: very low importance level description -->
-    <string name="notification_importance_very_low">Nessuna interruzione a schermo intero, anteprima, soni o vibrazioni. Nascosta nella schermata di blocco.</string>
+    <string name="notification_importance_very_low">Nessuna interruzione a schermo intero, anteprima, suoni o vibrazioni. Nascondi nella schermata di blocco.</string>
 
    <!-- Wi-Fi hotspot label when enabled -->
     <plurals name="wifi_hotspot_connected_clients_label">
@@ -130,8 +135,11 @@
    
   <!-- Show lte/4g switch -->
     <string name="show_lte_fourgee_title">4G</string>
-	
-	<!-- Content description of the location tile in quick settings when on, battery saving mode (not shown on the screen). [CHAR LIMIT=NONE] -->
+  
+    <!-- Data/Wifi activity arrows -->
+    <string name="data_wifi_activity_arrows_title">Attività di rete</string>
+  
+    <!-- Content description of the location tile in quick settings when on, battery saving mode (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_quick_settings_location_battery_saving">Geolocalizzazione: modalità risparmio batteria.</string>
     <!-- Content description of the location tile in quick settings when on, sensors only mode (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_quick_settings_location_gps_only">Geolocalizzazione: modalità solo dispositivo.</string>

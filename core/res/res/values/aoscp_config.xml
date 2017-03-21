@@ -66,4 +66,8 @@
     <!-- Boost parameters which get passed to QPerformance -->
     <integer-array name="onbootboost_param_value"/>
 	
+	<!-- Whether the device supports navigation bar toggling
+         and key disabling.	-->
+    <bool name="config_supportHardwareKeyDisable">false</bool>
+	
 </resources>

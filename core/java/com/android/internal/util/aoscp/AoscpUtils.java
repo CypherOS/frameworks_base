@@ -141,4 +141,13 @@ public class AoscpUtils {
         }
         return false;
     }
+	
+	public static boolean isLuckyPatcherInstalled(final Context context) {
+        boolean mluckyPatcherInstalled = false;
+        try {
+            mluckyPatcherInstalled = (context.getPackageManager().getPackageInfo("com.android.vending.billing.InAppBillingService.LOCK", 0).versionCode > 0);
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+        return mluckyPatcherInstalled;
+    }
 }
