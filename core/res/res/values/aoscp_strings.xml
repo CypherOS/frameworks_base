@@ -21,4 +21,7 @@
     <!-- Alert slider proc nodes paths. -->
     <string name="alert_slider_state_path"></string>
     <string name="alert_slider_uevent_match_path"></string>
+
+    <!-- Assist manager -->
+    <string name="no_assist_found">No assist manager found</string>
 </resources>
