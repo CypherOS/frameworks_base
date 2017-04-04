@@ -24,4 +24,26 @@
 
     <!-- Assist manager -->
     <string name="no_assist_found">No assist manager found</string>
+
+    <!-- {Global Actions} -->
+    <!-- Label for item that takes a screenshot in phone options dialog. -->
+    <string name="global_action_screenshot">Screenshot</string>
+
+    <!-- Sub-dialog labels. -->
+    <string name="reboot_recovery">Recovery</string>
+    <string name="reboot_bootloader">Bootloader</string>
+
+    <!-- Reboot Confirmation Dialog.  When the user chooses to reboot the phone, there will
+         be a confirmation dialog.  This is the message. -->
+    <string name="reboot_confirm" product="tablet">Your tablet will restart.</string>
+    <!-- Reboot Confirmation Dialog.  When the user chooses to reboot the TV, there will
+         be a confirmation dialog.  This is the message. -->
+    <string name="reboot_confirm" product="tv">Your TV will restart.</string>
+    <!-- Reboot Confirmation Dialog.  When the user chooses to reboot the watch, there will
+         be a confirmation dialog.  This is the message. -->
+    <string name="reboot_confirm" product="watch">Your watch will restart.</string>
+    <!-- Reboot Confirmation Dialog.  When the user chooses to reboot the phone, there will
+         be a confirmation dialog.  This is the message. -->
+    <string name="reboot_confirm" product="default">Your phone will restart.</string>
+
 </resources>
