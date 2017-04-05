@@ -110,4 +110,7 @@
   <java-symbol type="string" name="global_action_search" />
   <java-symbol type="string" name="global_action_voicesearch" />
   
+  <!-- PlatLogo -->
+  <java-symbol type="drawable" name="platlogo_aoscp" />
+  
 </resources>
