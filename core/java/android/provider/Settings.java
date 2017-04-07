@@ -3860,6 +3860,12 @@ public final class Settings {
         public static final String STATUS_BAR_SHOW_TICKER = "status_bar_show_ticker";
 
         /**
+         * Whether to show the notification ticker when a music track changes
+         * @hide
+         */
+        public static final String STATUS_BAR_TRACK_TICKER = "status_bar_track_ticker";
+
+        /**
          * Controls whether gestures are enabled.
          * @hide
          */
