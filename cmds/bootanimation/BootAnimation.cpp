@@ -258,7 +258,6 @@ status_t BootAnimation::initTexture(FileMap* map, int* width, int* height)
     SkMemoryStream  stream(map->getDataPtr(), map->getDataLength());
     SkImageDecoder* codec = SkImageDecoder::Factory(&stream);
     if (codec != NULL) {
-        bitmap = new SkBitmap();
         codec->setDitherImage(false);
         codec->decode(&stream, bitmap,
                 #ifdef USE_565
@@ -276,11 +275,11 @@ status_t BootAnimation::initTexture(FileMap* map, int* width, int* height)
     delete map;
 
     // ensure we can call getPixels().
-    bitmap->lockPixels();
+    bitmap.lockPixels();
 
-    const int w = bitmap->width();
-    const int h = bitmap->height();
-    const void* p = bitmap->getPixels();
+    const int w = bitmap.width();
+    const int h = bitmap.height();
+    const void* p = bitmap.getPixels();
 
     GLint crop[4] = { 0, h, w, -h };
     int tw = 1 << (31 - __builtin_clz(w));
@@ -288,7 +287,7 @@ status_t BootAnimation::initTexture(FileMap* map, int* width, int* height)
     if (tw < w) tw <<= 1;
     if (th < h) th <<= 1;
 
-    switch (bitmap->colorType()) {
+    switch (bitmap.colorType()) {
         case kN32_SkColorType:
             if (!mUseNpotTextures && (tw != w || th != h)) {
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA,
