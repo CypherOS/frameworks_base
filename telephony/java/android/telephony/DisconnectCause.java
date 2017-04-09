@@ -293,7 +293,7 @@ public class DisconnectCause {
      * roaming on a carrier that does not allow this.
      * @hide
      */
-    public static final int DIALED_CALL_FORWARDING_WHILE_ROAMING = 57;
+    public static final int DIALED_CALL_FORWARDING_WHILE_ROAMING = 106;
 
     //*********************************************************************************************
     // When adding a disconnect type:
