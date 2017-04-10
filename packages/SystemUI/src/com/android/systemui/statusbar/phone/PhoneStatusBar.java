@@ -2472,7 +2472,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 Log.v(TAG, "DEBUG_MEDIA: removing fade layer");
             }
             mBackdropFront.setVisibility(View.INVISIBLE);
-            mBackdropFront.animate().cancel();
+            mBackdropFront.animate()
+						.setduration(150)
+						.alpha(0f).withEndAction(mHideBackdropFront);
+			.cancel();
             mBackdropFront.setImageDrawable(null);
         }
     };
