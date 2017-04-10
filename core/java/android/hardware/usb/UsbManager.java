@@ -544,9 +544,25 @@ public class UsbManager {
      *
      * {@hide}
      */
-    public void setCurrentFunction(String function, boolean usbDataUnlocked) {
+    public void setCurrentFunction(String function) {
         try {
-            mService.setCurrentFunction(function, usbDataUnlocked);
+            mService.setCurrentFunction(function);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Sets whether USB data (for example, MTP exposed pictures) should be made available
+     * on the USB connection when in device mode. Unlocking usb data should only be done with
+     * user involvement, since exposing pictures or other data could leak sensitive
+     * user information.
+     *
+     * {@hide}
+     */
+    public void setUsbDataUnlocked(boolean unlocked) {
+        try {
+            mService.setUsbDataUnlocked(unlocked);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

@@ -113,6 +113,7 @@ public class UsbDeviceManager {
     private static final int MSG_UPDATE_USER_RESTRICTIONS = 6;
     private static final int MSG_UPDATE_HOST_STATE = 7;
     private static final int MSG_UPDATE_CHARGING_STATE = 9;
+	private static final int MSG_SET_USB_DATA_UNLOCKED = 11;
 
     private static final int AUDIO_MODE_SOURCE = 1;
 
