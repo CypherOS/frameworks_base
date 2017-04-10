@@ -6730,6 +6730,5 @@ public class DevicePolicyManager {
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
->>>>>>> android-7.1.2_r5
     }
 }
