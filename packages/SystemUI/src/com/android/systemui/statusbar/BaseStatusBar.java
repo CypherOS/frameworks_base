@@ -1261,6 +1261,12 @@ public abstract class BaseStatusBar extends SystemUI implements
             mStackScroller.resetExposedGearView(animate, true /* force */);
         }
     }
+	
+	@Override
+    public void onGutsClosed(NotificationGuts guts) {
+        mStackScroller.onHeightChanged(null, true /* needsAnimation */);
+        mNotificationGutsExposed = null;
+    }
 
     @Override
     public void showRecentApps(boolean triggeredFromAltTab, boolean fromHome) {
