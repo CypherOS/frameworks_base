@@ -586,7 +586,7 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
     }
 	
 	public void setVertical(boolean vertical) {
-		setLandscape(!vertical);
+		return;
 	}
 
     public void setLandscape(boolean landscape) {
