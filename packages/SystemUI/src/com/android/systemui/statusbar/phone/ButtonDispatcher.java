@@ -40,7 +40,7 @@ public class ButtonDispatcher {
     private int mImageResource = -1;
     private Drawable mImageDrawable;
     private View mCurrentView;
-    private boolean mVertical;
+	private boolean mVertical;
 
     public ButtonDispatcher(int id) {
         mId = id;
@@ -48,6 +48,13 @@ public class ButtonDispatcher {
 
     void clear() {
         mViews.clear();
+    }
+	
+	void addView(View view, boolean landscape) {
+        addView(view);
+        if (view instanceof ButtonInterface) {
+            ((ButtonInterface) view).setLandscape(landscape);
+        }
     }
 
     void addView(View view) {
@@ -69,8 +76,8 @@ public class ButtonDispatcher {
         } else if (mImageDrawable != null) {
             ((ButtonInterface) view).setImageDrawable(mImageDrawable);
         }
-
-        if (view instanceof  ButtonInterface) {
+		
+		if (view instanceof  ButtonInterface) {
             ((ButtonInterface) view).setVertical(mVertical);
         }
     }
@@ -183,8 +190,8 @@ public class ButtonDispatcher {
             }
         }
     }
-
-    public void setVertical(boolean vertical) {
+	
+	public void setVertical(boolean vertical) {
         mVertical = vertical;
         final int N = mViews.size();
         for (int i = 0; i < N; i++) {
@@ -205,7 +212,9 @@ public class ButtonDispatcher {
 
         void abortCurrentGesture();
 
-        void setVertical(boolean vertical);
+        void setLandscape(boolean landscape);
+		
+		void setVertical(boolean vertical);
 
         void setCarMode(boolean carMode);
     }

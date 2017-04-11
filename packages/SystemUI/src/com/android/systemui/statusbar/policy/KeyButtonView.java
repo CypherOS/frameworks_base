@@ -278,6 +278,11 @@ public class KeyButtonView extends ImageView implements ButtonDispatcher.ButtonI
     public void setVertical(boolean vertical) {
         //no op
     }
+	
+	@Override
+	public void setLandscape(boolean landscape) {
+		// Do nothing. Orientation is already defined
+	}
 
     @Override
     public void setCarMode(boolean carMode) {
