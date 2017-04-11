@@ -67,9 +67,6 @@
   <!-- Vendor warning -->
   <java-symbol type="string" name="system_error_vendorprint" />
   
-  <!-- Usb drive persistent notification -->
-  <java-symbol type="bool" name="config_persistUsbDriveNotification" />
-  
   <!-- Carrier Apps -->
   <java-symbol type="array" name="config_enabledPreinstalledCarrierApps" />
   
