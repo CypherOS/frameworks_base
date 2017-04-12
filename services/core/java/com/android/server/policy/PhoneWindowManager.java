@@ -2610,6 +2610,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         ContentResolver resolver = mContext.getContentResolver();
         Resources resources = mContext.getResources();
         boolean updateRotation = false;
+        boolean forceRelayout = false;
         synchronized (mLock) {
             mEndcallBehavior = Settings.System.getIntForUser(resolver,
                     Settings.System.END_BUTTON_BEHAVIOR,
@@ -2656,6 +2657,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (navBarEnabled != mNavBarEnabled) {
                 mNavBarEnabled = navBarEnabled;
                 SystemProperties.set("qemu.hw.mainkeys", mNavBarEnabled ? "0" : "1");
+                // updateRotation = forceRelayout = true;
             }
 
             readConfigurationDependentBehaviors();
@@ -2678,12 +2680,17 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 updateOrientationListenerLp();
             }
 
+            final int systemDesignFlags = mSystemDesignFlags;
             mSystemDesignFlags = Settings.Secure.getIntForUser(resolver,
                     Settings.Secure.SYSTEM_DESIGN_FLAGS, 0, UserHandle.USER_CURRENT);
 			//Three Finger Gesture
             boolean threeFingerGesture = Settings.System.getIntForUser(resolver,
                     Settings.System.THREE_FINGER_GESTURE, 0, UserHandle.USER_CURRENT) == 1;
             enableSwipeThreeFingerGesture(threeFingerGesture);
+
+            // if (mSystemDesignFlags != systemDesignFlags) {
+            //     updateRotation = forceRelayout = true;
+            // }
 
             if (mSystemReady) {
                 int pointerLocation = Settings.System.getIntForUser(resolver,
@@ -2712,7 +2719,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             PolicyControl.reloadFromSetting(mContext);
         }
         if (updateRotation) {
-            updateRotation(true);
+            updateRotation(true, forceRelayout);
         }
     }
 
@@ -3211,20 +3218,20 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     /** Checks whether the navigation bar is supposed to exist in its full glory. */
-    private boolean shouldNavigationBarOccupySpace() {
-        return (mSystemDesignFlags & View.SYSTEM_DESIGN_FLAG_IMMERSIVE_NAV) == 0 ||
-                mForcingShowNavBar;
+    private boolean shouldForceNavigationBarImmersive() {
+        return (mSystemDesignFlags & View.SYSTEM_DESIGN_FLAG_IMMERSIVE_NAV) != 0 &&
+                !mForcingShowNavBar;
     }
 
     /** Checks whether the status bar is supposed to exist in its full glory. */
-    private boolean shouldStatusBarOccupySpace() {
-        return (mSystemDesignFlags & View.SYSTEM_DESIGN_FLAG_IMMERSIVE_STATUS) == 0;
+    private boolean shouldForceStatusBarImmersive() {
+        return (mSystemDesignFlags & View.SYSTEM_DESIGN_FLAG_IMMERSIVE_STATUS) != 0;
     }
 
     @Override
     public int getNonDecorDisplayWidth(int fullWidth, int fullHeight, int rotation,
             int uiMode) {
-        if (hasNavigationBar() && shouldNavigationBarOccupySpace()) {
+        if (hasNavigationBar() && mNavigationBar != null && !shouldForceNavigationBarImmersive()) {
             // For a basic navigation bar, when we are in landscape mode we place
             // the navigation bar to the side.
             if (mNavigationBarCanMove && fullWidth > fullHeight) {
@@ -3245,7 +3252,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     @Override
     public int getNonDecorDisplayHeight(int fullWidth, int fullHeight, int rotation,
             int uiMode) {
-        if (hasNavigationBar() && shouldNavigationBarOccupySpace()) {
+        if (hasNavigationBar() && mNavigationBar != null && !shouldForceNavigationBarImmersive()) {
             // For a basic navigation bar, when we are in portrait mode we place
             // the navigation bar to the bottom.
             if (!mNavigationBarCanMove || fullWidth < fullHeight) {
@@ -3268,7 +3275,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // of the screen.
         return getNonDecorDisplayHeight(
                 fullWidth, fullHeight, rotation, uiMode) -
-            (shouldStatusBarOccupySpace() ? mStatusBarHeight : 0);
+            (!shouldForceStatusBarImmersive() ? mStatusBarHeight : 0);
     }
 
     @Override
@@ -5078,6 +5085,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         final int fl = PolicyControl.getWindowFlags(null, attrs);
         final int sysuiVis = PolicyControl.getSystemUiVisibility(null, attrs);
         final int systemUiVisibility = (sysuiVis | attrs.subtreeSystemUiVisibility);
+        final boolean forceNavBarImmersive = shouldForceNavigationBarImmersive();
 
         final boolean useOutsets = outOutsets != null && shouldUseOutsets(attrs, fl);
         if (useOutsets) {
@@ -5134,11 +5142,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 calculateRelevantTaskInsets(taskBounds, outStableInsets,
                         displayWidth, displayHeight);
             }
-            return mForceShowSystemBars;
+            return mForceShowSystemBars || forceNavBarImmersive;
         }
         outContentInsets.setEmpty();
         outStableInsets.setEmpty();
-        return mForceShowSystemBars;
+        return mForceShowSystemBars ||forceNavBarImmersive;
     }
 
     /**
@@ -5263,21 +5271,24 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             // input window to catch all touch events.  This way we can
             // detect when the user presses anywhere to bring back the nav
             // bar and ensure the application doesn't see the event.
-            if (navVisible || navAllowedHidden) {
-                if (mInputConsumer != null) {
-                    mHandler.sendMessage(
-                            mHandler.obtainMessage(MSG_DISPOSE_INPUT_CONSUMER, mInputConsumer));
-                    mInputConsumer = null;
+            // However, if EdgeGestureService is in use, this is useless for us. carlosavignano@aospa.co
+            if (!mUsingEdgeGestureServiceForGestures && hasNavigationBar()) {
+                if (navVisible || navAllowedHidden) {
+                    if (mInputConsumer != null) {
+                        mHandler.sendMessage(
+                                mHandler.obtainMessage(MSG_DISPOSE_INPUT_CONSUMER, mInputConsumer));
+                        mInputConsumer = null;
+                    }
+                } else if (mInputConsumer == null) {
+                    mInputConsumer = mWindowManagerFuncs.addInputConsumer(mHandler.getLooper(),
+                            mHideNavInputEventReceiverFactory);
                 }
-            } else if (mInputConsumer == null) {
-                mInputConsumer = mWindowManagerFuncs.addInputConsumer(mHandler.getLooper(),
-                        mHideNavInputEventReceiverFactory);
             }
 
             // For purposes of positioning and showing the nav bar, if we have
             // decided that it can't be hidden (because of the screen aspect ratio),
             // then take that into account.
-            navVisible |= !canHideNavigationBar();
+            // navVisible |= !canHideNavigationBar();
 
             boolean updateSysUiVisibility = layoutNavigationBar(displayWidth, displayHeight,
                     displayRotation, uiMode, overscanLeft, overscanRight, overscanBottom, dcf, navVisible, navTranslucent,
@@ -5295,25 +5306,36 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             boolean isKeyguardShowing) {
         // decide where the status bar goes ahead of time
         if (mStatusBar != null) {
-            final int statusBarHeight = shouldStatusBarOccupySpace() ? mStatusBarHeight : 0;
+            final boolean hasNavBar = hasNavigationBar() && mNavigationBar != null;
+            final boolean forceNavBarImmersive =  shouldForceNavigationBarImmersive();
+            final boolean forceStatusBarImmersive = shouldForceStatusBarImmersive();
+
+            final int statusBarHeight = !forceStatusBarImmersive ? mStatusBarHeight : 0;
 
             // apply any navigation bar insets
-            // If global immersive is enabled we need to tell status bar to not occupy full display width
-            // when on landscape, since everything thinks that space is available based on our setted
-            // params (check layoutNavigationBar(), especially immersive comments).
             pf.left = df.left = of.left = mUnrestrictedScreenLeft;
             pf.top = df.top = of.top = mUnrestrictedScreenTop;
             pf.right = df.right = of.right = mUnrestrictedScreenWidth + mUnrestrictedScreenLeft;
             pf.bottom = df.bottom = of.bottom = mUnrestrictedScreenHeight
                     + mUnrestrictedScreenTop;
-            vf.left = shouldNavigationBarOccupySpace() ?
-                    mStableLeft : mNavigationBarPosition == NAV_BAR_LEFT ?
-                            mStableLeft + getNavigationBarHeight(mDisplayRotation, mUiMode) : mStableLeft;
+
+            vf.left = mStableLeft;
             vf.top = mStableTop;
-            vf.right = shouldNavigationBarOccupySpace() ?
-                    mStableRight : mNavigationBarPosition == NAV_BAR_RIGHT ?
-                            mStableRight - getNavigationBarHeight(mDisplayRotation, mUiMode) : mStableRight;
+            vf.right = mStableRight;
             vf.bottom = mStableBottom;
+
+            // If global immersive is enabled we need to tell status bar to not occupy full display width
+            // when on landscape, since everything thinks that space is available based on our setted
+            // params (check layoutNavigationBar(), especially immersive comments). carlosavignano@aospa.co
+            if (hasNavBar && forceNavBarImmersive) {
+                if (isLandscapeOrSeascape(mDisplayRotation)) {
+                    if (mNavigationBarPosition == NAV_BAR_RIGHT) {
+                        vf.right -= getNavigationBarWidth(mDisplayRotation, mUiMode);
+                    } else if (mNavigationBarPosition == NAV_BAR_LEFT) {
+                        vf.left += getNavigationBarWidth(mDisplayRotation, mUiMode);
+                    }
+                }
+            }
 
             mStatusBarLayer = mStatusBar.getSurfaceLayer();
 
@@ -5371,13 +5393,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             int uiMode, int overscanLeft, int overscanRight, int overscanBottom, Rect dcf,
             boolean navVisible, boolean navTranslucent, boolean navAllowedHidden,
             boolean statusBarExpandedNotKeyguard) {
-
-        final int navBarWidth = getNavigationBarWidth(displayRotation, uiMode);
-        final int navBarHeight = getNavigationBarHeight(displayRotation, uiMode);
-
         if (mNavigationBar != null) {
             boolean transientNavBarShowing = mNavigationBarController.isTransientShowing();
-            final boolean navOccupySpace = shouldNavigationBarOccupySpace();
+            final boolean forceNavBarImmersive = shouldForceNavigationBarImmersive();
+            final int navBarWidth = getNavigationBarWidth(displayRotation, uiMode);
+            final int navBarHeight = getNavigationBarHeight(displayRotation, uiMode);
             // Force the navigation bar to its appropriate place and
             // size.  We need to do this directly, instead of relying on
             // it to bubble up from the nav bar, because this needs to
@@ -5386,10 +5406,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     displayRotation);
             if (mNavigationBarPosition == NAV_BAR_BOTTOM) {
                 // It's a system nav bar or a portrait screen; nav bar goes on bottom.
-                // When global immersive is enabled (!navOccupySpace), we let the system think that
+                // When global immersive is enabled (forceNavBarImmersive), we let the system think that
                 // navigation bar is not occupying space while we update some of the key coordinates
                 // the display uses to determine where to position borders for drawable content.
-                int top = displayHeight - overscanBottom - (navOccupySpace ? navBarHeight : 0);
+                int top = displayHeight - overscanBottom - (!forceNavBarImmersive ? navBarHeight : 0);
                 mTmpNavigationFrame.set(0, top, displayWidth, displayHeight - overscanBottom);
                 mStableBottom = mStableFullscreenBottom = mTmpNavigationFrame.top;
                 if (transientNavBarShowing) {
@@ -5413,15 +5433,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mSystemBottom = mTmpNavigationFrame.top;
                 }
                 // Restore navigation bar frame params.
-                if (!navOccupySpace) {
+                if (forceNavBarImmersive) {
                     mTmpNavigationFrame.top -= navBarHeight;
                 }
             } else if (mNavigationBarPosition == NAV_BAR_RIGHT) {
                 // Landscape screen; nav bar goes to the right.
-                // When global immersive is enabled (!navOccupySpace), we let the system think that
+                // When global immersive is enabled (forceNavBarImmersive), we let the system think that
                 // navigation bar is not occupying space while we update some of the key coordinates
                 // the display uses to determine where to position borders for drawable content.
-                int left = displayWidth - overscanRight - (navOccupySpace ? navBarWidth : 0);
+                int left = displayWidth - overscanRight - (!forceNavBarImmersive ? navBarWidth : 0);
                 mTmpNavigationFrame.set(left, 0, displayWidth - overscanRight, displayHeight);
                 mStableRight = mStableFullscreenRight = mTmpNavigationFrame.left;
                 if (transientNavBarShowing) {
@@ -5445,18 +5465,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mSystemRight = mTmpNavigationFrame.left;
                 }
                 // Restore navigation bar frame params.
-                if (!navOccupySpace) {
+                if (forceNavBarImmersive) {
                     mTmpNavigationFrame.left -= navBarWidth;
                 }
             } else if (mNavigationBarPosition == NAV_BAR_LEFT) {
                 // Seascape screen; nav bar goes to the left.
-                // When global immersive is enabled (!navOccupySpace), we let the system think that
+                // When global immersive is enabled (forceNavBarImmersive), we let the system think that
                 // navigation bar is not occupying space while we update some of the key coordinates
                 // the display uses to determine where to position borders for drawable content.
-                int right = overscanLeft + (navOccupySpace ? navBarWidth : 0);
+                int right = overscanLeft + (!forceNavBarImmersive ? navBarWidth : 0);
                 mTmpNavigationFrame.set(overscanLeft, 0, right, displayHeight);
                 mStableLeft = mStableFullscreenLeft = mTmpNavigationFrame.right;
-                if (transientNavBarShowing || (navVisible && !navOccupySpace)) {
+                if (transientNavBarShowing) {
                     mNavigationBarController.setBarShowingLw(true);
                 } else if (navVisible) {
                     mNavigationBarController.setBarShowingLw(true);
@@ -5479,7 +5499,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mSystemLeft = mTmpNavigationFrame.right;
                 }
                 // Restore navigation bar frame params.
-                if (!navOccupySpace) {
+                if (forceNavBarImmersive) {
                     mTmpNavigationFrame.right += navBarWidth;
                 }
             }
@@ -5650,8 +5670,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         Rect osf = null;
         dcf.setEmpty();
 
-        final boolean hasNavBar = (isDefaultDisplay && hasNavigationBar()
-                && mNavigationBar != null && mNavigationBar.isVisibleLw());
+        // IMPORTANT: I have modified this, because it does not make sense checking
+        // for navigation bar availability within checking Lw visibility, we have forced
+        // immersive mode and other cases that are kinda penalized by this. Don't chain
+        // mNavigationBar.isVisibleLw() tothe boolean value. carlosavignano@aospa.co
+        final boolean hasNavBar = isDefaultDisplay && hasNavigationBar() && mNavigationBar != null; // && mNavigationBar.isVisibleLw();
+        final boolean forceNavBarImmersive = shouldForceNavigationBarImmersive();
 
         final int adjust = sim & SOFT_INPUT_MASK_ADJUST;
 
@@ -5726,14 +5750,23 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             pf.top = df.top = of.top = mUnrestrictedScreenTop;
             pf.right = df.right = of.right = mUnrestrictedScreenWidth + mUnrestrictedScreenLeft;
             pf.bottom = df.bottom = of.bottom = mUnrestrictedScreenHeight + mUnrestrictedScreenTop;
-            cf.left = vf.left = shouldNavigationBarOccupySpace() ?
-                    mStableLeft : mNavigationBarPosition == NAV_BAR_LEFT ?
-                            mStableLeft - getNavigationBarHeight(mDisplayRotation, mUiMode) : mStableLeft;
+            cf.left = vf.left = mStableLeft;
             cf.top = vf.top = mStableTop;
-            cf.right = vf.right = shouldNavigationBarOccupySpace() ?
-                    mStableRight : mNavigationBarPosition == NAV_BAR_RIGHT ?
-                            mStableRight - getNavigationBarHeight(mDisplayRotation, mUiMode) : mStableRight;
+            cf.right = vf.right = mStableRight;
             vf.bottom = mStableBottom;
+
+            // If global immersive is enabled we need to tell status bar to not occupy full display width
+            // when on landscape, since everything thinks that space is available based on our setted
+            // params (check layoutNavigationBar(), especially immersive comments). carlosavignano@aospa.co
+            if (hasNavBar && forceNavBarImmersive) {
+                if (isLandscapeOrSeascape(mDisplayRotation)) {
+                    if (mNavigationBarPosition == NAV_BAR_RIGHT) {
+                        cf.right = vf.right -= getNavigationBarWidth(mDisplayRotation, mUiMode);
+                    } else if (mNavigationBarPosition == NAV_BAR_LEFT) {
+                        cf.left = vf.left += getNavigationBarWidth(mDisplayRotation, mUiMode);
+                    }
+                }
+            }
 
             if (adjust == SOFT_INPUT_ADJUST_RESIZE) {
                 cf.bottom = mContentBottom;
@@ -5796,14 +5829,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         // bar itself.
                         //
                         // However, they should still dodge the navigation bar if it exists.
-
-                        pf.left = df.left = of.left = hasNavBar
+                        // However^2, they should dodge it only when is not in forced immersive mode. carlosavignano@aospa.co
+                        pf.left = df.left = of.left = hasNavBar && !forceNavBarImmersive
                                 ? mDockLeft : mUnrestrictedScreenLeft;
                         pf.top = df.top = of.top = mUnrestrictedScreenTop;
-                        pf.right = df.right = of.right = hasNavBar
+                        pf.right = df.right = of.right = hasNavBar && !forceNavBarImmersive
                                 ? mRestrictedScreenLeft+mRestrictedScreenWidth
                                 : mUnrestrictedScreenLeft + mUnrestrictedScreenWidth;
-                        pf.bottom = df.bottom = of.bottom = hasNavBar
+                        pf.bottom = df.bottom = of.bottom = hasNavBar && !forceNavBarImmersive
                                 ? mRestrictedScreenTop+mRestrictedScreenHeight
                                 : mUnrestrictedScreenTop + mUnrestrictedScreenHeight;
 
@@ -5901,16 +5934,17 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         "): IN_SCREEN");
                 // A window that has requested to fill the entire screen just
                 // gets everything, period.
+                // However, dodge navigation bar if is in forced immersive mode. carlosavignano@aospa.co
                 if (attrs.type == TYPE_STATUS_BAR_PANEL
                         || attrs.type == TYPE_STATUS_BAR_SUB_PANEL
                         || attrs.type == TYPE_VOLUME_OVERLAY) {
-                    pf.left = df.left = of.left = cf.left = hasNavBar
+                    pf.left = df.left = of.left = cf.left = hasNavBar && !forceNavBarImmersive
                             ? mDockLeft : mUnrestrictedScreenLeft;
                     pf.top = df.top = of.top = cf.top = mUnrestrictedScreenTop;
-                    pf.right = df.right = of.right = cf.right = hasNavBar
+                    pf.right = df.right = of.right = cf.right = hasNavBar && !forceNavBarImmersive
                                         ? mRestrictedScreenLeft+mRestrictedScreenWidth
                                         : mUnrestrictedScreenLeft + mUnrestrictedScreenWidth;
-                    pf.bottom = df.bottom = of.bottom = cf.bottom = hasNavBar
+                    pf.bottom = df.bottom = of.bottom = cf.bottom = hasNavBar && !forceNavBarImmersive
                                           ? mRestrictedScreenTop+mRestrictedScreenHeight
                                           : mUnrestrictedScreenTop + mUnrestrictedScreenHeight;
                     if (DEBUG_LAYOUT) Slog.v(TAG, String.format(
@@ -6217,9 +6251,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     @Override
     public void applyPostLayoutPolicyLw(WindowState win, WindowManager.LayoutParams attrs,
             WindowState attached) {
-        if (DEBUG_LAYOUT) Slog.i(TAG, "Win " + win + ": isVisibleOrBehindKeyguardLw="
-                + win.isVisibleOrBehindKeyguardLw());
         final int fl = PolicyControl.getWindowFlags(win, attrs);
+        if (DEBUG_LAYOUT) Slog.i(TAG, "Win=" + win + " : isVisibleOrBehindKeyguardLw="
+                + win.isVisibleOrBehindKeyguardLw() + " : FLAG_FORCE_NOT_FULLSCREEN=" + ((fl & FLAG_FORCE_NOT_FULLSCREEN) != 0));
         if (mTopFullscreenOpaqueWindowState == null
                 && win.isVisibleLw() && attrs.type == TYPE_INPUT_METHOD) {
             mForcingShowNavBar = true;
@@ -6423,10 +6457,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (mStatusBar != null) {
             if (DEBUG_LAYOUT) Slog.i(TAG, "force=" + mForceStatusBar
                     + " forcefkg=" + mForceStatusBarFromKeyguard
-                    + " top=" + mTopFullscreenOpaqueWindowState);
+                    + " top=" + mTopFullscreenOpaqueWindowState
+                    + " forcetransp=" + mForceStatusBarTransparent);
+            boolean forceStatusBarImmersive = shouldForceStatusBarImmersive();
+            boolean forceNavBarImmersive = shouldForceNavigationBarImmersive();
             boolean shouldBeTransparent = mForceStatusBarTransparent
                     && !mForceStatusBar
-                    && !mForceStatusBarFromKeyguard;
+                    && !mForceStatusBarFromKeyguard
+                    && !forceStatusBarImmersive;
             if (!shouldBeTransparent) {
                 mStatusBarController.setShowTransparent(false /* transparent */);
             } else if (!mStatusBar.isVisibleLw()) {
@@ -6436,8 +6474,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             WindowManager.LayoutParams statusBarAttrs = mStatusBar.getAttrs();
             boolean statusBarExpanded = statusBarAttrs.height == MATCH_PARENT
                     && statusBarAttrs.width == MATCH_PARENT;
-            if (mForceStatusBar || mForceStatusBarFromKeyguard || mForceStatusBarTransparent
-                    || statusBarExpanded) {
+            if (forceStatusBarImmersive
+                    ? mForceStatusBarFromKeyguard || statusBarExpanded
+                    : mForceStatusBar || mForceStatusBarFromKeyguard || mForceStatusBarTransparent || statusBarExpanded ) {
                 if (DEBUG_LAYOUT) Slog.v(TAG, "Showing status bar: forced");
                 if (mStatusBarController.setBarShowingLw(true)) {
                     changes |= FINISH_LAYOUT_REDO_LAYOUT;
@@ -6449,9 +6488,21 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mStatusBarController.updateVisibilityLw(false /*transientAllowed*/,
                             mLastSystemUiFlags, mLastSystemUiFlags);
                 }
-                if (statusBarExpanded && mNavigationBar != null) {
-                    if (mNavigationBarController.setBarShowingLw(true)) {
-                        changes |= FINISH_LAYOUT_REDO_LAYOUT;
+                if (statusBarExpanded) {
+                    if (mStatusBar != null) {
+                        if (forceStatusBarImmersive) {
+                            // TODO> Fix status bar hiding when enabling immersive and status bar is still expanded.
+                            // mStatusBarController.showTransient();
+                        }
+                    }
+                    if (mNavigationBar != null) {
+                        if (forceNavBarImmersive) {
+                            // TODO> Fix navigation bar hiding when enabling immersive and status bar is still expanded.
+                            // mNavigationBarController.showTransient();
+                        }
+                        if (mNavigationBarController.setBarShowingLw(true)) {
+                            changes |= FINISH_LAYOUT_REDO_LAYOUT;
+                        }
                     }
                 }
             } else if (mTopFullscreenOpaqueWindowState != null) {
@@ -6473,19 +6524,22 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     if (mStatusBarController.setBarShowingLw(true)) {
                         changes |= FINISH_LAYOUT_REDO_LAYOUT;
                     }
-                } else if (topIsFullscreen
-                        && !mWindowManagerInternal.isStackVisible(FREEFORM_WORKSPACE_STACK_ID)
-                        && !mWindowManagerInternal.isStackVisible(DOCKED_STACK_ID)) {
-                    if (DEBUG_LAYOUT) Slog.v(TAG, "** HIDING status bar");
-                    if (mStatusBarController.setBarShowingLw(false)) {
-                        changes |= FINISH_LAYOUT_REDO_LAYOUT;
-                    } else {
-                        if (DEBUG_LAYOUT) Slog.v(TAG, "Status bar already hiding");
-                    }
                 } else {
-                    if (DEBUG_LAYOUT) Slog.v(TAG, "** SHOWING status bar: top is not fullscreen");
-                    if (mStatusBarController.setBarShowingLw(true)) {
-                        changes |= FINISH_LAYOUT_REDO_LAYOUT;
+                    boolean isMultiWindowStackTypeVisible = mWindowManagerInternal.isStackVisible(FREEFORM_WORKSPACE_STACK_ID)
+                            || mWindowManagerInternal.isStackVisible(DOCKED_STACK_ID);
+                    boolean hide = topIsFullscreen && (forceStatusBarImmersive || !isMultiWindowStackTypeVisible);
+                    if (hide) {
+                        if (DEBUG_LAYOUT) Slog.v(TAG, "** HIDING status bar");
+                        if (mStatusBarController.setBarShowingLw(false)) {
+                            changes |= FINISH_LAYOUT_REDO_LAYOUT;
+                        } else {
+                            if (DEBUG_LAYOUT) Slog.v(TAG, "Status bar already hiding");
+                        }
+                    } else {
+                        if (DEBUG_LAYOUT) Slog.v(TAG, "** SHOWING status bar: top is not fullscreen");
+                        if (mStatusBarController.setBarShowingLw(true)) {
+                            changes |= FINISH_LAYOUT_REDO_LAYOUT;
+                        }
                     }
                 }
             }
@@ -8039,7 +8093,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // Navigation bar and status bar.
         getNonDecorInsetsLw(displayRotation, displayWidth, displayHeight, outInsets);
         if (mStatusBar != null) {
-            outInsets.top = mStatusBarHeight;
+            final int statusBarHeight = shouldForceStatusBarImmersive() ? 0 : mStatusBarHeight;
+            outInsets.top = statusBarHeight;
         }
     }
 
@@ -8048,8 +8103,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             Rect outInsets) {
         outInsets.setEmpty();
 
+        final boolean hasNavBar = hasNavigationBar() && mNavigationBar != null;
+        final boolean forceNavBarImmersive = shouldForceNavigationBarImmersive();
+
         // Only navigation bar
-        if (mNavigationBar != null) {
+        // However, skip if needed, case is global immersive enabled where we
+        // provide full screen to foreground apps. carlosavignano@aospa.co
+        if (hasNavBar && !forceNavBarImmersive) {
             int position = navigationBarPosition(displayWidth, displayHeight, displayRotation);
             if (position == NAV_BAR_BOTTOM) {
                 outInsets.bottom = getNavigationBarHeight(displayRotation, mUiMode);
@@ -8063,7 +8123,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     @Override
     public boolean isNavBarForcedShownLw(WindowState windowState) {
-        return mForceShowSystemBars;
+        return mForceShowSystemBars && hasNavigationBar() && !shouldForceNavigationBarImmersive();
     }
 
     @Override
@@ -8900,30 +8960,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mWindowManagerFuncs.getStackBounds(HOME_STACK_ID, mNonDockedStackBounds);
         mWindowManagerFuncs.getStackBounds(DOCKED_STACK_ID, mDockedStackBounds);
 
-        final boolean topWindowWasKeyguard = mTopWindowIsKeyguard;
-        mTopWindowIsKeyguard = (win.getAttrs().privateFlags & PRIVATE_FLAG_KEYGUARD) != 0;
-        if ((mSystemDesignFlags & View.SYSTEM_DESIGN_FLAG_IMMERSIVE_NAV) != 0
-                && !mForcingShowNavBar) {
-            // Enforce Immersive mode on the navigation bar.
-            tmpVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE |
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-            if (topWindowWasKeyguard && !mTopWindowIsKeyguard) {
-                mNavigationBarController.showTransient();
-                tmpVisibility |= View.NAVIGATION_BAR_TRANSIENT;
-            }
-        }
-        if ((mSystemDesignFlags & View.SYSTEM_DESIGN_FLAG_IMMERSIVE_STATUS) != 0) {
-            // Enforce Immersive mode on the status bar.
-            tmpVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE |
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-                    View.SYSTEM_UI_FLAG_FULLSCREEN;
-
-            if (topWindowWasKeyguard && !mTopWindowIsKeyguard) {
-                mStatusBarController.showTransient();
-                tmpVisibility |= View.STATUS_BAR_TRANSIENT;
-            }
-        }
         final int visibility = updateSystemBarsLw(win, mLastSystemUiFlags, tmpVisibility);
         final int diff = visibility ^ mLastSystemUiFlags;
         final int fullscreenDiff = fullscreenVisibility ^ mLastFullscreenStackSysUiFlags;
@@ -8992,14 +9028,22 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 mWindowManagerInternal.isStackVisible(FREEFORM_WORKSPACE_STACK_ID);
         final boolean resizing = mWindowManagerInternal.isDockedDividerResizing();
 
+        final boolean hasNavBar = hasNavigationBar() && mNavigationBar != null;
+        final boolean forceNavBarImmersive =  shouldForceNavigationBarImmersive();
+        final boolean forceStatusBarImmersive = shouldForceStatusBarImmersive();
+        final boolean isKeyguardShowing = isStatusBarKeyguard() && !mHideLockScreen;
+        final boolean topWindowWasKeyguard = mTopWindowIsKeyguard;
+
+        mTopWindowIsKeyguard = (win.getAttrs().privateFlags & PRIVATE_FLAG_KEYGUARD) != 0;
+
         // We need to force system bars when the docked stack is visible, when the freeform stack
         // is visible but also when we are resizing for the transitions when docked stack
         // visibility changes.
         mForceShowSystemBars = dockedStackVisible || freeformStackVisible || resizing;
-        final boolean forceOpaqueStatusBar = mForceShowSystemBars && !mForceStatusBarFromKeyguard;
+        final boolean forceOpaqueStatusBar = mForceShowSystemBars && !mForceStatusBarFromKeyguard && !forceStatusBarImmersive;
 
         // apply translucent bar vis flags
-        WindowState fullscreenTransWin = isStatusBarKeyguard() && !mHideLockScreen
+        WindowState fullscreenTransWin = isKeyguardShowing
                 ? mStatusBar
                 : mTopFullscreenOpaqueWindowState;
         vis = mStatusBarController.applyTranslucentFlagLw(fullscreenTransWin, vis, oldVis);
@@ -9031,7 +9075,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             vis = (vis & ~flags) | (oldVis & flags);
         }
 
-        if (fullscreenDrawsStatusBarBackground && dockedDrawsStatusBarBackground) {
+        if (!forceStatusBarImmersive && fullscreenDrawsStatusBarBackground && dockedDrawsStatusBarBackground) {
             vis |= View.STATUS_BAR_TRANSPARENT;
             vis &= ~View.STATUS_BAR_TRANSLUCENT;
         } else if ((!areTranslucentBarsAllowed() && fullscreenTransWin != mStatusBar)
@@ -9040,6 +9084,24 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
 
         vis = configureNavBarOpacity(vis, dockedStackVisible, freeformStackVisible, resizing);
+
+        // check whether we need to enforce immersive flags
+        if (!isKeyguardShowing && hasNavBar && forceNavBarImmersive) {
+            // Enforce Immersive mode on the navigation bar.
+            vis |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+            if (topWindowWasKeyguard && !mTopWindowIsKeyguard) {
+                mNavigationBarController.showTransient();
+                vis |= View.NAVIGATION_BAR_TRANSIENT;
+            }
+        }
+        if (!isKeyguardShowing && forceStatusBarImmersive) {
+            // Enforce Immersive mode on the status bar.
+            vis |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            if (topWindowWasKeyguard && !mTopWindowIsKeyguard) {
+                mStatusBarController.showTransient();
+                vis |= View.STATUS_BAR_TRANSIENT;
+            }
+        }
 
         // update status bar
         boolean immersiveSticky =
@@ -9054,11 +9116,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 (vis & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0;
 
         final boolean transientStatusBarAllowed = mStatusBar != null
-                && (statusBarHasFocus || (!mForceShowSystemBars
+                && (statusBarHasFocus || ((!mForceShowSystemBars || forceStatusBarImmersive)
                         && (hideStatusBarWM || (hideStatusBarSysui && immersiveSticky))));
 
         final boolean transientNavBarAllowed = mNavigationBar != null
-                && !mForceShowSystemBars && hideNavBarSysui && immersiveSticky;
+                && (!mForceShowSystemBars || forceNavBarImmersive) && hideNavBarSysui && immersiveSticky;
 
         final long now = SystemClock.uptimeMillis();
         final boolean pendingPanic = mPendingPanicGestureUptime != 0
@@ -9080,14 +9142,25 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (denyTransientStatus || denyTransientNav || mForceShowSystemBars) {
             // clear the clearable flags instead
             clearClearableFlagsLw();
-            vis &= ~View.SYSTEM_UI_CLEARABLE_FLAGS;
+            if (true) { // laziness
+                vis &= ~View.SYSTEM_UI_FLAG_LOW_PROFILE;
+                if (!shouldForceStatusBarImmersive()) {
+                    vis &= ~View.SYSTEM_UI_FLAG_FULLSCREEN;
+                }
+                if (!shouldForceNavigationBarImmersive()) {
+                    vis &= ~View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+                }
+            } else {
+                vis &= ~View.SYSTEM_UI_CLEARABLE_FLAGS;
+            }
         }
 
         final boolean immersive = (vis & View.SYSTEM_UI_FLAG_IMMERSIVE) != 0;
         immersiveSticky = (vis & View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) != 0;
         final boolean navAllowedHidden = immersive || immersiveSticky;
 
-        if (hideNavBarSysui && !navAllowedHidden && windowTypeToLayerLw(win.getBaseType())
+        if (!mUsingEdgeGestureServiceForGestures && !forceNavBarImmersive
+                && hideNavBarSysui && !navAllowedHidden && windowTypeToLayerLw(win.getBaseType())
                 > windowTypeToLayerLw(TYPE_INPUT_CONSUMER)) {
             // We can't hide the navbar from this window otherwise the input consumer would not get
             // the input events.
@@ -9146,7 +9219,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     private void clearClearableFlagsLw() {
-        int newVal = mResettingSystemUiFlags | View.SYSTEM_UI_CLEARABLE_FLAGS;
+        int newVal;
+        if (true) { // laziness
+            newVal = mResettingSystemUiFlags | View.SYSTEM_UI_FLAG_LOW_PROFILE;
+            if (!shouldForceStatusBarImmersive()) {
+                newVal = mResettingSystemUiFlags | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            }
+            if (!shouldForceNavigationBarImmersive()) {
+                newVal = mResettingSystemUiFlags | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+            }
+        } else {
+            newVal = mResettingSystemUiFlags | View.SYSTEM_UI_CLEARABLE_FLAGS;
+        }
         if (newVal != mResettingSystemUiFlags) {
             mResettingSystemUiFlags = newVal;
             mWindowManagerFuncs.reevaluateStatusBarVisibility();
@@ -9154,10 +9238,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     private boolean isImmersiveMode(int vis) {
-        final int flags = View.SYSTEM_UI_FLAG_IMMERSIVE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         return mNavigationBar != null
                 && (vis & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0
-                && (vis & flags) != 0
+                && ((vis & View.SYSTEM_UI_FLAG_IMMERSIVE) != 0 || (vis & View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) != 0)
                 && canHideNavigationBar();
     }
 
