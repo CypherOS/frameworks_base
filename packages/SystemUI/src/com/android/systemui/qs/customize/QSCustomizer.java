@@ -20,6 +20,7 @@ import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.Intent;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -30,6 +31,7 @@ import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -57,8 +59,6 @@ import java.util.List;
  */
 public class QSCustomizer extends LinearLayout implements OnMenuItemClickListener {
 
-    private static final int MENU_RESET = Menu.FIRST;
-
     private final QSDetailClipper mClipper;
 
     private PhoneStatusBar mPhoneStatusBar;
@@ -73,6 +73,7 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
     private QSContainer mQsContainer;
     private GridLayoutManager mLayout;
     private int mDefaultColumns;
+    private Menu mColumnsSubMenu;
 
     public QSCustomizer(Context context, AttributeSet attrs) {
         super(new ContextThemeWrapper(context, R.style.edit_theme), attrs);
@@ -92,8 +93,12 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
             }
         });
         mToolbar.setOnMenuItemClickListener(this);
-        mToolbar.getMenu().add(Menu.NONE, MENU_RESET, 0,
-                mContext.getString(com.android.internal.R.string.reset));
+        MenuInflater menuInflater = new MenuInflater(mContext);
+        menuInflater.inflate(R.menu.qs_customize_menu, mToolbar.getMenu());
+        MenuItem menuItem = mToolbar.getMenu().findItem(R.id.menu_item_columns);
+        if (menuItem != null) {
+            mColumnsSubMenu = menuItem.getSubMenu();
+        }
         mToolbar.setTitle(R.string.qs_edit);
         mDefaultColumns = Math.max(1,
                     mContext.getResources().getInteger(R.integer.quick_settings_num_columns));
@@ -155,6 +160,9 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
         if (isShown) {
             MetricsLogger.hidden(getContext(), MetricsProto.MetricsEvent.QS_EDIT);
             isShown = false;
+            if (mColumnsSubMenu != null) {
+                mColumnsSubMenu.close();
+            }
             mToolbar.dismissPopupMenus();
             setCustomizing(false);
             save();
@@ -183,11 +191,23 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
-            case MENU_RESET:
+            case R.id.menu_item_reset:
                 MetricsLogger.action(getContext(), MetricsProto.MetricsEvent.ACTION_QS_EDIT_RESET);
                 reset();
                 break;
-        }
+            case R.id.menu_item_columns_three:
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_LAYOUT_COLUMNS, 3);
+                break;
+            case R.id.menu_item_columns_four:
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_LAYOUT_COLUMNS, 4);
+                break;
+            case R.id.menu_item_columns_five:
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_LAYOUT_COLUMNS, 5);
+                break;
+            }
         return false;
     }
 
