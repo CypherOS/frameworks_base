@@ -152,9 +152,8 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
                 mContext.getContentResolver(), Settings.System.QS_LAYOUT_COLUMNS_LANDSCAPE, mDefaultColumns,
                 UserHandle.USER_CURRENT);
 
-        if (mColumns != (isPortrait ? columns : columnsLandscape) {
+        if (mColumns != (isPortrait ? columns : columnsLandscape)) {
             mColumns = isPortrait ? columns : columnsLandscape;
-            mShowTitles = showTitles;
             requestLayout();
         }
     }
