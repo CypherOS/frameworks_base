@@ -14,7 +14,7 @@
 -->
 <resources>
     <!-- Allow Opa (Pixel navbar) layout -->
-    <bool name="config_allowOpaLayout">false</bool>
+    <bool name="config_allowOpaLayout">true</bool>
 	
 	<!-- Burn in protection -->
     <bool name="config_statusBarBurnInProtection">false</bool>
