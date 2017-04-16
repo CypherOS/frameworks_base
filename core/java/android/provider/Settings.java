@@ -4033,6 +4033,12 @@ public final class Settings {
         public static final String DOUBLE_TAP_SLEEP_ANYWHERE = "double_tap_sleep_anywhere";
 		
 		/**
+         * Show onscreen keys for hw button devices
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_SHOW = "navigation_bar_show";
+		
+		/**
          * Quick Settings Smart Pulldown
          * @hide
          */
