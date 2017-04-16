@@ -31,11 +31,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.RemoteException;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
-import android.view.IWindowManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.WindowManagerGlobal;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
@@ -52,7 +50,6 @@ public class ScreenPinningRequest implements View.OnClickListener {
 
     private final AccessibilityManager mAccessibilityService;
     private final WindowManager mWindowManager;
-    private final IWindowManager mWindowManagerService;
 
     private RequestWindowView mRequestWindow;
 
@@ -65,7 +62,6 @@ public class ScreenPinningRequest implements View.OnClickListener {
                 mContext.getSystemService(Context.ACCESSIBILITY_SERVICE);
         mWindowManager = (WindowManager)
                 mContext.getSystemService(Context.WINDOW_SERVICE);
-        mWindowManagerService = WindowManagerGlobal.getWindowManagerService();
     }
 
     public void clearPrompt() {
@@ -234,26 +230,16 @@ public class ScreenPinningRequest implements View.OnClickListener {
                         .setVisibility(View.INVISIBLE);
             }
 
-            boolean touchExplorationEnabled = mAccessibilityService.isTouchExplorationEnabled();
             ((TextView) mLayout.findViewById(R.id.screen_pinning_description))
-                    .setText(touchExplorationEnabled
-                            ? R.string.screen_pinning_description_accessible
-                            : R.string.screen_pinning_description);
-            final int backBgVisibility = touchExplorationEnabled ? View.INVISIBLE : View.VISIBLE;
+                    .setText(R.string.screen_pinning_description);
+            final int backBgVisibility =
+                    mAccessibilityService.isEnabled() ? View.INVISIBLE : View.VISIBLE;
             mLayout.findViewById(R.id.screen_pinning_back_bg).setVisibility(backBgVisibility);
             mLayout.findViewById(R.id.screen_pinning_back_bg_light).setVisibility(backBgVisibility);
 
             addView(mLayout, getRequestLayoutParams(isLandscape));
         }
 
-        private boolean hasNavigationBar() {
-            try {
-                return mWindowManagerService.hasNavigationBar();
-            } catch (RemoteException e) {
-                //ignore
-            }
-            return false;
-        }
         private void swapChildrenIfRtlAndVertical(View group) {
             if (mContext.getResources().getConfiguration().getLayoutDirection()
                     != View.LAYOUT_DIRECTION_RTL) {
