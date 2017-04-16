@@ -3399,11 +3399,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 		final int scanCode = event.getScanCode();
         final boolean down = event.getAction() == KeyEvent.ACTION_DOWN;
         final boolean canceled = event.isCanceled();
+		final boolean virtualKey = event.getDeviceId() == KeyCharacterMap.VIRTUAL_KEYBOARD;
         // if mHardwareKeysDisable is true we have disabled all button rebindings
         // so we can be sure that events that are !virtuaKey are only for real buttons
         final boolean disableKey = !virtualKey && mHardwareKeysDisable;
         final boolean longPress = (flags & KeyEvent.FLAG_LONG_PRESS) != 0;
-        final boolean virtualKey = event.getDeviceId() == KeyCharacterMap.VIRTUAL_KEYBOARD;
 
         if (DEBUG_INPUT) {
             Log.d(TAG, "interceptKeyTi keyCode=" + keyCode + " down=" + down + " repeatCount="
