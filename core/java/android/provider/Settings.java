@@ -3967,6 +3967,12 @@ public final class Settings {
 		 * @hide
          */
         public static final String HOME_WAKE_SCREEN = "home_wake_screen";
+		
+		/**
+         * Whether to swap volume buttons with the device is rotated.
+		 * @hide
+         */
+        public static final String SWAP_VOLUME_KEYS_ON_ROTATION = "swap_volume_keys_on_rotation";
 				
 		/**
          * Force expanded notifications on all apps that support it.
