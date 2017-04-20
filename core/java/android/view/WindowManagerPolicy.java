@@ -512,6 +512,8 @@ public interface WindowManagerPolicy {
          * Overrides all currently playing app animations with {@param a}.
          */
         void overridePlayingAppAnimationsLw(Animation a);
+
+        void addSystemUIVisibilityFlag(int flags);
     }
 
     public interface PointerEventListener {
@@ -1319,11 +1321,6 @@ public interface WindowManagerPolicy {
      * Specifies whether there is an on-screen navigation bar separate from the status bar.
      */
     public boolean hasNavigationBar();
-
-    /**
-     * Specifies whether the device needs a navigation bar (because it has no hardware buttons)
-     */
-    public boolean needsNavigationBar();
 
     /**
      * Lock the device now.

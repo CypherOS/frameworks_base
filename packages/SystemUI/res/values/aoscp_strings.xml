@@ -36,9 +36,6 @@
          values/config.xml) and must be truncated.
          [CHAR LIMIT=4] -->
     <string name="status_bar_notification_info_overflow" translatable="false">\u221E</string>
-	
-	<!-- Screen pinning dialog description (for devices without navbar) -->
-    <string name="screen_pinning_description_no_navbar">This keeps it in view until you unpin. Touch and hold the Back button to unpin.</string>
 
     <!-- ADB over network Tile -->
     <string name="quick_settings_adb_network">ADB network</string>
@@ -209,5 +206,19 @@
 
     <!-- volte icon switch -->
     <string name="status_bar_volte">VOLTE</string>
+
+	<string name="qs_menu_item_columns">Columns</string>
+	<string name="qs_menu_item_columns_landscape">Columns (landscape)</string>
+    <string name="qs_menu_item_columns_three">3</string>
+    <string name="qs_menu_item_columns_four">4</string>
+    <string name="qs_menu_item_columns_five">5</string>
+	<string name="qs_menu_item_columns_six">6</string>
+	<string name="qs_menu_item_columns_seven">7</string>
+    <string name="qs_menu_item_columns_eight">8</string>
+    <string name="qs_menu_item_columns_nine">9</string>
+    <string name="qs_menu_item_reset">Reset</string>
+	
+	<!-- QS Quickbar Scroller -->
+	<string name="qs_menu_item_scroll">Quickbar scroll</string>
 
 </resources>

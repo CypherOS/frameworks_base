@@ -288,7 +288,7 @@ public class SignalClusterView
     @Override
     public void setMobileDataIndicators(IconState statusIcon, IconState qsIcon, int statusType,
             int qsType, boolean activityIn, boolean activityOut, String typeContentDescription,
-            String description, boolean isWide, int subId, boolean isMobileIms) {
+            String description, boolean isWide, int subId, boolean isMobileIms, boolean roaming) {
         PhoneState state = getState(subId);
         if (state == null) {
             return;
@@ -304,6 +304,7 @@ public class SignalClusterView
                 : activityOut ? R.drawable.stat_sys_signal_out
                 : 0;
         mMobileIms = isMobileIms;
+        state.mRoaming = roaming;
 
         apply();
     }
@@ -643,8 +644,9 @@ public class SignalClusterView
         private String mMobileDescription, mMobileTypeDescription;
 
         private ViewGroup mMobileGroup;
-        private ImageView mMobile, mMobileDark, mMobileType;
-        private ImageView mMobileActivity;
+        private ImageView mMobile, mMobileDark, mMobileType, mMobileRoaming;
+		private ImageView mMobileActivity;
+        public boolean mRoaming;
 
         public PhoneState(int subId, Context context) {
             ViewGroup root = (ViewGroup) LayoutInflater.from(context)
@@ -659,6 +661,7 @@ public class SignalClusterView
             mMobileDark     = (ImageView) root.findViewById(R.id.mobile_signal_dark);
             mMobileType     = (ImageView) root.findViewById(R.id.mobile_type);
             mMobileActivity = (ImageView) root.findViewById(R.id.mobile_inout);
+            mMobileRoaming  = (ImageView) root.findViewById(R.id.mobile_roaming);
         }
 
         public boolean apply(boolean isSecondaryIcon) {
@@ -702,6 +705,7 @@ public class SignalClusterView
                         (mMobileVisible ? "VISIBLE" : "GONE"), mMobileStrengthId, mMobileTypeId));
 
             mMobileType.setVisibility(mMobileTypeId != 0 ? View.VISIBLE : View.GONE);
+            mMobileRoaming.setVisibility(mRoaming ? View.VISIBLE : View.GONE);
 
             if (Settings.System.getInt(mContext.getContentResolver(),
                  Settings.System.DATA_ACTIVITY_ARROWS, 0) == 1) {
@@ -770,6 +774,8 @@ public class SignalClusterView
             setTint(mMobileType, StatusBarIconController.getTint(tintArea, mMobileType, tint));
             setTint(mMobileActivity,
                     StatusBarIconController.getTint(tintArea, mMobileActivity, tint));
+            setTint(mMobileRoaming, StatusBarIconController.getTint(tintArea, mMobileRoaming,
+                    tint));
         }
     }
 }

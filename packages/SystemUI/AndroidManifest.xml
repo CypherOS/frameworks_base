@@ -226,7 +226,7 @@
                   android:theme="@style/TunerSettings"
                   android:label="@string/statusbar_icons_blacklist"
                   android:process=":tuner"
-                  android:parentActivityName="com.pure.settings.fragments.StatusBarSettings"
+                  android:parentActivityName="com.android.settings.aoscp.fragments.StatusBarSettings"
                   android:exported="true">
         </activity>
 
@@ -247,7 +247,7 @@
                   android:theme="@style/TunerSettings"
                   android:label="@string/navbar_tuner_title"
                   android:process=":tuner"
-                  android:parentActivityName="com.android.settings.DisplaySettings"
+                  android:parentActivityName="com.android.settings.aoscp.fragments.ButtonSettings"
                   android:exported="true">
         </activity>
 
@@ -255,7 +255,7 @@
                   android:theme="@style/TunerSettings"
                   android:label="@string/tuner_notification_control"
                   android:process=":tuner"
-                  android:parentActivityName="com.pure.settings.fragments.NotificationMediaSettings"
+                  android:parentActivityName="com.android.settings.applications.InstalledAppDetails"
                   android:exported="true">
         </activity>
 
@@ -274,7 +274,7 @@
                   android:resumeWhilePausing="true"
                   android:screenOrientation="behind"
                   android:resizeableActivity="true"
-                  android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
+                  android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden"
                   android:theme="@style/RecentsTheme.Wallpaper">
             <intent-filter>
                 <action android:name="com.android.systemui.recents.TOGGLE_RECENTS" />

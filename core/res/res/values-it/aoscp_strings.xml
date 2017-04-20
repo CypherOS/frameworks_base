@@ -17,7 +17,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- Reboot Dialog -->
-    <string name="global_action_reboot">Riavvio</string>
+    <string name="global_action_restart">Riavvia</string>
     <!-- Button to reboot the phone in reboot menu -->
     <string name="reboot_reboot">Riavvio</string>
     <!-- Button to reboot the phone into recovery in reboot menu-->
@@ -31,16 +31,14 @@
     <string name="reboot_confirm" product="default">Il telefono si riavvierà.</string>
     <!-- Reboot Progress Dialog. This is shown if the user chooses to reboot the phone. -->
     <string name="reboot_progress">Riavvio\u2026</string>
-	
-	<!-- Global Actions -->
-	<string name="global_action_current_user">Attuale</string>
+
+    <!-- Global Actions -->
+    <string name="global_action_current_user">Attuale</string>
     <string name="global_action_screenshot">Screenshot</string>
-	<string name="global_action_screen_record">Registra schermo</string>
-    <string name="global_action_search">Ricerca</string>
-	<string name="global_action_torch">Torcia elettrica</string>
+    <string name="global_action_screen_record">Registra schermo</string>
     <string name="global_action_voicesearch">Ricerca vocale</string>
   
-   <!-- ADB over network notification -->
+    <!-- ADB over network notification -->
     <string name="adb_net_active_notification_title">ADB attraverso la rete attivato</string>
     <!-- ADB over USB and network notification -->
     <string name="adb_both_active_notification_title">ADB attraverso USB &amp; rete attivato</string>
@@ -55,4 +53,8 @@
 
     <!-- Notify user that they are in Lock-to-app (for devices without navbar) -->
     <string name="lock_to_app_toast_no_navbar">Per sbloccare questo schermo, tocca e tieni premuto il pulsante indietro.</string>
+  
+    <!-- Single handed mode -->
+    <string name="singlehandmode_click_hint_message">Tocca fuori dallo schermo per uscire dalla visualizzazione a schermo mini</string>
+    <string name="singlehandmode_slide_hint_message">Far scorrere il dito lungo la barra di navigazione per passare tra le visualizzazioni standard e schermo mini</string>
 </resources>

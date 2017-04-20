@@ -2500,9 +2500,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
             loadIntegerSetting(stmt, Settings.Secure.LONG_PRESS_TIMEOUT,
                     R.integer.def_long_press_timeout_millis);
 
-            loadIntegerSetting(stmt, Settings.System.DEV_FORCE_SHOW_NAVBAR,
-                    R.integer.def_force_disable_navkeys);
-
             loadBooleanSetting(stmt, Settings.Secure.TOUCH_EXPLORATION_ENABLED,
                     R.bool.def_touch_exploration_enabled);
 
@@ -2705,6 +2702,8 @@ class DatabaseHelper extends SQLiteOpenHelper {
                     R.string.def_low_battery_sound);
             loadIntegerSetting(stmt, Settings.Global.DOCK_SOUNDS_ENABLED,
                     R.integer.def_dock_sounds_enabled);
+            loadIntegerSetting(stmt, Settings.Global.DOCK_SOUNDS_ENABLED_WHEN_ACCESSIBILITY,
+                    R.integer.def_dock_sounds_enabled_when_accessibility);
             loadStringSetting(stmt, Settings.Global.DESK_DOCK_SOUND,
                     R.string.def_desk_dock_sound);
             loadStringSetting(stmt, Settings.Global.DESK_UNDOCK_SOUND,

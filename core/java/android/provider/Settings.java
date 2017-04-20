@@ -2849,6 +2849,15 @@ public final class Settings {
                 new InclusiveIntegerRangeValidator(0, 255);
 
         /**
+         * The screen backlight brightness between 0 and 255.
+         * @hide
+         */
+        public static final String SCREEN_BRIGHTNESS_FOR_VR = "screen_brightness_for_vr";
+
+        private static final Validator SCREEN_BRIGHTNESS_FOR_VR_VALIDATOR =
+                new InclusiveIntegerRangeValidator(0, 255);
+
+        /**
          * Control whether to enable automatic brightness mode.
          */
         public static final String SCREEN_BRIGHTNESS_MODE = "screen_brightness_mode";
@@ -2878,27 +2887,24 @@ public final class Settings {
         /**
          * The keyboard brightness to be used while the screen is on.
          * Valid value range is between 0 and {@link PowerManager#getMaximumKeyboardBrightness()}
-		 * @deprecated
          * @hide
          */
-        public static final String KEYBOARD_BRIGHTNESS = Secure.KEYBOARD_BRIGHTNESS;
+        public static final String KEYBOARD_BRIGHTNESS = "keyboard_brightness";
 
         /**
          * The button brightness to be used while the screen is on or after a button press,
          * depending on the value of {@link BUTTON_BACKLIGHT_TIMEOUT}.
          * Valid value range is between 0 and {@link PowerManager#getMaximumButtonBrightness()}
-		 * @deprecated
          * @hide
          */
-        public static final String BUTTON_BRIGHTNESS = Secure.BUTTON_BRIGHTNESS;
+        public static final String BUTTON_BRIGHTNESS = "button_brightness";
 
         /**
          * The time in ms to keep the button backlight on after pressing a button.
          * A value of 0 will keep the buttons on for as long as the screen is on.
-		 * @deprecated
          * @hide
          */
-        public static final String BUTTON_BACKLIGHT_TIMEOUT = Secure.BUTTON_BACKLIGHT_TIMEOUT;
+        public static final String BUTTON_BACKLIGHT_TIMEOUT = "button_backlight_timeout";
 
         /**
          * Control whether the process CPU usage meter should be shown.
@@ -3261,14 +3267,6 @@ public final class Settings {
         /** @hide */
         public static final Validator TIME_12_24_VALIDATOR =
                 new DiscreteValueValidator(new String[] {"12", "24"});
-
-        /**
-        * Developer options - Navigation Bar show switch
-		* @deprecated
-        * @hide
-        */
-        public static final String DEV_FORCE_SHOW_NAVBAR = Secure.DEV_FORCE_SHOW_NAVBAR;
-
 
         /**
          * Date format string
@@ -3969,6 +3967,12 @@ public final class Settings {
 		 * @hide
          */
         public static final String HOME_WAKE_SCREEN = "home_wake_screen";
+		
+		/**
+         * Whether to swap volume buttons with the device is rotated.
+		 * @hide
+         */
+        public static final String SWAP_VOLUME_KEYS_ON_ROTATION = "swap_volume_keys_on_rotation";
 				
 		/**
          * Force expanded notifications on all apps that support it.
@@ -4057,10 +4061,10 @@ public final class Settings {
         public static final String DOUBLE_TAP_SLEEP_ANYWHERE = "double_tap_sleep_anywhere";
 		
 		/**
-         * Quick Settings number of columns
+         * Show onscreen keys for hw button devices
          * @hide
          */
-        public static final String QS_LAYOUT_COLUMNS = "qs_layout_columns";
+        public static final String NAVIGATION_BAR_SHOW = "navigation_bar_show";
 		
 		/**
          * Quick Settings Smart Pulldown
@@ -4154,6 +4158,19 @@ public final class Settings {
          */
         public static final String STATUSBAR_CLOCK_DATE_FORMAT = "statusbar_clock_date_format";
 
+        /** some devices have a extra hw button e.g. n3 on the back on the
+         * fingerprint sensor. allow mapping button to key
+         *
+         * @hide
+         */
+        public static final String BUTTON_EXTRA_KEY_MAPPING = "button_extra_mapping";
+
+        /**
+         * Disable hw buttons - actions, brightness, haptic feedback, overflow menu
+         * @hide
+         */
+        public static final String HARDWARE_KEYS_DISABLE = "hardware_keys_disable";
+
         /**
          * Position of date
          * 0 - Left of clock
@@ -4186,21 +4203,6 @@ public final class Settings {
          * @hide
          */
         public static final String PROXIMITY_AUTO_SPEAKER_INCALL_ONLY = "proximity_auto_speaker_incall_only";
-
-        /**
-          * Volume keys control cursor in text fields (default is 0)
-          * 0 - Disabled
-          * 1 - Volume up/down moves cursor left/right
-          * 2 - Volume up/down moves cursor right/left
-          * @hide
-          */
-         public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
-		 
-	    /**
-         * Change volume up and down handlign based on rotation
-         * @hide
-         */
-        public static final String SWAP_VOLUME_BUTTONS = "swap_volume_buttons";
 		
 		/**
          * Show four g instead of lte
@@ -4213,6 +4215,17 @@ public final class Settings {
          * @hide
          */
         public static final String VOLUME_LINK_NOTIFICATION = "volume_link_notification";
+		
+		/**
+         * @hide
+         */
+        public static final String QS_LAYOUT_COLUMNS = "qs_layout_columns";
+		
+		/**
+         * Number of qs columns on landscape orientation
+         * @hide
+         */
+        public static final String QS_LAYOUT_COLUMNS_LANDSCAPE = "qs_layout_columns_landscape";
 
         /**
          * Whether to allow fullscreen screenshots or let the user select which area to screenshot
@@ -4254,6 +4267,20 @@ public final class Settings {
 
         /** @hide */ public static final int HEADS_UP_USER_OFF = 0;
         /** @hide */ public static final int HEADS_UP_USER_ON = 1;
+		
+		/**
+         * Volume keys control cursor in text fields (default is 0)
+         * 0 - Disabled
+         * 1 - Volume up/down moves cursor left/right
+         * 2 - Volume up/down moves cursor right/left
+         * @hide
+         */
+        public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
+
+        /**
+         * @hide
+         */
+        public static final String QS_QUICKBAR_SCROLL_ENABLED = "qs_quickbar_scroll_enabled";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -4429,6 +4456,7 @@ public final class Settings {
             VALIDATORS.put(DIM_SCREEN, DIM_SCREEN_VALIDATOR);
             VALIDATORS.put(SCREEN_OFF_TIMEOUT, SCREEN_OFF_TIMEOUT_VALIDATOR);
             VALIDATORS.put(SCREEN_BRIGHTNESS, SCREEN_BRIGHTNESS_VALIDATOR);
+            VALIDATORS.put(SCREEN_BRIGHTNESS_FOR_VR, SCREEN_BRIGHTNESS_FOR_VR_VALIDATOR);
             VALIDATORS.put(SCREEN_BRIGHTNESS_MODE, SCREEN_BRIGHTNESS_MODE_VALIDATOR);
             VALIDATORS.put(MODE_RINGER_STREAMS_AFFECTED, MODE_RINGER_STREAMS_AFFECTED_VALIDATOR);
             VALIDATORS.put(MUTE_STREAMS_AFFECTED, MUTE_STREAMS_AFFECTED_VALIDATOR);
@@ -5588,6 +5616,11 @@ public final class Settings {
          */
         @Deprecated
         public static final String LOCK_PATTERN_VISIBLE = "lock_pattern_visible_pattern";
+		
+		/**
+         * @hide
+         */
+        public static final String LOCK_HIDE_STATUS_BAR = "lockscreen_hide_status_bar";
 
         /**
          * Whether lock pattern will vibrate as user enters (0 = false, 1 =
@@ -6080,6 +6113,13 @@ public final class Settings {
          * @hide
          */
         public static final String LONG_PRESS_TIMEOUT = "long_press_timeout";
+
+        /**
+         * The duration in milliseconds between the first tap's up event and the second tap's
+         * down event for an interaction to be considered part of the same multi-press.
+         * @hide
+         */
+        public static final String MULTI_PRESS_TIMEOUT = "multi_press_timeout";
 
         /**
          * List of the enabled print services.
@@ -6654,6 +6694,36 @@ public final class Settings {
                 INCALL_POWER_BUTTON_BEHAVIOR_SCREEN_OFF;
 
         /**
+         * What happens when the user presses the Back button while in-call
+         * and the screen is on.<br/>
+         * <b>Values:</b><br/>
+         * 0 - The Back buttons does nothing different.<br/>
+         * 1 - The Back button hangs up the current call.<br/>
+         *
+         * @hide
+         */
+        public static final String INCALL_BACK_BUTTON_BEHAVIOR = "incall_back_button_behavior";
+
+        /**
+         * INCALL_BACK_BUTTON_BEHAVIOR value for no action.
+         * @hide
+         */
+        public static final int INCALL_BACK_BUTTON_BEHAVIOR_NONE = 0x0;
+
+        /**
+         * INCALL_BACK_BUTTON_BEHAVIOR value for "hang up".
+         * @hide
+         */
+        public static final int INCALL_BACK_BUTTON_BEHAVIOR_HANGUP = 0x1;
+
+        /**
+         * INCALL_POWER_BUTTON_BEHAVIOR default value.
+         * @hide
+         */
+        public static final int INCALL_BACK_BUTTON_BEHAVIOR_DEFAULT =
+                INCALL_BACK_BUTTON_BEHAVIOR_NONE;
+
+        /**
          * Whether the device should wake when the wake gesture sensor detects motion.
          * @hide
          */
@@ -6745,12 +6815,6 @@ public final class Settings {
          * @hide
          */
         public static final String SCREENSAVER_DEFAULT_COMPONENT = "screensaver_default_component";
-
-        /**
-         * Whether to allow killing of the foreground app by long-pressing the Back button
-         * @hide
-         */
-        public static final String KILL_APP_LONGPRESS_BACK = "kill_app_longpress_back";
 
         /**
          * The default NFC payment component
@@ -6877,6 +6941,14 @@ public final class Settings {
                 "lock_screen_show_notifications";
 
         /**
+         * This preference stores the last stack active task time for each user, which affects what
+         * tasks will be visible in Overview.
+         * @hide
+         */
+        public static final String OVERVIEW_LAST_STACK_ACTIVE_TIME =
+                "overview_last_stack_active_time";
+
+        /**
          * List of TV inputs that are currently hidden. This is a string
          * containing the IDs of all hidden TV inputs. Each ID is encoded by
          * {@link android.net.Uri#encode(String)} and separated by ':'.
@@ -6981,12 +7053,6 @@ public final class Settings {
          * @hide
          */
         public static final String NIGHT_DISPLAY_CUSTOM_END_TIME = "night_display_custom_end_time";
-
-        /**
-         * Whether brightness should automatically adjust based on twilight state.
-         * @hide
-         */
-        public static final String BRIGHTNESS_USE_TWILIGHT = "brightness_use_twilight";
 
         /**
          * Names of the service components that the current user has explicitly allowed to
@@ -7207,6 +7273,12 @@ public final class Settings {
         public static final String FORCE_AUTHORIZE_SUBSTRATUM_PACKAGES = "force_authorize_substratum_packages";
 
         /**
+		 * Has this pairable device been paired or upgraded from a previously paired system.
+         * @hide
+         */
+        public static final String DEVICE_PAIRED = "device_paired";
+		
+		/**
          * Whether to display the ADB notification.
          * @hide
          */
@@ -7303,6 +7375,7 @@ public final class Settings {
             DOZE_ENABLED,
             DOZE_PULSE_ON_PICK_UP,
             DOZE_PULSE_ON_DOUBLE_TAP,
+			NFC_PAYMENT_DEFAULT_COMPONENT,
 			STATUS_BAR_SHOW_BATTERY_PERCENT,
 			STATUS_BAR_BATTERY_STYLE
         };
@@ -7691,6 +7764,12 @@ public final class Settings {
         public static final String DOCK_SOUNDS_ENABLED = "dock_sounds_enabled";
 
         /**
+         * Whether to play a sound for dock events, only when an accessibility service is on.
+         * @hide
+         */
+        public static final String DOCK_SOUNDS_ENABLED_WHEN_ACCESSIBILITY = "dock_sounds_enabled_when_accessbility";
+
+        /**
          * URI for the "device locked" (keyguard shown) sound.
          * @hide
          */
@@ -7983,6 +8062,13 @@ public final class Settings {
         * @hide
         */
        public static final String MOBILE_DATA_ALWAYS_ON = "mobile_data_always_on";
+
+        /**
+         * Size of the event buffer for IP connectivity metrics.
+         * @hide
+         */
+        public static final String CONNECTIVITY_METRICS_BUFFER_SIZE =
+              "connectivity_metrics_buffer_size";
 
        /** {@hide} */
        public static final String NETSTATS_ENABLED = "netstats_enabled";
@@ -8408,6 +8494,13 @@ public final class Settings {
         */
        public static final String WIMAX_NETWORKS_AVAILABLE_NOTIFICATION_ON =
                "wimax_networks_available_notification_on";
+
+       /**
+        * Whether we support connecting to Carrier Networks.
+        * @hide
+        **/
+        public static final String WIFI_CONNECT_CARRIER_NETWORKS =
+               "wifi_connect_carrier_networks";
 
        /**
         * Delay (in seconds) before repeating the Wi-Fi networks available notification.
@@ -8837,11 +8930,45 @@ public final class Settings {
         public static final String PAC_CHANGE_DELAY = "pac_change_delay";
 
         /**
-         * Setting to turn off captive portal detection. Feature is enabled by
-         * default and the setting needs to be set to 0 to disable it.
+         * Don't attempt to detect captive portals.
          *
          * @hide
          */
+        public static final int CAPTIVE_PORTAL_MODE_IGNORE = 0;
+
+        /**
+         * When detecting a captive portal, display a notification that
+         * prompts the user to sign in.
+         *
+         * @hide
+         */
+        public static final int CAPTIVE_PORTAL_MODE_PROMPT = 1;
+
+        /**
+         * When detecting a captive portal, immediately disconnect from the
+         * network and do not reconnect to that network in the future.
+         *
+         * @hide
+         */
+        public static final int CAPTIVE_PORTAL_MODE_AVOID = 2;
+
+        /**
+         * What to do when connecting a network that presents a captive portal.
+         * Must be one of the CAPTIVE_PORTAL_MODE_* constants above.
+         *
+         * The default for this setting is CAPTIVE_PORTAL_MODE_PROMPT.
+         * @hide
+         */
+        public static final String CAPTIVE_PORTAL_MODE = "captive_portal_mode";
+
+        /**
+         * Setting to turn off captive portal detection. Feature is enabled by
+         * default and the setting needs to be set to 0 to disable it.
+         *
+         * @deprecated use CAPTIVE_PORTAL_MODE_IGNORE to disable captive portal detection
+         * @hide
+         */
+        @Deprecated
         public static final String
                 CAPTIVE_PORTAL_DETECTION_ENABLED = "captive_portal_detection_enabled";
 
@@ -9504,11 +9631,20 @@ public final class Settings {
         /**
          * Defines global runtime overrides to window policy.
          *
-         * See {@link com.android.server.policy.PolicyControl} for value format.
+         * See {@link android.view.WindowManagerPolicyControl} for value format.
          *
          * @hide
          */
         public static final String POLICY_CONTROL = "policy_control";
+
+        /**
+         * Defines global runtime overrides to window policy style.
+         *
+         * See {@link android.view.WindowManagerPolicyControl} for value definitions.
+         *
+         * @hide
+         */
+        public static final String POLICY_CONTROL_STYLE = "policy_control_style";
 
         /**
          * Defines global zen mode.  ZEN_MODE_OFF, ZEN_MODE_IMPORTANT_INTERRUPTIONS,
@@ -10248,6 +10384,24 @@ public final class Settings {
          * @hide
          */
         public static final String CELL_ON = "cell_on";
+
+        /**
+         * Whether to show the high temperature warning notification.
+         * @hide
+         */
+        public static final String SHOW_TEMPERATURE_WARNING = "show_temperature_warning";
+
+        /**
+         * Temperature at which the high temperature warning notification should be shown.
+         * @hide
+         */
+        public static final String WARNING_TEMPERATURE = "warning_temperature";
+
+        /**
+         * Whether the diskstats logging task is enabled/disabled.
+         * @hide
+         */
+        public static final String ENABLE_DISKSTATS_LOGGING = "enable_diskstats_logging";
     }
 
     /**

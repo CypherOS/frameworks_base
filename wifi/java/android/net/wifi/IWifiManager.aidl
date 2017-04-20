@@ -52,6 +52,8 @@ interface IWifiManager
 
     List<WifiConfiguration> getConfiguredNetworks();
 
+    boolean hasCarrierConfiguredNetworks();
+
     List<WifiConfiguration> getPrivilegedConfiguredNetworks();
 
     WifiConfiguration getMatchingWifiConfig(in ScanResult scanResult);
@@ -89,7 +91,7 @@ interface IWifiManager
 
     WifiInfo getConnectionInfo();
 
-    boolean setWifiEnabled(boolean enable);
+    boolean setWifiEnabled(String packageName, boolean enable);
 
     int getWifiEnabledState();
 
@@ -169,7 +171,5 @@ interface IWifiManager
     void factoryReset();
 
     Network getCurrentNetwork();
-
-    boolean getWifiStaSapConcurrency();
 }
 
