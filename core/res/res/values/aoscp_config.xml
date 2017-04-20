@@ -109,7 +109,8 @@
              2 - Back
              4 - Menu
              8 - Assistant (search)
-            16 - App switch
+            10 - App switch
+			20 - Camera
          For example, a device with Home, Back and Menu keys would set this
          config to 7. -->
     <integer name="config_deviceHardwareKeys">0</integer>
@@ -121,9 +122,8 @@
              2 - Back
              4 - Menu
              8 - Assistant (search)
-            16 - App switch
-            32 - Camera
-            64 - Volume rocker
+            10 - App switch
+			20 - Camera
          For example, a device with Home, Back and Menu keys would set this
          config to 7. -->
     <integer name="config_deviceHardwareWakeKeys">0</integer>
