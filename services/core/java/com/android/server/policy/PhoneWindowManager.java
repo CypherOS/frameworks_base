@@ -274,7 +274,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int KEY_MASK_ASSIST = 0x08;
     private static final int KEY_MASK_APP_SWITCH = 0x10;
     private static final int KEY_MASK_CAMERA = 0x20;
-	private static final int KEY_MASK_VOLUME = 0x40;
 
 
     /**
@@ -2357,8 +2356,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.APP_SWITCH_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1) &&
                     ((mDeviceHardwareWakeKeys & KEY_MASK_APP_SWITCH) != 0);
             mVolumeWakeScreen = (Settings.System.getIntForUser(resolver,
-                    Settings.System.VOLUME_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1) &&
-                    ((mDeviceHardwareWakeKeys & KEY_MASK_VOLUME) != 0);
+                    Settings.System.VOLUME_WAKE_SCREEN, 0, 
+					UserHandle.USER_CURRENT) == 1);
             mVolBtnMusicControls = (Settings.System.getIntForUser(resolver,
                     Settings.System.VOLBTN_MUSIC_CONTROLS, 1, 
 					UserHandle.USER_CURRENT) == 1);
