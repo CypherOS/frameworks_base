@@ -3985,7 +3985,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (mDeviceKeyHandler != null) {
             try {
                 // The device only will consume known keys.
-                if (mDeviceKeyHandler.handleKeyEvent(event)) {
+                if (mDeviceKeyHandler.canHandleKeyEvent(event)) {
                     return -1;
                 }
             } catch (Exception e) {
