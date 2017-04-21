@@ -534,7 +534,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 			mShowCarrierLabel = Settings.System.getIntForUser(resolver,
                     Settings.System.STATUS_BAR_SHOW_CARRIER, 1, UserHandle.USER_CURRENT);
 			mStatusBarWindowManager.updateKeyguardScreenRotation();
-			mBurnInProtectionController.setNavigationBarView(visible ? mNavigationBarView : null);
 			
 			// Piracy detection - LuckyPatcher
             if (AoscpUtils.isLuckyPatcherInstalled(mContext)) {
