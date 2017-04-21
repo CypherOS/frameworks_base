@@ -2352,7 +2352,7 @@ public class PackageManagerService extends IPackageManager.Stub {
             if (!overlayThemeDir.isEmpty()) {
                 scanDirTracedLI(new File(VENDOR_OVERLAY_DIR, overlayThemeDir), mDefParseFlags
                         | PackageParser.PARSE_IS_SYSTEM
-                        | PackageParser.PARSE_IS_SYSTEM_DIR
+                        | PackageParser.PARSE_IS_SYSTEM_DIR,
                         scanFlags, 0);
             }
             scanDirTracedLI(new File(VENDOR_OVERLAY_DIR), mDefParseFlags
