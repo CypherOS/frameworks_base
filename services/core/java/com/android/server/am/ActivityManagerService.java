@@ -577,9 +577,6 @@ public final class ActivityManagerService extends ActivityManagerNative
     static final int START_PROCESS = 1;
     static final int NETWORK_OPTS = 2;
     static final int ANIMATION_SCALE = 3;
-    int mActiveNetType = -1;
-    Object mNetLock = new Object();
-    ConnectivityManager mConnectivityManager;
 
     /** All system services */
     SystemServiceManager mSystemServiceManager;
@@ -1583,7 +1580,6 @@ public final class ActivityManagerService extends ActivityManagerNative
     static final int NOTIFY_ACTIVITY_DISMISSING_DOCKED_STACK_MSG = 68;
     static final int SHOW_UNSUPPORTED_DISPLAY_SIZE_DIALOG_MSG = 69;
     static final int NOTIFY_VR_SLEEPING_MSG = 70;
-    static final int NETWORK_OPTS_CHECK_MSG = 71;
 
     static final int FIRST_ACTIVITY_STACK_MSG = 100;
     static final int FIRST_BROADCAST_QUEUE_MSG = 200;
@@ -2416,23 +2412,6 @@ public final class ActivityManagerService extends ActivityManagerNative
             } case NOTIFY_VR_SLEEPING_MSG: {
                 notifyVrManagerOfSleepState(msg.arg1 != 0);
             } break;
-            case NETWORK_OPTS_CHECK_MSG: {
-                int flag = msg.arg1;
-                String packageName = (String)msg.obj;
-                if (flag == 0) {
-                    if (mActivityTrigger != null) {
-                        synchronized (mNetLock) {
-                            if (mActiveNetType >= 0) {
-                                mActivityTrigger.activityMiscTrigger(NETWORK_OPTS, packageName, mActiveNetType, 0);
-                                return;
-                            }
-                        }
-                    }
-                }
-                if (mActivityTrigger != null) {
-                    mActivityTrigger.activityMiscTrigger(NETWORK_OPTS, packageName, ConnectivityManager.TYPE_NONE, 1);
-                }
-            } break;
             }
         }
     };
@@ -3062,8 +3041,22 @@ public final class ActivityManagerService extends ActivityManagerNative
     }
 
     private final void networkOptsCheck(int flag, String packageName) {
-        mHandler.sendMessage(
-            mHandler.obtainMessage(NETWORK_OPTS_CHECK_MSG, flag, 0, packageName));
+        ConnectivityManager connectivityManager =
+            (ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+            if (netInfo != null) {
+                /* netType: 0 for Mobile, 1 for WIFI*/
+                int netType = netInfo.getType();
+                if (mActivityTrigger != null) {
+                    mActivityTrigger.activityMiscTrigger(NETWORK_OPTS, packageName, netType, flag);
+                }
+            } else {
+                if (mActivityTrigger != null) {
+                    mActivityTrigger.activityMiscTrigger(NETWORK_OPTS, packageName, ConnectivityManager.TYPE_NONE, flag);
+                }
+            }
+        }
     }
 
     boolean setFocusedActivityLocked(ActivityRecord r, String reason) {
@@ -7004,37 +6997,22 @@ public final class ActivityManagerService extends ActivityManagerNative
         if (mEnableNetOpts) {
             IntentFilter netInfoFilter = new IntentFilter();
             netInfoFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+            netInfoFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
             mContext.registerReceiver(new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (mConnectivityManager != null) {
-                        NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
-                        synchronized(mNetLock) {
-                            mActiveNetType = (netInfo != null) ? netInfo.getType() : -1;
-                        }
-                    }
                     ActivityStack stack = mStackSupervisor.getLastStack();
                     if (stack != null) {
                         ActivityRecord r = stack.topRunningActivityLocked();
                         if (r != null) {
                             PowerManager powerManager =
                                 (PowerManager)mContext.getSystemService(Context.POWER_SERVICE);
-                            if (powerManager != null && powerManager.isInteractive()) {
-                                networkOptsCheck(0, r.processName);
-                            }
+                            if (powerManager != null && powerManager.isInteractive())
+                                    networkOptsCheck(0, r.processName);
                         }
                     }
                 }
             }, netInfoFilter);
-            mConnectivityManager = (ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (mConnectivityManager != null) {
-                NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
-                if (netInfo != null) {
-                    synchronized (mNetLock) {
-                        mActiveNetType = netInfo.getType();
-                    }
-                }
-            }
         }
 
         // Let system services know.
