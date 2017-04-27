@@ -629,8 +629,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         public void update() {
             int showNavBar = Settings.System.getIntForUser(
                     mContext.getContentResolver(), Settings.System.NAVIGATION_BAR_SHOW,
-                    -1, mCurrentUserId);
-            if (showNavBar != -1){
+                    0, mCurrentUserId);
+            if (showNavBar != 0){
                 boolean showNavBarBool = showNavBar == 1;
                 if (showNavBarBool !=  mShowNavBar){
                     updateNavigationBar();
