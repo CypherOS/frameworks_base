@@ -55,6 +55,12 @@ public class ImageSwitcher extends ViewSwitcher
         showNext();
     }
 
+	/**
+     * Sets the image background.
+     *
+     * @param set the color of the background
+     * @hide
+     */
     public void setImageDrawableTint(Drawable drawable, int tint, boolean isGrayscale) {
         ImageView image = (ImageView)this.getNextView();
         if (isGrayscale) {
