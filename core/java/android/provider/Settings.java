@@ -5635,6 +5635,13 @@ public final class Settings {
         public static final String LOCK_HIDE_STATUS_BAR = "lockscreen_hide_status_bar";
 
         /**
+         * Disable expanding quick settings on secure lock screens
+         *
+         * @hide
+         */
+        public static final String LOCK_QS_DISABLED = "lockscreen_qs_disabled";
+
+        /**
          * Whether lock pattern will vibrate as user enters (0 = false, 1 =
          * true)
          *
