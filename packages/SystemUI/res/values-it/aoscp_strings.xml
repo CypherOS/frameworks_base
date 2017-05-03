@@ -29,21 +29,6 @@
     <!-- Content description of the data connection type HSPA+ for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_data_connection_hspap">HSPA+</string>
 
-    <!-- Screenrecord Notification Ticker -->
-    <string name="screenrecord_notif_ticker">Lo schermo è in fase di registrazione</string>
-    <!-- Screenrecord notification title -->
-    <string name="screenrecord_notif_title">Schermata di registrazione</string>
-    <!-- Screenrecord notification action: Stop -->
-    <string name="screenrecord_notif_stop">Ferma</string>
-    <!-- Screenrecord notification action: show/hide pointer -->
-    <string name="screenrecord_notif_pointer_on">Visualizza puntatore</string>
-    <string name="screenrecord_notif_pointer_off">Nascondi puntatore</string>
-    <!-- Screen record notification error title -->
-    <string name="screenrecord_notif_error">Impossibile registrare lo schermo</string>
-
-    <!-- Screen pinning dialog description (for devices without navbar) -->
-    <string name="screen_pinning_description_no_navbar">Tienilo in vista fino a quando non sblocchi. Tieni premuto il tasto indietro per sbloccare.</string>
-
     <!-- ADB over network Tile -->
     <string name="quick_settings_adb_network">Rete ADB</string>
     <string name="quick_settings_network_adb_enabled_label">Abilitato</string>
@@ -75,6 +60,7 @@
 
     <!-- Screenshot QS tile -->
     <string name="quick_settings_screenshot_label">Screenshot</string>
+    <string name="quick_settings_region_screenshot_label">Screenshot parziale</string>
   
     <!-- Sync QS tile -->
     <string name="quick_settings_sync_label">Sincronizzazione</string>
@@ -172,5 +158,38 @@
     <string name="quick_settings_location_detail_mode_battery_saving_description">Wi\u2011Fi, Bluetooth, o reti cellulari saranno solo in grado di determinare la tua posizione per un migliore utilizzo della batteria</string>
     <!-- [CHAR LIMIT=130] Location detail panel, description for sensors only mode -->
     <string name="quick_settings_location_detail_mode_sensors_only_description">Il GPS sarà solo in grado di determinare la tua posizione, anche se è necessaria una connessione dati</string>
+
+   <!-- Anti Piracy Detection -->
+    <string name="pirate_detection_label">Protezione dalla pirateria</string>
+    <string name="pirate_detection_title">Pirateria rilevata</string>
+    <string name="pirate_detection_title_summary">Si prega di disinstallare LuckyPatcher perchè questo è un software pirata!</string>
+
+    <!-- Heads Up QS Tile -->
+    <string name="quick_settings_heads_up_label">Heads up</string>
+    <string name="accessibility_quick_settings_heads_up_off">Heads up off</string>
+    <string name="accessibility_quick_settings_heads_up_on">Heads up on</string>
+    <string name="accessibility_quick_settings_heads_up_changed_off">Heads up spento</string>
+    <string name="accessibility_quick_settings_heads_up_changed_on">Heads up acceso</string>
+
+    <!-- Heads up snooze toast -->
+    <string name="heads_up_snooze_message_one_minute"><xliff:g id="string">%s</xliff:g> - Le notifiche Heads up sono sospense per un minuto.</string>
+    <string name="heads_up_snooze_message"><xliff:g id="string">%s</xliff:g> - Le notifiche Heads up sono sospese per <xliff:g id="number">%d</xliff:g> minuti.</string>
+
+    <!-- volte icon switch -->
+    <string name="status_bar_volte">VOLTE</string>
+
+    <string name="qs_menu_item_columns">Colonne</string>
+    <string name="qs_menu_item_columns_landscape">Colonne (orizzontale)</string>
+    <string name="qs_menu_item_columns_three">3</string>
+    <string name="qs_menu_item_columns_four">4</string>
+    <string name="qs_menu_item_columns_five">5</string>
+    <string name="qs_menu_item_columns_six">6</string>
+    <string name="qs_menu_item_columns_seven">7</string>
+    <string name="qs_menu_item_columns_eight">8</string>
+    <string name="qs_menu_item_columns_nine">9</string>
+    <string name="qs_menu_item_reset">Ripristina</string>
+
+    <!-- QS Quickbar Scroller -->
+    <string name="qs_menu_item_scroll">Scorrimento rapido</string>
 
 </resources>
