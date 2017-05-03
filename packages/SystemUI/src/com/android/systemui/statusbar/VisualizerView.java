@@ -373,7 +373,7 @@ public class VisualizerView extends View implements Palette.PaletteAsyncListener
         @Override
         protected void update() {
             mVisualizerEnabled = Settings.Secure.getInt(getContext().getContentResolver(),
-                    Settings.Secure.LOCKSCREEN_VISUALIZER_ENABLED, 0) != 1;
+                    Settings.Secure.LOCKSCREEN_VISUALIZER_ENABLED, 1) != 0;
             checkStateChanged();
             updateViewVisibility();
         }
