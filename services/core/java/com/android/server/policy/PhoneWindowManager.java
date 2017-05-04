@@ -2424,7 +2424,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (mImmersiveModeConfirmation != null) {
                 mImmersiveModeConfirmation.loadSetting(mCurrentUserId);
             }
-            mHardwareKeysDisable = Settings.System.getIntForUser(resolver,
+            mHardwareKeysDisable = (Settings.System.getIntForUser(resolver,
                     Settings.System.HARDWARE_KEYS_DISABLE, 0,
                     UserHandle.USER_CURRENT) == 1);
             // Volume wake
