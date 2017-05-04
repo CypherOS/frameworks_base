@@ -163,10 +163,10 @@ public class AoscpUtils {
                 com.android.internal.R.bool.config_showNavigationBar);
         final int hasNavigationBar = Settings.System.getIntForUser(
                 context.getContentResolver(),
-                Settings.System.NAVIGATION_BAR_SHOW, 0,
+                Settings.System.NAVIGATION_BAR_SHOW, -1,
                 userId);
 
-        if (hasNavigationBar == 0) {
+        if (hasNavigationBar == -1) {
             String navBarOverride = SystemProperties.get("qemu.hw.mainkeys");
             if ("1".equals(navBarOverride)) {
                 return false;

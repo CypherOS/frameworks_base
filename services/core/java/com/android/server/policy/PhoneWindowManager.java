@@ -2426,7 +2426,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
             mHardwareKeysDisable = Settings.System.getIntForUser(resolver,
                     Settings.System.HARDWARE_KEYS_DISABLE, 0,
-                    UserHandle.USER_CURRENT) != 0;
+                    UserHandle.USER_CURRENT) == 1);
             // Volume wake
             mVolumeWakeScreen = (Settings.System.getIntForUser(resolver,
                     Settings.System.VOLUME_WAKE_SCREEN, 0, 
