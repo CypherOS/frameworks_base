@@ -29,7 +29,7 @@ LOCAL_SHARED_LIBRARIES := \
     libtinyalsa \
     libregionalization
 
-ifneq ($(TARGET_BOOTANIMATION_MULTITHREAD_DECODE),false)
+ifeq ($(TARGET_BOOTANIMATION_MULTITHREAD_DECODE),true)
     LOCAL_CFLAGS += -DMULTITHREAD_DECODE
 endif
 
