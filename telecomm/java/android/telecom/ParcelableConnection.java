@@ -37,7 +37,6 @@ public final class ParcelableConnection implements Parcelable {
     private final int mState;
     private final int mConnectionCapabilities;
     private final int mConnectionProperties;
-    private final int mSupportedAudioRoutes;
     private final Uri mAddress;
     private final int mAddressPresentation;
     private final String mCallerDisplayName;
@@ -58,7 +57,6 @@ public final class ParcelableConnection implements Parcelable {
             int state,
             int capabilities,
             int properties,
-            int supportedAudioRoutes,
             Uri address,
             int addressPresentation,
             String callerDisplayName,
@@ -76,7 +74,6 @@ public final class ParcelableConnection implements Parcelable {
         mState = state;
         mConnectionCapabilities = capabilities;
         mConnectionProperties = properties;
-        mSupportedAudioRoutes = supportedAudioRoutes;
         mAddress = address;
         mAddressPresentation = addressPresentation;
         mCallerDisplayName = callerDisplayName;
@@ -118,10 +115,6 @@ public final class ParcelableConnection implements Parcelable {
      */
     public int getConnectionProperties() {
         return mConnectionProperties;
-    }
-
-    public int getSupportedAudioRoutes() {
-        return mSupportedAudioRoutes;
     }
 
     public Uri getHandle() {
@@ -217,14 +210,12 @@ public final class ParcelableConnection implements Parcelable {
             source.readStringList(conferenceableConnectionIds);
             Bundle extras = Bundle.setDefusable(source.readBundle(classLoader), true);
             int properties = source.readInt();
-            int supportedAudioRoutes = source.readInt();
 
             return new ParcelableConnection(
                     phoneAccount,
                     state,
                     capabilities,
                     properties,
-                    supportedAudioRoutes,
                     address,
                     addressPresentation,
                     callerDisplayName,
@@ -273,6 +264,5 @@ public final class ParcelableConnection implements Parcelable {
         destination.writeStringList(mConferenceableConnectionIds);
         destination.writeBundle(mExtras);
         destination.writeInt(mConnectionProperties);
-        destination.writeInt(mSupportedAudioRoutes);
     }
 }
