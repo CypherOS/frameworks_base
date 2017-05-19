@@ -59,7 +59,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import static android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED;
-import static android.net.ConnectivityManager.TETHERING_WIFI;
 
 /** Platform implementation of the network controller. **/
 public class NetworkControllerImpl extends BroadcastReceiver
@@ -359,10 +358,9 @@ public class NetworkControllerImpl extends BroadcastReceiver
             protected Void doInBackground(Void... args) {
                 // Disable tethering if enabling Wifi
                 final int wifiApState = mWifiManager.getWifiApState();
-                if (enabled && (!mWifiManager.getWifiStaSapConcurrency()) &&
-                       ((wifiApState == WifiManager.WIFI_AP_STATE_ENABLING) ||
+                if (enabled && ((wifiApState == WifiManager.WIFI_AP_STATE_ENABLING) ||
                         (wifiApState == WifiManager.WIFI_AP_STATE_ENABLED))) {
-                    mConnectivityManager.stopTethering(TETHERING_WIFI);
+                    mWifiManager.setWifiApEnabled(null, false);
                 }
 
                 mWifiManager.setWifiEnabled(enabled);
