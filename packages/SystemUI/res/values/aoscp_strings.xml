@@ -99,7 +99,11 @@
     <string name="quick_settings_alert_slider_detail_priority_reminders_title">Reminders</string>
 	
 	<!-- OnTheSpot: Action denial button text. [CHAR LIMIT=NONE] -->
-    <string name="on_the_spot_deny">NO</string>
+    <string name="on_the_spot_no">NO</string>
+	<string name="on_the_spot_no_thanks">NO THANKS</string>
     <!-- OnTheSpot: Action confirmation button text. [CHAR LIMIT=NONE] -->
-    <string name="on_the_spot_confirm">YES</string>
+    <string name="on_the_spot_yes">YES</string>
+	<string name="on_the_spot_ok">OK</string>
+	<string name="on_the_spot_sure">SURE</string>
+	<string name="on_the_spot_got_it">GOT IT</string>
 </resources>
