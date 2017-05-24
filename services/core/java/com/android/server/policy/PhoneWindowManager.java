@@ -2453,8 +2453,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         // Override prop based on our internal config. carlosavignano@aospa.co
         // TODO> Create a setting helper to centralize navigation bar settings.
-        final boolean defaultToNavigationBar = res
+        boolean defaultToNavigationBar = res
                 .getBoolean(com.android.internal.R.bool.config_defaultToNavigationBar);
+        // we treat a device as a hwkey one if it packs at least home, back, menu keys
+        // or a replacement key for the deprecated app switch (resulting bitfield 7)
+        final boolean hwkeyDevice = res
+                .getInteger(com.android.internal.R.integer.config_deviceHardwareKeys) >= 7;
+        if (hwkeyDevice) {
+            defaultToNavigationBar = false;
+        }
         mNavBarEnabled = Settings.System.getIntForUser(resolver,
                 Settings.System.NAVIGATION_BAR_ENABLED, defaultToNavigationBar ? 1 : 0,
                         UserHandle.USER_CURRENT) == 1;
@@ -2563,8 +2570,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 updateEdgeGestureListenerState();
             }
 
-            final boolean defaultToNavigationBar = resources
+            boolean defaultToNavigationBar = resources
                     .getBoolean(com.android.internal.R.bool.config_defaultToNavigationBar);
+            // we treat a device as a hwkey one if it packs at least home, back, menu keys
+            // or a replacement key for the deprecated app switch (resulting bitfield 7)
+            final boolean hwkeyDevice = resources
+                    .getInteger(com.android.internal.R.integer.config_deviceHardwareKeys) >= 7;
+            if (hwkeyDevice) {
+                defaultToNavigationBar = false;
+            }
             final boolean navBarEnabled = Settings.System.getIntForUser(resolver,
                     Settings.System.NAVIGATION_BAR_ENABLED, defaultToNavigationBar ? 1 : 0,
                             UserHandle.USER_CURRENT) == 1;
