@@ -752,7 +752,7 @@ public class Build {
 	/**
      * The user-visible aoscp release id string.
      */
-    public static final String AOSCPID = getString("ro.aoscp.release.id");
+    public static final String AOSCPREL = getString("ro.aoscp.release");
 
     /**
      * Some devices split the fingerprint components between multiple
