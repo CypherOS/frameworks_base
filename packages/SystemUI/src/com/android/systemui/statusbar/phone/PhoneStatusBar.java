@@ -44,6 +44,7 @@ import android.app.StatusBarManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -129,6 +130,7 @@ import com.android.keyguard.KeyguardHostView.OnDismissAction;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
 import com.android.keyguard.ViewMediatorCallback;
+import com.android.systemui.aoscp.UserContentObserver;
 import com.android.systemui.AutoReinflateContainer;
 import com.android.systemui.AutoReinflateContainer.InflateListener;
 import com.android.systemui.BatteryMeterView;
@@ -438,6 +440,45 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private int mNavigationIconHints = 0;
     private HandlerThread mHandlerThread;
 
+	private SettingsObserver mSettingsObserver;
+	
+	protected class SettingsObserver extends UserContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void observe() {
+            super.observe();
+ 
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_ROTATION),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ACCELEROMETER_ROTATION),
+                    false, this, UserHandle.USER_ALL);					
+            update();
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            update();
+        }
+		
+		@Override
+        protected void unobserve() {
+            super.unobserve();
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.unregisterContentObserver(this);
+        }
+
+        @Override
+        public void update() {
+			mStatusBarWindowManager.updateKeyguardScreenRotation();
+        }
+    }
+
     private boolean mNavigationBarViewAttached;
 
     // ensure quick settings is disabled until the current user makes it through the setup wizard
@@ -504,6 +545,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             boolean wasUsing = mUseNavBar;
             boolean defaultToNavigationBar = mContext.getResources()
                     .getBoolean(com.android.internal.R.bool.config_defaultToNavigationBar);
+            // we treat a device as a hwkey one if it packs at least home, back, menu keys
+            // or a replacement key for the deprecated app switch (resulting bitfield 7)
+            boolean hwkeyDevice = mContext.getResources()
+                    .getInteger(com.android.internal.R.integer.config_deviceHardwareKeys) >= 7;
+            if (hwkeyDevice) {
+                defaultToNavigationBar = false;
+            }
             mUseNavBar = Settings.System.getIntForUser(
                     mContext.getContentResolver(), Settings.System.NAVIGATION_BAR_ENABLED,
                     defaultToNavigationBar ? 1 : 0, UserHandle.USER_CURRENT) != 0;
