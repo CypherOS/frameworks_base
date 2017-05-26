@@ -1481,6 +1481,9 @@ class ActivityStarter {
         }
         mSourceRecord = null;
         mSourceStack = null;
+        if (mStartActivity != null) {
+            mStartActivity.resultTo = null;
+        }
     }
 
     /**
