@@ -514,6 +514,8 @@
     <protected-broadcast android:name="android.telecom.action.TTY_PREFERRED_MODE_CHANGED" />
     <protected-broadcast android:name="android.telecom.action.CURRENT_TTY_MODE_CHANGED" />
     <protected-broadcast android:name="com.android.server.retaildemo.ACTION_RESET_DEMO" />
+	
+	<protected-broadcast android:name="com.android.settings.aoscp.UPDATE_SETTINGS" />
 
     <!-- ====================================================================== -->
     <!--                          RUNTIME PERMISSIONS                           -->
