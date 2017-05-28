@@ -8191,7 +8191,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mKeyguardDelegate.onBootCompleted();
         mSystemGestures.systemReady();
         mImmersiveModeConfirmation.systemReady();
-        mKeyHandler.systemReady();
+        if (mKeyHandler != null) {
+            mKeyHandler.systemReady();
+        }
     }
 
     /** {@inheritDoc} */
