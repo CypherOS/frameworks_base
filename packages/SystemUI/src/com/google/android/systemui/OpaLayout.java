@@ -50,8 +50,8 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
 
     private KeyButtonView mHome;
 
-    private int mAnimationState;
-    private final ArraySet<Animator> mCurrentAnimators;
+    private int mAnimationState = ANIMATION_STATE_NONE;
+    private final ArraySet<Animator> mCurrentAnimators = new ArraySet<Animator>();
 
     private boolean mIsLandscape;
     private boolean mIsPressed;
@@ -71,122 +71,44 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
     private View mLeft;
     private View mBottom;
 
-    private final Runnable mCheckLongPress;
-    private final Runnable mRetract;
+    private final Runnable mCheckLongPress = new Runnable() {
+        @Override
+        public void run() {
+            if (mIsPressed) {
+                mLongClicked = true;
+            }
+        }
+    };
 
-    private final Interpolator mRetractInterpolator;
-    private final Interpolator mCollapseInterpolator;
-    private final Interpolator mDiamondInterpolator;
-    private final Interpolator mDotsFullSizeInterpolator;
-    private final Interpolator mFastOutSlowInInterpolator;
-    private final Interpolator mHomeDisappearInterpolator;
+    private final Runnable mRetract = new Runnable() {
+        @Override
+        public void run() {
+            cancelCurrentAnimation();
+            startRetractAnimation();
+        }
+    };
+
+    private final Interpolator mRetractInterpolator = new PathInterpolator(0.4f, 0f, 0f, 1f);
+    private final Interpolator mCollapseInterpolator = Interpolators.FAST_OUT_LINEAR_IN;
+    private final Interpolator mDiamondInterpolator = new PathInterpolator(0.2f, 0f, 0.2f, 1f);
+    private final Interpolator mDotsFullSizeInterpolator = new PathInterpolator(0.4f, 0f, 0f, 1f);
+    private final Interpolator mFastOutSlowInInterpolator = Interpolators.FAST_OUT_SLOW_IN;
+    private final Interpolator mHomeDisappearInterpolator = new PathInterpolator(0.8f, 0f, 1f, 1f);
 
     public OpaLayout(Context context) {
         super(context);
-        mFastOutSlowInInterpolator = Interpolators.FAST_OUT_SLOW_IN;
-        mHomeDisappearInterpolator = new PathInterpolator(0.8f, 0f, 1f, 1f);
-        mCollapseInterpolator = Interpolators.FAST_OUT_LINEAR_IN;
-        mDotsFullSizeInterpolator = new PathInterpolator(0.4f, 0f, 0f, 1f);
-        mRetractInterpolator = new PathInterpolator(0.4f, 0f, 0f, 1f);
-        mDiamondInterpolator = new PathInterpolator(0.2f, 0f, 0.2f, 1f);
-        mCheckLongPress = new Runnable() {
-            @Override
-            public void run() {
-                if (mIsPressed) {
-                    mLongClicked = true;
-                }
-            }
-        };
-        mRetract = new Runnable() {
-            @Override
-            public void run() {
-                cancelCurrentAnimation();
-                startRetractAnimation();
-            }
-        };
-        mAnimationState = ANIMATION_STATE_NONE;
-        mCurrentAnimators = new ArraySet<Animator>();
     }
 
     public OpaLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mFastOutSlowInInterpolator = Interpolators.FAST_OUT_SLOW_IN;
-        mHomeDisappearInterpolator = new PathInterpolator(0.8f, 0f, 1f, 1f);
-        mCollapseInterpolator = Interpolators.FAST_OUT_LINEAR_IN;
-        mDotsFullSizeInterpolator = new PathInterpolator(0.4f, 0f, 0f, 1f);
-        mRetractInterpolator = new PathInterpolator(0.4f, 0f, 0f, 1f);
-        mDiamondInterpolator = new PathInterpolator(0.2f, 0f, 0.2f, 1f);
-        mCheckLongPress = new Runnable() {
-            @Override
-            public void run() {
-                if (mIsPressed) {
-                    mLongClicked = true;
-                }
-            }
-        };
-        mRetract = new Runnable() {
-            @Override
-            public void run() {
-                cancelCurrentAnimation();
-                startRetractAnimation();
-            }
-        };
-        mAnimationState = ANIMATION_STATE_NONE;
-        mCurrentAnimators = new ArraySet<Animator>();
     }
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mFastOutSlowInInterpolator = Interpolators.FAST_OUT_SLOW_IN;
-        mHomeDisappearInterpolator = new PathInterpolator(0.8f, 0f, 1f, 1f);
-        mCollapseInterpolator = Interpolators.FAST_OUT_LINEAR_IN;
-        mDotsFullSizeInterpolator = new PathInterpolator(0.4f, 0f, 0f, 1f);
-        mRetractInterpolator = new PathInterpolator(0.4f, 0f, 0f, 1f);
-        mDiamondInterpolator = new PathInterpolator(0.2f, 0f, 0.2f, 1f);
-        mCheckLongPress = new Runnable() {
-            @Override
-            public void run() {
-                if (mIsPressed) {
-                    mLongClicked = true;
-                }
-            }
-        };
-        mRetract = new Runnable() {
-            @Override
-            public void run() {
-                cancelCurrentAnimation();
-                startRetractAnimation();
-            }
-        };
-        mAnimationState = ANIMATION_STATE_NONE;
-        mCurrentAnimators = new ArraySet<Animator>();
     }
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mFastOutSlowInInterpolator = Interpolators.FAST_OUT_SLOW_IN;
-        mHomeDisappearInterpolator = new PathInterpolator(0.8f, 0f, 1f, 1f);
-        mCollapseInterpolator = Interpolators.FAST_OUT_LINEAR_IN;
-        mDotsFullSizeInterpolator = new PathInterpolator(0.4f, 0f, 0f, 1f);
-        mRetractInterpolator = new PathInterpolator(0.4f, 0f, 0f, 1f);
-        mDiamondInterpolator = new PathInterpolator(0.2f, 0f, 0.2f, 1f);
-        mCheckLongPress = new Runnable() {
-            @Override
-            public void run() {
-                if (mIsPressed) {
-                    mLongClicked = true;
-                }
-            }
-        };
-        mRetract = new Runnable() {
-            @Override
-            public void run() {
-                cancelCurrentAnimation();
-                startRetractAnimation();
-            }
-        };
-        mAnimationState = ANIMATION_STATE_NONE;
-        mCurrentAnimators = new ArraySet<Animator>();
     }
 
     private void startAll(ArraySet<Animator> animators) {
@@ -567,15 +489,12 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
     }
 
     public void setOpaEnabled(boolean enabled) {
-        final boolean b1 = getContext().getResources().getBoolean(R.bool.config_allowOpaLayout);
-        final boolean b2 = (enabled || UserManager.isDeviceInDemoMode(getContext())) && b1;
-        mOpaEnabled = b2;
-        int visibility;
-        if (b2) {
-            visibility = View.VISIBLE;
-        } else {
-            visibility = View.INVISIBLE;
-        }
+        final boolean configValue = getContext().getResources().getBoolean(R.bool.config_allowOpaLayout);
+        final boolean shouldEnable = configValue && (enabled || UserManager.isDeviceInDemoMode(getContext()));
+        mOpaEnabled = shouldEnable;
+
+        int visibility = shouldEnable ? View.VISIBLE : View.INVISIBLE;
+
         mBlue.setVisibility(visibility);
         mRed.setVisibility(visibility);
         mYellow.setVisibility(visibility);
