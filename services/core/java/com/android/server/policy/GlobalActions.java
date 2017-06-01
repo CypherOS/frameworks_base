@@ -226,48 +226,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         } else {
             mSilentModeAction = new SilentModeTriStateAction(mContext, mAudioManager, mHandler);
         }
-        mAirplaneModeOn = new ToggleAction(
-                R.drawable.ic_lock_airplane_mode,
-                R.drawable.ic_lock_airplane_mode_off,
-                R.string.global_actions_toggle_airplane_mode,
-                R.string.global_actions_airplane_mode_on_status,
-                R.string.global_actions_airplane_mode_off_status) {
-
-            void onToggle(boolean on) {
-                if (mHasTelephony && Boolean.parseBoolean(
-                        SystemProperties.get(TelephonyProperties.PROPERTY_INECM_MODE))) {
-                    mIsWaitingForEcmExit = true;
-                    // Launch ECM exit dialog
-                    Intent ecmDialogIntent =
-                            new Intent(TelephonyIntents.ACTION_SHOW_NOTICE_ECM_BLOCK_OTHERS, null);
-                    ecmDialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.startActivity(ecmDialogIntent);
-                } else {
-                    changeAirplaneModeSystemSetting(on);
-                }
-            }
-
-            @Override
-            protected void changeStateFromPress(boolean buttonOn) {
-                if (!mHasTelephony) return;
-
-                // In ECM mode airplane state cannot be changed
-                if (!(Boolean.parseBoolean(
-                        SystemProperties.get(TelephonyProperties.PROPERTY_INECM_MODE)))) {
-                    mState = buttonOn ? State.TurningOn : State.TurningOff;
-                    mAirplaneState = mState;
-                }
-            }
-
-            public boolean showDuringKeyguard() {
-                return true;
-            }
-
-            public boolean showBeforeProvisioning() {
-                return false;
-            }
-        };
-        onAirplaneModeChanged();
+		
+		mAirplaneModeOn = new AirplaneModeToggleAction();
 
         mItems = new ArrayList<Action>();
 
@@ -423,6 +383,51 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
         }
     }
+	
+	private class AirplaneModeToggleAction extends ToggleAction {
+		public AirplaneModeToggleAction() {
+			super (R.drawable.ic_lock_airplane_mode,
+			       R.drawable.ic_lock_airplane_mode_off,
+                   R.string.global_actions_toggle_airplane_mode,
+                   R.string.global_actions_airplane_mode_on_status,
+                   R.string.global_actions_airplane_mode_off_status);
+		}
+		
+		void onToggle(boolean on) {
+            if (mHasTelephony && Boolean.parseBoolean(
+                    SystemProperties.get(TelephonyProperties.PROPERTY_INECM_MODE))) {
+                mIsWaitingForEcmExit = true;
+                // Launch ECM exit dialog
+                Intent ecmDialogIntent =
+                        new Intent(TelephonyIntents.ACTION_SHOW_NOTICE_ECM_BLOCK_OTHERS, null);
+                ecmDialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(ecmDialogIntent);
+            } else {
+                changeAirplaneModeSystemSetting(on);
+            }
+        }
+		
+		@Override
+        protected void changeStateFromPress(boolean buttonOn) {
+            if (!mHasTelephony) return;
+
+            // In ECM mode airplane state cannot be changed
+            if (!(Boolean.parseBoolean(
+                    SystemProperties.get(TelephonyProperties.PROPERTY_INECM_MODE)))) {
+                mState = buttonOn ? State.TurningOn : State.TurningOff;
+                mAirplaneState = mState;
+            }
+        }
+		
+		public boolean showDuringKeyguard() {
+            return true;
+        }
+
+        public boolean showBeforeProvisioning() {
+            return false;
+        }
+    };
+    onAirplaneModeChanged();
 
     private Action getScreenshotAction() {
         return new SinglePressAction(com.android.internal.R.drawable.ic_lock_screenshot,
