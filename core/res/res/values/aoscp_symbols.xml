@@ -90,5 +90,24 @@
 
   <!-- Whether to to intercept inputs on screen off. -->
   <java-symbol type="bool" name="config_enableKeyHandler" />
+  
+  <!-- Reboot - Advanced Reboot -->
+  <java-symbol type="array" name="shutdown_reboot_options" />
+  <java-symbol type="array" name="shutdown_reboot_actions" />
+  <java-symbol type="bool" name="config_advanced_reboot" />
+  <java-symbol type="drawable" name="ic_lock_power_restart" />
+  <java-symbol type="string" name="reboot_confirm" />
+  <java-symbol type="string" name="reboot_progress" />
+  <java-symbol type="string" name="global_action_restart" />
 
+  <!-- Power menu -->
+  <java-symbol type="drawable" name="ic_lock_assist" />
+  <java-symbol type="drawable" name="ic_lock_screenshot" />
+  <java-symbol type="drawable" name="ic_lock_settings" />
+  <java-symbol type="drawable" name="ic_lock_user" />
+  <java-symbol type="drawable" name="ic_lock_voice" />
+  <java-symbol type="string" name="global_action_screenshot" />
+  <java-symbol type="string" name="global_action_search" />
+  <java-symbol type="string" name="global_action_voicesearch" />
+  
 </resources>
