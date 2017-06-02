@@ -156,8 +156,5 @@
 
     <!-- Whether to to intercept inputs on screen off. -->
     <bool name="config_enableKeyHandler">false</bool>
-	
-	<!-- Is Advanced Reboot enabled? -->
-    <bool name="config_advanced_reboot">true</bool>
 
 </resources>
