@@ -504,13 +504,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             boolean wasUsing = mUseNavBar;
             boolean defaultToNavigationBar = mContext.getResources()
                     .getBoolean(com.android.internal.R.bool.config_defaultToNavigationBar);
-            // we treat a device as a hwkey one if it packs at least home, back, menu keys
-            // or a replacement key for the deprecated app switch (resulting bitfield 7)
-            boolean hwkeyDevice = mContext.getResources()
-                    .getInteger(com.android.internal.R.integer.config_deviceHardwareKeys) >= 7;
-            if (hwkeyDevice) {
-                defaultToNavigationBar = false;
-            }
             mUseNavBar = Settings.System.getIntForUser(
                     mContext.getContentResolver(), Settings.System.NAVIGATION_BAR_ENABLED,
                     defaultToNavigationBar ? 1 : 0, UserHandle.USER_CURRENT) != 0;
