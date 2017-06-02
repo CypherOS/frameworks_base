@@ -21,6 +21,9 @@ import android.app.StatusBarManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.hardware.camera2.CameraManager;
@@ -100,6 +103,7 @@ public class KeyHandler {
     private static final int MUSIC_PREVIOUS = 6;
     private static final int CAMERA = 7;
     private static final int DIALER = 8;
+    private static final int MESSAGING = 9;
 
     private final Context mContext;
     private PowerManager mPowerManager;
@@ -561,6 +565,17 @@ public class KeyHandler {
                         }, 1500);
                     }
                 });
+                break;
+	    case MESSAGING:
+                mPowerManager.wakeUp(SystemClock.uptimeMillis());
+                final String defaultApp = Settings.Secure.getString(
+                        mContext.getContentResolver(), "sms_default_application");
+		final PackageManager pm = mContext.getPackageManager();
+		final Intent msg = pm.getLaunchIntentForPackage(defaultApp);
+                if (msg != null) {
+                    startActivitySafely(msg);
+		}
+		handled = true;
                 break;
             default:
                 handled = false;

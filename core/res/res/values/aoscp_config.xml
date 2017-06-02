@@ -127,7 +127,8 @@
             5 - Next music
             6 - Previous music
             7 - Open camera
-            8 - Open dialer -->
+            8 - Open dialer
+	    9 - Open messaging -->
     <integer name="config_doubleTapDefault">0</integer>
 
     <integer name="config_drawVDefault">0</integer>
