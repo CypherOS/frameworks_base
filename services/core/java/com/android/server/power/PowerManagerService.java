@@ -174,7 +174,7 @@ public final class PowerManagerService extends SystemService
     private static final int DEFAULT_DOUBLE_TAP_TO_WAKE = 0;
 
     // Default value for buttons lights timeout
-    private static final int BUTTON_ON_DURATION = 5000;
+    private static final int BUTTON_ON_DURATION = 2500;
 
     /** Constants for {@link #shutdownOrRebootInternal} */
     @Retention(RetentionPolicy.SOURCE)
