@@ -281,7 +281,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
         // Always add the power off and restart option
         mItems.add(new PowerAction());
-		mItems.add(new RestartAction());
+		mItems.add(new RebootAction());
 
         ArraySet<String> addedKeys = new ArraySet<String>();
         for (int i = 0; i < actionsArray.length; i++) {
