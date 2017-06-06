@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2016 ParanoidAndroid Project
+     Copyright 2017 CypherOS
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.systemui.aoscp.feature.SnackShackFeatureView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/snack_shack_shadow" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/shadow"
+        android:background="@color/snack_shack_background">
+
+		<TextView
+            android:id="@+id/feature_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="18dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:textColor="@color/snack_shack_description"
+            android:fontFamily="sans-serif"
+			android:textSize="20sp"
+            android:textStyle="bold" />
+		
+        <TextView
+            android:id="@+id/feature_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+			android:layout_below="@id/feature_title"
+            android:layout_marginTop="18dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:textColor="@color/snack_shack_description"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal" />
+			
+		<LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+			android:gravity="center_vertical|end"
+			android:layout_below="@id/feature_description">
+			
+			<Button
+                android:id="@+id/action_feature_deny"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+				android:layout_marginTop="24dp"
+			    android:layout_marginBottom="24dp"
+                android:layout_marginRight="38dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:background="@null"
+                android:textColor="@color/snack_shack_btn_negative"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="normal"
+                android:text="@string/snack_shack_feature_no" />
+
+            <Button
+                android:id="@+id/action_feature_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+				android:layout_marginTop="24dp"
+			    android:layout_marginBottom="24dp"
+                android:layout_marginRight="34dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:background="@null"
+                android:textColor="@color/snack_shack_btn_positive"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="normal"
+                android:text="@string/snack_shack_feature_yes" />
+				
+		</LinearLayout>
+
+    </RelativeLayout>
+
+</com.android.systemui.aoscp.feature.SnackShackFeatureView>
