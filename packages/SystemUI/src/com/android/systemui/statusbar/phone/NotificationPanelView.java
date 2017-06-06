@@ -52,14 +52,14 @@ import com.android.systemui.Interpolators;
 import com.android.systemui.R;
 import com.android.systemui.classifier.FalsingManager;
 import com.android.systemui.qs.QSContainer;
-import com.android.systemui.settings.SettingConfirmationHelper;
+import com.android.systemui.aoscp.feature.SnackShackFeatureHelper;
 import com.android.systemui.statusbar.ExpandableNotificationRow;
 import com.android.systemui.statusbar.ExpandableView;
 import com.android.systemui.statusbar.FlingAnimationUtils;
 import com.android.systemui.statusbar.GestureRecorder;
 import com.android.systemui.statusbar.KeyguardAffordanceView;
 import com.android.systemui.statusbar.NotificationData;
-import com.android.systemui.statusbar.SettingConfirmationSnackbarViewCreator;
+import com.android.systemui.aoscp.feature.SnackShackFeatureViewCreator;
 import com.android.systemui.statusbar.StatusBarState;
 import com.android.systemui.statusbar.notification.NotificationUtils;
 import com.android.systemui.statusbar.policy.HeadsUpManager;
@@ -802,15 +802,16 @@ public class NotificationPanelView extends PanelView implements
                 && event.getY(event.getActionIndex()) < mStatusBarMinHeight
                 && mExpandedHeight <= mQsPeekHeight) {
             if (oneFingerQsOverride) {
-                final SettingConfirmationSnackbarViewCreator
-                        mSnackbarViewCreator = new
-                        SettingConfirmationSnackbarViewCreator(mContext);
-                SettingConfirmationHelper.prompt(
-                        mSnackbarViewCreator.getSnackbarView(),
+                final SnackShackFeatureViewCreator
+                        mSnackshackViewCreator = new
+                        SnackShackFeatureViewCreator(mContext);
+                SnackShackFeatureHelper.prompt(
+                        mSnackshackViewCreator.getSnackshackView(),
                         Settings.Secure.QUICK_SETTINGS_QUICK_PULL_DOWN,
                         true,
+						getContext().getString(R.string.quick_settings_quick_pull_down_title),
                         getContext().getString(R.string.quick_settings_quick_pull_down),
-                        new SettingConfirmationHelper.OnSettingChoiceListener() {
+                        new SnackShackFeatureHelper.OnSettingChoiceListener() {
                             @Override
                             public void onSettingConfirm(final String settingName) {
                             }
@@ -1393,8 +1394,8 @@ public class NotificationPanelView extends PanelView implements
 
         final float w = getMeasuredWidth();
         float region = (w * (1.f/4.f)); // TODO overlay region fraction?
-        final boolean showQsOverride = (isLayoutRtl() ? (x < region) : (w - region < x))
-            && !mKeyguardShowing && SettingConfirmationHelper.get(
+        final boolean showQsOverride = true
+            && !mKeyguardShowing && SnackShackFeatureHelper.get(
                     getContext().getContentResolver(),
                     Settings.Secure.QUICK_SETTINGS_QUICK_PULL_DOWN,
                     notSetFallback);
