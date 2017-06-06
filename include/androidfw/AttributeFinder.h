@@ -74,6 +74,7 @@ private:
 
     // Package Offsets (best-case, fast look-up).
     Iterator mFrameworkStart;
+	Iterator mAoscpFrameworkStart;
     Iterator mAppStart;
 
     // Worst case, we have shared-library resources.
@@ -98,6 +99,9 @@ void BackTrackingAttributeFinder<Derived, Iterator>::jumpToClosestAttribute(cons
     switch (packageId) {
         case 0x01:
             mCurrent = mFrameworkStart;
+            break;
+		case 0x37:
+            mCurrent = mAoscpFrameworkStart;
             break;
         case 0x7f:
             mCurrent = mAppStart;
@@ -132,6 +136,8 @@ void BackTrackingAttributeFinder<Derived, Iterator>::markCurrentPackageId(const 
         case 0x01:
             mFrameworkStart = mCurrent;
             break;
+		case 0x37:
+            mAoscpFrameworkStart = mCurrent;
         case 0x7f:
             mAppStart = mCurrent;
             break;
