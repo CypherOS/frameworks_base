@@ -119,6 +119,11 @@
 	<string name="on_the_spot_ok">OK</string>
 	<string name="on_the_spot_sure">SURE</string>
 	<string name="on_the_spot_got_it">GOT IT</string>
+	
+	<!-- SnackShack: Comfirmation Actions. [CHAR LIMIT=NONE] -->
+    <string name="snack_shack_dialog_no">NO</string>
+	<string name="snack_shack_dialog_yes">YES</string>
+	<string name="snack_shack_dialog_okay">OKAY</string>
 
 	<!-- Path data for portrait battery -->
     <string name="battery_portrait_path_full" translatable="false">M 5 2 H 19 V 21 H 5 V 2 Z</string>
