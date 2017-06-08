@@ -16,5 +16,9 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Nav bar button swapped ordering/layout -->
     <string name="config_navBarLayoutSwapped" translatable="false">menu_ime,recent;home;back,space</string>
+	
+    <!-- Burn in protection -->
+    <bool name="config_statusBarBurnInProtection">false</bool>
+    <integer name="config_shift_interval">60</integer>
 
 </resources>
