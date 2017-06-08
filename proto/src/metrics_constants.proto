@@ -2260,5 +2260,8 @@ message MetricsEvent {
 
     // Location detail adapter
     QS_LOCATION_DETAIL = 504;
+	
+	//AOSCP Tuning
+	TUNING = 505;
   }
 }
