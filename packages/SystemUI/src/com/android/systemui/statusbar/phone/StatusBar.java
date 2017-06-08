@@ -212,6 +212,7 @@ import com.android.systemui.statusbar.phone.UnlockMethodCache.OnUnlockMethodChan
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.BatteryController.BatteryStateChangeCallback;
 import com.android.systemui.statusbar.policy.BrightnessMirrorController;
+import com.android.systemui.statusbar.policy.BurnInProtectionController;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.ConfigurationController.ConfigurationListener;
 import com.android.systemui.statusbar.policy.DarkIconDispatcher;
@@ -403,6 +404,8 @@ public class StatusBar extends SystemUI implements DemoMode,
     protected FingerprintUnlockController mFingerprintUnlockController;
     LightBarController mLightBarController;
     protected LockscreenWallpaper mLockscreenWallpaper;
+	
+	private BurnInProtectionController mBurnInProtectionController;
 
     int mNaturalBarHeight = -1;
 
@@ -1082,6 +1085,8 @@ public class StatusBar extends SystemUI implements DemoMode,
                     R.id.header_debug_info);
             mNotificationPanelDebugText.setVisibility(View.VISIBLE);
         }
+		
+		mBurnInProtectionController = new BurnInProtectionController(mContext, mStatusBarView);
 
         try {
             boolean showNav = mWindowManagerService.hasNavigationBar();
@@ -1642,6 +1647,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         } else {
             removeNavigationBar();
         }
+		mBurnInProtectionController.setNavigationBarView(enabled ? mNavigationBarView : null);
     }
 
     private void resetSystemUIVisibility() {
@@ -5024,6 +5030,9 @@ public class StatusBar extends SystemUI implements DemoMode,
         mStackScroller.setAnimationsEnabled(false);
         mVisualStabilityManager.setScreenOn(false);
         updateVisibleToUser();
+		if (mBurnInProtectionController != null) {
+            mBurnInProtectionController.stopSwiftTimer();
+        }
 
         // We need to disable touch events because these might
         // collapse the panel after we expanded it, and thus we would end up with a blank
@@ -5050,6 +5059,9 @@ public class StatusBar extends SystemUI implements DemoMode,
         mVisualStabilityManager.setScreenOn(true);
         mNotificationPanel.setTouchDisabled(false);
         updateVisibleToUser();
+		if (mBurnInProtectionController != null) {
+            mBurnInProtectionController.startSwiftTimer();
+        }
     }
 
     public void onScreenTurningOn() {
