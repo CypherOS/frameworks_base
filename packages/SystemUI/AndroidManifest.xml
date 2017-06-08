@@ -222,7 +222,7 @@
                   android:theme="@style/TunerSettings"
                   android:label="@string/statusbar_icons_blacklist"
                   android:process=":tuner"
-                  android:parentActivityName="com.pure.settings.fragments.StatusBarSettings"
+                  android:parentActivityName="com.android.settings.aoscp.fragments.StatusBarSettings"
                   android:exported="true">
         </activity>
 
@@ -243,7 +243,7 @@
                   android:theme="@style/TunerSettings"
                   android:label="@string/navbar_tuner_title"
                   android:process=":tuner"
-                  android:parentActivityName="com.pure.settings.fragments.NavBarSettings"
+                  android:parentActivityName="com.android.settings.aoscp.TuningSettings"
                   android:exported="true">
         </activity>
 
@@ -251,7 +251,7 @@
                   android:theme="@style/TunerSettings"
                   android:label="@string/tuner_notification_control"
                   android:process=":tuner"
-                  android:parentActivityName="com.pure.settings.fragments.NotificationMediaSettings"
+                  android:parentActivityName="com.android.settings.applications.InstalledAppDetails"
                   android:exported="true">
         </activity>
 
