@@ -1,0 +1,58 @@
+﻿SystemUI: add support for pixel navigation bar theme
+
+Adds support for the Google Pixel navigation bar and
+animation. This commit squashes the following:
+
+1. Pixel Navbar, reverse engineered from smali.
+   Author: Jacob McSwain <jacob.a.mcswain@gmail.com>
+   Date: Mon May 29 12:34:15 2017 -0300
+
+2. fix pixel animation landscape bug
+   Author: beanstown106 <nbenis106@gmail.com>
+   Date: Mon May 29 12:41:12 2017 -0300
+
+3. Pixel navbar: allow disabling based on config
+   Author: George G <kreach3r@users.noreply.github.com>
+   Date: Mon May 29 12:50:12 2017 -0300
+
+4. Pixel navbar: remove this. and OpaLayout references, cleanup
+   Author: George G <kreach3r@users.noreply.github.com>
+   Date: Tue May 30 12:31:40 2017 -0300
+
+5. Pixel navbar: more cleanup
+   Author: George G <kreach3r@users.noreply.github.com>
+   Date: Tue May 30 12:40:05 2017 -0300
+
+6. Fix opa mIsVertical conflict with 7.1.2
+   Author: beanstown106 <nbenis106@gmail.com>
+   Date: Tue May 30 12:46:08 2017 -0300
+
+
+The animation is disabled by default and overlayed in our vendor
+to keep our default platform clean of non-aosp resources. Navbar
+resources are also in our overlay vendor.
+
+
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch nougat-mr2
+# Your branch is up-to-date with 'origin/nougat-mr2'.
+#
+# Changes to be committed:
+#	new file:   packages/SystemUI/res/drawable/halo.xml
+#	new file:   packages/SystemUI/res/drawable/ic_sysbar_opa_blue.xml
+#	new file:   packages/SystemUI/res/drawable/ic_sysbar_opa_green.xml
+#	new file:   packages/SystemUI/res/drawable/ic_sysbar_opa_red.xml
+#	new file:   packages/SystemUI/res/drawable/ic_sysbar_opa_yellow.xml
+#	modified:   packages/SystemUI/res/layout/home.xml
+#	modified:   packages/SystemUI/res/values/aoscp_config.xml
+#	modified:   packages/SystemUI/res/values/aoscp_dimens.xml
+#	modified:   packages/SystemUI/res/values/aoscp_styles.xml
+#	new file:   packages/SystemUI/src/com/google/android/systemui/OpaLayout.java
+#
+#
+# It took 2.68 seconds to enumerate untracked files. 'status -uno'
+# may speed it up, but you have to be careful not to forget to add
+# new files yourself (see 'git help status').
+
