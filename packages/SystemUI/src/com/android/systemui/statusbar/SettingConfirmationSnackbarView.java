@@ -106,6 +106,9 @@ public class SettingConfirmationSnackbarView extends RelativeLayout {
 
     /** Main handler to do any serious main work in. Fallback for callbacks. */
     private final Handler mMainHandler;
+	
+	/** Dialog title of the main objective. */
+    private TextView mTitle = null;
 
     /** Description text view for informing the user. */
     private TextView mDescription = null;
@@ -144,6 +147,7 @@ public class SettingConfirmationSnackbarView extends RelativeLayout {
         setTranslationY(getHeight());
         setVisibility(View.GONE);
 
+		mTitle = (TextView) findViewById(R.id.title);
         mDescription = (TextView) findViewById(R.id.description);
 
         mConfirmButton = findViewById(R.id.action_confirm);
@@ -159,17 +163,21 @@ public class SettingConfirmationSnackbarView extends RelativeLayout {
      * Shows the snackbar.
      *
      * @param settingName  {@link String} name of the {@link Settings.Secure} being changed
+	 * @param title  {@link String} title that objects the message
      * @param message  {@link String} message to display to the user
      * @param listener  {@link SettingConfirmationHelper.OnSettingChoiceListener} to notify
      *                  about the choice
      * @param handler  {@link Handler} to notify the listener on,
      *                 or null to notify it on the UI thread instead
      */
-    public void show(final String settingName, final String message,
+    public void show(final String settingName, final String title, final String message,
             final SettingConfirmationHelper.OnSettingChoiceListener callback,
             Handler handler) {
         if (settingName == null) {
             throw new IllegalArgumentException("settingName == null");
+        }
+		if (title == null) {
+            throw new IllegalArgumentException("title == null");
         }
         if (message == null) {
             throw new IllegalArgumentException("message == null");
@@ -184,6 +192,7 @@ public class SettingConfirmationSnackbarView extends RelativeLayout {
         if (DEBUG) Log.d(LOG_TAG, "Showing the snackbar view");
 
         mSettingName = settingName;
+		mTitle.setText(title);
         mDescription.setText(message);
         mCallback = callback;
         mCallbackHandler = handler;
