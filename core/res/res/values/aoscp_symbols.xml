@@ -144,4 +144,7 @@
   <java-symbol type="string" name="singlehandmode_click_hint_message" />
   <java-symbol type="string" name="singlehandmode_slide_hint_message" />
   <java-symbol type="layout" name="single_hand_window" />
+  
+  <!-- Allow Opa (Pixel navbar) layout -->
+  <java-symbol type="bool" name="config_allowOpaLayout" />
 </resources>

@@ -21,7 +21,4 @@
     <bool name="config_statusBarBurnInProtection">false</bool>
     <integer name="config_shift_interval">60</integer>
 
-    <!-- Allow Opa (Pixel navbar) layout -->
-    <bool name="config_allowOpaLayout">false</bool>
-
 </resources>

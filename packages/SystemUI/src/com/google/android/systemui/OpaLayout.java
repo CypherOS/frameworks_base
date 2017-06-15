@@ -3,6 +3,7 @@ package com.google.android.systemui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 import android.os.UserManager;
@@ -489,7 +490,7 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
     }
 
     public void setOpaEnabled(boolean enabled) {
-        final boolean configValue = getContext().getResources().getBoolean(R.bool.config_allowOpaLayout);
+        final boolean configValue = getContext().getResources().getBoolean(com.android.internal.R.bool.config_allowOpaLayout);
         final boolean shouldEnable = configValue && (enabled || UserManager.isDeviceInDemoMode(getContext()));
         mOpaEnabled = shouldEnable;
 
