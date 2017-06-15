@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Copyright (c) 2016-2017 Projekt Substratum
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
@@ -13,6 +14,11 @@
 -->
 
 <resources>
+    <!-- Switch bar text appearance -->
+    <style name="TextAppearance.SwitchBar" parent="@android:style/TextAppearance.Material.Title">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    </style>
+	
     <!-- Phyisical Keyboard Dialog style -->
     <style name="KeyboardShortcutsDialog" parent="@*android:style/Theme.DeviceDefault.Light" />
 </resources>
