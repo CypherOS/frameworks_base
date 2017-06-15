@@ -3360,6 +3360,12 @@ public final class Settings {
          */
         public static final String NOTIFICATION_LIGHT_SCREEN_ON =
                 "notification_light_screen_on_enable";
+				
+		/**
+         * Whether to enable the pixel navbar animation
+         * @hide
+         */
+        public static final String PIXEL_NAV_ANIMATION = "pixel_nav_animation";
 
         /**
          * Whether the notification LED should repeatedly flash when a notification is
