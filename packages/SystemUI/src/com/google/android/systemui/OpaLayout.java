@@ -2,9 +2,13 @@ package com.google.android.systemui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.ContentObserver;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -97,21 +101,61 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
     private final Interpolator mDotsFullSizeInterpolator = new PathInterpolator(0.4f, 0f, 0f, 1f);
     private final Interpolator mFastOutSlowInInterpolator = Interpolators.FAST_OUT_SLOW_IN;
     private final Interpolator mHomeDisappearInterpolator = new PathInterpolator(0.8f, 0f, 1f, 1f);
+    private SettingsObserver mSettingsObserver;
+
+    protected class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+           ContentResolver resolver = mContext.getContentResolver();
+           resolver.registerContentObserver(Settings.System.getUriFor(
+                  Settings.System.PIXEL_NAV_ANIMATION),
+                  false, this, UserHandle.USER_CURRENT);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+           super.onChange(selfChange, uri);
+           setOpaEnabled(true);
+        }
+    }
 
     public OpaLayout(Context context) {
         super(context);
+
+        if (mSettingsObserver == null) {
+            mSettingsObserver = new SettingsObserver(new Handler());
+        }
+        mSettingsObserver.observe();
     }
 
     public OpaLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        if (mSettingsObserver == null) {
+            mSettingsObserver = new SettingsObserver(new Handler());
+        }
+        mSettingsObserver.observe();
     }
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        if (mSettingsObserver == null) {
+            mSettingsObserver = new SettingsObserver(new Handler());
+        }
+        mSettingsObserver.observe();
     }
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+
+        if (mSettingsObserver == null) {
+            mSettingsObserver = new SettingsObserver(new Handler());
+        }
+        mSettingsObserver.observe();
     }
 
     private void startAll(ArraySet<Animator> animators) {
