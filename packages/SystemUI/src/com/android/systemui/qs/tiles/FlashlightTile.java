@@ -42,6 +42,8 @@ public class FlashlightTile extends QSTile<QSTile.BooleanState> implements
             R.drawable.ic_signal_flashlight_enable);
     private final FlashlightController mFlashlightController;
 
+    private boolean mListening;
+
     public FlashlightTile(Host host) {
         super(host);
         mFlashlightController = host.getFlashlightController();
@@ -61,6 +63,13 @@ public class FlashlightTile extends QSTile<QSTile.BooleanState> implements
 
     @Override
     public void setListening(boolean listening) {
+        if (mListening == listening) return;
+        mListening = listening;
+        if (mListening) {
+            if (!mFlashlightController.isAvailable()) {
+                mFlashlightController.tryInitCamera();
+            }
+        }
     }
 
     @Override
