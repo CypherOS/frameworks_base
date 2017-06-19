@@ -4106,6 +4106,12 @@ public final class Settings {
          * @hide
          */
         public static final String GESTURE_TWO_FINGER_SWIPE = "gesture_two_finger_swipe";
+		
+		/**
+         * Whether to show the notification ticker on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_SHOW_TICKER = "status_bar_show_ticker";
 
         /**
          * Whether to allow fullscreen screenshots or let the user select which area to screenshot
