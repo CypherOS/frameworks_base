@@ -254,7 +254,7 @@ public class KeyButtonView extends ImageView implements ButtonDispatcher.ButtonI
         sendEvent(action, flags, SystemClock.uptimeMillis());
     }
 
-    void sendEvent(int action, int flags, long when) {
+    public void sendEvent(int action, int flags, long when) {
         final int repeatCount = (flags & KeyEvent.FLAG_LONG_PRESS) != 0 ? 1 : 0;
         final KeyEvent ev = new KeyEvent(mDownTime, when, action, mCode, repeatCount,
                 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
