@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
@@ -15,9 +16,11 @@ import android.os.UserManager;
 import android.provider.Settings;
 import android.util.ArraySet;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.RenderNodeAnimator;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
@@ -29,7 +32,7 @@ import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.ButtonDispatcher;
 import com.android.systemui.statusbar.policy.KeyButtonView;
 
-public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInterface{
+public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInterface {
 
     private static final int ANIMATION_STATE_NONE = 0;
     private static final int ANIMATION_STATE_DIAMOND = 1;
@@ -57,13 +60,17 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
 
     private KeyButtonView mHome;
 
+	private int mContentDescriptionRes;
     private int mAnimationState = ANIMATION_STATE_NONE;
     private final ArraySet<Animator> mCurrentAnimators = new ArraySet<Animator>();
 
     private boolean mIsVertical;
+	private boolean mIsLongClickable;
     private boolean mIsPressed;
+	private boolean mSupportsLongpress = true;
     private boolean mLongClicked;
     private boolean mOpaEnabled;
+	private int mCode;
     private long mStartTime;
 
     private View mRed;
@@ -78,11 +85,17 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
     private View mLeft;
     private View mBottom;
 
-    private final Runnable mCheckLongPress = new Runnable() {
-        @Override
+	private final Runnable mCheckLongPress = new Runnable() {
+		@Override
         public void run() {
             if (mIsPressed) {
-                mLongClicked = true;
+                // Log.d("KeyButtonView", "longpressed: " + this);
+                if (mIsLongClickable) {
+                    mLongClicked = true;
+                } else if (mSupportsLongpress) {
+					mHome.sendEvent(KeyEvent.ACTION_DOWN, KeyEvent.FLAG_LONG_PRESS);
+                    mLongClicked = true;
+                }
             }
         }
     };
@@ -139,14 +152,23 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
         }
         mSettingsObserver.observe();
     }
-
+	
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        super(context, attrs);
 
-        if (mSettingsObserver == null) {
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KeyButtonView,
+                defStyleAttr, 0);
+
+        mCode = a.getInteger(R.styleable.KeyButtonView_keyCode, 0);
+
+        mSupportsLongpress = a.getBoolean(R.styleable.KeyButtonView_keyRepeat, true);
+		
+		if (mSettingsObserver == null) {
             mSettingsObserver = new SettingsObserver(new Handler());
         }
         mSettingsObserver.observe();
+        a.recycle();
+        setClickable(true);
     }
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -156,6 +178,10 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
             mSettingsObserver = new SettingsObserver(new Handler());
         }
         mSettingsObserver.observe();
+    }
+	
+	public void setCode(int code) {
+        mCode = code;
     }
 
     private void startAll(ArraySet<Animator> animators) {
@@ -455,27 +481,33 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+		final int action = ev.getAction();
         if (!mOpaEnabled) {
             return false;
         }
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN: {
+		
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
                 if (!mCurrentAnimators.isEmpty()) {
                     if (mAnimationState != ANIMATION_STATE_RETRACT) {
                         return false;
                     }
                     endCurrentAnimation();
                 }
-                mStartTime = SystemClock.elapsedRealtime();
+				mStartTime = SystemClock.elapsedRealtime();
                 mLongClicked = false;
-                mIsPressed = true;
+				mIsPressed = true;
+				if (mCode != 0) {
+                    mHome.sendEvent(KeyEvent.ACTION_DOWN, 0, mStartTime);
+                } else {
+                    // Provide the same haptic feedback that the system offers for virtual keys.
+                    performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                }
                 startDiamondAnimation();
                 removeCallbacks(mCheckLongPress);
                 postDelayed(mCheckLongPress, (long)ViewConfiguration.getLongPressTimeout());
-                return false;
-            }
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL: {
+                break;
+			case MotionEvent.ACTION_CANCEL:
                 if (mAnimationState == ANIMATION_STATE_DIAMOND) {
                     final long elapsedRealtime = SystemClock.elapsedRealtime();
                     removeCallbacks(mRetract);
@@ -490,13 +522,31 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
                     n = 1;
                 }
                 mIsPressed = false;
+				if (mCode != 0) {
+                    mHome.sendEvent(KeyEvent.ACTION_UP, KeyEvent.FLAG_CANCELED);
+                }
                 if (n != 0) {
                     mRetract.run();
                     return false;
                 }
                 break;
-            }
+            case MotionEvent.ACTION_UP:
+			    final boolean doIt = mIsPressed && !mLongClicked;
+                mIsPressed = false;
+                if (mCode != 0) {
+                    if (doIt) {
+                        mHome.sendEvent(KeyEvent.ACTION_UP, 0);
+                    } else {
+                        mHome.sendEvent(KeyEvent.ACTION_UP, KeyEvent.FLAG_CANCELED);
+                    }
+                } else {
+                    // no key code
+                    mHome.setOnClickListener(onClickListener);
+                }
+                removeCallbacks(mCheckLongPress);
+                break; 
         }
+		
         return false;
     }
 

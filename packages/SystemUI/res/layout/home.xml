@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.google.android.systemui.OpaLayout android:id="@+id/home" android:clipChildren="false" android:clipToPadding="false" android:layout_width="@dimen/navigation_key_width" android:layout_height="fill_parent" android:layout_weight="0.0" android:paddingStart="@dimen/navigation_key_padding" android:paddingEnd="@dimen/navigation_key_padding"
+<com.google.android.systemui.OpaLayout android:id="@+id/home" android:clipChildren="false" android:clipToPadding="false" android:layout_width="@dimen/navigation_key_width" android:layout_height="fill_parent" android:layout_weight="0.0" android:paddingStart="@dimen/navigation_key_padding" android:paddingEnd="@dimen/navigation_key_padding" systemui:keyCode="3"
   xmlns:android="http://schemas.android.com/apk/res/android" xmlns:systemui="http://schemas.android.com/apk/res-auto">
     <RelativeLayout android:layout_width="fill_parent" android:layout_height="fill_parent">
         <ImageView android:id="@+id/red" android:src="@drawable/ic_sysbar_opa_red" android:importantForAccessibility="no" style="@style/DotStyle" />
