@@ -4112,6 +4112,12 @@ public final class Settings {
          * @hide
          */
         public static final String SCREENSHOT_TYPE = "screenshot_type";
+		
+		/**
+         * Whether to show Brightness Icon On Brightness Slider
+         * @hide
+         */
+        public static final String QS_SHOW_BRIGHTNESS_ICON = "qs_show_brightness_icon";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
