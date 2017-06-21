@@ -291,7 +291,7 @@ public class NavigationBarView extends LinearLayout {
     }
 
     public ButtonDispatcher getHomeButton() {
-        return mButtonDisatchers.get(R.id.home);
+        return mButtonDisatchers.get(R.id.home_button);
     }
 
     public ButtonDispatcher getImeSwitchButton() {
