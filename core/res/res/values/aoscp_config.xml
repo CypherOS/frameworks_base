@@ -65,7 +65,7 @@
 
     <!-- home -->
     <integer name="config_longPressOnHomeKeyBehavior">3</integer>
-    <integer name="config_doubleTapOnHomeKeyBehavior">6</integer>
+    <integer name="config_doubleTapOnHomeKeyBehavior">0</integer>
     <!-- menu -->
     <integer name="config_longPressOnMenuKeyBehavior">0</integer>
     <integer name="config_doubleTapOnMenuKeyBehavior">0</integer>
