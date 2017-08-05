@@ -150,7 +150,7 @@ public class ThemeService extends IThemeService.Stub implements IBinder.DeathRec
 
     private int getAccentColor() {
         return Settings.Secure.getInt(mContext.getContentResolver(),
-                Settings.Secure.THEME_ACCENT_COLOR, 1);
+                Settings.Secure.THEME_ACCENT_COLOR, 3);
     }
 
     public static void returnToDefaultTheme(Context context) {
