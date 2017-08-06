@@ -2267,7 +2267,10 @@ message MetricsEvent {
     // NFC tile
     QS_HEADSUP = 506;
 
-    //AOSCP Tuning
+    // AOSCP Tuning
     TUNING = 507;
+
+    // Caffeine tile
+    QS_CAFFEINE = 508;
   }
 }
