@@ -6594,6 +6594,18 @@ public final class Settings {
          * @hide
          */
         public static final String WAKE_GESTURE_ENABLED = "wake_gesture_enabled";
+		
+		/**
+         * Enable single click to turn Battery Saver on or off.
+         * @hide
+         */
+        public static final String QS_BATTERY_EASY_TOGGLE = "qs_battery_easy_toggle";
+		
+		/**
+         * Enable single click to turn Bluetooth on or off.
+         * @hide
+         */
+        public static final String QS_BT_EASY_TOGGLE = "qs_bt_easy_toggle";
 
         /**
          * Whether the device should doze if configured.
@@ -6606,6 +6618,13 @@ public final class Settings {
          * @hide
          */
         public static final String DOZE_PULSE_ON_PICK_UP = "doze_pulse_on_pick_up";
+
+
+        /**
+         * Enable single click to turn WiFi on or off.
+         * @hide
+         */
+        public static final String QS_WIFI_EASY_TOGGLE = "qs_wifi_easy_toggle";
 
         /**
          * Whether the device should pulse on double tap gesture.
@@ -7091,6 +7110,12 @@ public final class Settings {
          * @hide
          */
         public static final String QS_TILES = "sysui_qs_tiles";
+		
+		/**
+         * Whether to use one tap tile action to enable or disable data 
+         * @hide
+         */
+        public static final String QS_DATA_ADVANCED = "qs_data_advanced";
 
 		/**
          * One Handed mode toggle
@@ -9795,7 +9820,6 @@ public final class Settings {
          * @hide
          */
         public static final String POWER_MENU_ACTIONS = "power_menu_actions";
-
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
