@@ -83,7 +83,7 @@ public final class ShutdownThread extends Thread {
     private static final int PACKAGE_MANAGER_STOP_PERCENT = 6;
     private static final int RADIO_STOP_PERCENT = 18;
     private static final int MOUNT_SERVICE_STOP_PERCENT = 20;
-    private static final String SOFT_REBOOT = "soft_restart";
+    private static final String SOFT_REBOOT = "soft_reboot";
 
     // length of vibration before shutting down
     private static final int SHUTDOWN_VIBRATE_MS = 500;
@@ -386,16 +386,19 @@ public final class ShutdownThread extends Thread {
             pd.setTitle(context.getText(com.android.internal.R.string.global_action_restart));
             pd.setMessage(context.getText(
                         com.android.internal.R.string.reboot_progress));
-			pd.setIndeterminate(true);
-		} else {
-            if (mReboot) {
+		} else if (mReboot) {
+            pd.setTitle(context.getText(com.android.internal.R.string.global_action_restart));
+            pd.setMessage(context.getText(com.android.internal.R.string.reboot_progress));
+            pd.setIndeterminate(true);
+        } else {
+			if (mReboot) {
                 pd.setTitle(context.getText(com.android.internal.R.string.global_action_restart));
                 pd.setMessage(context.getText(com.android.internal.R.string.reboot_progress));
-                pd.setIndeterminate(true);
             } else {
                 pd.setTitle(context.getText(com.android.internal.R.string.power_off));
                 pd.setMessage(context.getText(com.android.internal.R.string.shutdown_progress));
-			}
+		    }
+		
             pd.setIndeterminate(true);
         }
         pd.setCancelable(false);
