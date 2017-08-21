@@ -175,14 +175,15 @@ public class ImmersiveTile extends QSTile<QSTile.BooleanState> {
                 break;
             case View.SYSTEM_DESIGN_FLAG_IMMERSIVE_NAV:
                 state.icon = ResourceIcon.get(R.drawable.ic_qs_immersive_nav_bar);
+				state.label = mContext.getString(R.string.quick_settings_immersive_mode_label_hide_nav);
                 state.contentDescription =  mContext.getString(
-                        R.string.accessibility_quick_settings_immersive_mode_hide_status_bar);
+                        R.string.accessibility_quick_settings_immersive_mode_hide_nav_bar);
                 break;
             case View.SYSTEM_DESIGN_FLAG_IMMERSIVE_STATUS:
                 state.icon = ResourceIcon.get(R.drawable.ic_qs_immersive_status_bar);
                 state.label = mContext.getString(R.string.quick_settings_immersive_mode_label_hide_status);
                 state.contentDescription =  mContext.getString(
-                        R.string.accessibility_quick_settings_immersive_mode_hide_nav_bar);
+                        R.string.accessibility_quick_settings_immersive_mode_hide_status_bar);
                 break;
             default:
                 if (state.icon
@@ -299,7 +300,7 @@ public class ImmersiveTile extends QSTile<QSTile.BooleanState> {
                 mButtons.addButton(R.string.quick_settings_immersive_mode_label_hide_all_twoline,
                         R.string.quick_settings_immersive_mode_detail_hide_all,
                         IMMERSIVE_FLAGS_FULL);
-                mButtons.addButton(R.string.quick_settings_immersive_mode_label_hide_status_twoline,
+				mButtons.addButton(R.string.quick_settings_immersive_mode_label_hide_status_twoline,
                         R.string.quick_settings_immersive_mode_detail_hide_status,
                         View.SYSTEM_DESIGN_FLAG_IMMERSIVE_STATUS);
                 mButtons.addButton(R.string.quick_settings_immersive_mode_label_hide_nav_twoline,
