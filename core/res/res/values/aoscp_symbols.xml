@@ -138,4 +138,9 @@
 
   <!-- Whether to allow process with media UID to access CameraServiceProxy -->
   <java-symbol type="bool" name="config_allowMediaUidForCameraServiceProxy" />
+
+  <!-- Battery settings -->
+  <java-symbol type="bool" name="config_intrusiveBatteryLed" />
+  <java-symbol type="bool" name="config_multiColorBatteryLed" />
+  <java-symbol type="bool" name="config_ledCanPulse" />
 </resources>
