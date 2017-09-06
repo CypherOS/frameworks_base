@@ -1,5 +1,6 @@
 /*
  * Copyright 2016 ParanoidAndroid Project
+ * Copyright 2017 CypherOS
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,6 +108,9 @@ public class SettingConfirmationSnackbarView extends RelativeLayout {
     /** Main handler to do any serious main work in. Fallback for callbacks. */
     private final Handler mMainHandler;
 
+    /** Dialog title of the main objective. */
+    private TextView mTitle = null;
+
     /** Description text view for informing the user. */
     private TextView mDescription = null;
 
@@ -144,6 +148,7 @@ public class SettingConfirmationSnackbarView extends RelativeLayout {
         setTranslationY(getHeight());
         setVisibility(View.GONE);
 
+        mTitle = (TextView) findViewById(R.id.title);
         mDescription = (TextView) findViewById(R.id.description);
 
         mConfirmButton = findViewById(R.id.action_confirm);
@@ -159,17 +164,21 @@ public class SettingConfirmationSnackbarView extends RelativeLayout {
      * Shows the snackbar.
      *
      * @param settingName  {@link String} name of the {@link Settings.Secure} being changed
+     * @param title  {@link String} title that objects the message
      * @param message  {@link String} message to display to the user
      * @param listener  {@link SettingConfirmationHelper.OnSettingChoiceListener} to notify
      *                  about the choice
      * @param handler  {@link Handler} to notify the listener on,
      *                 or null to notify it on the UI thread instead
      */
-    public void show(final String settingName, final String message,
+    public void show(final String settingName, final String title, final String message,
             final SettingConfirmationHelper.OnSettingChoiceListener callback,
             Handler handler) {
         if (settingName == null) {
             throw new IllegalArgumentException("settingName == null");
+        }
+        if (title == null) {
+            throw new IllegalArgumentException("title == null");
         }
         if (message == null) {
             throw new IllegalArgumentException("message == null");
@@ -184,33 +193,30 @@ public class SettingConfirmationSnackbarView extends RelativeLayout {
         if (DEBUG) Log.d(LOG_TAG, "Showing the snackbar view");
 
         mSettingName = settingName;
-        final boolean shouldAnimate = getTranslationY() != 0
-                || !mDescription.getText().toString().equals(message);
+        mTitle.setText(title);
         mDescription.setText(message);
         mCallback = callback;
         mCallbackHandler = handler;
 
-        if (shouldAnimate) {
-            animate().translationY(getHeight())
-                    .setInterpolator(AnimationUtils.loadInterpolator(getContext(),
-                            android.R.interpolator.fast_out_slow_in))
-                    .setDuration(getTranslationY() == 0 ? 0 : ANIMATION_DURATION)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationStart(final Animator animation) {
-                            setVisibility(View.VISIBLE);
-                        }
+        animate().translationY(getHeight())
+                .setInterpolator(AnimationUtils.loadInterpolator(getContext(),
+                        android.R.interpolator.fast_out_slow_in))
+                .setDuration(getTranslationY() == 0 ? 0 : ANIMATION_DURATION)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(final Animator animation) {
+                        setVisibility(View.VISIBLE);
+                    }
 
-                        @Override
-                        public void onAnimationEnd(final Animator animation) {
-                            animate().translationY(0f)
-                                    .setInterpolator(AnimationUtils.loadInterpolator(getContext(),
-                                            android.R.interpolator.fast_out_slow_in))
-                                    .setDuration(ANIMATION_DURATION)
-                                    .start();
-                        }
-                    }).start();
-        }
+                    @Override
+                    public void onAnimationEnd(final Animator animation) {
+                        animate().translationY(0f)
+                                .setInterpolator(AnimationUtils.loadInterpolator(getContext(),
+                                        android.R.interpolator.fast_out_slow_in))
+                                .setDuration(ANIMATION_DURATION)
+                                .start();
+                    }
+                }).start();
 
         mMainHandler.removeCallbacks(mHideRunnable);
         mMainHandler.postDelayed(mHideRunnable, TIMEOUT_DURATION);
