@@ -32,7 +32,7 @@
         android:background="@color/on_the_spot_background">
 
         <TextView
-            android:id="@+id/description"
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -41,41 +41,58 @@
             android:layout_marginRight="16dp"
             android:textColor="@color/on_the_spot_text"
             android:fontFamily="sans-serif"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:layout_marginTop="18dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:textColor="@color/on_the_spot_text"
+            android:fontFamily="sans-serif"
             android:textStyle="normal" />
 
-        <Button
-            android:id="@+id/action_deny"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/description"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:layout_marginLeft="16dp"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:background="@null"
-            android:textColor="@color/on_the_spot_deny_text"
-            android:fontFamily="sans-serif-medium"
-            android:textStyle="normal"
-            android:text="@string/on_the_spot_deny" />
+            android:gravity="center_vertical|end"
+            android:layout_below="@id/description">
 
-        <Button
-            android:id="@+id/action_confirm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/description"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:layout_marginRight="16dp"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:background="@null"
-            android:textColor="@color/on_the_spot_confirm_text"
-            android:fontFamily="sans-serif-medium"
-            android:textStyle="normal"
-            android:text="@string/on_the_spot_confirm" />
+            <Button
+                android:id="@+id/action_deny"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:layout_marginRight="38dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:background="@null"
+                android:textColor="@color/on_the_spot_deny_text"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="normal"
+                android:text="@string/on_the_spot_deny" />
+
+            <Button
+                android:id="@+id/action_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:layout_marginRight="34dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:background="@null"
+                android:textColor="@color/on_the_spot_confirm_text"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="normal"
+                android:text="@string/on_the_spot_confirm" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 

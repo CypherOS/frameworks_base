@@ -1,5 +1,6 @@
 /*
  * Copyright 2016 ParanoidAndroid Project
+ * Copyright 2017 CypherOS
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,19 +146,23 @@ public final class SettingConfirmationHelper {
      * @param settingName  {@link String} name of the {@link Settings.Secure} to read and write
      * @param defaultValue  true if the associated action should be confirmed by default,
      *                      false if it should be denied by default
+     * @param title  {@link String} title that objects the message
      * @param message  {@link String} message to display to the user
      * @param listener  {@link OnSettingChoiceListener} to notify about the choice
      * @param handler  {@link Handler} to notify the listener on,
      *                 or null to notify it on the UI thread instead
      */
     public static void prompt(final SettingConfirmationSnackbarView snackbar,
-            final String settingName, final boolean defaultValue, final String message,
-            final OnSettingChoiceListener listener, Handler handler) {
+            final String settingName, final boolean defaultValue, final String title, 
+            final String message, final OnSettingChoiceListener listener, Handler handler) {
         if (snackbar == null) {
             throw new IllegalArgumentException("snackbar == null");
         }
         if (settingName == null) {
             throw new IllegalArgumentException("settingName == null");
+        }
+        if (title == null) {
+            throw new IllegalArgumentException("title == null");
         }
         if (message == null) {
             throw new IllegalArgumentException("message == null");
@@ -211,7 +216,7 @@ public final class SettingConfirmationHelper {
 
                 });
 
-                snackbar.show(settingName, message, new OnSettingChoiceListener() {
+                snackbar.show(settingName, title, message, new OnSettingChoiceListener() {
 
                     @Override
                     public void onSettingConfirm(final String settingNameTest) {

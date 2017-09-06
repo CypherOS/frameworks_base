@@ -909,6 +909,7 @@ public class NotificationPanelView extends PanelView implements
                         mSnackbarViewCreator.getSnackbarView(),
                         Settings.Secure.QUICK_SETTINGS_QUICK_PULL_DOWN,
                         true,
+                        getContext().getString(R.string.quick_settings_quick_pull_down_name),
                         getContext().getString(R.string.quick_settings_quick_pull_down),
                         new SettingConfirmationHelper.OnSettingChoiceListener() {
                             @Override
