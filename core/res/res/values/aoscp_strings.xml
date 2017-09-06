@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
+/* //device/apps/common/assets/res/any/strings.xml
+**
 ** Copyright (C) 2017 CypherOS
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,18 +17,8 @@
 ** limitations under the License.
 */
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <!-- PlatLogo -->
-    <java-symbol type="drawable" name="platlogo_aoscp" />
-  
-    <!-- Package Manager -->
-    <java-symbol type="array" name="config_disabledComponents" />
-    <java-symbol type="array" name="config_forceEnabledComponents" />
-  
     <!-- Pocket Lock -->
-    <java-symbol type="layout" name="pocket_lock_view_layout" />
-    <java-symbol type="id" name="pocket_hint_container" />
-    <java-symbol type="id" name="pocket_hint_image" />
-    <java-symbol type="id" name="pocket_hint_message" />
+    <string name="pocket_lock_message_long_press">Long press power button to interact</string>
 </resources>
