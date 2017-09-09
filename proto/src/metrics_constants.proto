@@ -4234,5 +4234,8 @@ message MetricsEvent {
 
     // Settings -> Backup & Reset -> Feature Reset
     FEATURE_PREFERENCES = 950;
+    
+    // Settings -> System -> Gestures
+    GESTURE_SETTINGS = 951;
   }
 }
