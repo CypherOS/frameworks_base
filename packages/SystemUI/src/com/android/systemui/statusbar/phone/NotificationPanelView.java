@@ -23,17 +23,24 @@ import android.animation.ValueAnimator;
 import android.app.ActivityManager;
 import android.app.Fragment;
 import android.app.StatusBarManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.PowerManager;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.MathUtils;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -233,12 +240,29 @@ public class NotificationPanelView extends PanelView implements
     private boolean mNoVisibleNotifications = true;
     private ValueAnimator mDarkAnimator;
 
+    private Handler mHandler = new Handler();
+    private SettingsObserver mSettingsObserver;
+
+    private boolean mDoubleTapToSleepEnabled;
+    private int mStatusBarHeaderHeight;
+    private GestureDetector mDoubleTapGesture;
+
     public NotificationPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(!DEBUG);
         mFalsingManager = FalsingManager.getInstance(context);
         mQsOverscrollExpansionEnabled =
                 getResources().getBoolean(R.bool.config_enableQuickSettingsOverscrollExpansion);
+        mSettingsObserver = new SettingsObserver(mHandler);
+        mDoubleTapGesture = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+                if (pm != null)
+                    pm.goToSleep(e.getEventTime());
+                return true;
+            }
+        });
     }
 
     public void setStatusBar(StatusBar bar) {
@@ -272,12 +296,14 @@ public class NotificationPanelView extends PanelView implements
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         FragmentHostManager.get(this).addTagListener(QS.TAG, mFragmentListener);
+		mSettingsObserver.observe();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         FragmentHostManager.get(this).removeTagListener(QS.TAG, mFragmentListener);
+		mSettingsObserver.unobserve();
     }
 
     @Override
@@ -301,6 +327,7 @@ public class NotificationPanelView extends PanelView implements
                 R.dimen.max_notification_fadeout_height);
         mIndicationBottomPadding = getResources().getDimensionPixelSize(
                 R.dimen.keyguard_indication_bottom_padding);
+        mStatusBarHeaderHeight = getResources().getDimensionPixelSize(R.dimen.status_bar_header_height);
     }
 
     public void updateResources() {
@@ -367,8 +394,8 @@ public class NotificationPanelView extends PanelView implements
     private void setIsFullWidth(boolean isFullWidth) {
         mIsFullWidth = isFullWidth;
         mNotificationStackScroller.setIsFullWidth(isFullWidth);
-    }
-
+	}
+		
     private void startQsSizeChangeAnimation(int oldHeight, final int newHeight) {
         if (mQsSizeChangeAnimator != null) {
             oldHeight = (int) mQsSizeChangeAnimator.getAnimatedValue();
@@ -776,6 +803,11 @@ public class NotificationPanelView extends PanelView implements
     public boolean onTouchEvent(MotionEvent event) {
         if (mBlockTouches || (mQs != null && mQs.isCustomizing())) {
             return false;
+        }
+        if (mDoubleTapToSleepEnabled
+                && mStatusBarState == StatusBarState.KEYGUARD
+                && event.getY() < mStatusBarHeaderHeight) {
+            mDoubleTapGesture.onTouchEvent(event);
         }
         initDownStates(event);
         if (mListenForHeadsUp && !mHeadsUpTouchHelper.isTrackingHeadsUp()
@@ -2504,6 +2536,40 @@ public class NotificationPanelView extends PanelView implements
         mGroupManager = groupManager;
     }
 
+	class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DOUBLE_TAP_SLEEP_GESTURE), false, this, UserHandle.USER_ALL);
+            update();
+        }
+
+        void unobserve() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            update();
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            update();
+        }
+
+        public void update() {
+            ContentResolver resolver = mContext.getContentResolver();
+            mDoubleTapToSleepEnabled = Settings.System.getIntForUser(resolver,
+                    Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 0, UserHandle.USER_CURRENT) == 1;
+        }
+    }
+	
     public boolean hideStatusBarIconsWhenExpanded() {
         return !isFullWidth() || !mShowIconsWhenExpanded;
     }
