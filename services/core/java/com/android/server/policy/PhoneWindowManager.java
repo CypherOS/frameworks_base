@@ -79,6 +79,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_DREAM;
 import static android.view.WindowManager.LayoutParams.TYPE_INPUT_CONSUMER;
 import static android.view.WindowManager.LayoutParams.TYPE_INPUT_METHOD;
 import static android.view.WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG;
+import static android.view.WindowManager.LayoutParams.TYPE_KEYGUARD_SCRIM;
 import static android.view.WindowManager.LayoutParams.TYPE_MAGNIFICATION_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
@@ -120,6 +121,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.StackId;
 import android.app.ActivityManagerInternal;
 import android.app.ActivityManagerInternal.SleepToken;
+import android.app.ActivityManagerNative;
 import android.app.AppOpsManager;
 import android.app.IActivityManager;
 import android.app.IUiModeManager;
@@ -6748,6 +6750,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 keyCode != KeyEvent.KEYCODE_MEDIA_PREVIOUS &&
                 keyCode != KeyEvent.KEYCODE_VOLUME_MUTE) {
                 return 0;
+			}
+		}
 
         // Basic policy based on interactive state.
         int result;
