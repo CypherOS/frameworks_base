@@ -385,8 +385,8 @@ public class NavigationBarFragment extends Fragment implements Callbacks {
         mNavigationBarView.notifyScreenOn(screenOn);
     }
 
-    private void prepareNavigationBarView() {
-        mNavigationBarView.setSwapKeys(mUseSwapKey);
+    public void prepareNavigationBarView() {
+		mNavigationBarView.setSwapKeys(mUseSwapKey);
         mNavigationBarView.reorient();
 
         ButtonDispatcher recentsButton = mNavigationBarView.getRecentsButton();
