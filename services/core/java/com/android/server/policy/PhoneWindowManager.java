@@ -6748,6 +6748,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 keyCode != KeyEvent.KEYCODE_MEDIA_PREVIOUS &&
                 keyCode != KeyEvent.KEYCODE_VOLUME_MUTE) {
                 return 0;
+			}
+		}
 
         // Basic policy based on interactive state.
         int result;
