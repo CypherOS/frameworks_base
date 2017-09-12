@@ -383,7 +383,7 @@ public class NavigationBarFragment extends Fragment implements Callbacks {
         mNavigationBarView.notifyScreenOn();
     }
 
-    private void prepareNavigationBarView() {
+    public void prepareNavigationBarView() {
         mNavigationBarView.setSwapKeys(mUseSwapKey);
         mNavigationBarView.reorient();
 

@@ -123,6 +123,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.StackId;
 import android.app.ActivityManagerInternal;
 import android.app.ActivityManagerInternal.SleepToken;
+import android.app.ActivityManagerNative;
 import android.app.ActivityThread;
 import android.app.AppOpsManager;
 import android.app.IActivityManager;
@@ -4153,8 +4154,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 WindowManager.LayoutParams attrs = win != null ? win.getAttrs() : null;
                 if (attrs != null) {
                     final int type = attrs.type;
-                    if (type == WindowManager.LayoutParams.TYPE_KEYGUARD_SCRIM
-                            || type == WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG
+                    if (type == WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG
                             || (attrs.privateFlags & PRIVATE_FLAG_KEYGUARD) != 0) {
                         // the "app" is keyguard, so give it the key
                         return 0;
@@ -6840,6 +6840,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 keyCode != KeyEvent.KEYCODE_MEDIA_PREVIOUS &&
                 keyCode != KeyEvent.KEYCODE_VOLUME_MUTE) {
                 return 0;
+            }
+        }
 
         // Basic policy based on interactive state.
         int result;

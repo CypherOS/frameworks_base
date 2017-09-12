@@ -557,7 +557,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     final private ContentObserver mNavBarObserver = new ContentObserver(mHandler) {
         @Override
         public void onChange(boolean selfChange) {
-            Configuration config = new Configuration();
+            final Configuration newConfiguration = new Configuration();
             boolean wasUsing = mUseNavBar;
             boolean defaultToNavigationBar = mContext.getResources()
                     .getBoolean(com.android.internal.R.bool.config_defaultToNavigationBar);
@@ -568,7 +568,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             if (wasUsing != mUseNavBar) {
                 setNavBarEnabled(mUseNavBar);
                 if (mAssistManager != null) {
-                    mAssistManager.onConfigurationChanged(config);
+                    mAssistManager.onConfigurationChanged(newConfiguration);
                 }
             }
         }
