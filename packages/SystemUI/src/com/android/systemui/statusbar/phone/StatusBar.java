@@ -318,6 +318,9 @@ public class StatusBar extends SystemUI implements DemoMode,
     public static final boolean DEBUG_CAMERA_LIFT = false;
 
     public static final boolean DEBUG_WINDOW_STATE = false;
+          
+    // Reset navigation bar visibility after adding its view to window manager.
+    public static final boolean RESET_SYSTEMUI_VISIBILITY_FOR_NAVBAR = true;
 
     // additional instrumentation for testing purposes; intended to be left on during development
     public static final boolean CHATTY = DEBUG;
@@ -506,6 +509,8 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     private final MetricsLogger mMetricsLogger = Dependency.get(MetricsLogger.class);
 
+    private boolean mNavigationBarViewAttached;
+
     // ensure quick settings is disabled until the current user makes it through the setup wizard
     private boolean mUserSetup = false;
     private DeviceProvisionedListener mUserSetupObserver = new DeviceProvisionedListener() {
@@ -544,6 +549,24 @@ public class StatusBar extends SystemUI implements DemoMode,
                 if (!mUseHeadsUp) {
                     Log.d(TAG, "dismissing any existing heads up notification on disable event");
                     mHeadsUpManager.releaseAllImmediately();
+                }
+            }
+        }
+    };
+
+    final private ContentObserver mNavBarObserver = new ContentObserver(mHandler) {
+        @Override
+        public void onChange(boolean selfChange) {
+            Configuration config = new Configuration();
+            boolean wasUsing = mUseNavBar;
+            mUseNavBar = Settings.System.getIntForUser(
+                    mContext.getContentResolver(), Settings.System.NAVIGATION_BAR_ENABLED, 0,
+                    UserHandle.USER_CURRENT) != 0;
+            Log.d(TAG, "navbar is " + (mUseNavBar ? "enabled" : "disabled"));
+            if (wasUsing != mUseNavBar) {
+                setNavBarEnabled(mUseNavBar);
+                if (mAssistManager != null) {
+                    mAssistManager.onConfigurationChanged(config);
                 }
             }
         }
@@ -964,6 +987,16 @@ public class StatusBar extends SystemUI implements DemoMode,
         // TODO: use MediaSessionManager.SessionListener to hook us up to future updates
         // in session state
 
+        try {
+            boolean needsNavBar = mWindowManagerService.needsNavigationBar();
+            if (DEBUG) Log.v(TAG, "needsNavigationBar=" + needsNavBar);
+            if (needsNavBar) {
+                createNavigationBar();
+            }
+        } catch (RemoteException ex) {
+            // no window manager? good luck with that
+        }
+
         // Lastly, call to the icon policy to install/update all the icons.
         mIconPolicy = new PhoneStatusBarPolicy(mContext, mIconController);
         mSettingsObserver.onChange(false); // set up
@@ -1257,9 +1290,13 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         // Private API call to make the shadows look better for Recents
         ThreadedRenderer.overrideProperty("ambientRatio", String.valueOf(1.5f));
+
+        // Listen for NAVIGATION_BAR_ENABLED setting (per-user)
+        resetNavBarObserver();
     }
 
     protected void createNavigationBar() {
+        if (mNavigationBarViewAttached) return;
         mNavigationBarView = NavigationBarFragment.create(mContext, (tag, fragment) -> {
             mNavigationBar = (NavigationBarFragment) fragment;
             if (mLightBarController != null) {
@@ -1267,6 +1304,17 @@ public class StatusBar extends SystemUI implements DemoMode,
             }
             mNavigationBar.setCurrentSysuiVisibility(mSystemUiVisibility);
         });
+
+        mNavigationBarViewAttached = true;
+    }
+
+    private void removeNavigationBar() {
+        if (DEBUG) Log.v(TAG, "removeNavigationBar: about to remove " + mNavigationBarView);
+        if (!mNavigationBarViewAttached || mNavigationBarView == null) return;
+
+        mWindowManager.removeViewImmediate(mNavigationBarView);
+        mNavigationBarView = null;
+        mNavigationBarViewAttached = false;
     }
 
     /**
@@ -1629,6 +1677,22 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     void awakenDreams() {
         SystemServicesProxy.getInstance(mContext).awakenDreamsAsync();
+    }
+
+    private void setNavBarEnabled(boolean enabled) {
+        if (enabled) {
+            createNavigationBar();
+            if (RESET_SYSTEMUI_VISIBILITY_FOR_NAVBAR) {
+                resetSystemUIVisibility();
+            }
+        } else {
+            removeNavigationBar();
+        }
+    }
+
+    private void resetSystemUIVisibility() {
+        checkBarModes();
+        notifyUiVisibilityChanged(mSystemUiVisibility);
     }
 
     public UserHandle getCurrentUserHandle() {
@@ -3888,6 +3952,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         setHeadsUpUser(newUserId);
         // End old BaseStatusBar.userSwitched
         if (MULTIUSER_DEBUG) mNotificationPanelDebugText.setText("USER " + newUserId);
+        resetNavBarObserver();
         animateCollapsePanels();
         updatePublicMode();
         mNotificationData.filterAndSort();
@@ -3904,6 +3969,14 @@ public class StatusBar extends SystemUI implements DemoMode,
         mLockscreenWallpaper.setCurrentUser(newUserId);
         mScrimController.setCurrentUser(newUserId);
         updateMediaMetaData(true, false);
+    }
+
+    private void resetNavBarObserver() {
+        mContext.getContentResolver().unregisterContentObserver(mNavBarObserver);
+        mNavBarObserver.onChange(false);
+        mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_ENABLED), true,
+                mNavBarObserver, mCurrentUserId);
     }
 
     /**
@@ -4199,6 +4272,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (mNavigationBarView != null) {
             mWindowManager.removeViewImmediate(mNavigationBarView);
             mNavigationBarView = null;
+            mNavigationBarViewAttached = false;
         }
         mContext.unregisterReceiver(mBroadcastReceiver);
         mContext.unregisterReceiver(mDemoReceiver);
@@ -5738,6 +5812,9 @@ public class StatusBar extends SystemUI implements DemoMode,
     protected boolean mUseHeadsUp = false;
     protected boolean mHeadsUpTicker = false;
     protected boolean mDisableNotificationAlerts = false;
+
+    // Enable navigation bar.
+    protected boolean mUseNavBar = false;
 
     protected DevicePolicyManager mDevicePolicyManager;
     protected PowerManager mPowerManager;
