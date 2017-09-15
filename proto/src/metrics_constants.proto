@@ -4237,5 +4237,8 @@ message MetricsEvent {
     
     // Settings -> System -> Gestures
     GESTURE_SETTINGS = 951;
+
+    // Settings -> System -> Tuning
+    TUNING_SETTINGS = 952;
   }
 }
