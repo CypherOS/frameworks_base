@@ -137,7 +137,7 @@
         <item>@drawable/text_select_handle_left_material</item>
         <item>@drawable/text_select_handle_middle_material</item>
         <item>@drawable/text_select_handle_right_material</item>
-        <item>@drawable/toast_frame</item>
+        <item>@drawable/toast_frame_cr</item>
     </array>
 
     <!-- Do not translate. These are all of the color state list resources that should be
