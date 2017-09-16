@@ -102,5 +102,7 @@
 
     <!-- Default value for led color when battery is low on charge -->
     <integer name="config_notificationsFastBatteryARGB">0x0000FF</integer>
+	
+	<bool name="config_multiColorNotificationLed">false</bool>
 
 </resources>
