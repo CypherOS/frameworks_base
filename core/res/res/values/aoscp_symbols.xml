@@ -58,4 +58,7 @@
 
   <!-- Internal default to navigation bar value -->
   <java-symbol type="bool" name="config_defaultToNavigationBar" />
+  
+  <!-- Default value to enable/disable Doze "Always On" feature -->
+  <java-symbol type="bool" name="config_dozeAlwaysOn" />
 </resources>
