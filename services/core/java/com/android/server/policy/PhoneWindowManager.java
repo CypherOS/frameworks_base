@@ -2602,7 +2602,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mNavBarEnabled = Settings.System.getIntForUser(resolver,
                 Settings.System.NAVIGATION_BAR_ENABLED, defaultToNavigationBar ? 1 : 0,
                         UserHandle.USER_CURRENT) == 1;
-        SystemProperties.set("qemu.hw.mainkeys", mNavBarEnabled ? "0" : "1");
+        if (mDeviceHardwareKeys != 0) {
+            SystemProperties.set("qemu.hw.mainkeys", mNavBarEnabled ? "0" : "1");
+        }
 
         // Allow a system property to override this. Used by the emulator.
         // See also hasNavigationBar().
@@ -2699,7 +2701,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             UserHandle.USER_CURRENT) == 1;
             if (navBarEnabled != mNavBarEnabled) {
                 mNavBarEnabled = navBarEnabled;
-                SystemProperties.set("qemu.hw.mainkeys", mNavBarEnabled ? "0" : "1");
+                if (mDeviceHardwareKeys != 0){
+                    SystemProperties.set("qemu.hw.mainkeys", mNavBarEnabled ? "0" : "1");
+                }
             }
 
             readConfigurationDependentBehaviors();
