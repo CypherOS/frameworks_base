@@ -80,8 +80,8 @@ public class AmbientDisplayConfiguration {
     }
 
     public boolean alwaysOnAvailable() {
-        // Does not work properly yet.
-        return false;
+        return mContext.getResources().getBoolean(R.bool.config_dozeAlwaysOn)
+                && ambientDisplayAvailable();
     }
 
     public String ambientDisplayComponent() {

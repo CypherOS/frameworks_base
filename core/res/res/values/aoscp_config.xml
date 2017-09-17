@@ -87,5 +87,8 @@
 
     <!-- Internal default to navigation bar value -->
     <bool name="config_defaultToNavigationBar">true</bool>
+	
+	<!-- Default value to enable/disable Doze "Always On" feature -->
+    <bool name="config_dozeAlwaysOn">true</bool>
 
 </resources>
