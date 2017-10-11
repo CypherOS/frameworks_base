@@ -156,4 +156,8 @@
   <java-symbol type="bool" name="config_proximityCheckOnWake" />
   <java-symbol type="integer" name="config_proximityCheckTimeout" />
   <java-symbol type="bool" name="config_proximityCheckOnWakeEnabledByDefault" />
+
+  <!-- Device keyhandlers -->
+  <java-symbol type="array" name="config_deviceKeyHandlerLibs" />
+  <java-symbol type="array" name="config_deviceKeyHandlerClasses" />
 </resources>
