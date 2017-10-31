@@ -120,6 +120,13 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
     private RecentsComponent mRecentsComponent;
     private Divider mDivider;
 
+    private int mBasePaddingBottom;
+    private int mBasePaddingLeft;
+    private int mBasePaddingRight;
+    private int mBasePaddingTop;
+
+    private ViewGroup mNavigationBarContents;
+
     private class NavTransitionListener implements TransitionListener {
         private boolean mBackTransitioning;
         private boolean mHomeAppearing;
@@ -562,6 +569,18 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
 
         getAccessibilityButton().setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
         getAccessibilityButton().setLongClickable(longClickable);
+	}
+
+    public void swiftNavigationBarItems(int horizontalShift, int verticalShift) {
+        if (mNavigationBarContents == null) {
+            return;
+        }
+
+        mNavigationBarContents.setPaddingRelative(mBasePaddingLeft + horizontalShift,
+                                              mBasePaddingTop + verticalShift,
+                                              mBasePaddingRight + horizontalShift,
+                                              mBasePaddingBottom - verticalShift);
+        invalidate();
     }
 
     @Override
@@ -572,6 +591,13 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
         mNavigationInflaterView.setButtonDispatchers(mButtonDispatchers);
 
         getImeSwitchButton().setOnClickListener(mImeSwitcherClickListener);
+
+        mNavigationBarContents = (ViewGroup) getCurrentView().findViewById(R.id.nav_buttons);
+
+        mBasePaddingLeft = mNavigationBarContents.getPaddingStart();
+        mBasePaddingTop = mNavigationBarContents.getPaddingTop();
+        mBasePaddingRight = mNavigationBarContents.getPaddingEnd();
+        mBasePaddingBottom = mNavigationBarContents.getPaddingBottom();
 
         DockedStackExistsListener.register(exists -> mHandler.post(() -> {
             mDockedStackExists = exists;
