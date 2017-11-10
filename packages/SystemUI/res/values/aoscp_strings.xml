@@ -45,4 +45,9 @@
 
     <string name="quick_settings_alert_slider_detail_priority_events_title">Events</string>
     <string name="quick_settings_alert_slider_detail_priority_reminders_title">Reminders</string>
+	
+	<string name="alert_on_charged_level">You can disconnect the charger ( ">"<xliff:g id="percentage">%s</xliff:g> )</string>
+    <string name="battery_level_good_title">Optimal battery level</string>
+    <string name="battery_level_good_sound" translatable="false">/system/media/audio/ui/GoodBattery.ogg</string>
+    <string name="notification_channel_charge_alert">Optimal battery charge level</string>
 </resources>
