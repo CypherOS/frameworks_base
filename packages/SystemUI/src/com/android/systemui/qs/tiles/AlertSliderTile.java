@@ -41,17 +41,22 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.android.internal.logging.MetricsProto.MetricsEvent;
 import com.android.internal.logging.MetricsLogger;
+import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 
+import com.android.systemui.Dependency;
 import com.android.systemui.Prefs;
 import com.android.systemui.R;
-import com.android.systemui.qs.QSTile;
+import com.android.systemui.qs.QSHost;
+import com.android.systemui.plugins.ActivityStarter;
+import com.android.systemui.plugins.qs.DetailAdapter;
+import com.android.systemui.plugins.qs.QSTile.BooleanState;
+import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.statusbar.policy.ZenModeController;
 import com.android.systemui.volume.SegmentedButtons;
 
 /** Quick settings tile: Alert slider **/
-public class AlertSliderTile extends QSTile<QSTile.State>  {
+public class AlertSliderTile extends QSTileImpl<BooleanState>  {
 
     private static final Intent ZEN_SETTINGS =
             new Intent(Settings.ACTION_ZEN_MODE_SETTINGS);
@@ -59,29 +64,31 @@ public class AlertSliderTile extends QSTile<QSTile.State>  {
     private static final Intent ZEN_PRIORITY_SETTINGS =
             new Intent(Settings.ACTION_ZEN_MODE_PRIORITY_SETTINGS);
 
-    private static final QSTile.Icon TOTAL_SILENCE =
+    private static final QSTileImpl.Icon TOTAL_SILENCE =
             ResourceIcon.get(R.drawable.ic_qs_dnd_on_total_silence);
 
-    private static final QSTile.Icon ALARMS_ONLY =
+    private static final QSTileImpl.Icon ALARMS_ONLY =
             ResourceIcon.get(R.drawable.ic_qs_dnd_on);
 
-    private static final QSTile.Icon PRIORITY_ONLY =
+    private static final QSTileImpl.Icon PRIORITY_ONLY =
             ResourceIcon.get(R.drawable.ic_qs_dnd_on_priority);
 
-    private static final QSTile.Icon DISABLED =
+    private static final QSTileImpl.Icon DISABLED =
             ResourceIcon.get(R.drawable.ic_qs_dnd_off);
 
     private final ZenModeController mController;
     private final AlertSliderDetailAdapter mDetailAdapter;
+	private final ActivityStarter mActivityStarter;
     private Policy mPolicy;
 
     private boolean mListening;
     private boolean mHasAlertSlider = false;
     private boolean mCollapseDetailOnZenChanged = true;
 
-    public AlertSliderTile(Host host) {
+    public AlertSliderTile(QSHost host) {
         super(host);
-        mController = host.getZenModeController();
+		mController = Dependency.get(ZenModeController.class);
+		mActivityStarter = Dependency.get(ActivityStarter.class);
         mDetailAdapter = new AlertSliderDetailAdapter();
         mHasAlertSlider = mContext.getResources().getBoolean(com.android.internal.R.bool.config_hasAlertSlider)
                 && !TextUtils.isEmpty(mContext.getResources().getString(com.android.internal.R.string.alert_slider_state_path))
@@ -105,8 +112,8 @@ public class AlertSliderTile extends QSTile<QSTile.State>  {
     }
 
     @Override
-    public State newTileState() {
-        return new State();
+    public BooleanState newTileState() {
+        return new BooleanState();
     }
 
     @Override
@@ -130,7 +137,7 @@ public class AlertSliderTile extends QSTile<QSTile.State>  {
     }
 
     @Override
-    protected void handleUpdateState(State state, Object arg) {
+    protected void handleUpdateState(BooleanState state, Object arg) {
         final int zen = arg instanceof Integer ? (Integer) arg : getZenMode();
         switch (zen) {
             case Settings.Global.ZEN_MODE_IMPORTANT_INTERRUPTIONS:
@@ -260,7 +267,7 @@ public class AlertSliderTile extends QSTile<QSTile.State>  {
                     @Override
                     public void onClick(View v) {
                         Prefs.putBoolean(mContext, Prefs.Key.DND_CONFIRMED_PRIORITY_INTRODUCTION, true);
-                        mHost.startActivityDismissingKeyguard(ZEN_PRIORITY_SETTINGS);
+						mActivityStarter.postStartActivityDismissingKeyguard(ZEN_PRIORITY_SETTINGS, 0);
                     }
                 });
                 mRemindersSwitchContainer = (RelativeLayout) details.findViewById(R.id.switch_container_reminders);

@@ -70,7 +70,7 @@ public class QSFactoryImpl implements QSFactory {
         else if (tileSpec.equals("night")) return new NightDisplayTile(mHost);
         else if (tileSpec.equals("nfc")) return new NfcTile(mHost);
         else if (tileSpec.equals("screenshot")) return new ScreenshotTile(mHost);
-		else if (tileSpec.equals("alertslider")) return new AlertSliderTile(this);
+		else if (tileSpec.equals("alertslider")) return new AlertSliderTile(mHost);
         // Intent tiles.
         else if (tileSpec.startsWith(IntentTile.PREFIX)) return IntentTile.create(mHost, tileSpec);
         else if (tileSpec.startsWith(CustomTile.PREFIX)) return CustomTile.create(mHost, tileSpec);
