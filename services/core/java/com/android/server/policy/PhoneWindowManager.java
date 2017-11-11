@@ -161,6 +161,7 @@ import android.media.AudioManager;
 import android.media.AudioSystem;
 import android.media.IAudioService;
 import android.media.session.MediaSessionLegacyHelper;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
@@ -192,6 +193,7 @@ import android.service.dreams.IDreamManager;
 import android.service.vr.IPersistentVrStateCallbacks;
 import android.speech.RecognizerIntent;
 import android.telecom.TelecomManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
 import android.util.Log;
@@ -460,6 +462,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     AccessibilityManager mAccessibilityManager;
     BurnInProtectionHelper mBurnInProtectionHelper;
     AppOpsManager mAppOpsManager;
+    AlertSliderObserver mAlertSliderObserver;
     private boolean mHasFeatureWatch;
     private boolean mHasFeatureLeanback;
 
@@ -898,6 +901,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int MSG_REQUEST_TRANSIENT_BARS_ARG_STATUS = 0;
     private static final int MSG_REQUEST_TRANSIENT_BARS_ARG_NAVIGATION = 1;
 
+    private boolean mHasAlertSlider = false;
+
     private class PolicyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -998,6 +1003,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     };
 
     class SettingsObserver extends ContentObserver {
+        private final Uri SWAP_ALERT_SLIDER_ORDER_URI =
+                Settings.System.getUriFor(Settings.System.ALERT_SLIDER_ORDER);
+
         SettingsObserver(Handler handler) {
             super(handler);
         }
@@ -1077,12 +1085,21 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.KEY_CAMERA_DOUBLE_TAP_ACTION), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ALERT_SLIDER_ORDER), false, this,
+                    UserHandle.USER_ALL);
             updateSettings();
         }
 
-        @Override public void onChange(boolean selfChange) {
-            updateSettings();
-            updateRotation(false);
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            if (SWAP_ALERT_SLIDER_ORDER_URI.equals(uri)
+                    && mSystemReady && mAlertSliderObserver != null) {
+                mAlertSliderObserver.update();
+            } else {
+                updateSettings();
+                updateRotation(false);
+            }
         }
     }
 
@@ -2118,6 +2135,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mHasFeatureLeanback = mContext.getPackageManager().hasSystemFeature(FEATURE_LEANBACK);
         mAccessibilityShortcutController =
                 new AccessibilityShortcutController(mContext, new Handler(), mCurrentUserId);
+        mHasAlertSlider = mContext.getResources().getBoolean(R.bool.config_hasAlertSlider)
+                && !TextUtils.isEmpty(mContext.getResources().getString(R.string.alert_slider_state_path))
+                && !TextUtils.isEmpty(mContext.getResources().getString(R.string.alert_slider_uevent_match_path));
+				
         // Init display burn-in protection
         boolean burnInProtectionEnabled = context.getResources().getBoolean(
                 com.android.internal.R.bool.config_enableBurnInProtection);
@@ -8243,6 +8264,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mVrManagerInternal = LocalServices.getService(VrManagerInternal.class);
         if (mVrManagerInternal != null) {
             mVrManagerInternal.addPersistentVrModeStateListener(mPersistentVrModeListener);
+        }
+
+        if (mHasAlertSlider) {
+            mAlertSliderObserver = new AlertSliderObserver(mContext);
+            mAlertSliderObserver.startObserving(com.android.internal.R.string.alert_slider_uevent_match_path);
         }
 
         readCameraLensCoverState();

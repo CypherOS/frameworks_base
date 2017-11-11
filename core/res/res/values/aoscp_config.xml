@@ -101,5 +101,7 @@
     <integer name="config_notificationsFastBatteryARGB">0x0000FF</integer>
 	
 	<bool name="config_multiColorNotificationLed">false</bool>
-
+	
+    <!-- Whether device has physical tri state switch -->
+    <bool name="config_hasAlertSlider">false</bool>
 </resources>
