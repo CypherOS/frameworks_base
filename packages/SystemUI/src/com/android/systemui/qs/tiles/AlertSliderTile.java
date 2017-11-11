@@ -41,17 +41,18 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.android.internal.logging.MetricsProto.MetricsEvent;
-import com.android.internal.logging.MetricsLogger;
+import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 
 import com.android.systemui.Prefs;
 import com.android.systemui.R;
-import com.android.systemui.qs.QSTile;
+import com.android.systemui.qs.QSHost;
+import com.android.systemui.plugins.qs.QSTile.BooleanState;
+import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.statusbar.policy.ZenModeController;
 import com.android.systemui.volume.SegmentedButtons;
 
 /** Quick settings tile: Alert slider **/
-public class AlertSliderTile extends QSTile<QSTile.State>  {
+public class AlertSliderTile extends QSTileImpl<BooleanState>  {
 
     private static final Intent ZEN_SETTINGS =
             new Intent(Settings.ACTION_ZEN_MODE_SETTINGS);
@@ -59,16 +60,16 @@ public class AlertSliderTile extends QSTile<QSTile.State>  {
     private static final Intent ZEN_PRIORITY_SETTINGS =
             new Intent(Settings.ACTION_ZEN_MODE_PRIORITY_SETTINGS);
 
-    private static final QSTile.Icon TOTAL_SILENCE =
+    private static final BooleanState.Icon TOTAL_SILENCE =
             ResourceIcon.get(R.drawable.ic_qs_dnd_on_total_silence);
 
-    private static final QSTile.Icon ALARMS_ONLY =
+    private static final BooleanState.Icon ALARMS_ONLY =
             ResourceIcon.get(R.drawable.ic_qs_dnd_on);
 
-    private static final QSTile.Icon PRIORITY_ONLY =
+    private static final BooleanState.Icon PRIORITY_ONLY =
             ResourceIcon.get(R.drawable.ic_qs_dnd_on_priority);
 
-    private static final QSTile.Icon DISABLED =
+    private static final BooleanState.Icon DISABLED =
             ResourceIcon.get(R.drawable.ic_qs_dnd_off);
 
     private final ZenModeController mController;
@@ -79,7 +80,7 @@ public class AlertSliderTile extends QSTile<QSTile.State>  {
     private boolean mHasAlertSlider = false;
     private boolean mCollapseDetailOnZenChanged = true;
 
-    public AlertSliderTile(Host host) {
+    public AlertSliderTile(QSHost host) {
         super(host);
         mController = host.getZenModeController();
         mDetailAdapter = new AlertSliderDetailAdapter();
@@ -105,8 +106,8 @@ public class AlertSliderTile extends QSTile<QSTile.State>  {
     }
 
     @Override
-    public State newTileState() {
-        return new State();
+    public BooleanState newTileState() {
+        return new BooleanState();
     }
 
     @Override
@@ -130,7 +131,7 @@ public class AlertSliderTile extends QSTile<QSTile.State>  {
     }
 
     @Override
-    protected void handleUpdateState(State state, Object arg) {
+    protected void handleUpdateState(BooleanState state, Object arg) {
         final int zen = arg instanceof Integer ? (Integer) arg : getZenMode();
         switch (zen) {
             case Settings.Global.ZEN_MODE_IMPORTANT_INTERRUPTIONS:
