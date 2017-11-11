@@ -16,6 +16,7 @@
 
 package com.android.server.audio;
 
+import com.android.internal.R;
 import com.android.server.audio.AudioServiceEvents.ForceUseEvent;
 import com.android.server.audio.AudioServiceEvents.PhoneStateEvent;
 import com.android.server.audio.AudioServiceEvents.VolumeEvent;
@@ -597,7 +598,9 @@ public class AudioService extends IAudioService.Stub
     private int[] mAccessibilityServiceUids;
     private final Object mAccessibilityServiceUidsLock = new Object();
 
-    // Intent "extra" data keys.
+   // Alert slider
+    private boolean mHasAlertSlider = false; 
+   // Intent "extra" data keys.
     public static final String CONNECT_INTENT_KEY_PORT_NAME = "portName";
     public static final String CONNECT_INTENT_KEY_STATE = "state";
     public static final String CONNECT_INTENT_KEY_ADDRESS = "address";
@@ -683,6 +686,9 @@ public class AudioService extends IAudioService.Stub
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         mHasVibrator = vibrator == null ? false : vibrator.hasVibrator();
 
+        mHasAlertSlider = mContext.getResources().getBoolean(R.bool.config_hasAlertSlider)
+                && !TextUtils.isEmpty(mContext.getResources().getString(R.string.alert_slider_state_path))
+                && !TextUtils.isEmpty(mContext.getResources().getString(R.string.alert_slider_uevent_match_path));
         // Initialize volume
         int maxCallVolume = SystemProperties.getInt("ro.config.vc_call_vol_steps", -1);
         if (maxCallVolume != -1) {
@@ -1365,8 +1371,28 @@ public class AudioService extends IAudioService.Stub
             }
         }
 
-        final boolean isMute = isMuteAdjust(direction);
-
+         
+final boolean isMute = isMuteAdjust(direction);
+        if (mHasAlertSlider) {
+            int volumeType = mStreamVolumeAlias[streamType];
+            VolumeStreamState volumeState = mStreamStates[volumeType];
+            int state = getDeviceForStream(volumeType);
+            int index = volumeState.getIndex(state);
+            int ringerMode = getRingerModeInternal();
+            if ((volumeType == AudioSystem.STREAM_RING)
+                    && (direction == AudioManager.ADJUST_LOWER)
+                    && (index == 0)) {
+                direction = AudioManager.ADJUST_SAME;
+            }
+            if ((ringerMode == AudioManager.RINGER_MODE_SILENT)
+                    && (direction == AudioManager.ADJUST_RAISE
+                    && volumeType != AudioSystem.STREAM_MUSIC
+                    && volumeType != AudioSystem.STREAM_ALARM
+                    && volumeType != AudioSystem.STREAM_VOICE_CALL
+                    && !isInCommunication())) {
+                direction = AudioManager.ADJUST_SAME;
+            }
+        }
         ensureValidStreamType(streamType);
         final int resolvedStream = mStreamVolumeAlias[streamType];
 
