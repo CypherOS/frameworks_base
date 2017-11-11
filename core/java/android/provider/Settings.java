@@ -4128,6 +4128,12 @@ public final class Settings {
         public static final String FAST_CHARGING_LED_ENABLED = "fast_charging_led_enabled";
 
         /**
+         * Whether to show Brightness Icon On Brightness Slider
+         * @hide
+         */
+        public static final String QS_SHOW_BRIGHTNESS_ICON = "qs_show_brightness_icon";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

@@ -17,4 +17,10 @@
     <!-- Burn-in protection -->
     <dimen name="horizontal_max_swift">3.0dp</dimen>
     <dimen name="vertical_max_swift">1.0dp</dimen>
+	
+	<!-- QS Brightness control padding -->
+    <dimen name="qs_brightness_footer_padding">12dp</dimen>
+    <dimen name="qs_footer_padding_top">0dp</dimen>
+    <dimen name="qs_page_indicator_margin_bottom">12dp</dimen>
+    <dimen name="qs_paged_tile_layout_padding_bottom">4dp</dimen>
 </resources>
