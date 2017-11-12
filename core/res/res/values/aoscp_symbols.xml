@@ -89,4 +89,7 @@
     <java-symbol type="string" name="alert_slider_state_path" />
     <java-symbol type="string" name="alert_slider_uevent_match_path" />
     <java-symbol type="bool" name="config_hasAlertSlider" />
+	
+	<!-- Vendor mismatched fingerprint warning -->
+	<java-symbol type="string" name="system_error_vendorprint" />
 </resources>
