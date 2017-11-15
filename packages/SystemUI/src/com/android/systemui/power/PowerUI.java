@@ -145,7 +145,7 @@ public class PowerUI extends SystemUI {
                         com.android.internal.R.integer.config_lowBatteryCloseWarningBump);
 
         int level = Settings.System.getIntForUser(resolver,
-                Settings.System.ALERT_ON_CHARGED_LEVEL, -1, UserHandle.USER_CURRENT);
+                Settings.System.ALERT_ON_CHARGED_LEVEL, 80, UserHandle.USER_CURRENT);
         mWarnings.setChargedLevel(level);
     }
 
