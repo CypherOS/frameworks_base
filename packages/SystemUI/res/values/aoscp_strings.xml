@@ -32,6 +32,7 @@
 
     <!-- Screenshot QS tile -->
     <string name="quick_settings_screenshot_label">Screenshot</string>
+	<string name="quick_settings_partial_screenshot_label">Partial screenshot</string>
 	
 	<!-- QuickSettings: Alert slider tile related strings (re-using some of the do not disturb ones) [CHAR LIMIT=NONE] -->
     <string name="quick_settings_alert_slider_unavailable">Alert slider tile not available</string>

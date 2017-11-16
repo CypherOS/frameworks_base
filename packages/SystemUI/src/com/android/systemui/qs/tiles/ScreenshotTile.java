@@ -46,6 +46,8 @@ import static android.view.WindowManager.TAKE_SCREENSHOT_SELECTED_REGION;
 /** Quick settings tile: Screenshot **/
 public class ScreenshotTile extends QSTileImpl<BooleanState> {
 
+    private boolean mRegion = false;
+
     private boolean mListening;
     private final Object mScreenshotLock = new Object();
     private ServiceConnection mScreenshotConnection = null;
@@ -67,26 +69,16 @@ public class ScreenshotTile extends QSTileImpl<BooleanState> {
         return new BooleanState();
     }
 
+    @Override
     public void setListening(boolean listening) {
         if (mListening == listening) return;
         mListening = listening;
     }
 
     @Override
-    public void handleClick() {
-        mHost.collapsePanels();
-        /* wait for the panel to close */
-        try {
-             Thread.sleep(2000);
-        } catch (InterruptedException ie) {
-             // Do nothing
-        }
-        if (Settings.System.getInt(mContext.getContentResolver(),
-            Settings.System.SCREENSHOT_TYPE, 0) == 1) {
-        takeScreenshot(mScreenshotSelectedRegion);
-        } else {
-        takeScreenshot(mScreenshotFullscreen);
-        }
+    protected void handleClick() {
+        mRegion = !mRegion;
+        refreshState();
     }
 
     @Override
@@ -98,7 +90,7 @@ public class ScreenshotTile extends QSTileImpl<BooleanState> {
         } catch (InterruptedException ie) {
              // Do nothing
         }
-        takeScreenshot(mScreenshotFullscreen);
+        takeScreenshot(mRegion ? 2 : 1);
     }
 
     @Override
@@ -108,8 +100,17 @@ public class ScreenshotTile extends QSTileImpl<BooleanState> {
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
-        state.label = mContext.getString(R.string.quick_settings_screenshot_label);
-        state.icon = ResourceIcon.get(R.drawable.ic_qs_screenshot);
+        if (mRegion) {
+            state.label = mContext.getString(R.string.quick_settings_partial_screenshot_label);
+            state.icon = ResourceIcon.get(R.drawable.ic_qs_partial_screenshot);
+            state.contentDescription =  mContext.getString(
+                    R.string.quick_settings_partial_screenshot_label);
+        } else {
+            state.label = mContext.getString(R.string.quick_settings_screenshot_label);
+            state.icon = ResourceIcon.get(R.drawable.ic_qs_screenshot);
+            state.contentDescription =  mContext.getString(
+                    R.string.quick_settings_screenshot_label);
+        }
     }
 
     @Override
@@ -121,32 +122,6 @@ public class ScreenshotTile extends QSTileImpl<BooleanState> {
     public int getMetricsCategory() {
         return MetricsEvent.SCREEN;
     }
-
-    class ScreenshotRunnable implements Runnable {
-        private int mScreenshotFullscreen = TAKE_SCREENSHOT_FULLSCREEN;
-        private int mScreenshotSelectedRegion = TAKE_SCREENSHOT_SELECTED_REGION;
-
-        public void setScreenshotType(int screenshotType) {
-            if (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SCREENSHOT_TYPE, 0) == 1) {
-            mScreenshotSelectedRegion = screenshotType;
-            } else {
-            mScreenshotFullscreen = screenshotType;
-            }
-        }
-
-        @Override
-        public void run() {
-        if (Settings.System.getInt(mContext.getContentResolver(),
-              Settings.System.SCREENSHOT_TYPE, 0) == 1) {
-           takeScreenshot(mScreenshotSelectedRegion);
-        } else {
-           takeScreenshot(mScreenshotFullscreen);
-           }
-        }
-    }
-
-    private final ScreenshotRunnable mScreenshotRunnable = new ScreenshotRunnable();
 
     final Runnable mScreenshotTimeout = new Runnable() {
         @Override public void run() {
