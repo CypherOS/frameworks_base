@@ -3,23 +3,35 @@ package com.google.android.systemui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.hardware.input.InputManager;
+import android.metrics.LogMaker;
 import android.os.SystemClock;
 import android.os.UserManager;
 import android.util.ArraySet;
 import android.util.AttributeSet;
+import android.view.InputDevice;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.RenderNodeAnimator;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.android.internal.logging.MetricsLogger;
+import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.systemui.Interpolators;
+import com.android.systemui.Dependency;
 import com.android.systemui.R;
 import com.android.systemui.plugins.statusbar.phone.NavBarButtonProvider.ButtonInterface;
+import com.android.systemui.statusbar.policy.KeyButtonDrawable;
+import com.android.systemui.statusbar.policy.KeyButtonRipple;
 import com.android.systemui.statusbar.policy.KeyButtonView;
 
 public class OpaLayout extends FrameLayout implements ButtonInterface {
@@ -52,12 +64,16 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 
     private int mAnimationState = ANIMATION_STATE_NONE;
     private final ArraySet<Animator> mCurrentAnimators = new ArraySet<Animator>();
+	private final MetricsLogger mMetricsLogger = Dependency.get(MetricsLogger.class);
+	private final KeyButtonRipple mRipple;
 
     private boolean mIsVertical;
     private boolean mIsPressed;
     private boolean mLongClicked;
     private boolean mOpaEnabled;
+	private boolean mSupportsLongpress = true;
     private long mStartTime;
+	private int mCode;
 
     private View mRed;
     private View mBlue;
@@ -75,7 +91,16 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         @Override
         public void run() {
             if (mIsPressed) {
-                mLongClicked = true;
+                // Log.d("OpaLayout", "longpressed: " + this);
+                if (isLongClickable()) {
+                    // Just an old-fashioned ImageView
+                    performLongClick();
+                    mLongClicked = true;
+                } else if (mSupportsLongpress) {
+                    sendEvent(KeyEvent.ACTION_DOWN, KeyEvent.FLAG_LONG_PRESS);
+                    sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_LONG_CLICKED);
+                    mLongClicked = true;
+                }
             }
         }
     };
@@ -105,6 +130,18 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+		
+		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KeyButtonView,
+                defStyleAttr, 0);
+				
+		mCode = a.getInteger(R.styleable.KeyButtonView_keyCode, 0);
+		
+		mSupportsLongpress = a.getBoolean(R.styleable.KeyButtonView_keyRepeat, true);
+		
+		a.recycle();
+		
+		mRipple = new KeyButtonRipple(context, this);
+        setBackground(mRipple);
     }
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -388,6 +425,25 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         }
         return longestAnim;
     }
+	
+	public void sendEvent(int action, int flags) {
+        sendEvent(action, flags, SystemClock.uptimeMillis());
+    }
+
+    void sendEvent(int action, int flags, long when) {
+        mMetricsLogger.write(new LogMaker(MetricsEvent.ACTION_NAV_BUTTON_EVENT)
+                .setType(MetricsEvent.TYPE_ACTION)
+                .setSubtype(mCode)
+                .addTaggedData(MetricsEvent.FIELD_NAV_ACTION, action)
+                .addTaggedData(MetricsEvent.FIELD_FLAGS, flags));
+        final int repeatCount = (flags & KeyEvent.FLAG_LONG_PRESS) != 0 ? 1 : 0;
+        final KeyEvent ev = new KeyEvent(mStartTime, when, action, mCode, repeatCount,
+                0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+                flags | KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY,
+                InputDevice.SOURCE_NAVIGATION_BAR);
+        InputManager.getInstance().injectInputEvent(ev,
+                InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
+    }
 
     public void abortCurrentGesture() {
         mHome.abortCurrentGesture();
@@ -467,7 +523,15 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 	
 	@Override
     public void setDarkIntensity(float darkIntensity) {
-        // CypherOS: Overlayed navbar images use a fill for darkIntensity
+        Drawable drawable = getDrawable();
+        if (drawable != null) {
+            ((KeyButtonDrawable) getDrawable()).setDarkIntensity(darkIntensity);
+
+            // Since we reuse the same drawable for multiple views, we need to invalidate the view
+            // manually.
+            invalidate();
+        }
+        mRipple.setDarkIntensity(darkIntensity);
     }
 
     public void setVertical(boolean vertical) {
@@ -484,9 +548,9 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         mLeft = mBlue;
         mRight = mGreen;
     }
-
-    public void setOnLongClickListener(View.OnLongClickListener l) {
-        mHome.setOnLongClickListener(l);
+	
+	public void setCode(int code) {
+        mCode = code;
     }
 
     public void setOnTouchListener(View.OnTouchListener l) {
