@@ -180,6 +180,9 @@ public class NotificationSnooze extends LinearLayout
         mDefaultOption = createOption(60 /* minutes */, R.id.action_snooze_1_hour);
         options.add(mDefaultOption);
         options.add(createOption(60 * 2 /* minutes */, R.id.action_snooze_2_hours));
+		options.add(createOption(60 * 5 /* minutes */, R.string.snooze_option_5_hours));
+		options.add(createOption(60 * 12 /* minutes */, R.string.snooze_option_12_hours));
+		options.add(createOption(60 * 24 /* minutes */, R.string.snooze_option_24_hours));
         return options;
     }
 
