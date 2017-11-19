@@ -3,15 +3,18 @@ package com.google.android.systemui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 import android.os.UserManager;
 import android.util.ArraySet;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.RenderNodeAnimator;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
 import android.widget.FrameLayout;
@@ -57,6 +60,7 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     private boolean mIsPressed;
     private boolean mLongClicked;
     private boolean mOpaEnabled;
+	private boolean mSupportsLongpress = true;
     private long mStartTime;
 
     private View mRed;
@@ -75,7 +79,16 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         @Override
         public void run() {
             if (mIsPressed) {
-                mLongClicked = true;
+                // Log.d("OpaLayout", "longpressed: " + this);
+                if (isLongClickable()) {
+                    // Just an old-fashioned ImageView
+                    performLongClick();
+                    mLongClicked = true;
+                } else if (mSupportsLongpress) {
+                    sendEvent(KeyEvent.ACTION_DOWN, KeyEvent.FLAG_LONG_PRESS);
+                    sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_LONG_CLICKED);
+                    mLongClicked = true;
+                }
             }
         }
     };
@@ -105,6 +118,15 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+		
+		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KeyButtonView,
+                defStyle, 0);
+				
+		mCode = a.getInteger(R.styleable.KeyButtonView_keyCode, 0);
+		
+		mSupportsLongpress = a.getBoolean(R.styleable.KeyButtonView_keyRepeat, true);
+		
+		a.recycle();
     }
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -484,9 +506,9 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         mLeft = mBlue;
         mRight = mGreen;
     }
-
-    public void setOnLongClickListener(View.OnLongClickListener l) {
-        mHome.setOnLongClickListener(l);
+	
+	public void setCode(int code) {
+        mCode = code;
     }
 
     public void setOnTouchListener(View.OnTouchListener l) {
