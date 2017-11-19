@@ -57,6 +57,7 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     private boolean mIsPressed;
     private boolean mLongClicked;
     private boolean mOpaEnabled;
+	private boolean mSupportsLongpress = true;
     private long mStartTime;
 
     private View mRed;
@@ -75,7 +76,16 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         @Override
         public void run() {
             if (mIsPressed) {
-                mLongClicked = true;
+                // Log.d("OpaLayout", "longpressed: " + this);
+                if (isLongClickable()) {
+                    // Just an old-fashioned ImageView
+                    performLongClick();
+                    mLongClicked = true;
+                } else if (mSupportsLongpress) {
+                    sendEvent(KeyEvent.ACTION_DOWN, KeyEvent.FLAG_LONG_PRESS);
+                    sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_LONG_CLICKED);
+                    mLongClicked = true;
+                }
             }
         }
     };
@@ -105,6 +115,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+		
+		mSupportsLongpress = a.getBoolean(R.styleable.KeyButtonView_keyRepeat, true);
     }
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -483,10 +495,6 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         mBottom = mYellow;
         mLeft = mBlue;
         mRight = mGreen;
-    }
-
-    public void setOnLongClickListener(View.OnLongClickListener l) {
-        mHome.setOnLongClickListener(l);
     }
 
     public void setOnTouchListener(View.OnTouchListener l) {
