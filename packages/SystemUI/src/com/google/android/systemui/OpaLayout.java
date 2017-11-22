@@ -2,9 +2,12 @@ package com.google.android.systemui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
 import android.content.Context;
+import android.graphics.Color;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff;
 import android.hardware.input.InputManager;
 import android.metrics.LogMaker;
 import android.os.SystemClock;
@@ -33,6 +36,7 @@ import com.android.systemui.plugins.statusbar.phone.NavBarButtonProvider.ButtonI
 import com.android.systemui.statusbar.policy.KeyButtonDrawable;
 import com.android.systemui.statusbar.policy.KeyButtonRipple;
 import com.android.systemui.statusbar.policy.KeyButtonView;
+import com.android.settingslib.Utils;
 
 public class OpaLayout extends FrameLayout implements ButtonInterface {
 
@@ -79,8 +83,12 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     private View mBlue;
     private View mGreen;
     private View mYellow;
-    private View mWhite;
+    private ImageView mWhite;
     private View mHalo;
+	
+	private int mDarkModeFillColor;
+    private int mLightModeFillColor;
+    private int mIconTint = Color.WHITE;
 
     private View mTop;
     private View mRight;
@@ -122,14 +130,20 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 
     public OpaLayout(Context context) {
         super(context);
+		mDarkModeFillColor = context.getColor(R.color.dark_mode_icon_color_single_tone);
+        mLightModeFillColor = context.getColor(R.color.light_mode_icon_color_single_tone);
     }
 
     public OpaLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+		mDarkModeFillColor = context.getColor(R.color.dark_mode_icon_color_single_tone);
+        mLightModeFillColor = context.getColor(R.color.light_mode_icon_color_single_tone);
     }
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+		mDarkModeFillColor = context.getColor(R.color.dark_mode_icon_color_single_tone);
+        mLightModeFillColor = context.getColor(R.color.light_mode_icon_color_single_tone);
 		
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KeyButtonView,
                 defStyleAttr, 0);
@@ -146,6 +160,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+		mDarkModeFillColor = context.getColor(R.color.dark_mode_icon_color_single_tone);
+        mLightModeFillColor = context.getColor(R.color.light_mode_icon_color_single_tone);
     }
 
     private void startAll(ArraySet<Animator> animators) {
@@ -456,7 +472,7 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         mBlue = findViewById(R.id.blue);
         mYellow = findViewById(R.id.yellow);
         mGreen = findViewById(R.id.green);
-        mWhite = findViewById(R.id.white);
+        mWhite = (ImageView) findViewById(R.id.white);
         mHalo = findViewById(R.id.halo);
         mHome = (KeyButtonView) findViewById(R.id.home_button);
 
@@ -521,9 +537,27 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         ((ImageView) mWhite).setImageResource(resId);
     }
 	
-	@Override
-    public void setDarkIntensity(float darkIntensity) {
-        //no op
+    public void setDarkIntensity(float intensity) {
+        mIconTint = getColorForDarkIntensity(
+                intensity, mLightModeFillColor, mDarkModeFillColor);
+        updateIconColor();
+    }
+	
+	private void updateIconColor() {
+        int mIconColor = mIconTint;
+        updateHomeDrawable(mIconColor);
+    }
+
+    private int getColorForDarkIntensity(float intensity, int lightColor, int darkColor) {
+        return (int) ArgbEvaluator.getInstance().evaluate(intensity, lightColor, darkColor);
+    }
+
+    private void updateHomeDrawable(int homeColor) {
+        int intHomeDrawable = R.drawable.ic_sysbar_home;
+        Drawable drawHomeIcon = getResources().getDrawable(intHomeDrawable);
+        drawHomeIcon.setColorFilter(null);
+        drawHomeIcon.setColorFilter(homeColor, PorterDuff.Mode.SRC_IN);
+        setImageDrawable(drawHomeIcon);
     }
 
     public void setVertical(boolean vertical) {
