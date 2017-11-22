@@ -523,7 +523,14 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 	
 	@Override
     public void setDarkIntensity(float darkIntensity) {
-        //no op
+        Drawable drawable = Drawable.getDrawable(R.drawable.ic_sysbar_home);
+        if (drawable != null) {
+            ((KeyButtonDrawable) drawable).setDarkIntensity(darkIntensity);
+
+            // Since we reuse the same drawable for multiple views, we need to invalidate the view
+            // manually.
+            invalidate();
+        }
     }
 
     public void setVertical(boolean vertical) {
