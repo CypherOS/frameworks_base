@@ -2,9 +2,14 @@ package com.google.android.systemui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.hardware.input.InputManager;
 import android.metrics.LogMaker;
 import android.os.SystemClock;
@@ -81,6 +86,9 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     private View mYellow;
     private View mWhite;
     private View mHalo;
+	
+	private int mDarkMode;
+    private int mLightMode;
 
     private View mTop;
     private View mRight;
@@ -122,14 +130,20 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 
     public OpaLayout(Context context) {
         super(context);
+		mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
+        mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
     }
 
     public OpaLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+		mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
+        mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
     }
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+		mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
+        mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
 		
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KeyButtonView,
                 defStyleAttr, 0);
@@ -146,6 +160,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+		mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
+        mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
     }
 
     private void startAll(ArraySet<Animator> animators) {
@@ -521,9 +537,20 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         ((ImageView) mWhite).setImageResource(resId);
     }
 	
-	@Override
-    public void setDarkIntensity(float darkIntensity) {
-        //no op
+	public void setDarkIntensity(float darkIntensity) {
+        int backgroundColor = getBackgroundColor(darkIntensity);
+        ((ImageView) mWhite).setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_ATOP));
+        ((ImageView) mHalo).setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_ATOP));
+        invalidate();
+    }
+	
+	private int getBackgroundColor(float darkIntensity) {
+        return getColorForDarkIntensity(
+                darkIntensity, mLightMode, mDarkMode);
+    }
+
+    private int getColorForDarkIntensity(float darkIntensity, int lightMode, int darkMode) {
+        return (int) ArgbEvaluator.getInstance().evaluate(darkIntensity, lightMode, darkMode);
     }
 
     public void setVertical(boolean vertical) {
