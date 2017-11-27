@@ -38,6 +38,8 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 
 import android.app.Notification;
+import android.app.trust.TrustManager;
+import android.hardware.fingerprint.FingerprintManager;
 import android.metrics.LogMaker;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -55,6 +57,7 @@ import android.testing.TestableLooper;
 import android.testing.TestableLooper.MessageHandler;
 import android.testing.TestableLooper.RunWithLooper;
 import android.util.DisplayMetrics;
+import android.view.ViewGroup.LayoutParams;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
@@ -62,8 +65,10 @@ import com.android.internal.logging.testing.FakeMetricsLogger;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.keyguard.KeyguardHostView.OnDismissAction;
 import com.android.systemui.SysuiTestCase;
+import com.android.systemui.keyguard.WakefulnessLifecycle;
 import com.android.systemui.recents.misc.SystemServicesProxy;
 import com.android.systemui.statusbar.ActivatableNotificationView;
+import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.KeyguardIndicationController;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.NotificationData.Entry;
@@ -75,6 +80,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 @SmallTest
@@ -99,6 +106,8 @@ public class StatusBarTest extends SysuiTestCase {
 
     @Before
     public void setup() throws Exception {
+        mContext.addMockSystemService(TrustManager.class, mock(TrustManager.class));
+        mContext.addMockSystemService(FingerprintManager.class, mock(FingerprintManager.class));
         mStatusBarKeyguardViewManager = mock(StatusBarKeyguardViewManager.class);
         mUnlockMethodCache = mock(UnlockMethodCache.class);
         mKeyguardIndicationController = mock(KeyguardIndicationController.class);
@@ -108,6 +117,7 @@ public class StatusBarTest extends SysuiTestCase {
         mNotificationData = mock(NotificationData.class);
         mSystemServicesProxy = mock(SystemServicesProxy.class);
         mNotificationPanelView = mock(NotificationPanelView.class);
+        when(mNotificationPanelView.getLayoutParams()).thenReturn(new LayoutParams(0, 0));
         mNotificationList = mock(ArrayList.class);
         IPowerManager powerManagerService = mock(IPowerManager.class);
         HandlerThread handlerThread = new HandlerThread("TestThread");
@@ -122,6 +132,7 @@ public class StatusBarTest extends SysuiTestCase {
                 mKeyguardIndicationController, mStackScroller, mHeadsUpManager,
                 mNotificationData, mPowerManager, mSystemServicesProxy, mNotificationPanelView,
                 mBarService);
+        mStatusBar.mContext = mContext;
         doAnswer(invocation -> {
             OnDismissAction onDismissAction = (OnDismissAction) invocation.getArguments()[0];
             onDismissAction.onDismiss();
@@ -144,6 +155,12 @@ public class StatusBarTest extends SysuiTestCase {
                 return true;
             }
         });
+    }
+
+    @Test
+    public void testSetBouncerShowing_noCrash() {
+        mStatusBar.mCommandQueue = mock(CommandQueue.class);
+        mStatusBar.setBouncerShowing(true);
     }
 
     @Test
@@ -318,6 +335,83 @@ public class StatusBarTest extends SysuiTestCase {
     }
 
     @Test
+    public void testShouldPeek_suppressedScreenOn_dozing() {
+        when(mPowerManager.isScreenOn()).thenReturn(true);
+        when(mHeadsUpManager.isSnoozed(anyString())).thenReturn(false);
+        when(mNotificationData.shouldFilterOut(any())).thenReturn(false);
+        when(mSystemServicesProxy.isDreaming()).thenReturn(false);
+        when(mNotificationData.getImportance(any())).thenReturn(IMPORTANCE_HIGH);
+
+        mStatusBar.mDozing = true;
+        when(mNotificationData.shouldSuppressScreenOn(any())).thenReturn(true);
+        when(mNotificationData.shouldSuppressScreenOff(any())).thenReturn(false);
+
+        Notification n = new Notification.Builder(getContext(), "a").build();
+        StatusBarNotification sbn = new StatusBarNotification("a", "a", 0, "a", 0, 0, n,
+                UserHandle.of(0), null, 0);
+        NotificationData.Entry entry = new NotificationData.Entry(sbn);
+
+        assertTrue(mStatusBar.shouldPeek(entry, sbn));
+    }
+
+    @Test
+    public void testShouldPeek_suppressedScreenOn_noDoze() {
+        when(mPowerManager.isScreenOn()).thenReturn(true);
+        when(mHeadsUpManager.isSnoozed(anyString())).thenReturn(false);
+        when(mNotificationData.shouldFilterOut(any())).thenReturn(false);
+        when(mSystemServicesProxy.isDreaming()).thenReturn(false);
+        when(mNotificationData.getImportance(any())).thenReturn(IMPORTANCE_HIGH);
+
+        mStatusBar.mDozing = false;
+        when(mNotificationData.shouldSuppressScreenOn(any())).thenReturn(true);
+        when(mNotificationData.shouldSuppressScreenOff(any())).thenReturn(false);
+
+        Notification n = new Notification.Builder(getContext(), "a").build();
+        StatusBarNotification sbn = new StatusBarNotification("a", "a", 0, "a", 0, 0, n,
+                UserHandle.of(0), null, 0);
+        NotificationData.Entry entry = new NotificationData.Entry(sbn);
+        assertFalse(mStatusBar.shouldPeek(entry, sbn));
+    }
+    @Test
+    public void testShouldPeek_suppressedScreenOff_dozing() {
+        when(mPowerManager.isScreenOn()).thenReturn(true);
+        when(mHeadsUpManager.isSnoozed(anyString())).thenReturn(false);
+        when(mNotificationData.shouldFilterOut(any())).thenReturn(false);
+        when(mSystemServicesProxy.isDreaming()).thenReturn(false);
+        when(mNotificationData.getImportance(any())).thenReturn(IMPORTANCE_HIGH);
+
+        mStatusBar.mDozing = true;
+        when(mNotificationData.shouldSuppressScreenOn(any())).thenReturn(false);
+        when(mNotificationData.shouldSuppressScreenOff(any())).thenReturn(true);
+
+        Notification n = new Notification.Builder(getContext(), "a").build();
+        StatusBarNotification sbn = new StatusBarNotification("a", "a", 0, "a", 0, 0, n,
+                UserHandle.of(0), null, 0);
+        NotificationData.Entry entry = new NotificationData.Entry(sbn);
+        assertFalse(mStatusBar.shouldPeek(entry, sbn));
+    }
+
+    @Test
+    public void testShouldPeek_suppressedScreenOff_noDoze() {
+        when(mPowerManager.isScreenOn()).thenReturn(true);
+        when(mHeadsUpManager.isSnoozed(anyString())).thenReturn(false);
+        when(mNotificationData.shouldFilterOut(any())).thenReturn(false);
+        when(mSystemServicesProxy.isDreaming()).thenReturn(false);
+        when(mNotificationData.getImportance(any())).thenReturn(IMPORTANCE_HIGH);
+
+        mStatusBar.mDozing = false;
+        when(mNotificationData.shouldSuppressScreenOn(any())).thenReturn(false);
+        when(mNotificationData.shouldSuppressScreenOff(any())).thenReturn(true);
+
+        Notification n = new Notification.Builder(getContext(), "a").build();
+        StatusBarNotification sbn = new StatusBarNotification("a", "a", 0, "a", 0, 0, n,
+                UserHandle.of(0), null, 0);
+        NotificationData.Entry entry = new NotificationData.Entry(sbn);
+        assertTrue(mStatusBar.shouldPeek(entry, sbn));
+    }
+
+
+    @Test
     public void testLogHidden() {
         try {
             mStatusBar.handleVisibleToUserChanged(false);
@@ -385,6 +479,11 @@ public class StatusBarTest extends SysuiTestCase {
         TestableLooper.get(this).processAllMessages();
     }
 
+    @Test
+    public void testDump_DoesNotCrash() {
+        mStatusBar.dump(null, new PrintWriter(new ByteArrayOutputStream()), null);
+    }
+
     static class TestableStatusBar extends StatusBar {
         public TestableStatusBar(StatusBarKeyguardViewManager man,
                 UnlockMethodCache unlock, KeyguardIndicationController key,
@@ -402,6 +501,14 @@ public class StatusBarTest extends SysuiTestCase {
             mSystemServicesProxy = ssp;
             mNotificationPanel = panelView;
             mBarService = barService;
+            mWakefulnessLifecycle = createAwakeWakefulnessLifecycle();
+        }
+
+        private WakefulnessLifecycle createAwakeWakefulnessLifecycle() {
+            WakefulnessLifecycle wakefulnessLifecycle = new WakefulnessLifecycle();
+            wakefulnessLifecycle.dispatchStartedWakingUp();
+            wakefulnessLifecycle.dispatchFinishedWakingUp();
+            return wakefulnessLifecycle;
         }
 
         public void setBarStateForTest(int state) {

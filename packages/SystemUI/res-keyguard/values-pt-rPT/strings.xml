@@ -51,6 +51,7 @@
     <string name="keyguard_accessibility_sim_puk_area" msgid="136979425761438705">"Área do PUK do cartão SIM"</string>
     <string name="keyguard_accessibility_next_alarm" msgid="5835196989158584991">"Próximo alarme definido para <xliff:g id="ALARM">%1$s</xliff:g>"</string>
     <string name="keyboardview_keycode_delete" msgid="6883116827512721630">"Eliminar"</string>
+    <string name="disable_carrier_button_text" msgid="6914341927421916114">"Desativar eSIM"</string>
     <string name="keyboardview_keycode_enter" msgid="4505833604411016668">"Tecla Enter"</string>
     <string name="kg_forgot_pattern_button_text" msgid="534245177645252620">"Esqueceu-se do padrão"</string>
     <string name="kg_wrong_pattern" msgid="7620081431514773802">"Padrão incorreto"</string>
@@ -58,8 +59,9 @@
     <string name="kg_wrong_pin" msgid="4785660766909463466">"PIN incorreto"</string>
     <string name="kg_too_many_failed_attempts_countdown" msgid="527455490371878356">"Tente novamente dentro de <xliff:g id="NUMBER">%d</xliff:g> segundos."</string>
     <string name="kg_pattern_instructions" msgid="5547646893001491340">"Desenhe o seu padrão"</string>
-    <string name="kg_sim_pin_instructions" msgid="1795013002231184046">"Introduza o PIN do cartão SIM"</string>
-    <string name="kg_sim_pin_instructions_multi" msgid="1586316574649150223">"Introduza o PIN do cartão SIM \"<xliff:g id="CARRIER">%1$s</xliff:g>\""</string>
+    <string name="kg_sim_pin_instructions" msgid="6389000973113699187">"Introduza o PIN do cartão SIM."</string>
+    <string name="kg_sim_pin_instructions_multi" msgid="1643757228644271861">"Introduza o PIN do cartão SIM \"<xliff:g id="CARRIER">%1$s</xliff:g>\"."</string>
+    <string name="kg_sim_lock_instructions_esim" msgid="4957650659201013804">"Desativar eSIM para utilizar sem serviço móvel"</string>
     <string name="kg_pin_instructions" msgid="4069609316644030034">"Introduza o PIN"</string>
     <string name="kg_password_instructions" msgid="136952397352976538">"Introduza a palavra-passe"</string>
     <string name="kg_puk_enter_puk_hint" msgid="2288964170039899277">"O cartão SIM está agora desativado. Introduza o código PUK para continuar. Contacte o operador para obter mais detalhes."</string>
@@ -91,12 +93,12 @@
     <string name="kg_failed_attempts_almost_at_login" product="default" msgid="8364140853305528449">"Desenhou a sequência de desbloqueio incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Após mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas sem êxito, ser-lhe-á pedido para desbloquear o telemóvel através de uma conta de email.\n\n Tente novamente dentro de <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
     <string name="kg_password_wrong_pin_code_pukked" msgid="3389829202093674267">"Código PIN do cartão SIM incorreto. Tem de contactar o seu operador para desbloquear o dispositivo."</string>
     <plurals name="kg_password_wrong_pin_code" formatted="false" msgid="4314341367727055967">
-      <item quantity="one">Incorrect SIM PIN code, you have <xliff:g id="NUMBER_1">%d</xliff:g> remaining attempts.</item>
+      <item quantity="one">Código PIN do cartão SIM incorreto. Tem mais <xliff:g id="NUMBER_0">%d</xliff:g> tentativa antes de precisar de contactar o seu operador para desbloquear o dispositivo.</item>
       <item quantity="other">Código PIN do cartão SIM incorreto. Tem mais <xliff:g id="NUMBER_1">%d</xliff:g> tentativas.</item>
     </plurals>
     <string name="kg_password_wrong_puk_code_dead" msgid="3329017604125179374">"Cartão SIM inutilizável. Contacte o seu operador."</string>
     <plurals name="kg_password_wrong_puk_code" formatted="false" msgid="2287504898931957513">
-      <item quantity="one">Incorrect SIM PUK code, you have <xliff:g id="NUMBER_1">%d</xliff:g> remaining attempts before SIM becomes permanently unusable.</item>
+      <item quantity="one">Código PUK do cartão SIM incorreto. Tem mais <xliff:g id="NUMBER_0">%d</xliff:g> tentativa antes de o cartão SIM ficar permanentemente inutilizável.</item>
       <item quantity="other">Código PUK do cartão SIM incorreto. Tem mais <xliff:g id="NUMBER_1">%d</xliff:g> tentativas antes de o cartão SIM ficar permanentemente inutilizável.</item>
     </plurals>
     <string name="kg_password_pin_failed" msgid="8769990811451236223">"Falha ao introduzir o PIN do cartão SIM!"</string>
@@ -117,15 +119,15 @@
     <string name="kg_prompt_reason_device_admin" msgid="3452168247888906179">"Dispositivo bloqueado pelo administrador"</string>
     <string name="kg_prompt_reason_user_request" msgid="8236951765212462286">"O dispositivo foi bloqueado manualmente"</string>
     <plurals name="kg_prompt_reason_time_pattern" formatted="false" msgid="71299470072448533">
-      <item quantity="one">Device hasn\'t been unlocked for <xliff:g id="NUMBER_1">%d</xliff:g> hours. Confirm pattern.</item>
+      <item quantity="one">O dispositivo não é desbloqueado há <xliff:g id="NUMBER_0">%d</xliff:g> hora. Confirme o padrão.</item>
       <item quantity="other">O dispositivo não é desbloqueado há <xliff:g id="NUMBER_1">%d</xliff:g> horas. Confirme o padrão.</item>
     </plurals>
     <plurals name="kg_prompt_reason_time_pin" formatted="false" msgid="34586942088144385">
-      <item quantity="one">Device hasn\'t been unlocked for <xliff:g id="NUMBER_1">%d</xliff:g> hours. Confirm PIN.</item>
+      <item quantity="one">O dispositivo não é desbloqueado há <xliff:g id="NUMBER_0">%d</xliff:g> hora. Confirme o PIN.</item>
       <item quantity="other">O dispositivo não é desbloqueado há <xliff:g id="NUMBER_1">%d</xliff:g> horas. Confirme o PIN.</item>
     </plurals>
     <plurals name="kg_prompt_reason_time_password" formatted="false" msgid="257297696215346527">
-      <item quantity="one">Device hasn\'t been unlocked for <xliff:g id="NUMBER_1">%d</xliff:g> hours. Confirm password.</item>
+      <item quantity="one">O dispositivo não é desbloqueado há <xliff:g id="NUMBER_0">%d</xliff:g> hora. Confirme a palavra-passe.</item>
       <item quantity="other">O dispositivo não é desbloqueado há <xliff:g id="NUMBER_1">%d</xliff:g> horas. Confirme a palavra-passe.</item>
     </plurals>
     <string name="fingerprint_not_recognized" msgid="348813995267914625">"Não reconhecido"</string>

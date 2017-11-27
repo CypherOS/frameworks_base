@@ -802,7 +802,7 @@ public final class BroadcastQueue {
         IPackageManager pm = AppGlobals.getPackageManager();
         for (int i = perms.length-1; i >= 0; i--) {
             try {
-                PermissionInfo pi = pm.getPermissionInfo(perms[i], 0);
+                PermissionInfo pi = pm.getPermissionInfo(perms[i], "android", 0);
                 if ((pi.protectionLevel & (PermissionInfo.PROTECTION_MASK_BASE
                         | PermissionInfo.PROTECTION_FLAG_PRIVILEGED))
                         != PermissionInfo.PROTECTION_SIGNATURE) {
@@ -1404,13 +1404,6 @@ public final class BroadcastQueue {
         long now = SystemClock.uptimeMillis();
         BroadcastRecord r = mOrderedBroadcasts.get(0);
         if (fromMsg) {
-            if (mService.mDidDexOpt) {
-                // Delay timeouts until dexopt finishes.
-                mService.mDidDexOpt = false;
-                long timeoutTime = SystemClock.uptimeMillis() + mTimeoutPeriod;
-                setBroadcastTimeoutLocked(timeoutTime);
-                return;
-            }
             if (!mService.mProcessesReady) {
                 // Only process broadcast timeouts if the system is ready. That way
                 // PRE_BOOT_COMPLETED broadcasts can't timeout as they are intended

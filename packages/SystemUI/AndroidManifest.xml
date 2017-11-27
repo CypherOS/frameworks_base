@@ -22,6 +22,11 @@
         android:sharedUserId="android.uid.systemui"
         coreApp="true">
 
+    <!-- SysUI must be the one to define this permission; its name is
+         referenced by the core OS. -->
+    <permission android:name="android.permission.systemui.IDENTITY"
+        android:protectionLevel="signature" />
+
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -190,6 +195,9 @@
     <!-- to access instant apps -->
     <uses-permission android:name="android.permission.ACCESS_INSTANT_APPS" />
 
+    <!-- to change themes - light or dark -->
+    <uses-permission android:name="android.permission.CHANGE_OVERLAY_PACKAGES" />
+
     <application
         android:name=".SystemUIApplication"
         android:persistent="true"
@@ -200,7 +208,7 @@
         android:icon="@drawable/icon"
         android:process="com.android.systemui"
         android:supportsRtl="true"
-        android:theme="@style/systemui_theme"
+        android:theme="@style/Theme.SystemUI"
         android:defaultToDeviceProtectedStorage="true"
         android:directBootAware="true">
         <!-- Keep theme in sync with SystemUIApplication.onCreate().
