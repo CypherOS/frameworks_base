@@ -146,4 +146,9 @@
 
   <java-symbol type="bool" name="config_filterDisplayModes" />
   <java-symbol type="array" name="config_displayModeMappings" />
+
+  <!-- Proximity check on screen on -->
+  <java-symbol type="bool" name="config_proximityCheckOnWake" />
+  <java-symbol type="integer" name="config_proximityCheckTimeout" />
+  <java-symbol type="bool" name="config_proximityCheckOnWakeEnabledByDefault" />
 </resources>
