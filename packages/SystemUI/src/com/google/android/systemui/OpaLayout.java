@@ -568,6 +568,11 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         mRight = mGreen;
     }
 	
+	@Override
+    public boolean isClickable() {
+        return mCode != 0 || super.isClickable();
+    }
+	
 	public void setCode(int code) {
         mCode = code;
     }
