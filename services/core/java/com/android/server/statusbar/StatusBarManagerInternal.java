@@ -80,7 +80,8 @@ public interface StatusBarManagerInternal {
     void setGlobalActionsListener(GlobalActionsListener listener);
     void showGlobalActions();
 
-    boolean showShutdownUi(boolean isReboot, String requestString);
+    boolean showShutdownUi(boolean isReboot, boolean isRebootBootloader,
+                boolean isRebootRecovery, String requestString);
 
     public interface GlobalActionsListener {
         /**
