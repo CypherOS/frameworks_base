@@ -32,4 +32,18 @@
 	
 	<!-- Vendor mismatched fingerprint warning [CHAR LIMIT=NONE] -->
 	<string name="system_error_vendorprint">Your vendor image does not match the system. Please flash the <xliff:g id="string">%s</xliff:g> vendor image for your device</string>
+	
+	<!-- Extended Power menu -->
+	<string name="global_action_restart">Restart</string>
+	<string name="global_action_quick_restart">Quick restart</string>
+	<string name="global_action_recovery">Recovery</string>
+	<string name="global_action_bootloader">Bootloader</string>
+	<!-- Shutdown Thread -->
+	<string name="global_restart">Restart</string>
+	<string name="global_restart_message">Restarting\u2026</string>
+	<string name="global_quick_restart">Quick restart</string>
+	<string name="global_restart_recovery">Recovery</string>
+	<string name="global_restart_recovery_message">Restarting to recovery\u2026</string>
+	<string name="global_restart_bootloader">Bootloader</string>
+	<string name="global_restart_bootloader_message">Restarting to bootloader\u2026</string>
 </resources>
