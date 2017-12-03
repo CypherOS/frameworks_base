@@ -97,27 +97,21 @@ import java.util.List;
  * may show depending on whether the keyguard is showing, and whether the device
  * is provisioned.
  */
-class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogInterface.OnClickListener {
+class AdvancedGlobalActionsDialog implements DialogInterface.OnDismissListener, DialogInterface.OnClickListener {
 
     static public final String SYSTEM_DIALOG_REASON_KEY = "reason";
     static public final String SYSTEM_DIALOG_REASON_GLOBAL_ACTIONS = "globalactions";
 
-    private static final String TAG = "GlobalActionsDialog";
+    private static final String TAG = "AdvancedGlobalActionsDialog";
 
     private static final boolean SHOW_SILENT_TOGGLE = true;
 
     /* Valid settings for global actions keys.
-     * see config.xml config_globalActionList */
-    private static final String GLOBAL_ACTION_KEY_POWER = "power";
-    private static final String GLOBAL_ACTION_KEY_AIRPLANE = "airplane";
-    private static final String GLOBAL_ACTION_KEY_BUGREPORT = "bugreport";
-    private static final String GLOBAL_ACTION_KEY_SILENT = "silent";
-    private static final String GLOBAL_ACTION_KEY_USERS = "users";
-    private static final String GLOBAL_ACTION_KEY_SETTINGS = "settings";
-    private static final String GLOBAL_ACTION_KEY_LOCKDOWN = "lockdown";
-    private static final String GLOBAL_ACTION_KEY_VOICEASSIST = "voiceassist";
-    private static final String GLOBAL_ACTION_KEY_ASSIST = "assist";
+     * see aoscp_config.xml config_globalActionList */
     private static final String GLOBAL_ACTION_KEY_RESTART = "restart";
+	private static final String GLOBAL_ACTION_KEY_QUICK_RESTART = "quick_restart";
+    private static final String GLOBAL_ACTION_KEY_RECOVERY = "recovery";
+    private static final String GLOBAL_ACTION_KEY_BOOTLOADER = "bootloader";
 
     private final Context mContext;
     private final GlobalActionsManager mWindowManagerFuncs;
@@ -125,29 +119,18 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
     private final IDreamManager mDreamManager;
 
     private ArrayList<Action> mItems;
-    private ActionsDialog mDialog;
-
-    private Action mSilentModeAction;
-    private ToggleAction mAirplaneModeOn;
+    private AdvancedActionsDialog mDialog;
 
     private MyAdapter mAdapter;
 
     private boolean mKeyguardShowing = false;
     private boolean mDeviceProvisioned = false;
-    private ToggleAction.State mAirplaneState = ToggleAction.State.Off;
     private boolean mIsWaitingForEcmExit = false;
-    private boolean mHasTelephony;
-    private boolean mHasVibrator;
-    private final boolean mShowSilentToggle;
-    private final EmergencyAffordanceManager mEmergencyAffordanceManager;
-
-    private BitSet mAirplaneModeBits;
-    private final List<PhoneStateListener> mPhoneStateListeners = new ArrayList<>();
 
     /**
      * @param context everything needs a context :(
      */
-    public GlobalActionsDialog(Context context, GlobalActionsManager windowManagerFuncs) {
+    public AdvancedGlobalActionsDialog(Context context, GlobalActionsManager windowManagerFuncs) {
         mContext = new ContextThemeWrapper(context, com.android.systemui.R.style.qs_theme);
         mWindowManagerFuncs = windowManagerFuncs;
         mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
@@ -158,86 +141,7 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        filter.addAction(TelephonyIntents.ACTION_EMERGENCY_CALLBACK_MODE_CHANGED);
         context.registerReceiver(mBroadcastReceiver, filter);
-
-        ConnectivityManager cm = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        mHasTelephony = cm.isNetworkSupported(ConnectivityManager.TYPE_MOBILE);
-
-        // get notified of phone state changes
-        SubscriptionManager.from(mContext).addOnSubscriptionsChangedListener(
-                new SubscriptionManager.OnSubscriptionsChangedListener() {
-            @Override
-            public void onSubscriptionsChanged() {
-                super.onSubscriptionsChanged();
-                setupAirplaneModeListeners();
-            }
-        });
-        setupAirplaneModeListeners();
-        mContext.getContentResolver().registerContentObserver(
-                Settings.Global.getUriFor(Settings.Global.AIRPLANE_MODE_ON), true,
-                mAirplaneModeObserver);
-        Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-        mHasVibrator = vibrator != null && vibrator.hasVibrator();
-
-        mShowSilentToggle = SHOW_SILENT_TOGGLE && !mContext.getResources().getBoolean(
-                R.bool.config_useFixedVolume);
-
-        mEmergencyAffordanceManager = new EmergencyAffordanceManager(context);
-    }
-
-    /**
-     * Since there are two ways of handling airplane mode (with telephony, we depend on the internal
-     * device telephony state), and MSIM devices do not report phone state for missing SIMs, we
-     * need to dynamically setup listeners based on subscription changes.
-     *
-     * So if there is _any_ active SIM in the device, we can depend on the phone state,
-     * otherwise fall back to {@link Settings.Global#AIRPLANE_MODE_ON}.
-     */
-    private void setupAirplaneModeListeners() {
-        TelephonyManager telephonyManager =
-                (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-
-        for (PhoneStateListener listener : mPhoneStateListeners) {
-            telephonyManager.listen(listener, PhoneStateListener.LISTEN_NONE);
-        }
-        mPhoneStateListeners.clear();
-
-        final List<SubscriptionInfo> subInfoList = SubscriptionManager.from(mContext)
-                .getActiveSubscriptionInfoList();
-        if (subInfoList != null) {
-            mHasTelephony = true;
-            mAirplaneModeBits = new BitSet(subInfoList.size());
-            for (int i = 0; i < subInfoList.size(); i++) {
-                final int finalI = i;
-                PhoneStateListener subListener = new PhoneStateListener(subInfoList.get(finalI)
-                        .getSubscriptionId()) {
-                    @Override
-                    public void onServiceStateChanged(ServiceState serviceState) {
-                        final boolean inAirplaneMode = serviceState.getState()
-                                == ServiceState.STATE_POWER_OFF;
-                        mAirplaneModeBits.set(finalI, inAirplaneMode);
-
-                        // we're in airplane mode if _any_ of the subscriptions say we are
-                        mAirplaneState = mAirplaneModeBits.cardinality() > 0
-                                ? ToggleAction.State.On : ToggleAction.State.Off;
-
-                        mAirplaneModeOn.updateState(mAirplaneState);
-                        if (mAdapter != null) {
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }
-                };
-                mPhoneStateListeners.add(subListener);
-                telephonyManager.listen(subListener, PhoneStateListener.LISTEN_SERVICE_STATE);
-            }
-        } else {
-            mHasTelephony = false;
-        }
-
-        // Set the initial status of airplane mode toggle
-        mAirplaneState = getUpdatedAirplaneToggleState();
     }
 
     /**
@@ -282,7 +186,7 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
             ((SinglePressAction) mAdapter.getItem(0)).onPress();
         } else {
             WindowManager.LayoutParams attrs = mDialog.getWindow().getAttributes();
-            attrs.setTitle("ActionsDialog");
+            attrs.setTitle("AdvancedActionsDialog");
             mDialog.getWindow().setAttributes(attrs);
             mDialog.show();
             mWindowManagerFuncs.onGlobalActionsShown();
@@ -294,59 +198,11 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
      *
      * @return A new dialog.
      */
-    private ActionsDialog createDialog() {
-        // Simple toggle style if there's no vibrator, otherwise use a tri-state
-        if (!mHasVibrator) {
-            mSilentModeAction = new SilentModeToggleAction();
-        } else {
-            mSilentModeAction = new SilentModeTriStateAction(mContext, mAudioManager, mHandler);
-        }
-        mAirplaneModeOn = new ToggleAction(
-                R.drawable.ic_lock_airplane_mode,
-                R.drawable.ic_lock_airplane_mode_off,
-                R.string.global_actions_toggle_airplane_mode,
-                R.string.global_actions_airplane_mode_on_status,
-                R.string.global_actions_airplane_mode_off_status) {
-
-            void onToggle(boolean on) {
-                if (mHasTelephony && Boolean.parseBoolean(
-                        SystemProperties.get(TelephonyProperties.PROPERTY_INECM_MODE))) {
-                    mIsWaitingForEcmExit = true;
-                    // Launch ECM exit dialog
-                    Intent ecmDialogIntent =
-                            new Intent(TelephonyIntents.ACTION_SHOW_NOTICE_ECM_BLOCK_OTHERS, null);
-                    ecmDialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.startActivity(ecmDialogIntent);
-                } else {
-                    changeAirplaneModeSystemSetting(on);
-                }
-            }
-
-            @Override
-            protected void changeStateFromPress(boolean buttonOn) {
-                if (!mHasTelephony) return;
-
-                // In ECM mode airplane state cannot be changed
-                if (!(Boolean.parseBoolean(
-                        SystemProperties.get(TelephonyProperties.PROPERTY_INECM_MODE)))) {
-                    mState = buttonOn ? State.TurningOn : State.TurningOff;
-                    mAirplaneState = mState;
-                }
-            }
-
-            public boolean showDuringKeyguard() {
-                return true;
-            }
-
-            public boolean showBeforeProvisioning() {
-                return false;
-            }
-        };
-        onAirplaneModeChanged();
+    private AdvancedActionsDialog createDialog() {
 
         mItems = new ArrayList<Action>();
         String[] defaultActions = mContext.getResources().getStringArray(
-                R.array.config_globalActionsList);
+                R.array.config_advancedGlobalActionsList);
 
         ArraySet<String> addedKeys = new ArraySet<String>();
         for (int i = 0; i < defaultActions.length; i++) {
@@ -355,42 +211,19 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
                 // If we already have added this, don't add it again.
                 continue;
             }
-            if (GLOBAL_ACTION_KEY_POWER.equals(actionKey)) {
-                mItems.add(new PowerAction());
-            } else if (GLOBAL_ACTION_KEY_AIRPLANE.equals(actionKey)) {
-                mItems.add(mAirplaneModeOn);
-            } else if (GLOBAL_ACTION_KEY_BUGREPORT.equals(actionKey)) {
-                if (Settings.Global.getInt(mContext.getContentResolver(),
-                        Settings.Global.BUGREPORT_IN_POWER_MENU, 0) != 0 && isCurrentUserOwner()) {
-                    mItems.add(new BugReportAction());
-                }
-            } else if (GLOBAL_ACTION_KEY_SILENT.equals(actionKey)) {
-                if (mShowSilentToggle) {
-                    mItems.add(mSilentModeAction);
-                }
-            } else if (GLOBAL_ACTION_KEY_USERS.equals(actionKey)) {
-                if (SystemProperties.getBoolean("fw.power_user_switcher", false)) {
-                    addUsersToMenu(mItems);
-                }
-            } else if (GLOBAL_ACTION_KEY_SETTINGS.equals(actionKey)) {
-                mItems.add(getSettingsAction());
-            } else if (GLOBAL_ACTION_KEY_LOCKDOWN.equals(actionKey)) {
-                mItems.add(getLockdownAction());
-            } else if (GLOBAL_ACTION_KEY_VOICEASSIST.equals(actionKey)) {
-                mItems.add(getVoiceAssistAction());
-            } else if (GLOBAL_ACTION_KEY_ASSIST.equals(actionKey)) {
-                mItems.add(getAssistAction());
-            } else if (GLOBAL_ACTION_KEY_RESTART.equals(actionKey)) {
+            if (GLOBAL_ACTION_KEY_RESTART.equals(actionKey)) {
                 mItems.add(new RestartAction());
+            } else if (GLOBAL_ACTION_KEY_QUICK_RESTART.equals(actionKey)) {
+                mItems.add(new QuickRestartAction());
+			} else if (GLOBAL_ACTION_KEY_RECOVERY.equals(actionKey)) {
+                mItems.add(new RecoveryAction());
+			} else if (GLOBAL_ACTION_KEY_BOOTLOADER.equals(actionKey)) {
+                mItems.add(new BootloaderAction());
             } else {
-                Log.e(TAG, "Invalid global action key " + actionKey);
+                Log.e(TAG, "Invalid advanced global action key " + actionKey);
             }
             // Add here so we don't add more than one.
             addedKeys.add(actionKey);
-        }
-
-        if (mEmergencyAffordanceManager.needsEmergencyAffordance()) {
-            mItems.add(getEmergencyAction());
         }
 
         mAdapter = new MyAdapter();
@@ -407,7 +240,7 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
                 return false;
             }
         };
-        ActionsDialog dialog = new ActionsDialog(mContext, this, mAdapter, onItemLongClickListener);
+        AdvancedActionsDialog dialog = new AdvancedActionsDialog(mContext, this, mAdapter, onItemLongClickListener);
         dialog.setCanceledOnTouchOutside(false); // Handled by the custom class.
         dialog.setKeyguardShowing(mKeyguardShowing);
 
@@ -415,40 +248,7 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
 
         return dialog;
     }
-
-    private final class PowerAction extends SinglePressAction implements LongPressAction {
-        private PowerAction() {
-            super(R.drawable.ic_lock_power_off,
-                    R.string.global_action_power_off);
-        }
-
-        @Override
-        public boolean onLongPress() {
-            UserManager um = (UserManager) mContext.getSystemService(Context.USER_SERVICE);
-            if (!um.hasUserRestriction(UserManager.DISALLOW_SAFE_BOOT)) {
-                mWindowManagerFuncs.rebootSafeMode(true);
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public boolean showDuringKeyguard() {
-            return true;
-        }
-
-        @Override
-        public boolean showBeforeProvisioning() {
-            return true;
-        }
-
-        @Override
-        public void onPress() {
-            // shutdown by making sure radio and power are handled accordingly.
-            mWindowManagerFuncs.shutdown(false /* confirm */);
-        }
-    }
-
+	
     private final class RestartAction extends SinglePressAction implements LongPressAction {
         private RestartAction() {
             super(R.drawable.ic_restart, R.string.global_action_restart);
@@ -458,7 +258,7 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
         public boolean onLongPress() {
             UserManager um = (UserManager) mContext.getSystemService(Context.USER_SERVICE);
             if (!um.hasUserRestriction(UserManager.DISALLOW_SAFE_BOOT)) {
-                mWindowManagerFuncs.rebootSafeMode(true);
+                mWindowManagerFuncs.reboot(true);
                 return true;
             }
             return false;
@@ -476,57 +276,30 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
 
         @Override
         public void onPress() {
-            AdvancedGlobalActionsDialog.showDialog(mKeyguardShowing, mDeviceProvisioned);
+            mWindowManagerFuncs.reboot(true /* confirm */);
         }
     }
 
 
-    private class BugReportAction extends SinglePressAction implements LongPressAction {
+    private class QuickRestartAction extends SinglePressAction {
 
-        public BugReportAction() {
-            super(R.drawable.ic_lock_bugreport, R.string.bugreport_title);
+        public QuickRestartAction() {
+            super(R.drawable.ic_quick_restart, R.string.global_action_quick_restart);
         }
 
         @Override
         public void onPress() {
             // don't actually trigger the bugreport if we are running stability
             // tests via monkey
-            if (ActivityManager.isUserAMonkey()) {
-                return;
-            }
-            // Add a little delay before executing, to give the
-            // dialog a chance to go away before it takes a
-            // screenshot.
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        // Take an "interactive" bugreport.
-                        MetricsLogger.action(mContext,
-                                MetricsEvent.ACTION_BUGREPORT_FROM_POWER_MENU_INTERACTIVE);
-                        ActivityManager.getService().requestBugReport(
-                                ActivityManager.BUGREPORT_OPTION_INTERACTIVE);
-                    } catch (RemoteException e) {
-                    }
-                }
-            }, 500);
-        }
-
-        @Override
-        public boolean onLongPress() {
-            // don't actually trigger the bugreport if we are running stability
-            // tests via monkey
-            if (ActivityManager.isUserAMonkey()) {
-                return false;
-            }
             try {
-                // Take a "full" bugreport.
-                MetricsLogger.action(mContext, MetricsEvent.ACTION_BUGREPORT_FROM_POWER_MENU_FULL);
-                ActivityManager.getService().requestBugReport(
-                        ActivityManager.BUGREPORT_OPTION_FULL);
+                final IActivityManager am =
+                      ActivityManagerNative.asInterface(ServiceManager.checkService("activity"));
+                if (am != null) {
+                    am.restart();
+                }
             } catch (RemoteException e) {
+                Log.e(TAG, "failure trying to perform hot reboot", e);
             }
-            return false;
         }
 
         public boolean showDuringKeyguard() {
@@ -537,226 +310,74 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
         public boolean showBeforeProvisioning() {
             return false;
         }
+    }
+	
+	private class RecoveryAction extends SinglePressAction {
+
+        public RecoveryAction() {
+            super(R.drawable.ic_quick_restart, R.string.global_action_recovery);
+        }
 
         @Override
-        public String getStatus() {
-            return mContext.getString(
-                    R.string.bugreport_status,
-                    Build.VERSION.RELEASE,
-                    Build.ID);
+        public void onPress() {
+            // don't actually trigger the bugreport if we are running stability
+            // tests via monkey
+            ((PowerManager) getSystemService(Context.POWER_SERVICE)).reboot(PowerManager.REBOOT_RECOVERY);
+        }
+
+        public boolean showDuringKeyguard() {
+            return true;
+        }
+
+        @Override
+        public boolean showBeforeProvisioning() {
+            return false;
         }
     }
+	
+	private class BootloaderAction extends SinglePressAction {
 
-    private Action getSettingsAction() {
-        return new SinglePressAction(R.drawable.ic_settings,
-                R.string.global_action_settings) {
+        public BootloaderAction() {
+            super(R.drawable.ic_quick_restart, R.string.global_action_bootloader);
+        }
 
-            @Override
-            public void onPress() {
-                Intent intent = new Intent(Settings.ACTION_SETTINGS);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                mContext.startActivity(intent);
-            }
+        @Override
+        public void onPress() {
+            // don't actually trigger the bugreport if we are running stability
+            // tests via monkey
+            ((PowerManager) getSystemService(Context.POWER_SERVICE)).reboot(PowerManager.REBOOT_BOOTLOADER);
+        }
 
-            @Override
-            public boolean showDuringKeyguard() {
-                return true;
-            }
+        public boolean showDuringKeyguard() {
+            return true;
+        }
 
-            @Override
-            public boolean showBeforeProvisioning() {
-                return true;
-            }
-        };
-    }
-
-    private Action getEmergencyAction() {
-        return new SinglePressAction(R.drawable.emergency_icon,
-                R.string.global_action_emergency) {
-            @Override
-            public void onPress() {
-                mEmergencyAffordanceManager.performEmergencyCall();
-            }
-
-            @Override
-            public boolean showDuringKeyguard() {
-                return true;
-            }
-
-            @Override
-            public boolean showBeforeProvisioning() {
-                return true;
-            }
-        };
-    }
-
-    private Action getAssistAction() {
-        return new SinglePressAction(R.drawable.ic_action_assist_focused,
-                R.string.global_action_assist) {
-            @Override
-            public void onPress() {
-                Intent intent = new Intent(Intent.ACTION_ASSIST);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                mContext.startActivity(intent);
-            }
-
-            @Override
-            public boolean showDuringKeyguard() {
-                return true;
-            }
-
-            @Override
-            public boolean showBeforeProvisioning() {
-                return true;
-            }
-        };
-    }
-
-    private Action getVoiceAssistAction() {
-        return new SinglePressAction(R.drawable.ic_voice_search,
-                R.string.global_action_voice_assist) {
-            @Override
-            public void onPress() {
-                Intent intent = new Intent(Intent.ACTION_VOICE_ASSIST);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                mContext.startActivity(intent);
-            }
-
-            @Override
-            public boolean showDuringKeyguard() {
-                return true;
-            }
-
-            @Override
-            public boolean showBeforeProvisioning() {
-                return true;
-            }
-        };
-    }
-
-    private Action getLockdownAction() {
-        return new SinglePressAction(R.drawable.ic_lock_lock,
-                R.string.global_action_lockdown) {
-
-            @Override
-            public void onPress() {
-                new LockPatternUtils(mContext).requireCredentialEntry(UserHandle.USER_ALL);
-                try {
-                    WindowManagerGlobal.getWindowManagerService().lockNow(null);
-                } catch (RemoteException e) {
-                    Log.e(TAG, "Error while trying to lock device.", e);
-                }
-            }
-
-            @Override
-            public boolean showDuringKeyguard() {
-                return true;
-            }
-
-            @Override
-            public boolean showBeforeProvisioning() {
-                return false;
-            }
-        };
-    }
-
-    private UserInfo getCurrentUser() {
-        try {
-            return ActivityManager.getService().getCurrentUser();
-        } catch (RemoteException re) {
-            return null;
+        @Override
+        public boolean showBeforeProvisioning() {
+            return false;
         }
     }
-
-    private boolean isCurrentUserOwner() {
-        UserInfo currentUser = getCurrentUser();
-        return currentUser == null || currentUser.isPrimary();
-    }
-
-    private void addUsersToMenu(ArrayList<Action> items) {
-        UserManager um = (UserManager) mContext.getSystemService(Context.USER_SERVICE);
-        if (um.isUserSwitcherEnabled()) {
-            List<UserInfo> users = um.getUsers();
-            UserInfo currentUser = getCurrentUser();
-            for (final UserInfo user : users) {
-                if (user.supportsSwitchToByUser()) {
-                    boolean isCurrentUser = currentUser == null
-                            ? user.id == 0 : (currentUser.id == user.id);
-                    Drawable icon = user.iconPath != null ? Drawable.createFromPath(user.iconPath)
-                            : null;
-                    SinglePressAction switchToUser = new SinglePressAction(
-                            R.drawable.ic_menu_cc, icon,
-                            (user.name != null ? user.name : "Primary")
-                                    + (isCurrentUser ? " \u2714" : "")) {
-                        public void onPress() {
-                            try {
-                                ActivityManager.getService().switchUser(user.id);
-                            } catch (RemoteException re) {
-                                Log.e(TAG, "Couldn't switch user " + re);
-                            }
-                        }
-
-                        public boolean showDuringKeyguard() {
-                            return true;
-                        }
-
-                        public boolean showBeforeProvisioning() {
-                            return false;
-                        }
-                    };
-                    items.add(switchToUser);
-                }
-            }
-        }
-    }
-
+	
     private void prepareDialog() {
-        refreshSilentMode();
-        mAirplaneModeOn.updateState(mAirplaneState);
         mAdapter.notifyDataSetChanged();
-        if (mShowSilentToggle) {
-            IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
-            mContext.registerReceiver(mRingerModeReceiver, filter);
-        }
-    }
-
-    private void refreshSilentMode() {
-        if (!mHasVibrator) {
-            final boolean silentModeOn =
-                    mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL;
-            ((ToggleAction) mSilentModeAction).updateState(
-                    silentModeOn ? ToggleAction.State.On : ToggleAction.State.Off);
-        }
     }
 
     /** {@inheritDoc} */
     public void onDismiss(DialogInterface dialog) {
         mWindowManagerFuncs.onGlobalActionsHidden();
-        if (mShowSilentToggle) {
-            try {
-                mContext.unregisterReceiver(mRingerModeReceiver);
-            } catch (IllegalArgumentException ie) {
-                // ignore this
-                Log.w(TAG, ie);
-            }
-        }
     }
 
     /** {@inheritDoc} */
     public void onClick(DialogInterface dialog, int which) {
-        Action item = mAdapter.getItem(which);
-        if (!(item instanceof SilentModeTriStateAction)) {
-            dialog.dismiss();
-        }
-        item.onPress();
+        dialog.dismiss();
     }
 
     /**
      * The adapter used for the list within the global actions dialog, taking
      * into account whether the keyguard is showing via
-     * {@link com.android.systemui.globalactions.GlobalActionsDialog#mKeyguardShowing} and whether
+     * {@link com.android.systemui.globalactions.AdvancedGlobalActionsDialog#mKeyguardShowing} and whether
      * the device is provisioned
-     * via {@link com.android.systemui.globalactions.GlobalActionsDialog#mDeviceProvisioned}.
+     * via {@link com.android.systemui.globalactions.AdvancedGlobalActionsDialog#mDeviceProvisioned}.
      */
     private class MyAdapter extends BaseAdapter {
 
@@ -1072,103 +693,6 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
         }
     }
 
-    private class SilentModeToggleAction extends ToggleAction {
-        public SilentModeToggleAction() {
-            super(R.drawable.ic_audio_vol_mute,
-                    R.drawable.ic_audio_vol,
-                    R.string.global_action_toggle_silent_mode,
-                    R.string.global_action_silent_mode_on_status,
-                    R.string.global_action_silent_mode_off_status);
-        }
-
-        void onToggle(boolean on) {
-            if (on) {
-                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-            } else {
-                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-            }
-        }
-
-        public boolean showDuringKeyguard() {
-            return true;
-        }
-
-        public boolean showBeforeProvisioning() {
-            return false;
-        }
-    }
-
-    private static class SilentModeTriStateAction implements Action, View.OnClickListener {
-
-        private final int[] ITEM_IDS = {R.id.option1, R.id.option2, R.id.option3};
-
-        private final AudioManager mAudioManager;
-        private final Handler mHandler;
-        private final Context mContext;
-
-        SilentModeTriStateAction(Context context, AudioManager audioManager, Handler handler) {
-            mAudioManager = audioManager;
-            mHandler = handler;
-            mContext = context;
-        }
-
-        private int ringerModeToIndex(int ringerMode) {
-            // They just happen to coincide
-            return ringerMode;
-        }
-
-        private int indexToRingerMode(int index) {
-            // They just happen to coincide
-            return index;
-        }
-
-        @Override
-        public CharSequence getLabelForAccessibility(Context context) {
-            return null;
-        }
-
-        public View create(Context context, View convertView, ViewGroup parent,
-                LayoutInflater inflater) {
-            View v = inflater.inflate(R.layout.global_actions_silent_mode, parent, false);
-
-            int selectedIndex = ringerModeToIndex(mAudioManager.getRingerMode());
-            for (int i = 0; i < 3; i++) {
-                View itemView = v.findViewById(ITEM_IDS[i]);
-                itemView.setSelected(selectedIndex == i);
-                // Set up click handler
-                itemView.setTag(i);
-                itemView.setOnClickListener(this);
-            }
-            return v;
-        }
-
-        public void onPress() {
-        }
-
-        public boolean showDuringKeyguard() {
-            return true;
-        }
-
-        public boolean showBeforeProvisioning() {
-            return false;
-        }
-
-        public boolean isEnabled() {
-            return true;
-        }
-
-        void willCreate() {
-        }
-
-        public void onClick(View v) {
-            if (!(v.getTag() instanceof Integer)) return;
-
-            int index = (Integer) v.getTag();
-            mAudioManager.setRingerMode(indexToRingerMode(index));
-            mHandler.sendEmptyMessageDelayed(MESSAGE_DISMISS, DIALOG_DISMISS_DELAY);
-        }
-    }
-
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -1178,31 +702,7 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
                 if (!SYSTEM_DIALOG_REASON_GLOBAL_ACTIONS.equals(reason)) {
                     mHandler.sendEmptyMessage(MESSAGE_DISMISS);
                 }
-            } else if (TelephonyIntents.ACTION_EMERGENCY_CALLBACK_MODE_CHANGED.equals(action)) {
-                // Airplane mode can be changed after ECM exits if airplane toggle button
-                // is pressed during ECM mode
-                if (!(intent.getBooleanExtra("PHONE_IN_ECM_STATE", false)) &&
-                        mIsWaitingForEcmExit) {
-                    mIsWaitingForEcmExit = false;
-                    changeAirplaneModeSystemSetting(true);
-                }
             }
-        }
-    };
-
-    private BroadcastReceiver mRingerModeReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
-                mHandler.sendEmptyMessage(MESSAGE_REFRESH);
-            }
-        }
-    };
-
-    private ContentObserver mAirplaneModeObserver = new ContentObserver(new Handler()) {
-        @Override
-        public void onChange(boolean selfChange) {
-            onAirplaneModeChanged();
         }
     };
 
@@ -1221,7 +721,6 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
                     }
                     break;
                 case MESSAGE_REFRESH:
-                    refreshSilentMode();
                     mAdapter.notifyDataSetChanged();
                     break;
                 case MESSAGE_SHOW:
@@ -1231,38 +730,7 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
         }
     };
 
-    private ToggleAction.State getUpdatedAirplaneToggleState() {
-        return (Settings.Global.getInt(mContext.getContentResolver(),
-                    Settings.Global.AIRPLANE_MODE_ON, 0) == 1) ?
-                ToggleAction.State.On : ToggleAction.State.Off;
-    }
-
-    private void onAirplaneModeChanged() {
-        // Let the service state callbacks handle the state.
-        if (mHasTelephony) return;
-
-        mAirplaneState = getUpdatedAirplaneToggleState();
-        mAirplaneModeOn.updateState(mAirplaneState);
-    }
-
-    /**
-     * Change the airplane mode system setting
-     */
-    private void changeAirplaneModeSystemSetting(boolean on) {
-        Settings.Global.putInt(
-                mContext.getContentResolver(),
-                Settings.Global.AIRPLANE_MODE_ON,
-                on ? 1 : 0);
-        Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-        intent.addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
-        intent.putExtra("state", on);
-        mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
-        if (!mHasTelephony) {
-            mAirplaneState = on ? ToggleAction.State.On : ToggleAction.State.Off;
-        }
-    }
-
-    private static final class ActionsDialog extends Dialog implements DialogInterface,
+    private static final class AdvancedActionsDialog extends Dialog implements DialogInterface,
             ColorExtractor.OnColorsChangedListener {
 
         private final Context mContext;
@@ -1275,7 +743,7 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
         private final ColorExtractor mColorExtractor;
         private boolean mKeyguardShowing;
 
-        public ActionsDialog(Context context, OnClickListener clickListener, MyAdapter adapter,
+        public AdvancedActionsDialog(Context context, OnClickListener clickListener, MyAdapter adapter,
                 OnItemLongClickListener longClickListener) {
             super(context, com.android.systemui.R.style.Theme_SystemUI_Dialog_GlobalActions);
             mContext = context;
