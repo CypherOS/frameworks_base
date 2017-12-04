@@ -138,7 +138,8 @@ oneway interface IStatusBar
     void showPinningEnterExitToast(boolean entering);
     void showPinningEscapeToast();
 
-    void showShutdownUi(boolean isReboot, String reason);
+    void showShutdownUi(boolean isReboot, boolean isRebootBootloader,
+                boolean isRebootRecovery, String reason);
 
     // Used to show the dialog when FingerprintService starts authentication
     void showFingerprintDialog(in Bundle bundle, IBiometricPromptReceiver receiver);
