@@ -20,8 +20,8 @@
     <!-- The list of components which should be automatically disabled. -->
     <string-array name="config_disabledComponents" translatable="false">
     </string-array>
-	
-	<!-- The list of components which should be forced to be enabled. -->
+
+    <!-- The list of components which should be forced to be enabled. -->
     <string-array name="config_forceEnabledComponents" translatable="false">
     </string-array>
   
@@ -88,20 +88,33 @@
     <!-- Internal default to navigation bar value -->
     <bool name="config_defaultToNavigationBar">true</bool>
 
-	<!-- Is the battery LED intrusive? Used to decide if there should be a disable option -->
+    <!-- Is the battery LED intrusive? Used to decide if there should be a disable option -->
     <bool name="config_intrusiveBatteryLed">false</bool>
 
     <!-- Does the battery LED support multiple colors? Used to decide if the user can change the colors -->
     <bool name="config_multiColorBatteryLed">false</bool>
-	
-	<!-- Does the device supports fast charging -->
+
+    <!-- Does the device supports fast charging -->
     <bool name="config_FastChargingLedSupported">false</bool>
 
     <!-- Default value for led color when battery is low on charge -->
     <integer name="config_notificationsFastBatteryARGB">0x0000FF</integer>
-	
-	<bool name="config_multiColorNotificationLed">false</bool>
-	
+
+    <bool name="config_multiColorNotificationLed">false</bool>
+
     <!-- Whether device has physical tri state switch -->
     <bool name="config_hasAlertSlider">false</bool>
+
+    <!-- Defines the default set of extended global actions. Actions may still be disabled or hidden based
+         on the current state of the device.
+         Each item must be one of the following strings:
+         "quick_restart" = Restart the device by destroying AM
+         "recovery" = Restart the device to recovery mode
+         "bootloader" = Restart the device to bootloader
+         -->
+    <string-array translatable="false" name="config_extendedGlobalActionsList">
+        <item>quick_restart</item>
+        <item>recovery</item>
+        <item>bootloader</item>
+    </string-array>
 </resources>
