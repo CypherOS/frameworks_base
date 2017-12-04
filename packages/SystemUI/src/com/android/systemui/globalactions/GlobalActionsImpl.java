@@ -62,7 +62,8 @@ public class GlobalActionsImpl implements GlobalActions {
     }
 
     @Override
-    public void showShutdownUi(boolean isReboot, String reason) {
+    public void showShutdownUi(boolean isReboot, boolean isRebootRecovery,
+                boolean isRebootBootloader, String reason) {
         GradientDrawable background = new GradientDrawable(mContext);
         background.setAlpha((int) (SHUTDOWN_SCRIM_ALPHA * 255));
 
@@ -96,8 +97,17 @@ public class GlobalActionsImpl implements GlobalActions {
         bar.getIndeterminateDrawable().setTint(color);
         TextView message = d.findViewById(R.id.text1);
         message.setTextColor(color);
-        if (isReboot) message.setText(R.string.reboot_to_reset_message);
-
+		String rebootMessage = mContext.getResources().getString(R.string.shutdown_progress);
+		if (isReboot) {
+			rebootMessage = mContext.getResources().getString(R.string.global_restart);
+		}
+		if (isRebootRecovery) {
+			rebootMessage = mContext.getResources().getString(R.string.global_restart_recovery_message);
+		}
+		if (isRebootBootloader) {
+			rebootMessage = mContext.getResources().getString(R.string.global_restart_bootloader_message);
+		}
+        message.setText(rebootMessage);
         Point displaySize = new Point();
         mContext.getDisplay().getRealSize(displaySize);
         GradientColors colors = Dependency.get(SysuiColorExtractor.class).getColors(

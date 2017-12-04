@@ -477,7 +477,7 @@ public final class SystemServer {
                 @Override
                 public void run() {
                     synchronized (this) {
-                        ShutdownThread.rebootOrShutdown(null, reboot, reason);
+                        ShutdownThread.rebootOrShutdown(null, reboot, rebootRecovery, rebootBootloader, reason);
                     }
                 }
             };
