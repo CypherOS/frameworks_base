@@ -68,10 +68,10 @@ public class ScreenshotTile extends QSTileImpl<BooleanState> {
     public BooleanState newTileState() {
         return new BooleanState();
     }
-
-    @Override
-    public void setListening(boolean listening) {
-        if (mListening == listening) return;
+	
+	@Override
+    public void handleSetListening(boolean listening) {
+		if (mListening == listening) return;
         mListening = listening;
     }
 
