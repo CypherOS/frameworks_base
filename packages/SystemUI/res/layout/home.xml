@@ -15,7 +15,7 @@
 -->
 <com.google.android.systemui.OpaLayout android:id="@+id/home" android:clipChildren="false" android:clipToPadding="false" android:layout_width="@dimen/navigation_key_width" android:layout_height="fill_parent" android:layout_weight="0" android:paddingTop="@dimen/home_padding" android:paddingBottom="@dimen/home_padding" android:paddingStart="@dimen/navigation_key_padding" android:paddingEnd="@dimen/navigation_key_padding"
   xmlns:android="http://schemas.android.com/apk/res/android" xmlns:systemui="http://schemas.android.com/apk/res-auto">
-    <RelativeLayout android:layout_width="fill_parent" android:layout_height="fill_parent">
+    <RelativeLayout android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginTop="@dimen/home_padding" android:layout_marginBottom="@dimen/home_padding">
         <ImageView android:id="@+id/red" android:src="@drawable/ic_sysbar_opa_red" android:importantForAccessibility="no" style="@style/DotStyle" />
         <ImageView android:id="@+id/blue" android:src="@drawable/ic_sysbar_opa_blue" android:importantForAccessibility="no" style="@style/DotStyle" />
         <ImageView android:id="@+id/green" android:src="@drawable/ic_sysbar_opa_green" android:importantForAccessibility="no" style="@style/DotStyle" />
