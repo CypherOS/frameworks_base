@@ -584,7 +584,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             Log.d(TAG, "navbar is " + (mUseSwapKey ? "swapped" : "regular"));
             if (wasUsing != mUseSwapKey) {
                 if (mNavigationBarView != null) {
-                    mNavigationBar.prepareNavigationBarView();
+					setSwapKeysEnabled(mUseSwapKey); 
                 }
             }
         }
@@ -1707,8 +1707,8 @@ public class StatusBar extends SystemUI implements DemoMode,
     void awakenDreams() {
         SystemServicesProxy.getInstance(mContext).awakenDreamsAsync();
     }
-
-    private void setNavBarEnabled(boolean enabled) {
+	
+	private void setNavBarEnabled(boolean enabled) {
         if (enabled) {
             createNavigationBar();
             if (RESET_SYSTEMUI_VISIBILITY_FOR_NAVBAR) {
@@ -1716,6 +1716,17 @@ public class StatusBar extends SystemUI implements DemoMode,
             }
         } else {
             removeNavigationBar();
+        }
+    }
+	
+	private void setSwapKeysEnabled(boolean enabled) {
+        if (enabled) {
+            mNavigationBar.prepareNavigationBarView();
+            if (RESET_SYSTEMUI_VISIBILITY_FOR_NAVBAR) {
+                resetSystemUIVisibility();
+            }
+        } else {
+            return null;
         }
     }
 
