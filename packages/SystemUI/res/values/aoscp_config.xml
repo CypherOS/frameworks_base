@@ -18,6 +18,6 @@
     <string name="config_navBarLayoutSwapped" translatable="false">menu_ime,recent;home;back,space</string>
 
     <!-- Allow Opa (Pixel navbar) layout -->
-    <bool name="config_allowOpaLayout">true</bool>
+    <bool name="config_allowOpaLayout">false</bool>
 
 </resources>
