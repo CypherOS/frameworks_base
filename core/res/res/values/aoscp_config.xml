@@ -117,4 +117,7 @@
         <item>recovery</item>
         <item>bootloader</item>
     </string-array>
+	
+	<!-- Allow Opa (Pixel navbar) layout -->
+    <bool name="config_allowOpaLayout">false</bool>
 </resources>

@@ -631,7 +631,7 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     public void setOpaEnabled(boolean enabled) {
 		final boolean isEnabled = Settings.System.getIntForUser(this.getContext().getContentResolver(),
             Settings.System.NAVIGATION_BAR_ANIMATION, 0, UserHandle.USER_CURRENT) == 0;
-        final boolean configValue = getContext().getResources().getBoolean(R.bool.config_allowOpaLayout);
+        final boolean configValue = getContext().getResources().getBoolean(com.android.internal.R.bool.config_allowOpaLayout);
         final boolean shouldEnable = configValue && (enabled || UserManager.isDeviceInDemoMode(getContext())) && isEnabled;
         mOpaEnabled = shouldEnable;
 
