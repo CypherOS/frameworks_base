@@ -3,7 +3,9 @@ package com.google.android.systemui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.ContentObserver;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -12,8 +14,12 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.hardware.input.InputManager;
 import android.metrics.LogMaker;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.os.UserManager;
+import android.provider.Settings;
 import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.view.InputDevice;
@@ -127,17 +133,48 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     private final Interpolator mDotsFullSizeInterpolator = new PathInterpolator(0.4f, 0f, 0f, 1f);
     private final Interpolator mFastOutSlowInInterpolator = Interpolators.FAST_OUT_SLOW_IN;
     private final Interpolator mHomeDisappearInterpolator = new PathInterpolator(0.8f, 0f, 1f, 1f);
+	
+	private NavBarAnimationObserver mNavBarAnimationObserver;
+
+    protected class NavBarAnimationObserver extends ContentObserver {
+        NavBarAnimationObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+           ContentResolver resolver = mContext.getContentResolver();
+           resolver.registerContentObserver(Settings.System.getUriFor(
+                  Settings.System.NAVIGATION_BAR_ANIMATION),
+                  false, this, UserHandle.USER_CURRENT);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+           super.onChange(selfChange, uri);
+           setOpaEnabled(true);
+        }
+    }
 
     public OpaLayout(Context context) {
         super(context);
 		mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
         mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
+		
+		if (mNavBarAnimationObserver == null) {
+            mNavBarAnimationObserver = new NavBarAnimationObserver(new Handler());
+        }
+        mNavBarAnimationObserver.observe();
     }
 
     public OpaLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
 		mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
         mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
+		
+		if (mNavBarAnimationObserver == null) {
+            mNavBarAnimationObserver = new NavBarAnimationObserver(new Handler());
+        }
+        mNavBarAnimationObserver.observe();
     }
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -156,12 +193,22 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 		
 		mRipple = new KeyButtonRipple(context, this);
         setBackground(mRipple);
+		
+		if (mNavBarAnimationObserver == null) {
+            mNavBarAnimationObserver = new NavBarAnimationObserver(new Handler());
+        }
+        mNavBarAnimationObserver.observe();
     }
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 		mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
         mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
+		
+		if (mNavBarAnimationObserver == null) {
+            mNavBarAnimationObserver = new NavBarAnimationObserver(new Handler());
+        }
+        mNavBarAnimationObserver.observe();
     }
 
     private void startAll(ArraySet<Animator> animators) {
@@ -582,8 +629,10 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     }
 
     public void setOpaEnabled(boolean enabled) {
+		final boolean isEnabled = Settings.System.getIntForUser(this.getContext().getContentResolver(),
+            Settings.System.NAVIGATION_BAR_ANIMATION, 0, UserHandle.USER_CURRENT) == 0;
         final boolean configValue = getContext().getResources().getBoolean(R.bool.config_allowOpaLayout);
-        final boolean shouldEnable = configValue && (enabled || UserManager.isDeviceInDemoMode(getContext()));
+        final boolean shouldEnable = configValue && (enabled || UserManager.isDeviceInDemoMode(getContext())) && isEnabled;
         mOpaEnabled = shouldEnable;
 
         int visibility = shouldEnable ? View.VISIBLE : View.INVISIBLE;
