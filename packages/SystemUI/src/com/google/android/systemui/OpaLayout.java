@@ -3,7 +3,9 @@ package com.google.android.systemui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.ContentObserver;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -12,8 +14,12 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.hardware.input.InputManager;
 import android.metrics.LogMaker;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.os.UserManager;
+import android.provider.Settings;
 import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.view.InputDevice;
@@ -66,19 +72,19 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     private static final float HALO_SCALE_FACTOR = 0.47619048f;
 
     private KeyButtonView mHome;
-	private KeyButtonRipple mRipple;
+    private KeyButtonRipple mRipple;
 
     private int mAnimationState = ANIMATION_STATE_NONE;
     private final ArraySet<Animator> mCurrentAnimators = new ArraySet<Animator>();
-	private final MetricsLogger mMetricsLogger = Dependency.get(MetricsLogger.class);
+    private final MetricsLogger mMetricsLogger = Dependency.get(MetricsLogger.class);
 
     private boolean mIsVertical;
     private boolean mIsPressed;
     private boolean mLongClicked;
     private boolean mOpaEnabled;
-	private boolean mSupportsLongpress = true;
+    private boolean mSupportsLongpress = true;
     private long mStartTime;
-	private int mCode;
+    private int mCode;
 
     private View mRed;
     private View mBlue;
@@ -86,8 +92,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     private View mYellow;
     private View mWhite;
     private View mHalo;
-	
-	private int mDarkMode;
+
+    private int mDarkMode;
     private int mLightMode;
 
     private View mTop;
@@ -128,40 +134,81 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     private final Interpolator mFastOutSlowInInterpolator = Interpolators.FAST_OUT_SLOW_IN;
     private final Interpolator mHomeDisappearInterpolator = new PathInterpolator(0.8f, 0f, 1f, 1f);
 
+    private NavBarAnimationObserver mNavBarAnimationObserver;
+
+    protected class NavBarAnimationObserver extends ContentObserver {
+        NavBarAnimationObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+           ContentResolver resolver = mContext.getContentResolver();
+           resolver.registerContentObserver(Settings.System.getUriFor(
+                  Settings.System.NAVIGATION_BAR_ANIMATION),
+                  false, this, UserHandle.USER_CURRENT);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+           super.onChange(selfChange, uri);
+           setOpaEnabled(true);
+        }
+    }
+
     public OpaLayout(Context context) {
         super(context);
-		mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
+        mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
         mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
+
+        if (mNavBarAnimationObserver == null) {
+            mNavBarAnimationObserver = new NavBarAnimationObserver(new Handler());
+        }
+        mNavBarAnimationObserver.observe();
     }
 
     public OpaLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-		mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
+        mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
         mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
+
+        if (mNavBarAnimationObserver == null) {
+            mNavBarAnimationObserver = new NavBarAnimationObserver(new Handler());
+        }
+        mNavBarAnimationObserver.observe();
     }
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-		mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
+        mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
         mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
-		
-		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KeyButtonView,
+
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KeyButtonView,
                 defStyleAttr, 0);
-				
-		mCode = a.getInteger(R.styleable.KeyButtonView_keyCode, 0);
-		
-		mSupportsLongpress = a.getBoolean(R.styleable.KeyButtonView_keyRepeat, true);
-		
-		a.recycle();
-		
-		mRipple = new KeyButtonRipple(context, this);
+
+        mCode = a.getInteger(R.styleable.KeyButtonView_keyCode, 0);
+
+        mSupportsLongpress = a.getBoolean(R.styleable.KeyButtonView_keyRepeat, true);
+
+        a.recycle();
+
+        mRipple = new KeyButtonRipple(context, this);
         setBackground(mRipple);
+
+        if (mNavBarAnimationObserver == null) {
+            mNavBarAnimationObserver = new NavBarAnimationObserver(new Handler());
+        }
+        mNavBarAnimationObserver.observe();
     }
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-		mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
+        mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
         mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
+
+        if (mNavBarAnimationObserver == null) {
+            mNavBarAnimationObserver = new NavBarAnimationObserver(new Handler());
+        }
+        mNavBarAnimationObserver.observe();
     }
 
     private void startAll(ArraySet<Animator> animators) {
@@ -441,8 +488,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         }
         return longestAnim;
     }
-	
-	public void sendEvent(int action, int flags) {
+  
+    public void sendEvent(int action, int flags) {
         sendEvent(action, flags, SystemClock.uptimeMillis());
     }
 
@@ -536,15 +583,15 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     public void setImageResource(int resId) {
         ((ImageView) mWhite).setImageResource(resId);
     }
-	
-	public void setDarkIntensity(float darkIntensity) {
+
+    public void setDarkIntensity(float darkIntensity) {
         int backgroundColor = getBackgroundColor(darkIntensity);
         ((ImageView) mWhite).setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_ATOP));
         ((ImageView) mHalo).setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_ATOP));
         invalidate();
     }
-	
-	private int getBackgroundColor(float darkIntensity) {
+
+    private int getBackgroundColor(float darkIntensity) {
         return getColorForDarkIntensity(
                 darkIntensity, mLightMode, mDarkMode);
     }
@@ -567,13 +614,13 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         mLeft = mBlue;
         mRight = mGreen;
     }
-	
-	@Override
+
+    @Override
     public boolean isClickable() {
         return mCode != 0 || super.isClickable();
     }
-	
-	public void setCode(int code) {
+
+    public void setCode(int code) {
         mCode = code;
     }
 
@@ -582,8 +629,10 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     }
 
     public void setOpaEnabled(boolean enabled) {
+        final boolean isEnabled = Settings.System.getIntForUser(this.getContext().getContentResolver(),
+            Settings.System.NAVIGATION_BAR_ANIMATION, 0, UserHandle.USER_CURRENT) == 1;
         final boolean configValue = getContext().getResources().getBoolean(R.bool.config_allowOpaLayout);
-        final boolean shouldEnable = configValue && (enabled || UserManager.isDeviceInDemoMode(getContext()));
+        final boolean shouldEnable = configValue && (enabled || UserManager.isDeviceInDemoMode(getContext())) && isEnabled;
         mOpaEnabled = shouldEnable;
 
         int visibility = shouldEnable ? View.VISIBLE : View.INVISIBLE;
@@ -592,7 +641,6 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         mRed.setVisibility(visibility);
         mYellow.setVisibility(visibility);
         mGreen.setVisibility(visibility);
-        mHalo.setVisibility(visibility);
     }
 
 }

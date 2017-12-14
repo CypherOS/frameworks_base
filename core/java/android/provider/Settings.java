@@ -3957,6 +3957,14 @@ public final class Settings {
          * @hide
          */
         public static final String NAVIGATION_BAR_ENABLED = "navigation_bar_enabled";
+      
+        /**
+         * Whether user can enable/disable navigation bar animation.
+         * <p>
+         * Type: int (0 for false, 1 for true)
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_ANIMATION = "navigation_bar_animation";
 
         /**
          * Value for button brightness.
