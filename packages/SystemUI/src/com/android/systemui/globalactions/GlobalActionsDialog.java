@@ -59,6 +59,7 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.os.Vibrator;
 import android.provider.Settings;
+import android.provider.Settings.Secure;
 import android.service.dreams.DreamService;
 import android.service.dreams.IDreamManager;
 import android.telephony.PhoneStateListener;
@@ -87,6 +88,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.internal.colorextraction.drawable.GradientDrawable;
+import com.android.systemui.settings.SettingConfirmationHelper;
+import com.android.systemui.statusbar.SettingConfirmationSnackbarViewCreator;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -455,14 +458,46 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
         private RestartAction() {
             super(R.drawable.ic_restart, R.string.global_action_restart);
         }
+		
+		private void promptExtendedRestart() {
+            final SettingConfirmationSnackbarViewCreator
+                    mSnackbarViewCreator = new
+                    SettingConfirmationSnackbarViewCreator(mContext);
+            SettingConfirmationHelper.prompt(
+        			mSnackbarViewCreator.getSnackbarView(),
+                    Secure.EXTENDED_RESTART,
+                    true,
+					mContext.getString(com.android.systemui.R.string.extended_restart_name),
+                    mContext.getString(com.android.systemui.R.string.extended_restart),
+                    new SettingConfirmationHelper.OnSettingChoiceListener() {
+                        @Override
+                        public void onSettingConfirm(final String settingName) {
+                        }
+                        @Override
+                        public void onSettingDeny(final String settingName) {
+							mDialog.dismiss();
+                        }
+                    },
+                    null);
+        }
+		
+		private boolean extendedRestartEnabled() {
+            int enabled = Secure.getInt(mContext.getContentResolver(),
+                    Secure.EXTENDED_RESTART, 0);
+            return enabled == 1;
+        }
 
         @Override
         public boolean onLongPress() {
-            if (mExtendedGlobalActions == null) {
-                mExtendedGlobalActions = new ExtendedGlobalActionsDialog(mContext, mWindowManagerFuncs);
-            }
-            mExtendedGlobalActions.showDialog(mKeyguardShowing, mDeviceProvisioned);
-            return true;
+            if (!extendedRestartEnabled()) {
+				promptExtendedRestart();
+			} else {
+				if (mExtendedGlobalActions == null) {
+					mExtendedGlobalActions = new ExtendedGlobalActionsDialog(mContext, mWindowManagerFuncs);
+				}
+				mExtendedGlobalActions.showDialog(mKeyguardShowing, mDeviceProvisioned);
+			}
+			return false;
         }
 
         @Override
