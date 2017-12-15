@@ -56,4 +56,10 @@
     <string name="quick_settings_caffeine_label">Caffeine</string>
     <string name="accessibility_quick_settings_caffeine_off">Caffeine off</string>
     <string name="accessibility_quick_settings_caffeine_on">Caffeine on</string>
+	
+	<!-- OnTheSpot: Extended Restart feature description message. [CHAR LIMIT=NONE] -->
+    <string name="extended_restart">Would you like to long press the restart button to access extended restart options?</string>
+    <!-- OnTheSpot: Title of the Extended Restart feature for the reset dialog. [CHAR LIMIT=NONE] -->
+    <string name="extended_restart_name">Extended Restart</string>
+    <string name="extended_restart_summary">Restart the device to different modes such as bootloader and recovery</string>
 </resources>
