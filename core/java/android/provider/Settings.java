@@ -7308,7 +7308,7 @@ public final class Settings {
         public static final String MANAGED_PROFILE_CONTACT_REMOTE_SEARCH =
                 "managed_profile_contact_remote_search";
 
-	/**
+        /**
          * Setting to record whether to allow quickly expanding the Quick Settings screen
          * with simplified gestures. To be used with the OTS framework.
          *
@@ -7318,11 +7318,20 @@ public final class Settings {
                 "quick_settings_quick_pull_down";
 
         /**
+         * Whether the extended restart menu is available to the user.
+         *
+         * @hide
+         */
+        public static final String EXTENDED_RESTART =
+                "extended_restart";
+
+        /**
          * Settings to reset on user request. They will fall back to their default value (0).
          *
          * @hide
          */
         public static final String[] SETTINGS_TO_RESET = {
+            EXTENDED_RESTART,
             QUICK_SETTINGS_QUICK_PULL_DOWN
         };
 
