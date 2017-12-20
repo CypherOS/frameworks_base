@@ -4140,8 +4140,24 @@ public final class Settings {
         public static final String BATTERY_LIGHT_PULSE = "battery_light_pulse";
 
         /**
-         * Whether the battery light should only be enabled on fully charged battery.
-         * The value is boolean (1 or 0).
+        * Immersive recents options
+         *
+         * 0 = Default AOSP look
+         * 1 = Fullscreen
+         * 2 = Statusbar only
+         * 3 = Navbar only
+         */
+        public static final String IMMERSIVE_RECENTS = "immersive_recents";
+
+        /** some devices have a extra hw button e.g. n3 on the back on the
+         * fingerprint sensor. allow mapping button to key
+         *
+         * @hide
+         */
+        public static final String BUTTON_EXTRA_KEY_MAPPING = "button_extra_mapping";
+
+        /**
+         * The delay when killing the app on long press takes place
          * @hide
          */
         public static final String BATTERY_LIGHT_ONLY_FULLY_CHARGED = "battery_light_only_fully_charged";
