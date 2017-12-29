@@ -3934,6 +3934,14 @@ public final class Settings {
          * it to PRIVATE_SETTINGS below. Also add a validator that can validate
          * the setting value. See an example above.
          */
+		 
+		/**
+         * 0 - wallpaper based
+         * 1 - force light
+         * 2 - force dark
+         * @hide
+         */
+        public static final String DEVICE_THEME = "device_theme";
  
         /**
          * Whether allowing pocket service to register sensors and dispatch informations.
@@ -4380,7 +4388,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(LOCK_TO_APP_ENABLED);
             PRIVATE_SETTINGS.add(EGG_MODE);
             PRIVATE_SETTINGS.add(SHOW_BATTERY_PERCENT);
-            // Pocket mode handler.
+            PRIVATE_SETTINGS.add(DEVICE_THEME);
             PRIVATE_SETTINGS.add(POCKET_JUDGE);
             PRIVATE_SETTINGS.add(NAVIGATION_BAR_ENABLED);
             PRIVATE_SETTINGS.add(BUTTON_BRIGHTNESS);
