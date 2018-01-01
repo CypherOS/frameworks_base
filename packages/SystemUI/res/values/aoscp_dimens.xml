@@ -14,16 +14,17 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-	<!-- QS Brightness control padding -->
+    <!-- QS Brightness control padding -->
     <dimen name="qs_brightness_footer_padding">12dp</dimen>
     <dimen name="qs_footer_padding_top">0dp</dimen>
     <dimen name="qs_page_indicator_margin_bottom">12dp</dimen>
     <dimen name="qs_paged_tile_layout_padding_bottom">4dp</dimen>
-	
-	<!-- OPA home dimens -->
+
+    <!-- OPA home dimens -->
     <dimen name="halo_inner_radius">10.0dip</dimen>
     <dimen name="halo_thickness">1.0dip</dimen>
     <dimen name="halo_diameter">22.0dip</dimen>
+    <dimen name="halo_padding">15.0dip</dimen>
     <dimen name="opa_dot_diam">10.0dip</dimen>
     <dimen name="opa_diamond_translation">16.0dip</dimen>
     <dimen name="opa_line_y_translation">16.0dip</dimen>
