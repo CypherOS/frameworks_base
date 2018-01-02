@@ -7325,9 +7325,10 @@ public final class Settings {
                 "extended_restart";
 
         /**
-         * 0 - wallpaper based
-         * 1 - force light
-         * 2 - force dark
+         * 0 - Automatic (Wallpaper based)
+         * 1 - Light
+         * 2 - Dark
+         * 3 - Black
          * @hide
          */
         public static final String DEVICE_THEME = "device_theme";
