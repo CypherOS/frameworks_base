@@ -33,11 +33,6 @@
     <!-- Pocket bridge -->
     <java-symbol type="string" name="config_pocketBridgeSysfsInpocket" />
 
-    <!-- Button Brightness -->
-    <java-symbol type="integer" name="config_buttonBrightnessSettingMinimum" />
-    <java-symbol type="integer" name="config_buttonBrightnessSettingMaximum" />
-    <java-symbol type="integer" name="config_buttonBrightnessSettingDefault" />
-
     <!-- Whether notify fingerprint client of successful cancelled authentication -->
     <java-symbol type="bool" name="config_notifyClientOnFingerprintCancelSuccess" />
 
@@ -98,5 +93,4 @@
     <java-symbol type="string" name="global_restart_bootloader_message" />
 
     <java-symbol type="bool" name="config_allowOpaLayout" />
-
 </resources>
