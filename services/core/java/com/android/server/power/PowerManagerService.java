@@ -548,6 +548,11 @@ public final class PowerManagerService extends SystemService
 
     // button on touch
     private boolean mButtonBacklightOnTouchOnly;
+	
+	// Boolean for checking if software keys are enabled.
+	// When enabled, disable button brightness since hardware
+	// keys get disabled too.
+    private boolean mNavigationBarEnabled;
 
     // Set of app ids that we will always respect the wake locks for.
     int[] mDeviceIdleWhitelist = new int[0];
@@ -839,6 +844,9 @@ public final class PowerManagerService extends SystemService
         resolver.registerContentObserver(
                 Settings.System.getUriFor(Settings.System.BUTTON_BACKLIGHT_ON_TOUCH_ONLY),
                 false, mSettingsObserver, UserHandle.USER_ALL);
+		resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.NAVIGATION_BAR_ENABLED),
+                false, mSettingsObserver, UserHandle.USER_ALL);
         IVrManager vrManager = (IVrManager) getBinderService(Context.VR_SERVICE);
         if (vrManager != null) {
             try {
@@ -961,9 +969,14 @@ public final class PowerManagerService extends SystemService
         mScreenBrightnessSetting = Settings.System.getIntForUser(resolver,
                 Settings.System.SCREEN_BRIGHTNESS, mScreenBrightnessSettingDefault,
                 UserHandle.USER_CURRENT);
-        mButtonBacklightOnTouchOnly = Settings.System.getIntForUser(
-                mContext.getContentResolver(), Settings.System.BUTTON_BACKLIGHT_ON_TOUCH_ONLY,
+				
+        mButtonBacklightOnTouchOnly = Settings.System.getIntForUser(resolver, 
+		        Settings.System.BUTTON_BACKLIGHT_ON_TOUCH_ONLY,
                 0, UserHandle.USER_CURRENT) != 0;
+				
+		mNavigationBarEnabled = Settings.System.getIntForUser(resolver,
+                Settings.System.NAVIGATION_BAR_ENABLED, 1,
+                UserHandle.USER_CURRENT) != 0;
 
         if (oldScreenBrightnessSetting != getCurrentBrightnessSettingLocked()) {
             mTemporaryScreenBrightnessSettingOverride = -1;
@@ -1995,10 +2008,14 @@ public final class PowerManagerService extends SystemService
                         mUserActivitySummary = USER_ACTIVITY_SCREEN_BRIGHT;
                         if (mWakefulness == WAKEFULNESS_AWAKE) {
                             int buttonBrightness;
-                            if (mButtonBrightnessOverrideFromWindowManager >= 0) {
-                                buttonBrightness = mButtonBrightnessOverrideFromWindowManager;
+                            if (mNavigationBarEnabled) {
+                                buttonBrightness = 0;
                             } else {
-                                buttonBrightness = mButtonBrightness;
+                                if (mButtonBrightnessOverrideFromWindowManager >= 0) {
+                                    buttonBrightness = mButtonBrightnessOverrideFromWindowManager;
+                                } else {
+                                    buttonBrightness = mButtonBrightness;
+                                }
                             }
                             mLastButtonActivityTime = mButtonBacklightOnTouchOnly ?
                                     mLastButtonActivityTime : mLastUserActivityTime;
