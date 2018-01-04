@@ -3116,6 +3116,14 @@ public final class Settings {
         public static final String BUTTON_BRIGHTNESS = "button_brightness";
 
         /**
+         * Whether user can enable/disable button brightness.
+         * <p>
+         * Type: int (0 for false, 1 for true)
+         * @hide
+         */
+        public static final String BUTTON_BRIGHTNESS_ENABLED = "button_brightness_enabled";
+
+        /**
          * The time in ms to keep the button backlight on after pressing a button.
          * A value of 0 will keep the buttons on for as long as the screen is on.
          * @hide
