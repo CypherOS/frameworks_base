@@ -840,10 +840,10 @@ public final class PowerManagerService extends SystemService
         resolver.registerContentObserver(Settings.Global.getUriFor(
                 Settings.Global.DEVICE_DEMO_MODE),
                 false, mSettingsObserver, UserHandle.USER_SYSTEM);
-        resolver.registerContentObserver(Settings.Global.getUriFor(
+        resolver.registerContentObserver(Settings.System.getUriFor(
                 Settings.System.BUTTON_BRIGHTNESS),
                 false, mSettingsObserver, UserHandle.USER_ALL);
-		resolver.registerContentObserver(Settings.Global.getUriFor(
+		resolver.registerContentObserver(Settings.System.getUriFor(
                 Settings.System.BUTTON_BRIGHTNESS_ENABLED),
                 false, mSettingsObserver, UserHandle.USER_ALL);
         resolver.registerContentObserver(Settings.System.getUriFor(
