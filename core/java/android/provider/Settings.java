@@ -3108,34 +3108,6 @@ public final class Settings {
         public static final int SCREEN_BRIGHTNESS_MODE_AUTOMATIC = 1;
 
         /**
-         * The button brightness to be used while the screen is on or after a button press,
-         * depending on the value of {@link BUTTON_BACKLIGHT_TIMEOUT}.
-         * Valid value range is between 0 and {@link PowerManager#getMaximumButtonBrightness()}
-         * @hide
-         */
-        public static final String BUTTON_BRIGHTNESS = "button_brightness";
-		
-		/**
-         * Whether user can enable/disable button brightness.
-         * <p>
-         * Type: int (0 for false, 1 for true)
-         * @hide
-         */
-        public static final String BUTTON_BRIGHTNESS_ENABLED = "button_brightness_enabled";
-
-        /**
-         * The time in ms to keep the button backlight on after pressing a button.
-         * A value of 0 will keep the buttons on for as long as the screen is on.
-         * @hide
-         */
-        public static final String BUTTON_BACKLIGHT_TIMEOUT = "button_backlight_timeout";
-
-        /**
-         * @hide
-         */
-        public static final String BUTTON_BACKLIGHT_ON_TOUCH_ONLY = "button_backlight_on_touch_only";
-
-        /**
          * Control whether the process CPU usage meter should be shown.
          *
          * @deprecated This functionality is no longer available as of
@@ -3977,6 +3949,34 @@ public final class Settings {
          * @hide
          */
         public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
+		
+		/**
+         * The button brightness to be used while the screen is on or after a button press,
+         * depending on the value of {@link BUTTON_BACKLIGHT_TIMEOUT}.
+         * Valid value range is between 0 and {@link PowerManager#getMaximumButtonBrightness()}
+         * @hide
+         */
+        public static final String BUTTON_BRIGHTNESS = "button_brightness";
+		
+		/**
+         * Whether user can enable/disable button brightness.
+         * <p>
+         * Type: int (0 for false, 1 for true)
+         * @hide
+         */
+        public static final String BUTTON_BRIGHTNESS_ENABLED = "button_brightness_enabled";
+
+        /**
+         * The time in ms to keep the button backlight on after pressing a button.
+         * A value of 0 will keep the buttons on for as long as the screen is on.
+         * @hide
+         */
+        public static final String BUTTON_BACKLIGHT_TIMEOUT = "button_backlight_timeout";
+
+        /**
+         * @hide
+         */
+        public static final String BUTTON_BACKLIGHT_ON_TOUCH_ONLY = "button_backlight_on_touch_only";
 
         /**
          * Whether user can enable/disable navigation bar.
@@ -4391,6 +4391,10 @@ public final class Settings {
             PRIVATE_SETTINGS.add(EGG_MODE);
             PRIVATE_SETTINGS.add(SHOW_BATTERY_PERCENT);
             PRIVATE_SETTINGS.add(POCKET_JUDGE);
+			PRIVATE_SETTINGS.add(BUTTON_BRIGHTNESS);
+			PRIVATE_SETTINGS.add(BUTTON_BRIGHTNESS_ENABLED);
+			PRIVATE_SETTINGS.add(BUTTON_BACKLIGHT_TIMEOUT);
+			PRIVATE_SETTINGS.add(BUTTON_BACKLIGHT_ON_TOUCH_ONLY);
             PRIVATE_SETTINGS.add(NAVIGATION_BAR_ENABLED);
             PRIVATE_SETTINGS.add(KEY_HOME_LONG_PRESS_ACTION);
             PRIVATE_SETTINGS.add(KEY_HOME_DOUBLE_TAP_ACTION);
