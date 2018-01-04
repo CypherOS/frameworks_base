@@ -248,6 +248,7 @@ public final class PowerManagerService extends SystemService
 
     private int mButtonTimeout;
     private int mButtonBrightness;
+	private boolean mButtonBrightnessEnabled;
     private int mButtonBrightnessSettingDefault;
     private boolean mButtonPressed = false;
     private boolean mButtonOn = false;
@@ -842,6 +843,9 @@ public final class PowerManagerService extends SystemService
         resolver.registerContentObserver(Settings.Global.getUriFor(
                 Settings.System.BUTTON_BRIGHTNESS),
                 false, mSettingsObserver, UserHandle.USER_ALL);
+		resolver.registerContentObserver(Settings.Global.getUriFor(
+                Settings.System.BUTTON_BRIGHTNESS_ENABLED),
+                false, mSettingsObserver, UserHandle.USER_ALL);
         resolver.registerContentObserver(Settings.System.getUriFor(
                 Settings.System.BUTTON_BACKLIGHT_TIMEOUT),
                 false, mSettingsObserver, UserHandle.USER_ALL);
@@ -1017,6 +1021,11 @@ public final class PowerManagerService extends SystemService
         mButtonBrightness = Settings.System.getIntForUser(resolver,
                 Settings.System.BUTTON_BRIGHTNESS, mButtonBrightnessSettingDefault,
                 UserHandle.USER_CURRENT);
+				
+		mButtonBrightnessEnabled = Settings.System.getIntForUser(resolver,
+                Settings.System.BUTTON_BRIGHTNESS_ENABLED, 1, 
+				UserHandle.USER_CURRENT) != 0;
+		mButtonBrightnessEnabled &= !mNavigationBarEnabled;
 
         mDirty |= DIRTY_SETTINGS;
     }
@@ -2023,16 +2032,16 @@ public final class PowerManagerService extends SystemService
                             }
                             mLastButtonActivityTime = mButtonBacklightOnTouchOnly ?
                                     mLastButtonActivityTime : mLastUserActivityTime;
-                            if (mButtonTimeout != 0
+                            if (!mButtonBrightnessEnabled && mButtonTimeout != 0
                                     && now > mLastButtonActivityTime + mButtonTimeout) {
                                 mButtonsLight.setBrightness(0);
                                 mButtonOn = false;
                             } else {
-                                if ((!mButtonBacklightOnTouchOnly || mButtonPressed) &&
+                                if ((mButtonBrightnessEnabled && !mButtonBacklightOnTouchOnly || mButtonPressed) &&
                                         !mProximityPositive) {
                                     mButtonsLight.setBrightness(buttonBrightness);
                                     mButtonPressed = false;
-                                    if (buttonBrightness != 0 && mButtonTimeout != 0) {
+                                    if (mButtonBrightnessEnabled && buttonBrightness != 0 && mButtonTimeout != 0) {
                                         mButtonOn = true;
                                         if (now + mButtonTimeout < nextTimeout) {
                                             nextTimeout = now + mButtonTimeout;
@@ -2048,7 +2057,7 @@ public final class PowerManagerService extends SystemService
                         nextTimeout = mLastUserActivityTime + screenOffTimeout;
                         if (now < nextTimeout) {
                             mUserActivitySummary = USER_ACTIVITY_SCREEN_DIM;
-                            if (mWakefulness == WAKEFULNESS_AWAKE) {
+                            if (!mButtonBrightnessEnabled && mWakefulness == WAKEFULNESS_AWAKE) {
                                 mButtonsLight.setBrightness(0);
                                 mButtonOn = false;
                             }
