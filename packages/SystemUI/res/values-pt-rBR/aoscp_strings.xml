@@ -37,7 +37,7 @@
     <!-- QuickSettings: Alert slider tile related strings (re-using some of the do not disturb ones) [CHAR LIMIT=NONE] -->
     <string name="quick_settings_alert_slider_unavailable">Alert slider tile não está disponível</string>
     <string name="quick_settings_alert_slider_detail_alarms_only_description">Isso bloqueia TODOS os sons e vibrações, exceto aqueles de alarmes e reprodução de mídia.</string>
-    <string name="quick_settings_alert_slider_none_label">All notifications</string>
+    <string name="quick_settings_alert_slider_none_label">Todas as notificações</string>
     <string name="quick_settings_alert_slider_detail_disabled_message_description">As configurações adicionais não estão disponíveis quando o Não pertube está ligado.</string>
 
     <string name="zen_footer_alert_slider_priority_only_summary">Somente notificações especificadas</string>
