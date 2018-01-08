@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/* //device/apps/common/assets/res/any/strings.xml
+**
+** Copyright (C) 2017 CypherOS
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Pocket Lock -->
+    <string name="pocket_lock_message_long_press">Lange Power-Taste drücken, um zu interagieren</string>
+
+    <!-- Defines the sysfs attribute path used by pocket bridge
+        to communicate pocket state to the pocket judge kernel driver. -->
+    <string name="config_pocketBridgeSysfsInpocket"></string>
+
+    <!-- Alert slider proc nodes paths. -->
+    <string name="alert_slider_state_path"></string>
+    <string name="alert_slider_uevent_match_path"></string>
+
+    <!-- Vendor mismatched fingerprint warning [CHAR LIMIT=NONE] -->
+    <string name="system_error_vendorprint">Ihr Image stimmt nicht mit dem System überein. Bitte flashen Sie das <xliff:g id="string">%s</xliff:g> Image für Ihr Gerät</string>
+
+    <!-- Extended Restart -->
+    <!-- Defined in res/res/values/strings.xml -
+    <string name="global_action_restart">Restart</string>-->
+    <string name="global_action_quick_restart">Schneller Neustart</string>
+    <string name="global_action_recovery">Recovery</string>
+    <string name="global_action_bootloader">Bootloader</string>
+    <!-- Shutdown Thread -->
+    <string name="global_restart">Neustart</string>
+    <string name="global_restart_message">Neustart\u2026</string><!-- Can be used in SysUIReboot -->
+    <string name="global_quick_restart">Schneller Neustart</string>
+    <string name="global_restart_recovery">Recovery</string>
+    <string name="global_restart_recovery_message">Neustart zu Recovery\u2026</string><!-- Can be used in SysUIReboot -->
+    <string name="global_restart_bootloader">Bootloader</string>
+    <string name="global_restart_bootloader_message">Neustart zu Bootloader\u2026</string><!-- Can be used in SysUIReboot -->
+
+    <!-- Indication on the keyguard that is shown when the device is charging with a dash charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_dash_charging_time">Dash Charging (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> until full)</string>
+    <string name="keyguard_plugged_in_dash_charging">Dash Charging</string>
+</resources>
