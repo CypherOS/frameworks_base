@@ -58,6 +58,7 @@ public class DozeSensors {
     private final SensorManager mSensorManager;
     private final TriggerSensor[] mSensors;
     private final ContentResolver mResolver;
+    private final HandWaveSensor mHandWaveSensor;
     private final TriggerSensor mPickupSensor;
     private final DozeParameters mDozeParameters;
     private final AmbientDisplayConfiguration mConfig;
@@ -81,6 +82,11 @@ public class DozeSensors {
         mWakeLock = wakeLock;
         mProxCallback = proxCallback;
         mResolver = mContext.getContentResolver();
+
+        mHandWaveSensor = new HandWaveSensor(
+                mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY),
+                Settings.Secure.DOZE_PULSE_ON_HAND_WAVE,
+                config.pulseOnHandWaveAvailable());
 
         mSensors = new TriggerSensor[] {
                 new TriggerSensor(
@@ -143,6 +149,7 @@ public class DozeSensors {
         if (!listen) {
             mResolver.unregisterContentObserver(mSettingsObserver);
         }
+        mHandWaveSensor.setListening(listen);
     }
 
     /** Set the listening state of only the sensors that require the touchscreen. */
@@ -161,12 +168,15 @@ public class DozeSensors {
         for (TriggerSensor s : mSensors) {
             s.setListening(true);
         }
+        mHandWaveSensor.setListening(false);
+        mHandWaveSensor.setListening(true);
     }
 
     public void onUserSwitched() {
         for (TriggerSensor s : mSensors) {
             s.updateListener();
         }
+        mHandWaveSensor.updateListener();
     }
 
     public void setProxListening(boolean listen) {
@@ -182,6 +192,7 @@ public class DozeSensors {
             for (TriggerSensor s : mSensors) {
                 s.updateListener();
             }
+            mHandWaveSensor.updateListener();
         }
     };
 
@@ -202,6 +213,82 @@ public class DozeSensors {
      */
     public Boolean isProximityCurrentlyFar() {
         return mProxSensor.mCurrentlyFar;
+    }
+
+    private class HandWaveSensor implements SensorEventListener {
+
+        private static final int POCKET_DELTA_NS = 1000 * 1000 * 1000;
+
+        Sensor mSensor;
+        boolean mConfigured;
+        boolean mListening;
+        boolean mRegistered;
+        boolean mSawNear = false;
+        long mPocketTime = 0;
+
+        public HandWaveSensor(Sensor sensor, String setting, boolean configured) {
+            mConfigured = configured;
+            mSensor = sensor;
+
+            if (mConfigured) {
+                Log.i(TAG, "Utilizing TYPE_PROXIMITY sensor for hand wave gesture");
+            }
+        }
+
+        void setListening(boolean listen) {
+            if (mListening == listen) return;
+            mListening = listen;
+            updateListener();
+        }
+
+        void updateListener() {
+            if (!mConfigured || mSensor == null) return;
+            if (mListening && !mRegistered && enabledBySetting()) {
+                mRegistered = mSensorManager.registerListener(this, mSensor,
+                        SensorManager.SENSOR_DELAY_NORMAL, 0);
+            } else if (mRegistered) {
+                mSensorManager.unregisterListener(this);
+                mRegistered = false;
+            }
+        }
+
+        boolean enabledBySetting() {
+            return Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                    Settings.Secure.DOZE_PULSE_ON_HAND_WAVE, 1, UserHandle.USER_CURRENT) != 0;
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            boolean mCurrentlyNear = event.values[0] < mSensor.getMaximumRange();
+            if (mSawNear && !mCurrentlyNear) {
+                if (whenToPulse(event.timestamp)) {
+                    DozeUtils.startUserPulse(mContext);
+                }
+            } else {
+                mPocketTime = event.timestamp;
+            }
+            mSawNear = mCurrentlyNear;
+        }
+
+        private boolean whenToPulse(long timestamp) {
+            long delta = timestamp - mPocketTime;
+
+            if (DozeUtils.pulseOnHandWaveEnabled(mContext)
+                        && !DozeUtils.pocketLockEnabled(mContext)) {
+                return true;
+            } else if (DozeUtils.pulseOnHandWaveEnabled(mContext)
+                        && !DozeUtils.pocketLockEnabled(mContext)) {
+                return delta < POCKET_DELTA_NS;
+            } else if (!DozeUtils.pulseOnHandWaveEnabled(mContext)
+                        && DozeUtils.pocketLockEnabled(mContext)) {
+                return delta >= POCKET_DELTA_NS;
+            }
+            return false;
+        }
     }
 
     private class ProxSensor implements SensorEventListener {
