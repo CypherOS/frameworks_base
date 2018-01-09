@@ -58,7 +58,8 @@ public class DozeSensors {
     private final SensorManager mSensorManager;
     private final TriggerSensor[] mSensors;
     private final ContentResolver mResolver;
-    private final TriggerSensor mPickupSensor;
+    private final TriggerSensor mHandWaveSensor;
+	private final TriggerSensor mPickupSensor;
     private final DozeParameters mDozeParameters;
     private final AmbientDisplayConfiguration mConfig;
     private final WakeLock mWakeLock;
@@ -94,6 +95,12 @@ public class DozeSensors {
                         Settings.Secure.DOZE_PULSE_ON_PICK_UP,
                         config.pulseOnPickupAvailable(),
                         DozeLog.PULSE_REASON_SENSOR_PICKUP, false /* touchCoords */,
+                        false /* touchscreen */),
+				mHandWaveSensor = new TriggerSensor(
+                        mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY),
+                        Settings.Secure.DOZE_PULSE_ON_HAND_WAVE,
+                        config.pulseOnHandWaveAvailable(),
+                        DozeLog.PULSE_REASON_SENSOR_HAND_WAVE, false /* touchCoords */,
                         false /* touchscreen */),
                 new TriggerSensor(
                         findSensorWithType(config.doubleTapSensorType()),
