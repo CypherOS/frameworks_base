@@ -148,4 +148,7 @@
 
     <!-- Determines whether the device supports fingerprint navigation -->
     <bool name="config_supportsFingerprintNavigation">false</bool>
+
+    <!-- Doze Addon: should the TYPE_PROXIMITY sensor be used as a pulse signal. -->
+    <bool name="config_dozePulseHandWave">true</bool>
 </resources>
