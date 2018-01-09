@@ -142,4 +142,7 @@
     <!-- for notification overlays to force what they need -->
     <bool name="config_useDarkBgNotificationTintingOverride">false</bool>
     <bool name="config_notificationTintingOverride">false</bool>
+
+    <!-- Doze Addon: should the TYPE_PROXIMITY sensor be used as a pulse signal. -->
+    <bool name="config_dozePulseHandWave">true</bool>
 </resources>
