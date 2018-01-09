@@ -93,5 +93,8 @@
     <string name="notification_channel_screenrecord">Screenrecords</string>
     <!-- Screenshot QS tile -->
     <string name="quick_settings_screenrecord_label">Screenrecord</string>
+	
+	<!-- Battery saver tile -->
+    <string name="battery_saver_qs_tile_fully_charged">Fully Charged</string>
 
 </resources>
