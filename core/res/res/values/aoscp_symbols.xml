@@ -180,4 +180,7 @@
   <java-symbol type="string" name="config_vendorBiometricsDescriptor" />
   <java-symbol type="integer" name="config_vendorBiometricsTransactionId" />
 
+  <!-- Doze Addon: should the TYPE_PROXIMITY sensor be used as a pulse signal. -->
+  <java-symbol type="bool" name="config_dozePulseHandWave" />
+
 </resources>
