@@ -6853,10 +6853,16 @@ public final class Settings {
         public static final String DOZE_ALWAYS_ON = "doze_always_on";
 
         /**
-         * Whether the device should pulse on pick up gesture.
+         * Whether the device should pulse on hand wave gesture.
          * @hide
          */
         public static final String DOZE_PULSE_ON_PICK_UP = "doze_pulse_on_pick_up";
+		
+		/**
+         * Whether the device should pulse on pick up gesture.
+         * @hide
+         */
+        public static final String DOZE_PULSE_ON_HAND_WAVE = "doze_pulse_on_hand_wave";
 
         /**
          * Whether the device should pulse on long press gesture.
@@ -7541,6 +7547,7 @@ public final class Settings {
             QS_TILES,
             DOZE_ENABLED,
             DOZE_PULSE_ON_PICK_UP,
+			DOZE_PULSE_ON_HAND_WAVE,
             DOZE_PULSE_ON_DOUBLE_TAP,
             NFC_PAYMENT_DEFAULT_COMPONENT,
             AUTOMATIC_STORAGE_MANAGER_DAYS_TO_RETAIN,
