@@ -40,6 +40,8 @@ import com.android.systemui.statusbar.phone.StatusBarIconController;
 import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
 import com.android.systemui.volume.VolumeDialogControllerImpl;
 
+import com.google.android.systemui.GoogleServices;
+
 import java.util.function.Consumer;
 
 /**
@@ -108,6 +110,9 @@ public class SystemUIFactory {
     }
 
     public <T> T createInstance(Class<T> classType) {
+        if (classType == VendorServices.class) {
+            return (T)new GoogleServices();
+        }
         return null;
     }
 
