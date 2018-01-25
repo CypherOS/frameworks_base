@@ -126,8 +126,8 @@
 
     <!-- Doze Addon: should the TYPE_PROXIMITY sensor be used as a pulse signal. -->
     <bool name="config_dozePulseHandWave">true</bool>
-	
-	<!--  Define optional package verifier name -->
+
+    <!--  Define optional package verifier name -->
     <string name="config_optionalPackageVerifierName" translatable="false"></string>
 
     <!-- The duration (in milliseconds) for the outgoing sms authorization request to timeout.-->
@@ -135,4 +135,7 @@
 
     <!-- Enable sms authorization framework-->
     <bool name="config_sms_authorization_enabled">false</bool>
+
+    <!-- Whether device has a custom overlay directory such as /system/overlay -->
+    <bool name="config_hasCustomOverlayDir">false</bool>
 </resources>
