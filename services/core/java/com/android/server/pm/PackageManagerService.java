@@ -646,6 +646,7 @@ public class PackageManagerService extends IPackageManager.Stub
     final boolean mIsUpgrade;
     final boolean mIsPreNUpgrade;
     final boolean mIsPreNMR1Upgrade;
+	final boolean mHasCustomOverlayDir;
 
     // Have we told the Activity Manager to whitelist the default container service by uid yet?
     @GuardedBy("mPackages")
@@ -2611,7 +2612,14 @@ public class PackageManagerService extends IPackageManager.Stub
             // Collect vendor overlay packages. (Do this before scanning any apps.)
             // For security and version matching reason, only consider
             // overlay packages if they reside in the right directory.
-            scanDirTracedLI(new File(VENDOR_OVERLAY_DIR), mDefParseFlags
+			// If the device symlinks system/vendor, scan it's fallback directory system/overlay
+			mHasCustomOverlayDir = mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_hasCustomOverlayDir);
+			File vendorOverlayDir = new File(VENDOR_OVERLAY_DIR);
+			if (mHasCustomOverlayDir) {
+				File vendorOverlayDir = new File(Environment.getRootDirectory(), "overlay");
+			}
+            scanDirTracedLI(vendorOverlayDir, mDefParseFlags
                     | PackageParser.PARSE_IS_SYSTEM
                     | PackageParser.PARSE_IS_SYSTEM_DIR
                     | PackageParser.PARSE_TRUSTED_OVERLAY, scanFlags | SCAN_TRUSTED_OVERLAY, 0);
