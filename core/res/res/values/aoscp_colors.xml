@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 **
-** Copyright 2006, The Android Open Source Project
+** Copyright 2018, CypherOS
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 */
 -->
 <resources>
+    <!-- SysUiTheme: Base theming colors -->
     <color name="theme_color1">@color/black</color>
     <color name="theme_color2">@color/black</color>
     <color name="theme_color3">@color/black</color>
@@ -29,4 +30,12 @@
     <color name="theme_text1">@color/black</color>
     <color name="theme_text2">@color/black</color>
     <color name="theme_text3">@color/black</color>
+	
+	<!-- SysUiTheme: Moved here from Settings -->
+    <color name="suggestion_condition_background">#f2f2f2</color>
+    <color name="condition_card_background">#f8f8f8</color>
+    <color name="global_wifi_details_icon_color">#8A000000</color>
+
+    <!-- SysUiTheme: Moved here from SystemUI -->
+    <color name="zen_introduction">#ffffffff</color>
 </resources>
