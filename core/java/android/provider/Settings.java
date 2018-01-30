@@ -4384,6 +4384,16 @@ public final class Settings {
         public static final String BATTERY_LIGHT_REALLYFULL_COLOR = "battery_light_reallyfull_color";
 
         /**
+         * Face auto unlock
+         * @hide
+         */
+        public static final String FACE_AUTO_UNLOCK = "face_auto_unlock";
+
+         /** @hide */
+        public static final Validator FACE_AUTO_UNLOCK_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4577,6 +4587,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(WEATHER_LOCKSCREEN_UNIT);
             PRIVATE_SETTINGS.add(ONEHANDED_MODE);
             PRIVATE_SETTINGS.add(DEVICE_INTRODUCTION_COMPLETED);
+            PRIVATE_SETTINGS.add(FACE_AUTO_UNLOCK);
         }
 
         /**
@@ -4673,6 +4684,7 @@ public final class Settings {
             VALIDATORS.put(AMBIENT_RECOGNITION_NOTIFICATION, AMBIENT_RECOGNITION_NOTIFICATION_VALIDATOR);
             VALIDATORS.put(WEATHER_LOCKSCREEN_UNIT, WEATHER_LOCKSCREEN_UNIT_VALIDATOR);
             VALIDATORS.put(DEVICE_INTRODUCTION_COMPLETED, DEVICE_INTRODUCTION_COMPLETED_VALIDATOR);
+            VALIDATORS.put(FACE_AUTO_UNLOCK, FACE_AUTO_UNLOCK_VALIDATOR);
         }
 
         /**
