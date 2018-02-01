@@ -344,6 +344,11 @@ final class OverlayManagerServiceImpl {
             return false;
         }
 
+        // Ignore non-accent overlays.
+        if (!overlayPackage.isAccentOverlay) {
+            return false;
+        }
+
         try {
             final OverlayInfo oi = mSettings.getOverlayInfo(packageName, userId);
             final PackageInfo targetPackage =
