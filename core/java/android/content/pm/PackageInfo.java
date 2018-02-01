@@ -288,6 +288,9 @@ public class PackageInfo implements Parcelable {
 
     /** @hide */
     public boolean isStaticOverlay;
+	
+	/** @hide */
+    public boolean isAccentOverlay;
 
     public PackageInfo() {
     }
@@ -344,6 +347,7 @@ public class PackageInfo implements Parcelable {
         dest.writeString(overlayTarget);
         dest.writeInt(isStaticOverlay ? 1 : 0);
         dest.writeInt(overlayPriority);
+		dest.writeInt(isAccentOverlay ? 1 : 0);
     }
 
     public static final Parcelable.Creator<PackageInfo> CREATOR
@@ -396,6 +400,7 @@ public class PackageInfo implements Parcelable {
         overlayTarget = source.readString();
         isStaticOverlay = source.readInt() != 0;
         overlayPriority = source.readInt();
+		isAccentOverlay = source.readInt() != 0;
 
         // The component lists were flattened with the redundant ApplicationInfo
         // instances omitted.  Distribute the canonical one here as appropriate.
