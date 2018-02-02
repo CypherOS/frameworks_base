@@ -80,4 +80,9 @@ interface IStatusBarService
     void remTile(in ComponentName tile);
     void clickTile(in ComponentName tile);
     void handleSystemKey(in int key);
+	
+	/**
+	 * Toggles the devices flashlight.
+	 */
+	void toggleFlashlight();
 }
