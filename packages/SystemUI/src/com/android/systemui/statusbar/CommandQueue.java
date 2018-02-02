@@ -83,6 +83,7 @@ public class CommandQueue extends IStatusBar.Stub {
     private static final int MSG_SHOW_SHUTDOWN_UI              = 36 << MSG_SHIFT;
     private static final int MSG_SHOW_CONFIRM_SHUTDOWN_UI      = 37 << MSG_SHIFT;
     private static final int MSG_SET_TOP_APP_HIDES_STATUS_BAR  = 38 << MSG_SHIFT;
+    private static final int MSG_TOGGLE_FLASHLIGHT             = 39 << MSG_SHIFT;
 
     public static final int FLAG_EXCLUDE_NONE = 0;
     public static final int FLAG_EXCLUDE_SEARCH_PANEL = 1 << 0;
@@ -147,6 +148,7 @@ public class CommandQueue extends IStatusBar.Stub {
                 boolean isRebootBootloader, String reason) { }
         default void handleShowConfirmShutdownUi(boolean isReboot, boolean isRebootRecovery,
                 boolean isRebootBootloader, String reason) { }
+        default void toggleFlashlight() { }
     }
 
     @VisibleForTesting
@@ -160,6 +162,13 @@ public class CommandQueue extends IStatusBar.Stub {
 
     public void removeCallbacks(Callbacks callbacks) {
         mCallbacks.remove(callbacks);
+    }
+
+    public void toggleFlashlight() {
+        synchronized (mLock) {
+            mHandler.removeMessages(MSG_TOGGLE_FLASHLIGHT);
+            mHandler.sendEmptyMessage(MSG_TOGGLE_FLASHLIGHT);
+        }
     }
 
     public void setIcon(String slot, StatusBarIcon icon) {
@@ -673,6 +682,11 @@ public class CommandQueue extends IStatusBar.Stub {
                 case MSG_SET_TOP_APP_HIDES_STATUS_BAR:
                     for (int i = 0; i < mCallbacks.size(); i++) {
                         mCallbacks.get(i).setTopAppHidesStatusBar(msg.arg1 != 0);
+                    }
+                    break;
+                case MSG_TOGGLE_FLASHLIGHT:
+                    for (int i = 0; i < mCallbacks.size(); i++) {
+                        mCallbacks.get(i).toggleFlashlight();
                     }
                     break;
             }
