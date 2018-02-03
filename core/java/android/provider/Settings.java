@@ -7385,6 +7385,12 @@ public final class Settings {
                 "extended_restart";
 
         /**
+         *
+         * @hide
+         */
+        public static final String DEVICE_ACCENT = "device_accent";
+
+        /**
          * 0 - Automatic (Wallpaper based)
          * 1 - Light
          * 2 - Dark

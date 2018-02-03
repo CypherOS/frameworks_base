@@ -63,6 +63,7 @@ import android.content.om.IOverlayManager;
 import android.content.om.OverlayInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageManager;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.UserInfo;
@@ -389,6 +390,18 @@ public class StatusBar extends SystemUI implements DemoMode,
      * libhwui.
      */
     private static final float SRC_MIN_ALPHA = 0.002f;
+
+    // Theme Accent Packages
+    private static final String ACCENT_DEFAULT = "default";
+    private static final String ACCENT_DEEP_PURPLE = "co.aoscp.accent.deeppurple";
+    private static final String ACCENT_INDIGO = "co.aoscp.accent.indigo";
+    private static final String ACCENT_PINK = "co.aoscp.accent.pink";
+    private static final String ACCENT_PURPLE = "co.aoscp.accent.purple";
+    private static final String ACCENT_RED = "co.aoscp.accent.red";
+    private static final String ACCENT_SKY_BLUE = "co.aoscp.accent.skyblue";
+    private static final String ACCENT_TEAL = "co.aoscp.accent.teal";
+    private static final String ACCENT_WHITE = "co.aoscp.accent.white";
+    private static final String ACCENT_YELLOW = "co.aoscp.accent.yellow";
 
     static {
         boolean onlyCoreApps;
@@ -1064,6 +1077,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         final Context context = mContext;
         updateDisplaySize(); // populates mDisplayMetrics
         updateResources();
+        updateAccent();
         updateTheme();
 
         inflateStatusBarWindow(context);
@@ -2977,6 +2991,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     @Override
     public void onColorsChanged(ColorExtractor extractor, int which) {
+        updateAccent();
         updateTheme();
     }
 
@@ -4790,6 +4805,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             mScrimController.setKeyguardShowing(false);
         }
         mNotificationPanel.setBarState(mState, mKeyguardFadingAway, goingToFullShade);
+        updateAccent();
         updateTheme();
         updateDozingState();
         updatePublicMode();
@@ -4801,6 +4817,104 @@ public class StatusBar extends SystemUI implements DemoMode,
                 mUnlockMethodCache.isMethodSecure(),
                 mStatusBarKeyguardViewManager.isOccluded());
         Trace.endSection();
+    }
+
+    private boolean isAccentOverlay(String packageName) {
+        try {
+            PackageManager pmUser = getPackageManagerForUser(mContext, mCurrentUserId);
+            PackageInfo pi = pmUser.getPackageInfo(packageName, 0);
+            return pi != null && pi.isAccentOverlay;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    private void restoreDefaultAccent() {
+        try {
+            List<OverlayInfo> infos = mOverlayManager.getOverlayInfosForTarget("android",
+                    UserHandle.myUserId());
+            for (int i = 0, size = infos.size(); i < size; i++) {
+                if (infos.get(i).isEnabled() &&
+                        isAccentOverlay(infos.get(i).packageName)) {
+                    mOverlayManager.setEnabled(infos.get(i).packageName, false, UserHandle.myUserId());
+                }
+            }
+        } catch (RemoteException e) {
+        }
+    }
+
+    /**
+     * Switches theme accents.
+     */
+    protected void updateAccent() {
+        int userAccentSetting = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.DEVICE_ACCENT, 0, mCurrentUserId);
+        if (userAccentSetting == 0) {
+            restoreDefaultAccent();
+        } else if (userAccentSetting == 1) {
+            try {
+                mOverlayManager.setEnabled(ACCENT_DEEP_PURPLE,
+                        true, mCurrentUserId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Can't change theme", e);
+            }
+        } else if (userAccentSetting == 2) {
+            try {
+                mOverlayManager.setEnabled(ACCENT_INDIGO,
+                        true, mCurrentUserId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Can't change theme", e);
+            }
+        } else if (userAccentSetting == 3) {
+            try {
+                mOverlayManager.setEnabled(ACCENT_PINK,
+                        true, mCurrentUserId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Can't change theme", e);
+            }
+        } else if (userAccentSetting == 4) {
+            try {
+                mOverlayManager.setEnabled(ACCENT_PURPLE,
+                        true, mCurrentUserId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Can't change theme", e);
+            }
+        } else if (userAccentSetting == 5) {
+            try {
+                mOverlayManager.setEnabled(ACCENT_RED,
+                        true, mCurrentUserId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Can't change theme", e);
+            }
+        } else if (userAccentSetting == 6) {
+            try {
+                mOverlayManager.setEnabled(ACCENT_SKY_BLUE,
+                        true, mCurrentUserId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Can't change theme", e);
+            }
+        } else if (userAccentSetting == 7) {
+            try {
+                mOverlayManager.setEnabled(ACCENT_TEAL,
+                        true, mCurrentUserId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Can't change theme", e);
+            }
+        } else if (userAccentSetting == 8) {
+            try {
+                mOverlayManager.setEnabled(ACCENT_WHITE,
+                        true, mCurrentUserId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Can't change theme", e);
+            }
+        } else if (userAccentSetting == 9) {
+            try {
+                mOverlayManager.setEnabled(ACCENT_YELLOW,
+                        true, mCurrentUserId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Can't change theme", e);
+            }
+        }
     }
 
     /**
@@ -5025,6 +5139,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         mStackScroller.setStatusBarState(state);
         updateReportRejectedTouchVisibility();
         updateDozing();
+        updateAccent();
         updateTheme();
         touchAutoDim();
         mNotificationShelf.setStatusBarState(state);
@@ -6014,6 +6129,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.DEVICE_THEME),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.DEVICE_ACCENT),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -6022,6 +6140,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
 
         public void update() {
+            updateAccent();
             updateTheme();
         }
     }
