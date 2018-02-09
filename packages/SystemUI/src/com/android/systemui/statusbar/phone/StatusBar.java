@@ -4853,63 +4853,63 @@ public class StatusBar extends SystemUI implements DemoMode,
             restoreDefaultAccent();
         } else if (userAccentSetting == 1) {
             try {
-                mOverlayManager.setEnabled(ACCENT_DEEP_PURPLE,
+                mOverlayManager.setEnabledExclusive(ACCENT_DEEP_PURPLE,
                         true, mCurrentUserId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Can't change theme", e);
             }
         } else if (userAccentSetting == 2) {
             try {
-                mOverlayManager.setEnabled(ACCENT_INDIGO,
+                mOverlayManager.setEnabledExclusive(ACCENT_INDIGO,
                         true, mCurrentUserId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Can't change theme", e);
             }
         } else if (userAccentSetting == 3) {
             try {
-                mOverlayManager.setEnabled(ACCENT_PINK,
+                mOverlayManager.setEnabledExclusive(ACCENT_PINK,
                         true, mCurrentUserId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Can't change theme", e);
             }
         } else if (userAccentSetting == 4) {
             try {
-                mOverlayManager.setEnabled(ACCENT_PURPLE,
+                mOverlayManager.setEnabledExclusive(ACCENT_PURPLE,
                         true, mCurrentUserId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Can't change theme", e);
             }
         } else if (userAccentSetting == 5) {
             try {
-                mOverlayManager.setEnabled(ACCENT_RED,
+                mOverlayManager.setEnabledExclusive(ACCENT_RED,
                         true, mCurrentUserId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Can't change theme", e);
             }
         } else if (userAccentSetting == 6) {
             try {
-                mOverlayManager.setEnabled(ACCENT_SKY_BLUE,
+                mOverlayManager.setEnabledExclusive(ACCENT_SKY_BLUE,
                         true, mCurrentUserId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Can't change theme", e);
             }
         } else if (userAccentSetting == 7) {
             try {
-                mOverlayManager.setEnabled(ACCENT_TEAL,
+                mOverlayManager.setEnabledExclusive(ACCENT_TEAL,
                         true, mCurrentUserId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Can't change theme", e);
             }
         } else if (userAccentSetting == 8) {
             try {
-                mOverlayManager.setEnabled(ACCENT_WHITE,
+                mOverlayManager.setEnabledExclusive(ACCENT_WHITE,
                         true, mCurrentUserId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Can't change theme", e);
             }
         } else if (userAccentSetting == 9) {
             try {
-                mOverlayManager.setEnabled(ACCENT_YELLOW,
+                mOverlayManager.setEnabledExclusive(ACCENT_YELLOW,
                         true, mCurrentUserId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Can't change theme", e);
