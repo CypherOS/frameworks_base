@@ -392,7 +392,6 @@ public class StatusBar extends SystemUI implements DemoMode,
     private static final float SRC_MIN_ALPHA = 0.002f;
 
     // Theme Accent Packages
-    private static final String ACCENT_DEFAULT = "default";
     private static final String ACCENT_DEEP_PURPLE = "co.aoscp.accent.deeppurple";
     private static final String ACCENT_INDIGO = "co.aoscp.accent.indigo";
     private static final String ACCENT_PINK = "co.aoscp.accent.pink";
@@ -4828,6 +4827,15 @@ public class StatusBar extends SystemUI implements DemoMode,
             return false;
         }
     }
+	
+	private void setAccent(String accentPackage) {
+		try {
+            mOverlayManager.setEnabledExclusive(accentPackage,
+                    true, mCurrentUserId);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Can't change accent", e);
+        }
+	}
 
     private void restoreDefaultAccent() {
         try {
@@ -4849,71 +4857,37 @@ public class StatusBar extends SystemUI implements DemoMode,
     protected void updateAccent() {
         int userAccentSetting = Settings.Secure.getIntForUser(mContext.getContentResolver(),
                 Settings.Secure.DEVICE_ACCENT, 0, mCurrentUserId);
-        if (userAccentSetting == 0) {
-            restoreDefaultAccent();
-        } else if (userAccentSetting == 1) {
-            try {
-                mOverlayManager.setEnabled(ACCENT_DEEP_PURPLE,
-                        true, mCurrentUserId);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Can't change theme", e);
-            }
-        } else if (userAccentSetting == 2) {
-            try {
-                mOverlayManager.setEnabled(ACCENT_INDIGO,
-                        true, mCurrentUserId);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Can't change theme", e);
-            }
-        } else if (userAccentSetting == 3) {
-            try {
-                mOverlayManager.setEnabled(ACCENT_PINK,
-                        true, mCurrentUserId);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Can't change theme", e);
-            }
-        } else if (userAccentSetting == 4) {
-            try {
-                mOverlayManager.setEnabled(ACCENT_PURPLE,
-                        true, mCurrentUserId);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Can't change theme", e);
-            }
-        } else if (userAccentSetting == 5) {
-            try {
-                mOverlayManager.setEnabled(ACCENT_RED,
-                        true, mCurrentUserId);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Can't change theme", e);
-            }
-        } else if (userAccentSetting == 6) {
-            try {
-                mOverlayManager.setEnabled(ACCENT_SKY_BLUE,
-                        true, mCurrentUserId);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Can't change theme", e);
-            }
-        } else if (userAccentSetting == 7) {
-            try {
-                mOverlayManager.setEnabled(ACCENT_TEAL,
-                        true, mCurrentUserId);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Can't change theme", e);
-            }
-        } else if (userAccentSetting == 8) {
-            try {
-                mOverlayManager.setEnabled(ACCENT_WHITE,
-                        true, mCurrentUserId);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Can't change theme", e);
-            }
-        } else if (userAccentSetting == 9) {
-            try {
-                mOverlayManager.setEnabled(ACCENT_YELLOW,
-                        true, mCurrentUserId);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Can't change theme", e);
-            }
+		switch (userAccentSetting) {
+            case 0:
+                restoreDefaultAccent();
+                break;
+            case 1:
+                setAccent(ACCENT_DEEP_PURPLE);
+                break;
+            case 2:
+                setAccent(ACCENT_INDIGO);
+                break;
+            case 3:
+                setAccent(ACCENT_PINK);
+                break;
+			case 4:
+                setAccent(ACCENT_PURPLE);
+                break;
+			case 5:
+                setAccent(ACCENT_RED);
+                break;
+			case 6:
+                setAccent(ACCENT_SKY_BLUE);
+                break;
+			case 7:
+                setAccent(ACCENT_TEAL);
+                break;
+			case 8:
+                setAccent(ACCENT_WHITE);
+                break;
+			case 9:
+                setAccent(ACCENT_YELLOW);
+                break;
         }
     }
 
