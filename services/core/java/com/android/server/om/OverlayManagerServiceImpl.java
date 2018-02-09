@@ -368,10 +368,12 @@ final class OverlayManagerServiceImpl {
                     // Don't touch static overlays.
                     continue;
                 }
-
-                // Disable the overlay.
-                modified |= mSettings.setEnabled(disabledOverlayPackageName, userId, false);
-                modified |= updateState(targetPackage, disabledOverlayPackageInfo, userId);
+				
+				if (overlayPackage.isAccentOverlay(disabledOverlayPackageName)) {
+					// Disable the overlay.
+					modified |= mSettings.setEnabled(disabledOverlayPackageName, userId, false);
+					modified |= updateState(targetPackage, disabledOverlayPackageInfo, userId);
+				}
             }
 
             // Enable the selected overlay.
