@@ -300,6 +300,15 @@ final class OverlayManagerServiceImpl {
     Map<String, List<OverlayInfo>> getOverlaysForUser(final int userId) {
         return mSettings.getOverlaysForUser(userId);
     }
+	
+	boolean isAccentOverlay(String packageName) {
+        try {
+            PackageInfo pi = mPackageManager.getPackageInfo(packageName, 0);
+            return pi != null && pi.isAccentOverlay; // AOSCP: Only load themes that do not inclue "isAccent=true" in their manifest
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
 
     boolean setEnabled(@NonNull final String packageName, final boolean enable,
             final int userId) {
@@ -368,10 +377,12 @@ final class OverlayManagerServiceImpl {
                     // Don't touch static overlays.
                     continue;
                 }
-
-                // Disable the overlay.
-                modified |= mSettings.setEnabled(disabledOverlayPackageName, userId, false);
-                modified |= updateState(targetPackage, disabledOverlayPackageInfo, userId);
+				
+				if (isAccentOverlay(disabledOverlayPackageName)) {
+					// Disable the overlay.
+					modified |= mSettings.setEnabled(disabledOverlayPackageName, userId, false);
+					modified |= updateState(targetPackage, disabledOverlayPackageInfo, userId);
+				}
             }
 
             // Enable the selected overlay.
