@@ -1076,7 +1076,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         final Context context = mContext;
         updateDisplaySize(); // populates mDisplayMetrics
         updateResources();
-        updateAccent();
         updateTheme();
 
         inflateStatusBarWindow(context);
@@ -2990,7 +2989,6 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     @Override
     public void onColorsChanged(ColorExtractor extractor, int which) {
-        updateAccent();
         updateTheme();
     }
 
@@ -4804,7 +4802,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             mScrimController.setKeyguardShowing(false);
         }
         mNotificationPanel.setBarState(mState, mKeyguardFadingAway, goingToFullShade);
-        updateAccent();
         updateTheme();
         updateDozingState();
         updatePublicMode();
@@ -5113,7 +5110,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         mStackScroller.setStatusBarState(state);
         updateReportRejectedTouchVisibility();
         updateDozing();
-        updateAccent();
         updateTheme();
         touchAutoDim();
         mNotificationShelf.setStatusBarState(state);
@@ -6114,8 +6110,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
 
         public void update() {
-            updateAccent();
             updateTheme();
+			updateAccent();
         }
     }
 
