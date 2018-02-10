@@ -17,30 +17,30 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-public class GoogleServices
-extends VendorServices {
+public class GoogleServices extends VendorServices {
+	
     private ArrayList<Object> mServices = new ArrayList();
 
     private void addService(Object object) {
         if (object != null) {
-            this.mServices.add(object);
+            mServices.add(object);
         }
     }
 
     @Override
     public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] arrstring) {
-        for (int i = 0; i < this.mServices.size(); ++i) {
-            if (!(this.mServices.get(i) instanceof Dumpable)) continue;
-            ((Dumpable)this.mServices.get(i)).dump(fileDescriptor, printWriter, arrstring);
+        for (int i = 0; i < mServices.size(); ++i) {
+            if (!(mServices.get(i) instanceof Dumpable)) continue;
+            ((Dumpable)mServices.get(i)).dump(fileDescriptor, printWriter, arrstring);
         }
     }
 
     @Override
     public void start() {
-        StatusBar statusBar = SysUiServiceProvider.getComponent(this.mContext, StatusBar.class);
+        StatusBar statusBar = SysUiServiceProvider.getComponent(mContext, StatusBar.class);
         AmbientIndicationContainer ambientIndicationContainer = (AmbientIndicationContainer)statusBar.getStatusBarWindow().findViewById(R.id.ambient_indication_container);
         ambientIndicationContainer.initializeView(statusBar);
-        this.addService((Object)new AmbientIndicationService(this.mContext, ambientIndicationContainer));
+        addService((Object)new AmbientIndicationService(mContext, ambientIndicationContainer));
     }
 }
 

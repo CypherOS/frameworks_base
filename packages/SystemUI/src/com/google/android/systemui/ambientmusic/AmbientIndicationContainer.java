@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2017-2018 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.android.systemui.ambientmusic;
 
 import android.animation.Animator;
@@ -27,16 +43,8 @@ import com.android.systemui.statusbar.phone.NotificationPanelView;
 import com.android.systemui.statusbar.phone.StatusBar;
 import com.android.systemui.statusbar.stack.NotificationStackScrollLayout;
 
-import com.google.android.systemui.ambientmusic.AmbientIndicationAnimatorUpdateListener;
-import com.google.android.systemui.ambientmusic.AmbientIndicationLayoutChangeListener;
-import com.google.android.systemui.ambientmusic.AmbientIndicationTouchListener;
-import com.google.android.systemui.ambientmusic.AmbientIndicationInflateListener;
-import com.google.android.systemui.ambientmusic.AmbientIndicationActivationListener;
-import com.google.android.systemui.ambientmusic.AmbientIndicationDoubleTapListener;
-
-public class AmbientIndicationContainer
-extends AutoReinflateContainer
-implements DozeReceiver {
+public class AmbientIndicationContainer extends AutoReinflateContainer implements DozeReceiver {
+	
     private View mAmbientIndication;
     private DoubleTapHelper mDoubleTapHelper;
     private boolean mDozing;
@@ -56,118 +64,118 @@ implements DozeReceiver {
     }
 
     private boolean onDoubleTap() {
-        if (this.mIntent != null) {
-            this.mStatusBar.wakeUpIfDozing(SystemClock.uptimeMillis(), this.mAmbientIndication);
-            this.mStatusBar.startPendingIntentDismissingKeyguard(this.mIntent);
+        if (mIntent != null) {
+            mStatusBar.wakeUpIfDozing(SystemClock.uptimeMillis(), mAmbientIndication);
+            mStatusBar.startPendingIntentDismissingKeyguard(mIntent);
             return true;
         }
         return false;
     }
 
     private void updateBottomPadding() {
-        NotificationPanelView notificationPanelView = this.mStatusBar.getPanel();
+        NotificationPanelView notificationPanelView = mStatusBar.getPanel();
         int padding = 0;
-        if (this.mAmbientIndication.getVisibility() == View.VISIBLE) {
-            padding = this.mStatusBar.getNotificationScrollLayout().getBottom() - this.getTop();
+        if (mAmbientIndication.getVisibility() == View.VISIBLE) {
+            padding = mStatusBar.getNotificationScrollLayout().getBottom() - getTop();
             Log.d(TAG, "Updated padding");
         }
         notificationPanelView.setAmbientIndicationBottomPadding(padding);
     }
 
     private void updateColors() {
-        if (this.mTextColorAnimator != null && this.mTextColorAnimator.isRunning()) {
-            this.mTextColorAnimator.cancel();
+        if (mTextColorAnimator != null && mTextColorAnimator.isRunning()) {
+            mTextColorAnimator.cancel();
         }
-        int defColor = this.mText.getTextColors().getDefaultColor();
-        int textColor = this.mDozing ? Color.WHITE : this.mTextColor;
+        int defColor = mText.getTextColors().getDefaultColor();
+        int textColor = mDozing ? Color.WHITE : mTextColor;
         if (defColor == textColor) {
             return;
         }
-        this.mTextColorAnimator = ValueAnimator.ofArgb((int[])new int[]{defColor, textColor});
-        this.mTextColorAnimator.setInterpolator((TimeInterpolator)Interpolators.LINEAR_OUT_SLOW_IN);
-        this.mTextColorAnimator.setDuration(200L);
-        this.mTextColorAnimator.addUpdateListener((ValueAnimator.AnimatorUpdateListener)new AmbientIndicationAnimatorUpdateListener(this));
-        this.mTextColorAnimator.addListener((Animator.AnimatorListener)new AnimatorListenerAdapter(){
+        mTextColorAnimator = ValueAnimator.ofArgb((int[])new int[]{defColor, textColor});
+        mTextColorAnimator.setInterpolator((TimeInterpolator)Interpolators.LINEAR_OUT_SLOW_IN);
+        mTextColorAnimator.setDuration(200L);
+        mTextColorAnimator.addUpdateListener((ValueAnimator.AnimatorUpdateListener)new AmbientIndicationAnimatorUpdateListener(this));
+        mTextColorAnimator.addListener((Animator.AnimatorListener)new AnimatorListenerAdapter(){
 
             public void onAnimationEnd(Animator animator2) {
-                AmbientIndicationContainer.this.mTextColorAnimator = null;
+                AmbientIndicationContainer.mTextColorAnimator = null;
             }
         });
-        this.mTextColorAnimator.start();
+        mTextColorAnimator.start();
         Log.d(TAG, "Updated colors");
     }
 
     public boolean getDoubleTap() {
-        return this.onDoubleTap();
+        return onDoubleTap();
     }
 
     public void hideIndication() {
-        this.setIndication(null, null);
+        setIndication(null, null);
     }
 
     public void initializeView(StatusBar statusBar) {
-        this.mStatusBar = statusBar;
-        this.addInflateListener(new AmbientIndicationInflateListener(this));
-        this.addOnLayoutChangeListener((View.OnLayoutChangeListener)new AmbientIndicationLayoutChangeListener(this));
+        mStatusBar = statusBar;
+        addInflateListener(new AmbientIndicationInflateListener(this));
+        addOnLayoutChangeListener((View.OnLayoutChangeListener)new AmbientIndicationLayoutChangeListener(this));
         Log.d(TAG, "Initialized view");
     }
 
     public void updateAmbientIndicationView(View view) {
-        this.mAmbientIndication = this.findViewById(R.id.ambient_indication);
-        this.mText = (TextView)this.findViewById(R.id.ambient_indication_text);
-        this.mIcon = (ImageView)this.findViewById(R.id.ambient_indication_icon);
-        this.mTextColor = this.mText.getCurrentTextColor();
-        this.updateColors();
-        this.setIndication(this.mIndication, this.mIntent);
-        this.mDoubleTapHelper = new DoubleTapHelper(this.mAmbientIndication, new AmbientIndicationActivationListener(this), new AmbientIndicationDoubleTapListener(this), null, null);
-        this.mAmbientIndication.setOnTouchListener((View.OnTouchListener)new AmbientIndicationTouchListener(this));
+        mAmbientIndication = findViewById(R.id.ambient_indication);
+        mText = (TextView)findViewById(R.id.ambient_indication_text);
+        mIcon = (ImageView)findViewById(R.id.ambient_indication_icon);
+        mTextColor = mText.getCurrentTextColor();
+        updateColors();
+        setIndication(mIndication, mIntent);
+        mDoubleTapHelper = new DoubleTapHelper(mAmbientIndication, new AmbientIndicationActivationListener(this), new AmbientIndicationDoubleTapListener(this), null, null);
+        mAmbientIndication.setOnTouchListener((View.OnTouchListener)new AmbientIndicationTouchListener(this));
         Log.d(TAG, "Updated view");
     }
 
-    public void setActive(boolean bl) {
-        if (bl) {
-            this.mStatusBar.onActivated((View)this);
+    public void setActive(boolean enabled) {
+        if (enabled) {
+            mStatusBar.onActivated((View)this);
             Log.d(TAG, "Set active");
             return;
         }
-        this.mStatusBar.onActivationReset((View)this);
+        mStatusBar.onActivationReset((View)this);
         Log.d(TAG, "Set inactive");
     }
 
     boolean getTouchEvent(View view, MotionEvent motionEvent) {
-        return this.mDoubleTapHelper.onTouchEvent(motionEvent);
+        return mDoubleTapHelper.onTouchEvent(motionEvent);
     }
 
     public void updateAmbientIndicationBottomPadding() {
-        this.updateBottomPadding();
+        updateBottomPadding();
     }
 
     public void updateAnimator(ValueAnimator valueAnimator) {
         int n = (Integer)valueAnimator.getAnimatedValue();
-        this.mText.setTextColor(n);
-        this.mIcon.setColorFilter(n);
+        mText.setTextColor(n);
+        mIcon.setColorFilter(n);
     }
 
     @Override
-    public void setDozing(boolean bl) {
-        this.mDozing = bl;
-        this.updateColors();
+    public void setDozing(boolean enabled) {
+        mDozing = enabled;
+        updateColors();
     }
 
     public void setIndication(CharSequence charSequence, PendingIntent pendingIntent) {
-        this.mText.setText(charSequence);
-        this.mIndication = charSequence;
-        this.mIntent = pendingIntent;
-        View view = this.mAmbientIndication;
-        boolean bl = pendingIntent != null;
-        view.setClickable(bl);
-        bl = TextUtils.isEmpty((CharSequence)charSequence);
-        if (bl)
+        mText.setText(charSequence);
+        mIndication = charSequence;
+        mIntent = pendingIntent;
+        View view = mAmbientIndication;
+        boolean enabled = pendingIntent != null;
+        view.setClickable(enabled);
+        enabled = TextUtils.isEmpty((CharSequence)charSequence);
+        if (enabled)
             view.setVisibility(View.INVISIBLE);
         else
             view.setVisibility(View.VISIBLE);
 
-        this.updateBottomPadding();
+        updateBottomPadding();
         Log.d(TAG, "Indication set");
     }
 

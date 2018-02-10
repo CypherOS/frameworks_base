@@ -1,24 +1,39 @@
+/*
+ * Copyright (C) 2017-2018 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.android.systemui.ambientmusic;
 
 import android.view.View;
 import com.android.systemui.AutoReinflateContainer;
-import com.google.android.systemui.ambientmusic.AmbientIndicationContainer;
 
 public class AmbientIndicationInflateListener
 implements AutoReinflateContainer.InflateListener {
     private Object mContainer;
 
     private void setAmbientIndicationView(View view) {
-        ((AmbientIndicationContainer)this.mContainer).updateAmbientIndicationView(view);
+        ((AmbientIndicationContainer)mContainer).updateAmbientIndicationView(view);
     }
 
     public AmbientIndicationInflateListener(Object object) {
-        this.mContainer = object;
+        mContainer = object;
     }
 
     @Override
     public void onInflated(View view) {
-        this.setAmbientIndicationView(view);
+        setAmbientIndicationView(view);
     }
 }
 

@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2017-2018 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.android.systemui.ambientmusic;
 
 import android.app.AlarmManager;
@@ -19,11 +35,8 @@ import com.android.keyguard.KeyguardUpdateMonitorCallback;
 import com.android.systemui.util.wakelock.DelayedWakeLock;
 import com.android.systemui.util.wakelock.WakeLock;
 
-import com.google.android.systemui.ambientmusic.AmbientIndicationContainer;
-import com.google.android.systemui.ambientmusic.AmbientIndicationAlarmListener;
-
-public class AmbientIndicationService
-extends BroadcastReceiver {
+public class AmbientIndicationService extends BroadcastReceiver {
+	
     private final AlarmManager mAlarmManager;
     private final AmbientIndicationContainer mAmbientIndicationContainer;
     private final KeyguardUpdateMonitorCallback mCallback;
@@ -33,20 +46,20 @@ extends BroadcastReceiver {
     private final WakeLock mWakeLock;
 
     public AmbientIndicationService(Context context, AmbientIndicationContainer ambientIndicationContainer) {
-        this.mCallback = new KeyguardUpdateMonitorCallback(){
+        mCallback = new KeyguardUpdateMonitorCallback(){
 
             @Override
             public void onUserSwitchComplete(int n) {
-                AmbientIndicationService.this.onUserSwitched();
+                AmbientIndicationService.onUserSwitched();
             }
         };
-        this.mContext = context;
-        this.mAmbientIndicationContainer = ambientIndicationContainer;
-        this.mHandler = new Handler(Looper.getMainLooper());
-        this.mAlarmManager = (AlarmManager)context.getSystemService(AlarmManager.class);
-        this.mWakeLock = this.createWakeLock(this.mContext, this.mHandler);
-        this.mHideIndicationListener = new AmbientIndicationAlarmListener((Object)this);
-        this.start();
+        mContext = context;
+        mAmbientIndicationContainer = ambientIndicationContainer;
+        mHandler = new Handler(Looper.getMainLooper());
+        mAlarmManager = (AlarmManager)context.getSystemService(AlarmManager.class);
+        mWakeLock = createWakeLock(mContext, mHandler);
+        mHideIndicationListener = new AmbientIndicationAlarmListener((Object)this);
+        start();
     }
 
     private boolean verifyAmbientApiVersion(Intent intent) {
@@ -70,40 +83,40 @@ extends BroadcastReceiver {
 
     @VisibleForTesting
     boolean isForCurrentUser() {
-        boolean bl;
-        boolean bl2 = bl = true;
-        if (this.getSendingUserId() == this.getCurrentUser()) return bl2;
-        if (this.getSendingUserId() != -1) return false;
-        return bl;
+        boolean enabled;
+        boolean verified = enabled = true;
+        if (getSendingUserId() == getCurrentUser()) return verified;
+        if (getSendingUserId() != -1) return false;
+        return enabled;
     }
 
     public void hideIndicationContainer() {
-        this.mAmbientIndicationContainer.hideIndication();
+        mAmbientIndicationContainer.hideIndication();
     }
 
     public void onReceive(Context object, Intent intent) {
-        if (!this.isForCurrentUser()) {
+        if (!isForCurrentUser()) {
             return;
         }
-        if (!this.verifyAmbientApiVersion(intent)) {
+        if (!verifyAmbientApiVersion(intent)) {
             return;
         }
         if (intent.getAction().equals("com.google.android.ambientindication.action.AMBIENT_INDICATION_SHOW")) {
             CharSequence charSequence = (CharSequence)intent.getCharSequenceExtra("com.google.android.ambientindication.extra.TEXT");
             PendingIntent pIntent = (PendingIntent)intent.getParcelableExtra("com.google.android.ambientindication.extra.OPEN_INTENT");
             long l = Math.min(Math.max(intent.getLongExtra("com.google.android.ambientindication.extra.TTL_MILLIS", 180000L), 0L), 180000L);
-            this.mAmbientIndicationContainer.setIndication(charSequence, pIntent);
-            this.mAlarmManager.setExact(2, SystemClock.elapsedRealtime() + l, "AmbientIndication", this.mHideIndicationListener, null);
+            mAmbientIndicationContainer.setIndication(charSequence, pIntent);
+            mAlarmManager.setExact(2, SystemClock.elapsedRealtime() + l, "AmbientIndication", mHideIndicationListener, null);
             return;
         }
         if (!object.equals("com.google.android.ambientindication.action.AMBIENT_INDICATION_HIDE")) return;
-        this.mAlarmManager.cancel(this.mHideIndicationListener);
-        this.mAmbientIndicationContainer.hideIndication();
+        mAlarmManager.cancel(mHideIndicationListener);
+        mAmbientIndicationContainer.hideIndication();
     }
 
     @VisibleForTesting
     void onUserSwitched() {
-        this.mAmbientIndicationContainer.hideIndication();
+        mAmbientIndicationContainer.hideIndication();
     }
 
     @VisibleForTesting
@@ -111,8 +124,8 @@ extends BroadcastReceiver {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.google.android.ambientindication.action.AMBIENT_INDICATION_SHOW");
         intentFilter.addAction("com.google.android.ambientindication.action.AMBIENT_INDICATION_HIDE");
-        this.mContext.registerReceiverAsUser((BroadcastReceiver)this, UserHandle.ALL, intentFilter, "com.google.android.ambientindication.permission.AMBIENT_INDICATION", null);
-        KeyguardUpdateMonitor.getInstance(this.mContext).registerCallback(this.mCallback);
+        mContext.registerReceiverAsUser((BroadcastReceiver)this, UserHandle.ALL, intentFilter, "com.google.android.ambientindication.permission.AMBIENT_INDICATION", null);
+        KeyguardUpdateMonitor.getInstance(mContext).registerCallback(mCallback);
     }
 
 }
