@@ -1,11 +1,10 @@
-package com.android.systemui.ambientmusic;
+package com.android.systemui.ambientplay;
 
 import android.view.View;
 import com.android.systemui.AutoReinflateContainer;
-import com.android.systemui.ambientmusic.AmbientIndicationContainer;
+import com.android.systemui.ambientplay.AmbientIndicationContainer;
 
-public class AmbientIndicationInflateListener
-implements AutoReinflateContainer.InflateListener {
+public class AmbientIndicationInflateListener implements AutoReinflateContainer.InflateListener {
     private Object mContainer;
 
     private void setAmbientIndicationView(View view) {

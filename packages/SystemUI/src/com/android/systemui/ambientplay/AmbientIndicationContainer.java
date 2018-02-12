@@ -1,5 +1,6 @@
-package com.android.systemui.ambientmusic;
+package com.android.systemui.ambientplay;
 
+import android.ambientplay.AmbientPlayRecognition.PrintResult;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -8,16 +9,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.systemui.R;
-import com.android.systemui.ambientmusic.AmbientIndicationInflateListener;
+import com.android.systemui.ambientplay.AmbientIndicationInflateListener;
 import com.android.systemui.AutoReinflateContainer;
 import com.android.systemui.doze.DozeReceiver;
 import com.android.systemui.statusbar.phone.StatusBar;
 
 public class AmbientIndicationContainer extends AutoReinflateContainer implements DozeReceiver {
+	
     private View mAmbientIndication;
     private boolean mDozing;
     private ImageView mIcon;
-    private CharSequence mIndication;
+    private AmbientPlayRecognition.PrintResult mIndication;
     private StatusBar mStatusBar;
     private TextView mText;
     private Context mContext;
@@ -48,12 +50,12 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
         mDozing = dozing;
     }
 
-    public void setIndication(CharSequence charSequence) {
-        mText.setText(charSequence);
-        mIndication = charSequence;
+    public void setIndication(AmbientPlayRecognition.PrintResult result) {
+        mText.setText(String.format(mContext.getResources().getString(R.string.ambient_track_info),
+		                            result.TrackName, result.ArtistName));
+        mIndication = result;
         mAmbientIndication.setClickable(false);
-        boolean infoAvaillable = TextUtils.isEmpty((CharSequence)charSequence);
-        if (infoAvaillable) {
+        if (result.TrackName == null && result.ArtistName == null) {
             mAmbientIndication.setVisibility(View.INVISIBLE);
         } else {
             mAmbientIndication.setVisibility(View.VISIBLE);
