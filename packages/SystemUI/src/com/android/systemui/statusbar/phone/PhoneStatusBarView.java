@@ -105,6 +105,12 @@ public class PhoneStatusBarView extends PanelBar {
         mBasePaddingBottom = mStatusBarContents.getPaddingBottom();
     }
 
+    public void updateSettings() {
+        if (mBattery != null) {
+            ((BatteryMeterView)mBattery).updateSettings(true);
+        }
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();

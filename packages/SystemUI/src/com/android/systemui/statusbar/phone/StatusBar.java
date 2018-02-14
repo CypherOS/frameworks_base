@@ -200,6 +200,7 @@ import com.android.systemui.plugins.statusbar.NotificationSwipeActionHelper.Snoo
 import com.android.systemui.qs.QSFragment;
 import com.android.systemui.qs.QSPanel;
 import com.android.systemui.qs.QSTileHost;
+import com.android.systemui.qs.QuickStatusBarHeader;
 import com.android.systemui.qs.car.CarQSFragment;
 import com.android.systemui.recents.Recents;
 import com.android.systemui.recents.ScreenPinningRequest;
@@ -466,6 +467,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     // settings
     private QSPanel mQSPanel;
+	private QuickStatusBarHeader mQuickStatusBarHeader;
 
     // top bar
     protected KeyguardStatusBarView mKeyguardStatusBar;
@@ -917,6 +919,9 @@ public class StatusBar extends SystemUI implements DemoMode,
         createAndAddWindows();
 
         mSettingsObserver.onChange(false); // set up
+		mStatusbarSettingsObserver.observe();
+        mStatusbarSettingsObserver.update();
+		
         mAmbientSettingsObserver.observe();
         mAmbientSettingsObserver.update();
         mColorManagerObserver.observe();
@@ -1229,6 +1234,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                     mQSPanel = ((QSFragment) qs).getQsPanel();
                     mQSPanel.setBrightnessMirror(mBrightnessMirrorController);
                     mKeyguardStatusBar.setQSPanel(mQSPanel);
+					mQuickStatusBarHeader = (QuickStatusBarHeader) ((QSFragment) qs).getHeader();
                 }
             });
         }
@@ -6023,6 +6029,44 @@ public class StatusBar extends SystemUI implements DemoMode,
             updateNotifications();
         }
     };
+
+	 private void updateStatusbarLayout() {
+        if (mStatusBarView != null) {
+            mStatusBarView.updateSettings();
+        }
+        if (mKeyguardStatusBar != null) {
+            mKeyguardStatusBar.updateSettings();
+        }
+        if (mQuickStatusBarHeader != null) {
+            mQuickStatusBarHeader.updateSettings();
+        }
+    }
+	
+	private StatusbarSettingsObserver mStatusbarSettingsObserver = new StatusbarSettingsObserver(mHandler);
+    private class StatusbarSettingsObserver extends ContentObserver {
+        StatusbarSettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+			resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SHOW_BATTERY_PERCENT),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.STATUS_BAR_BATTERY_STYLE),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            update();
+        }
+
+        public void update() {
+            updateStatusbarLayout();
+        }
+    }
 
     private AmbientSettingsObserver mAmbientSettingsObserver = new AmbientSettingsObserver(mHandler);
     private class AmbientSettingsObserver extends ContentObserver {
