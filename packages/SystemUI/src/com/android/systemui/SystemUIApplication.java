@@ -54,6 +54,8 @@ import com.android.systemui.util.NotificationChannels;
 import com.android.systemui.util.leak.GarbageMonitor;
 import com.android.systemui.volume.VolumeUI;
 
+import com.google.android.systemui.GoogleServices;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,6 +85,7 @@ public class SystemUIApplication extends Application implements SysUiServiceProv
             KeyboardUI.class,
             PipUI.class,
             ShortcutKeyDispatcher.class,
+			GoogleServices.class,
             VendorServices.class,
             GarbageMonitor.Service.class,
             LatencyTester.class,
