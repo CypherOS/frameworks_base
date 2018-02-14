@@ -102,7 +102,7 @@ implements DozeReceiver {
     }
 
     public void hideIndication() {
-        this.setIndication(null, null);
+        this.setIndication(null);
     }
 
     public void initializeView(StatusBar statusBar) {
@@ -118,7 +118,7 @@ implements DozeReceiver {
         this.mIcon = (ImageView)this.findViewById(R.id.ambient_indication_icon);
         this.mTextColor = this.mText.getCurrentTextColor();
         this.updateColors();
-        this.setIndication(this.mIndication, this.mIntent);
+        this.setIndication(this.mIndication);
         this.mDoubleTapHelper = new DoubleTapHelper(this.mAmbientIndication, new AmbientIndicationActivationListener(this), new AmbientIndicationDoubleTapListener(this), null, null);
         this.mAmbientIndication.setOnTouchListener((View.OnTouchListener)new AmbientIndicationTouchListener(this));
         Log.d(TAG, "Updated view");
@@ -154,18 +154,18 @@ implements DozeReceiver {
         this.updateColors();
     }
 
-    public void setIndication(CharSequence charSequence, PendingIntent pendingIntent) {
+    public void setIndication(CharSequence charSequence) {
         this.mText.setText(charSequence);
         this.mIndication = charSequence;
-        this.mIntent = pendingIntent;
         View view = this.mAmbientIndication;
-        boolean bl = pendingIntent != null;
+		/*boolean bl = pendingIntent != null;
         view.setClickable(bl);
         bl = TextUtils.isEmpty((CharSequence)charSequence);
         if (bl)
             view.setVisibility(View.INVISIBLE);
         else
             view.setVisibility(View.VISIBLE);
+		*/
 
         this.updateBottomPadding();
         Log.d(TAG, "Indication set");

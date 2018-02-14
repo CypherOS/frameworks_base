@@ -253,6 +253,9 @@ import com.android.systemui.util.NotificationChannels;
 import com.android.systemui.util.leak.LeakDetector;
 import com.android.systemui.volume.VolumeComponent;
 
+import com.google.android.systemui.ambientmusic.AmbientIndicationContainer;
+import com.google.android.systemui.ambientmusic.AmbientIndicationService;
+
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -804,6 +807,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     private HashMap<String, Entry> mPendingNotifications = new HashMap<>();
     private boolean mClearAllEnabled;
     @Nullable private View mAmbientIndicationContainer;
+	private AmbientIndicationService mAmbientIndicationService;
     private String mKeyToRemoveOnGutsClosed;
     private SysuiColorExtractor mColorExtractor;
     private ForegroundServiceController mForegroundServiceController;
@@ -1177,6 +1181,10 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         mAmbientIndicationContainer = mStatusBarWindow.findViewById(
                 R.id.ambient_indication_container);
+		if (mAmbientIndicationContainer != null) {
+            ((AmbientIndicationContainer) mAmbientIndicationContainer).initializeView(this);
+			mAmbientIndicationService = new AmbientIndicationService(mContext, mAmbientIndicationContainer);
+        }
 
         // set the initial view visibility
         setAreThereNotifications();
