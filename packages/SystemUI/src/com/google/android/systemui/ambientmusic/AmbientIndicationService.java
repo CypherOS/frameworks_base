@@ -31,6 +31,10 @@ extends BroadcastReceiver {
     private final Handler mHandler;
     private final AlarmManager.OnAlarmListener mHideIndicationListener;
     private final WakeLock mWakeLock;
+	
+	public AmbientIndicationService get(Context context, AmbientIndicationContainer ambientIndicationContainer) {
+		return new AmbientIndicationService(context, ambientIndicationContainer);
+	}
 
     public AmbientIndicationService(Context context, AmbientIndicationContainer ambientIndicationContainer) {
         this.mCallback = new KeyguardUpdateMonitorCallback(){
@@ -47,15 +51,6 @@ extends BroadcastReceiver {
         this.mWakeLock = this.createWakeLock(this.mContext, this.mHandler);
         this.mHideIndicationListener = new AmbientIndicationAlarmListener((Object)this);
         this.start();
-    }
-
-    private boolean verifyAmbientApiVersion(Intent intent) {
-        int n = intent.getIntExtra("com.google.android.ambientindication.extra.VERSION", 0);
-        if (n != 1) {
-            Log.e((String)"AmbientIndication", (String)("AmbientIndicationApi.EXTRA_VERSION is " + 1 + ", but received an intent with version " + n + ", dropping intent."));
-            return false;
-        }
-        return true;
     }
 
     @VisibleForTesting
@@ -85,20 +80,16 @@ extends BroadcastReceiver {
         if (!this.isForCurrentUser()) {
             return;
         }
-        if (!this.verifyAmbientApiVersion(intent)) {
+        if (intent.getAction().equals("co.aoscp.lunasense.action.AMBIENT_PLAY_SHOW")) {
+            CharSequence charSequence = (CharSequence)intent.getCharSequenceExtra("co.aoscp.lunasense.extra.TRACK_BY_ARTIST");
+            //long l = Math.min(Math.max(intent.getLongExtra("com.google.android.ambientindication.extra.TTL_MILLIS", 180000L), 0L), 180000L);
+            this.mAmbientIndicationContainer.setIndication(charSequence);
+            //this.mAlarmManager.setExact(2, SystemClock.elapsedRealtime() + l, "AmbientIndication", this.mHideIndicationListener, null);
             return;
         }
-        if (intent.getAction().equals("com.google.android.ambientindication.action.AMBIENT_INDICATION_SHOW")) {
-            CharSequence charSequence = (CharSequence)intent.getCharSequenceExtra("com.google.android.ambientindication.extra.TEXT");
-            PendingIntent pIntent = (PendingIntent)intent.getParcelableExtra("com.google.android.ambientindication.extra.OPEN_INTENT");
-            long l = Math.min(Math.max(intent.getLongExtra("com.google.android.ambientindication.extra.TTL_MILLIS", 180000L), 0L), 180000L);
-            this.mAmbientIndicationContainer.setIndication(charSequence, pIntent);
-            this.mAlarmManager.setExact(2, SystemClock.elapsedRealtime() + l, "AmbientIndication", this.mHideIndicationListener, null);
-            return;
-        }
-        if (!object.equals("com.google.android.ambientindication.action.AMBIENT_INDICATION_HIDE")) return;
-        this.mAlarmManager.cancel(this.mHideIndicationListener);
-        this.mAmbientIndicationContainer.hideIndication();
+        //if (!object.equals("com.google.android.ambientindication.action.AMBIENT_INDICATION_HIDE")) return;
+        //this.mAlarmManager.cancel(this.mHideIndicationListener);
+        //this.mAmbientIndicationContainer.hideIndication();
     }
 
     @VisibleForTesting
@@ -109,9 +100,9 @@ extends BroadcastReceiver {
     @VisibleForTesting
     void start() {
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.google.android.ambientindication.action.AMBIENT_INDICATION_SHOW");
-        intentFilter.addAction("com.google.android.ambientindication.action.AMBIENT_INDICATION_HIDE");
-        this.mContext.registerReceiverAsUser((BroadcastReceiver)this, UserHandle.ALL, intentFilter, "com.google.android.ambientindication.permission.AMBIENT_INDICATION", null);
+        intentFilter.addAction("co.aoscp.lunasense.action.AMBIENT_PLAY_SHOW");
+        //intentFilter.addAction("com.google.android.ambientindication.action.AMBIENT_INDICATION_HIDE");
+        this.mContext.registerReceiverAsUser((BroadcastReceiver)this, UserHandle.ALL, intentFilter, "co.aoscp.lunasense.permission.AMBIENT_PLAY", null);
         KeyguardUpdateMonitor.getInstance(this.mContext).registerCallback(this.mCallback);
     }
 
