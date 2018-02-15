@@ -1,6 +1,7 @@
 package com.google.android.systemui;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 
 import com.android.systemui.Dumpable;
@@ -19,6 +20,9 @@ import java.util.ArrayList;
 
 public class GoogleServices
 extends VendorServices {
+	
+	private final String TAG = "GoogleServices";
+	
     private ArrayList<Object> mServices = new ArrayList();
 
     private void addService(Object object) {
@@ -41,6 +45,7 @@ extends VendorServices {
         AmbientIndicationContainer ambientIndicationContainer = (AmbientIndicationContainer)statusBar.getStatusBarWindow().findViewById(R.id.ambient_indication_container);
         ambientIndicationContainer.initializeView(statusBar);
         this.addService((Object)new AmbientIndicationService(this.mContext, ambientIndicationContainer));
+		Log.d(TAG, "Started");
     }
 }
 
