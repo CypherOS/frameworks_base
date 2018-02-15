@@ -172,6 +172,7 @@ import com.android.systemui.SystemUI;
 import com.android.systemui.SystemUIFactory;
 import com.android.systemui.UiOffloadThread;
 import com.android.systemui.ambientmusic.AmbientIndicationContainer;
+import com.android.systemui.ambientmusic.AmbientPlayService;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.classifier.FalsingLog;
 import com.android.systemui.classifier.FalsingManager;
@@ -804,6 +805,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     private boolean mReinflateNotificationsOnUserSwitched;
     private HashMap<String, Entry> mPendingNotifications = new HashMap<>();
     private boolean mClearAllEnabled;
+	private AmbientPlayService mAmbientPlayService;
     @Nullable private View mAmbientIndicationContainer;
     private String mKeyToRemoveOnGutsClosed;
     private SysuiColorExtractor mColorExtractor;
@@ -1065,6 +1067,9 @@ public class StatusBar extends SystemUI implements DemoMode,
         Dependency.get(ConfigurationController.class).addCallback(this);
 
         mFlashlightController = Dependency.get(FlashlightController.class);
+		
+		mAmbientPlayService = new AmbientPlayService(mContext);
+		mAmbientPlayService.start(mContext);
     }
 
     protected void createIconController() {
