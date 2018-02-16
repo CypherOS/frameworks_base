@@ -14,13 +14,16 @@ import com.android.systemui.doze.DozeReceiver;
 import com.android.systemui.statusbar.phone.StatusBar;
 
 public class AmbientIndicationContainer extends AutoReinflateContainer implements DozeReceiver {
+	
     private View mAmbientIndication;
     private boolean mDozing;
     private ImageView mIcon;
-    private CharSequence mIndication;
     private StatusBar mStatusBar;
     private TextView mText;
     private Context mContext;
+	
+	private String mTrackName;
+	private String mArtistName;
 
     public AmbientIndicationContainer(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -28,7 +31,7 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
     }
 
     public void hideIndication() {
-        setIndication(null);
+        setIndication(null, null);
     }
 
     public void initializeView(StatusBar statusBar) {
@@ -40,7 +43,7 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
         mAmbientIndication = findViewById(R.id.ambient_indication);
         mText = (TextView)findViewById(R.id.ambient_indication_text);
         mIcon = (ImageView)findViewById(R.id.ambient_indication_icon);
-        setIndication(mIndication);
+        setIndication(mTrackName, mArtistName);
     }
 
     @Override
@@ -48,12 +51,13 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
         mDozing = dozing;
     }
 
-    public void setIndication(CharSequence charSequence) {
-        mText.setText(charSequence);
-        mIndication = charSequence;
+    public void setIndication(String trackName, String artistName) {
+		mText.setText(String.format(mContext.getResources().getString(R.string.ambient_play_track_information),
+                            trackName, artistName));
+        mTrackName = trackName;
+		mArtistName = artistName;
         mAmbientIndication.setClickable(false);
-        boolean infoAvaillable = TextUtils.isEmpty((CharSequence)charSequence);
-        if (infoAvaillable) {
+        if (trackName == null && artistName == null) {
             mAmbientIndication.setVisibility(View.INVISIBLE);
         } else {
             mAmbientIndication.setVisibility(View.VISIBLE);

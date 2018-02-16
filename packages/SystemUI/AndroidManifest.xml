@@ -204,6 +204,12 @@
     <uses-permission android:name="android.permission.RECOVERY" />
     <uses-permission android:name="android.permission.SHUTDOWN" />
     <uses-permission android:name="android.permission.SET_ACTIVITY_WATCHER" />
+	
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
+	
+	<permission android:name="com.android.systemui.PROVIDER" android:protectionLevel="normal" />
+    <uses-permission android:name="com.android.systemui.PROVIDER"/>
 
     <application
         android:name=".SystemUIApplication"

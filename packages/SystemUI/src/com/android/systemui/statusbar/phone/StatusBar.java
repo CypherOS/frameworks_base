@@ -172,6 +172,8 @@ import com.android.systemui.SystemUI;
 import com.android.systemui.SystemUIFactory;
 import com.android.systemui.UiOffloadThread;
 import com.android.systemui.ambientmusic.AmbientIndicationContainer;
+import com.android.systemui.ambientmusic.aoscp.AmbientPlayRecognition;
+import com.android.systemui.ambientmusic.aoscp.AmbientPlayRecognition.Results;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.classifier.FalsingLog;
 import com.android.systemui.classifier.FalsingManager;
@@ -274,7 +276,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         ActivatableNotificationView.OnActivatedListener,
         ExpandableNotificationRow.ExpansionLogger, NotificationData.Environment,
         ExpandableNotificationRow.OnExpandClickListener, InflationCallback,
-        ColorExtractor.OnColorsChangedListener, ConfigurationListener {
+        ColorExtractor.OnColorsChangedListener, ConfigurationListener, AmbientPlayRecognition.Callback {
     public static final boolean MULTIUSER_DEBUG = false;
 
     public static final boolean ENABLE_REMOTE_INPUT =
@@ -448,6 +450,9 @@ public class StatusBar extends SystemUI implements DemoMode,
     private DozeServiceHost mDozeServiceHost = new DozeServiceHost();
     private boolean mWakeUpComingFromTouch;
     private PointF mWakeUpTouchLocation;
+	
+	private AmbientPlayRecognition mRecognition;
+    private AmbientPlayRecognition.Results mResult;
 
     int mPixelFormat;
     Object mQueueLock = new Object();
@@ -1065,6 +1070,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         Dependency.get(ConfigurationController.class).addCallback(this);
 
         mFlashlightController = Dependency.get(FlashlightController.class);
+
+        startAmbientPlayListener();
     }
 
     protected void createIconController() {
@@ -1444,6 +1451,126 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (mAmbientIndicationContainer instanceof AutoReinflateContainer) {
             ((AutoReinflateContainer) mAmbientIndicationContainer).inflateLayout();
         }
+    }
+	
+	private Runnable mStartRecognition = new Runnable() {
+        @Override
+        public void run() {
+            Log.v(TAG, "Will start listening again in 10 seconds");
+            startAmbientPlayListener();
+        }
+    };
+
+    private Runnable mStopRecognition = new Runnable() {
+        @Override
+        public void run() {
+            mRecognition.stopRecording();
+        }
+    };
+
+    private void startAmbientPlayListener() {
+        mRecognition = new AmbientPlayRecognition(StatusBar.this);
+        mRecognition.startRecording();
+        // If no match is found in 19 seconds, stop listening(The buffer has a max size of 20)
+        mHandler.postDelayed(mStopRecognition, 19000);
+    }
+	
+	private Runnable mSetTrackInfo = new Runnable() {
+        @Override
+        public void run() {
+            ((AmbientIndicationContainer) mAmbientIndicationContainer).setIndication(mResult.TrackName, mResult.ArtistName);
+            showNowPlayingNotification(mResult.TrackName, mResult.ArtistName);
+        }
+    };
+	
+	/**
+	 * Ambient Play callback when the track fingerprint matches the given recording.
+	 * The results print out the Track Name, Artist, Album, and Album Artwork, but
+	 * we only display the track name and artist in the view.
+	 *
+	 */
+	@Override
+    public void onResult(AmbientPlayRecognition.Results result) {
+        mResult = result;
+        if (result.TrackName != null && result.ArtistName != null) {
+			mHandler.post(mSetTrackInfo);
+        }
+        mHandler.removeCallbacks(mStartRecognition);
+        mHandler.removeCallbacks(mStopRecognition);
+        mHandler.postDelayed(mStartRecognition, 10000);
+
+    }
+	
+	private Runnable mHideTrackInfo = new Runnable() {
+        @Override
+        public void run() {
+            ((AmbientIndicationContainer) mAmbientIndicationContainer).hideIndication();
+        }
+    };
+
+	/**
+	 * Ambient Play callback when no track fingerprint matches the given recording.
+	 * Here we hdie the indication view when no match is given as a workaround for
+	 * timing the current view. Since we start task every 10 seconds, the indication
+	 * has a interval of 10 seconds before hiding. Once hidden, the recording will
+	 * start again after 10 seconds.
+	 *
+	 */
+    @Override
+    public void onNoMatch() {
+        mHandler.removeCallbacks(mStartRecognition);
+        mHandler.removeCallbacks(mStopRecognition);
+		mHandler.post(mHideTrackInfo);
+        mHandler.postDelayed(mStartRecognition, 10000);
+    }
+
+    @Override
+    public void onAudioLevel(final float level) {
+        // no op
+    }
+
+	/**
+	 * Ambient Play callback when the recording returns an error.
+	 * This could be for multiple cases, such as the recording being
+	 * iteruppted during data gathering or the xml can't be parsed from
+	 * the database. In this case, we hide the indication view if not
+	 * hidden already and restart the recording.
+	 *
+	 */
+    @Override
+    public void onError() {
+        mHandler.removeCallbacks(mStartRecognition);
+        mHandler.removeCallbacks(mStopRecognition);
+		mHandler.post(mHideTrackInfo);
+        mHandler.postDelayed(mStartRecognition, 10000);
+    }
+	
+	private void showNowPlayingNotification(String trackName, String artistName) {
+        Notification.Builder mBuilder =
+                new Notification.Builder(mContext, "music_recognized_channel");
+        final Bundle extras = Bundle.forPair(Notification.EXTRA_SUBSTITUTE_APP_NAME,
+                mContext.getResources().getString(R.string.ambient_play_notification_title));
+        mBuilder.setSmallIcon(R.drawable.ic_music_note_24dp);
+        mBuilder.setContentText(String.format(mContext.getResources().getString(R.string.ambient_play_track_information),
+                                              trackName, artistName));
+        mBuilder.setColor(mContext.getResources().getColor(com.android.internal.R.color.system_notification_accent_color));
+        mBuilder.setAutoCancel(false);
+        mBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        mBuilder.setLocalOnly(true);
+        mBuilder.setShowWhen(true);
+        mBuilder.setWhen(System.currentTimeMillis());
+        mBuilder.setTicker(String.format(mContext.getResources().getString(R.string.ambient_play_track_information),
+                                         trackName, artistName));
+        mBuilder.setExtras(extras);
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        NotificationChannel channel = new NotificationChannel("music_recognized_channel",
+                mContext.getResources().getString(R.string.ambient_play_recognition_channel),
+                NotificationManager.IMPORTANCE_MIN);
+        mNotificationManager.createNotificationChannel(channel);
+        mNotificationManager.notify(122306791, mBuilder.build());
     }
 
     protected void reevaluateStyles() {
