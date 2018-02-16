@@ -7398,6 +7398,13 @@ public final class Settings {
          * @hide
          */
         public static final String DEVICE_THEME = "device_theme";
+		
+		/**
+         * Whether Ambient Play is shown on the lockscreen
+		 *
+         * @hide
+         */
+        public static final String AMBIENT_PLAY_LOCKSCREEN = "ambient_play_lockscreen";
 
         /**
          * Settings to reset on user request. They will fall back to their default value (0).
