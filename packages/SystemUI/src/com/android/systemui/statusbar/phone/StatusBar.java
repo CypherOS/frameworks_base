@@ -953,6 +953,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         mSettingsObserver.onChange(false); // set up
         mThemeSettingsObserver.observe();
         mThemeSettingsObserver.update();
+		mAmbientPlaySettingsObserver.observe();
+        mAmbientPlaySettingsObserver.update();
         mCommandQueue.disable(switches[0], switches[6], false /* animate */);
         setSystemUiVisibility(switches[1], switches[7], switches[8], 0xffffffff,
                 fullscreenStackBounds, dockedStackBounds);
@@ -1070,8 +1072,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         Dependency.get(ConfigurationController.class).addCallback(this);
 
         mFlashlightController = Dependency.get(FlashlightController.class);
-
-        startAmbientPlayListener();
+		
+		startAmbientPlayListener();
     }
 
     protected void createIconController() {
@@ -4904,6 +4906,8 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     protected void updateKeyguardState(boolean goingToFullShade, boolean fromShadeLocked) {
+		int mAmbientPlayLockscreen = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.AMBIENT_PLAY_LOCKSCREEN, 1, mCurrentUserId);
         Trace.beginSection("StatusBar#updateKeyguardState");
         if (mState == StatusBarState.KEYGUARD) {
             mKeyguardIndicationController.setVisible(true);
@@ -4912,7 +4916,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                 mKeyguardUserSwitcher.setKeyguard(true, fromShadeLocked);
             }
             if (mStatusBarView != null) mStatusBarView.removePendingHideExpandedRunnables();
-            if (mAmbientIndicationContainer != null) {
+            if (mAmbientIndicationContainer != null && mAmbientPlayLockscreen != 0) {
                 mAmbientIndicationContainer.setVisibility(View.VISIBLE);
             }
         } else {
@@ -4923,7 +4927,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                         mState == StatusBarState.SHADE_LOCKED ||
                         fromShadeLocked);
             }
-            if (mAmbientIndicationContainer != null) {
+            if (mAmbientIndicationContainer != null && mAmbientPlayLockscreen == 0) {
                 mAmbientIndicationContainer.setVisibility(View.INVISIBLE);
             }
         }
@@ -6243,6 +6247,29 @@ public class StatusBar extends SystemUI implements DemoMode,
         public void update() {
             updateTheme();
             updateAccent();
+        }
+    }
+	
+	private AmbientPlaySettingsObserver mAmbientPlaySettingsObserver = new AmbientPlaySettingsObserver(mHandler);
+    private class AmbientPlaySettingsObserver extends ContentObserver {
+        AmbientPlaySettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.AMBIENT_PLAY_LOCKSCREEN),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            update();
+        }
+
+        public void update() {
+            updateKeyguardState(false /* goingToFullShade */, false /* fromShadeLocked */);
         }
     }
 
