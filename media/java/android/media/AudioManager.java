@@ -3923,6 +3923,15 @@ public class AudioManager {
         return delay;
     }
 
+    public void setHearingAidDeviceConnectionState(BluetoothDevice device, int state) {
+        final IAudioService service = getService();
+        try {
+            service.setHearingAidDeviceConnectionState(device, state);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
      /**
      * Indicate A2DP source or sink connection state change.
      * @param device Bluetooth device connected/disconnected
