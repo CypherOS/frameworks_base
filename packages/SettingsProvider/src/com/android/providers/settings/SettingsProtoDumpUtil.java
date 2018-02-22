@@ -1377,9 +1377,9 @@ class SettingsProtoDumpUtil {
         dumpSetting(s, p,
                 Settings.Secure.SLEEP_TIMEOUT,
                 SecureSettingsProto.SLEEP_TIMEOUT);
-        dumpSetting(s, p,
+        /*dumpSetting(s, p,
                 Settings.Secure.DOUBLE_TAP_TO_WAKE,
-                SecureSettingsProto.DOUBLE_TAP_TO_WAKE);
+                SecureSettingsProto.DOUBLE_TAP_TO_WAKE);*/
         dumpSetting(s, p,
                 Settings.Secure.ASSISTANT,
                 SecureSettingsProto.ASSISTANT);
