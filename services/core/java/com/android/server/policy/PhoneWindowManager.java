@@ -851,6 +851,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // Fingerprint Gesture key handler.
     private FingerprintKeyHandler mFPKeyHandler;
 
+    // Gesture key handler.
+    private KeyHandler mKeyHandler;
+
     // Fallback actions by key code.
     private final SparseArray<KeyCharacterMap.FallbackAction> mFallbackActions =
             new SparseArray<KeyCharacterMap.FallbackAction>();
@@ -2367,6 +2370,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 getBoolean(com.android.internal.R.bool.config_supportsFPNavigation);
         if (supportsFPGestures || supportsFPNavigation) {
             mFPKeyHandler = new FingerprintKeyHandler(mContext);
+        }
+		
+		boolean enableKeyHandler = context.getResources().
+                getBoolean(com.android.internal.R.bool.config_enableKeyHandler);
+        if (enableKeyHandler) {
+            mKeyHandler = new KeyHandler(mContext);
         }
 
         mWindowManagerInternal.registerAppTransitionListener(new AppTransitionListener() {
@@ -6717,6 +6726,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 return 0;
             }
         }
+		
+		/**
+         * Handle gestures input earlier then anything when screen is off.
+         * @author Carlo Savignano
+         */
+        if (!interactive) {
+            if (mKeyHandler != null && mKeyHandler.handleKeyEvent(event)) {
+                return 0;
+            }
+        }
 
         // Apply custom policy for supported key codes.
         if (canApplyCustomPolicy(keyCode) && !isCustomSource) {
@@ -8184,6 +8203,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mImmersiveModeConfirmation.systemReady();
         if (mFPKeyHandler != null) {
             mFPKeyHandler.systemReady();
+        }
+		if (mKeyHandler != null) {
+            mKeyHandler.systemReady();
         }
         mAutofillManagerInternal = LocalServices.getService(AutofillManagerInternal.class);
     }
