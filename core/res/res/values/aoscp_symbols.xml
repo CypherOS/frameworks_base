@@ -108,4 +108,14 @@
 
   <!-- Internal default to navigation bar value -->
   <java-symbol type="bool" name="config_defaultToNavigationBar" />
+
+  <!-- Fingerprint Gestures Settings -->
+  <java-symbol type="integer" name="config_fpDoubleTapKeyCode" />
+  <java-symbol type="integer" name="config_fpLongpressKeyCode" />
+
+  <java-symbol type="integer" name="config_fpDoubleTapDefault" />
+  <java-symbol type="integer" name="config_fpLongpressDefault" />
+
+  <!-- Whether the device supports fingerprint gestures -->
+  <java-symbol type="bool" name="config_supportsFPGestures" />
 </resources>
