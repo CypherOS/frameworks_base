@@ -4089,6 +4089,24 @@ public final class Settings {
          */
 
         /**
+         * Controls whether fingerprint gestures are enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURES_ENABLED = "fingerprint_gestures_enabled";
+
+        /**
+         * Controls whether double tap fingerprint gesture is enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURES_DOUBLE_TAP = "fingerprint_gestures_double_tap";
+		
+		/**
+         * Controls whether longpress fingerprint gesture is enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURES_LONGPRESS = "fingerprint_gestures_longpress";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4144,7 +4162,10 @@ public final class Settings {
             LOCK_TO_APP_ENABLED,
             NOTIFICATION_SOUND,
             ACCELEROMETER_ROTATION,
-            SHOW_BATTERY_PERCENT
+            SHOW_BATTERY_PERCENT,
+			FINGERPRINT_GESTURES_ENABLED,
+			FINGERPRINT_GESTURES_DOUBLE_TAP,
+			FINGERPRINT_GESTURES_LONGPRESS
         };
 
         /**
@@ -6981,12 +7002,12 @@ public final class Settings {
          * @hide
          */
         public static final String SLEEP_TIMEOUT = "sleep_timeout";
-
+        
         /**
          * Controls whether double tap to wake is enabled.
          * @hide
          */
-        public static final String DOUBLE_TAP_TO_WAKE = "double_tap_to_wake";
+        public static final String DOUBLE_TAP_TO_WAKE = "double_tap_to_wake";		
 
         /**
          * The current assistant component. It could be a voice interaction service,
