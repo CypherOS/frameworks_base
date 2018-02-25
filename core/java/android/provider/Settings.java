@@ -4418,6 +4418,15 @@ public final class Settings {
         public static final String GESTURE_TWO_FINGER_SWIPE = "gesture_two_finger_swipe";
 
         /**
+         * Controls which resolution is used with screen record.
+         * 0: Low Quality (480p)
+         * 1: Mid Quality (720p - 4mbs)
+         * 2: High Quality (720p - 8mbs)
+         * @hide
+         */
+        public static final String SCREEN_RECORD_QUALITY = "screen_record_quality";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4493,7 +4502,8 @@ public final class Settings {
             GESTURE_ONE_FINGER_SWIPE_UP,
             GESTURE_ONE_FINGER_SWIPE_RIGHT,
             GESTURE_ONE_FINGER_SWIPE_DOWN,
-            GESTURE_ONE_FINGER_SWIPE_LEFT
+            GESTURE_ONE_FINGER_SWIPE_LEFT,
+            SCREEN_RECORD_QUALITY
         };
 
         /**
