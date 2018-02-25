@@ -24,6 +24,8 @@ import android.hardware.camera2.CameraManager;
 import android.Manifest;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.view.IWindowManager;
+import android.view.WindowManagerGlobal;
 
 import com.android.internal.R;
 import com.android.internal.statusbar.IStatusBarService;
@@ -79,6 +81,15 @@ public class FeatureUtils {
                     // do nothing.
                 }
             }
+        }
+    }
+
+    public static void takeScreenrecord(int mode) {
+        IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
+        try {
+            wm.screenRecordAction(mode);
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 }
