@@ -85,4 +85,7 @@
     <!-- Screen record notification error title -->
     <string name="screenrecord_notif_error">Unable to record screen</string>
     <string name="notification_channel_screenrecord">Screenrecords</string>
+	<!-- Screenshot QS tile -->
+    <string name="quick_settings_screenrecord_label">Screenrecord</string>
+	
 </resources>
