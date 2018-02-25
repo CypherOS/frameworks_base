@@ -1887,6 +1887,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     private void interceptScreenrecordChord() {
+        int qualitySetting = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.SCREEN_RECORD_QUALITY, 0, UserHandle.USER_CURRENT);
         if (mScreenrecordChordEnabled && mScreenrecordChordVolumeUpKeyTriggered
                 && mScreenshotChordPowerKeyTriggered) {
             final long now = SystemClock.uptimeMillis();
@@ -1894,7 +1896,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     && now <= mScreenshotChordPowerKeyTime + SCREENSHOT_CHORD_DEBOUNCE_DELAY_MILLIS) {
                 mScreenrecordChordVolumeUpKeyConsumed = true;
                 cancelPendingPowerKeyAction();
-                mScreenrecordRunnable.setMode(SCREEN_RECORD_MID_QUALITY);
+                if (qualitySetting == 0) {
+                    mScreenrecordRunnable.setMode(SCREEN_RECORD_LOW_QUALITY);
+                } else if (qualitySetting == 1) {
+                    mScreenrecordRunnable.setMode(SCREEN_RECORD_MID_QUALITY);
+                } else if (qualitySetting == 2) {
+                    mScreenrecordRunnable.setMode(SCREEN_RECORD_HIGH_QUALITY);
+                }
                 mHandler.postDelayed(mScreenrecordRunnable, getScreenshotChordLongPressDelay());
             }
         }
