@@ -7598,6 +7598,14 @@ public final class Settings {
         public static final String DEVICE_THEME = "device_theme";
 
         /**
+         * Enable face auto unlock on secure lock screens
+         *
+         * @hide
+         */
+        public static final String FACE_AUTO_UNLOCK = "face_auto_unlock";
+
+
+        /**
          * Whether Ambient Play is shown on the lockscreen
          *
          * @hide
