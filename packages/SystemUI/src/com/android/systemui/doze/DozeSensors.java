@@ -242,19 +242,16 @@ public class DozeSensors {
         }
 
         void updateListener() {
+            int handWaveSetting = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.DOZE_PULSE_ON_HAND_WAVE, 0, UserHandle.USER_CURRENT);
             if (!mConfigured || mSensor == null) return;
-            if (mListening && !mRegistered && enabledBySetting()) {
+            if (mListening && !mRegistered && handWaveSetting == 1) {
                 mRegistered = mSensorManager.registerListener(this, mSensor,
                         SensorManager.SENSOR_DELAY_NORMAL, 0);
             } else if (mRegistered) {
                 mSensorManager.unregisterListener(this);
                 mRegistered = false;
             }
-        }
-
-        boolean enabledBySetting() {
-            return Settings.Secure.getIntForUser(mContext.getContentResolver(),
-                    Settings.Secure.DOZE_PULSE_ON_HAND_WAVE, 1, UserHandle.USER_CURRENT) != 0;
         }
 
         @Override
