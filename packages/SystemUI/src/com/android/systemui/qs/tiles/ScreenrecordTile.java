@@ -77,6 +77,11 @@ public class ScreenrecordTile extends QSTileImpl<BooleanState> {
     public Intent getLongClickIntent() {
         return null;
     }
+	
+	@Override
+	protected void handleLongClick() {
+        handleClick();
+    }
 
     @Override
     public CharSequence getTileLabel() {
