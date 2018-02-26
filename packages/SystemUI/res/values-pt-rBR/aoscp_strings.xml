@@ -25,17 +25,17 @@
     <string name="on_the_spot_confirm">SIM</string>
 
     <!-- OnTheSpot: Quick Settings quick pull-down feature description message. [CHAR LIMIT=NONE] -->
-    <string name="quick_settings_quick_pull_down">Gostaria que o lado direito da barra de status abaixasse rapidamente o painel Configurações rápidas?</string>
+    <string name="quick_settings_quick_pull_down">Gostaria que o lado direito da barra de status abaixasse rapidamente para o painel Configurações rápidas?</string>
     <!-- OnTheSpot: Title of the Quick Settings quick pull-down feature for the reset dialog. [CHAR LIMIT=NONE] -->
-    <string name="quick_settings_quick_pull_down_name">Quick pull-down</string>
-    <string name="quick_settings_quick_pull_down_summary">Expanda automaticamente as Configurações rápidas ao puxar do lado da tela</string>
+    <string name="quick_settings_quick_pull_down_name">Expandir rapidamente</string>
+    <string name="quick_settings_quick_pull_down_summary">Expanda automaticamente para as Configurações rápidas ao puxar do lado direito da tela</string>
 
     <!-- Screenshot QS tile -->
     <string name="quick_settings_screenshot_label">Captura de tela</string>
     <string name="quick_settings_partial_screenshot_label">Captura parcial de tela</string>
 
     <!-- QuickSettings: Alert slider tile related strings (re-using some of the do not disturb ones) [CHAR LIMIT=NONE] -->
-    <string name="quick_settings_alert_slider_unavailable">Alert slider tile não está disponível</string>
+    <string name="quick_settings_alert_slider_unavailable">Atalho para o alerta deslizante não está disponível</string>
     <string name="quick_settings_alert_slider_detail_alarms_only_description">Isso bloqueia TODOS os sons e vibrações, exceto aqueles de alarmes e reprodução de mídia.</string>
     <string name="quick_settings_alert_slider_none_label">Todas as notificações</string>
     <string name="quick_settings_alert_slider_detail_disabled_message_description">As configurações adicionais não estão disponíveis quando o Não pertube está ligado.</string>
@@ -47,19 +47,50 @@
     <string name="quick_settings_alert_slider_detail_priority_events_title">Eventos</string>
     <string name="quick_settings_alert_slider_detail_priority_reminders_title">Lembretes</string>
 
-    <string name="alert_on_charged_level">A bateria está no nível ótimo. Agora você pode desconectar o carregador</string>
-    <string name="battery_level_good_title">Carregado otimamente</string>
+    <string name="alert_on_charged_level">Você já pode desconectar o carregador</string>
+    <string name="battery_level_good_title">Bom nível de carga</string>
     <string name="battery_level_good_sound" translatable="false">/system/media/audio/ui/GoodBattery.ogg</string>
-    <string name="notification_channel_charge_alert">Nível de carga da bateria ideal</string>
+    <string name="notification_channel_charge_alert">Nível de bateria ideal</string>
 
     <!-- Caffeine QS Tile -->
-    <string name="quick_settings_caffeine_label">Caffeine</string>
-    <string name="accessibility_quick_settings_caffeine_off">Caffeine off</string>
-    <string name="accessibility_quick_settings_caffeine_on">Caffeine on</string>
+    <string name="quick_settings_caffeine_label">Cafeína</string>
+    <string name="accessibility_quick_settings_caffeine_off">Cafeína desativado</string>
+    <string name="accessibility_quick_settings_caffeine_on">Cafeína ativado</string>
 
     <!-- OnTheSpot: Extended Restart feature description message. [CHAR LIMIT=NONE] -->
-    <string name="extended_restart">Você deseja ativar o Extended Restart dando um long press em Reiniciar?</string>
+    <string name="extended_restart">Você deseja ativar o menu Reiniciar Estendido dando um pressão longa em Reiniciar?</string>
     <!-- OnTheSpot: Title of the Extended Restart feature for the reset dialog. [CHAR LIMIT=NONE] -->
-    <string name="extended_restart_name">Extended Restart</string>
+    <string name="extended_restart_name">Reiniciar Estendido</string>
     <string name="extended_restart_summary">Reinicie o dispositivo em diferentes modos, como bootloader e recuperação</string>
+
+    <!-- Indication on the keyguard that is shown when the device is charging with a dash charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_dash_charging_time">Carregando rapidamente (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> until full)</string>
+    <string name="keyguard_plugged_in_dash_charging">Carregando rapidamente</string>
+
+    <!-- The name of the recognition notification channel. -->
+    <string name="ambient_play_recognition_channel">Notificações de músicas reconhecidas</string>
+    <!-- The contents of the recognition notification. -->
+    <string name="ambient_play_notification_title">Tocando Agora</string>
+    <string name="ambient_play_track_information">%1$s by %2$s</string>
+
+    <!-- The contents of the Ambient Weather result -->
+    <string name="ambient_weather_condition_information">%1$s &amp; %2$s em %3$s</string>
+
+    <!-- Screenrecord Notification Ticker -->
+    <string name="screenrecord_notif_ticker">A tela está sendo gravada</string>
+    <string name="screenrecord_notif_final_ticker">Gravação de tela concluída</string>
+    <!-- Screenrecord notification title -->
+    <string name="screenrecord_notif_title">Gravando tela</string>
+    <!-- Screenrecord notification action: Stop -->
+    <string name="screenrecord_notif_stop">Parar</string>
+    <string name="screenrecord_notif_completed">Gravação de tela concluída.</string>
+    <string name="screenrecord_notif_description">Toque para visualizar a gravação da tela</string>
+    <!-- Screenrecord notification action: show/hide pointer -->
+    <string name="screenrecord_notif_pointer_on">Mostrar ponteiro</string>
+    <string name="screenrecord_notif_pointer_off">Ocultar ponteiro</string>
+    <!-- Screen record notification error title -->
+    <string name="screenrecord_notif_error">Não é possível gravar a tela</string>
+    <string name="notification_channel_screenrecord">Gravações de tela</string>
+    <!-- Screenshot QS tile -->
+    <string name="quick_settings_screenrecord_label">Gravar tela</string>
 </resources>
