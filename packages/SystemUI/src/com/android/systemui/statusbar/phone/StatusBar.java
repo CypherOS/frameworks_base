@@ -1458,7 +1458,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     private Runnable mStartRecognition = new Runnable() {
         @Override
         public void run() {
-            Log.v(TAG, "Will start listening again in 10 seconds");
+            Log.v(TAG, "Will start listening again in 60 seconds");
             startAmbientPlayListener();
         }
     };
@@ -1499,7 +1499,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
         mHandler.removeCallbacks(mStartRecognition);
         mHandler.removeCallbacks(mStopRecognition);
-        mHandler.postDelayed(mStartRecognition, 10000);
+        mHandler.postDelayed(mStartRecognition, 60000);
 
     }
 
@@ -1513,9 +1513,9 @@ public class StatusBar extends SystemUI implements DemoMode,
     /**
      * Ambient Play callback when no track fingerprint matches the given recording.
      * Here we hdie the indication view when no match is given as a workaround for
-     * timing the current view. Since we start task every 10 seconds, the indication
-     * has a interval of 10 seconds before hiding. Once hidden, the recording will
-     * start again after 10 seconds.
+     * timing the current view. Since we start task every 60 seconds, the indication
+     * has a interval of 60 seconds before hiding. Once hidden, the recording will
+     * start again after 60 seconds.
      *
      */
     @Override
@@ -1523,7 +1523,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         mHandler.removeCallbacks(mStartRecognition);
         mHandler.removeCallbacks(mStopRecognition);
         mHandler.post(mHideTrackInfo);
-        mHandler.postDelayed(mStartRecognition, 10000);
+        mHandler.postDelayed(mStartRecognition, 60000);
     }
 
     @Override
@@ -1544,7 +1544,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         mHandler.removeCallbacks(mStartRecognition);
         mHandler.removeCallbacks(mStopRecognition);
         mHandler.post(mHideTrackInfo);
-        mHandler.postDelayed(mStartRecognition, 10000);
+        mHandler.postDelayed(mStartRecognition, 60000);
     }
 
     private void showNowPlayingNotification(String trackName, String artistName) {
