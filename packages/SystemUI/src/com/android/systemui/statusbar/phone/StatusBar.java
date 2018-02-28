@@ -186,6 +186,7 @@ import com.android.systemui.fragments.FragmentHostManager;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.keyguard.ScreenLifecycle;
 import com.android.systemui.keyguard.WakefulnessLifecycle;
+import com.android.systemui.omni.OmniJawsClient;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.qs.QS;
 import com.android.systemui.plugins.statusbar.NotificationMenuRowPlugin.MenuItem;
@@ -276,7 +277,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         ActivatableNotificationView.OnActivatedListener,
         ExpandableNotificationRow.ExpansionLogger, NotificationData.Environment,
         ExpandableNotificationRow.OnExpandClickListener, InflationCallback,
-        ColorExtractor.OnColorsChangedListener, ConfigurationListener, AmbientPlayRecognition.Callback {
+        ColorExtractor.OnColorsChangedListener, ConfigurationListener, AmbientPlayRecognition.Callback,
+		OmniJawsClient.OmniJawsObserver {
     public static final boolean MULTIUSER_DEBUG = false;
 
     public static final boolean ENABLE_REMOTE_INPUT =
@@ -848,6 +850,11 @@ public class StatusBar extends SystemUI implements DemoMode,
     private NavigationBarFragment mNavigationBar;
     private View mNavigationBarView;
     private FlashlightController mFlashlightController;
+	
+	private OmniJawsClient mWeatherClient;
+    private OmniJawsClient.WeatherInfo mWeatherData;
+    private boolean mWeatherEnabled;
+	private boolean mIsAmbientPlay;
 
     @Override
     public void start() {
@@ -1072,8 +1079,14 @@ public class StatusBar extends SystemUI implements DemoMode,
         Dependency.get(ConfigurationController.class).addCallback(this);
 
         mFlashlightController = Dependency.get(FlashlightController.class);
-
+		
         startAmbientPlayListener();
+		
+		mWeatherClient = new OmniJawsClient(mContext);
+        mWeatherEnabled = mWeatherClient.isOmniJawsEnabled();
+		mWeatherClient.addObserver(this);
+		
+		queryAndUpdateWeather();
     }
 
     protected void createIconController() {
@@ -1478,10 +1491,13 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     private Runnable mSetTrackInfo = new Runnable() {
+		boolean enabled;
         @Override
         public void run() {
+			enabled = true;
             ((AmbientIndicationContainer) mAmbientIndicationContainer).setIndication(mResult.TrackName, mResult.ArtistName);
             showNowPlayingNotification(mResult.TrackName, mResult.ArtistName);
+			mIsAmbientPlay = enabled;
         }
     };
 
@@ -1506,6 +1522,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     private Runnable mHideTrackInfo = new Runnable() {
         @Override
         public void run() {
+			mIsAmbientPlay = false;
             ((AmbientIndicationContainer) mAmbientIndicationContainer).hideIndication();
         }
     };
@@ -5094,6 +5111,32 @@ public class StatusBar extends SystemUI implements DemoMode,
             // Make sure we have the correct navbar/statusbar colors.
             mStatusBarWindowManager.setKeyguardDark(useDarkText);
         }
+    }
+	
+	@Override
+    public void weatherUpdated() {
+        queryAndUpdateWeather();
+    }
+
+    public void queryAndUpdateWeather() {
+        try {
+			if (result.TrackName != null && result.ArtistName != null) {
+            if (mWeatherEnabled && !mIsAmbientPlay) {
+                mWeatherClient.queryWeather();
+                mWeatherData = mWeatherClient.getWeatherInfo();
+				((AmbientIndicationContainer) mAmbientIndicationContainer).setWeatherIndication(mWeatherData.temp, mWeatherData.city, 
+				                mWeatherClient.getWeatherConditionImage(mWeatherData.conditionCode));
+            } else {
+                ((AmbientIndicationContainer) mAmbientIndicationContainer).hideWeatherIndication();
+            }
+       } catch(Exception e) {
+          // Do nothing
+       }
+    }
+	
+	@Override
+    public void weatherError(int errorReason) {
+        if (DEBUG) Log.d(TAG, "weatherError " + errorReason);
     }
 
     private void updateDozingState() {
