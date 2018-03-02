@@ -72,6 +72,9 @@
     <!-- The contents of the recognition notification. -->
     <string name="ambient_play_notification_title">Now Playing</string>
     <string name="ambient_play_track_information">%1$s by %2$s</string>
+	
+	<!-- The contents of the Ambient Weather result -->
+	<string name="ambient_weather_condition_information">%1$s &amp; %2$s in %3$s</string>
 
     <!-- Screenrecord Notification Ticker -->
     <string name="screenrecord_notif_ticker">Screen is being recorded</string>
