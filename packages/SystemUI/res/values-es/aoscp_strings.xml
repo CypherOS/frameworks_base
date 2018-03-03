@@ -20,42 +20,42 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- OnTheSpot: Action denial button text. [CHAR LIMIT=NONE] -->
-  <string name="on_the_spot_deny">NÃO</string>
+  <string name="on_the_spot_deny">NO</string>
   <!-- OnTheSpot: Action confirmation button text. [CHAR LIMIT=NONE] -->
-  <string name="on_the_spot_confirm">SIM</string>
+  <string name="on_the_spot_confirm">SI</string>
   <!-- OnTheSpot: Quick Settings quick pull-down feature description message. [CHAR LIMIT=NONE] -->
-  <string name="quick_settings_quick_pull_down">Gostaria que o lado direito da barra de status descesse rapidamente o painel de Configurações rápidas?</string>
+  <string name="quick_settings_quick_pull_down">¿Desea que el lado derecho de la barra de estado baje rápidamente el panel de ajustes rápidos?</string>
   <!-- OnTheSpot: Title of the Quick Settings quick pull-down feature for the reset dialog. [CHAR LIMIT=NONE] -->
-  <string name="quick_settings_quick_pull_down_name">Descer rapidamente</string>
-  <string name="quick_settings_quick_pull_down_summary">Expandir automaticamente as Configurações rápidas ao puxar do lado da tela</string>
+  <string name="quick_settings_quick_pull_down_name">Bajar rápidamente</string>
+  <string name="quick_settings_quick_pull_down_summary">Expandir los ajustes rápidos automáticamente al deslizar desde el costado de la pantalla</string>
   <!-- Screenshot QS tile -->
-  <string name="quick_settings_screenshot_label">Captura de tela</string>
-  <string name="quick_settings_partial_screenshot_label">Captura parcial da tela</string>
+  <string name="quick_settings_screenshot_label">Captura de pantalla</string>
+  <string name="quick_settings_partial_screenshot_label">Captura de pantalla parcial</string>
   <!-- QuickSettings: Alert slider tile related strings (re-using some of the do not disturb ones) [CHAR LIMIT=NONE] -->
-  <string name="quick_settings_alert_slider_unavailable">Alert slider tile not available</string>
-  <string name="quick_settings_alert_slider_detail_alarms_only_description">Isso bloqueia TODOS os sons e vibrações, exceto aqueles de alarmes e reprodução de mídia.</string>
-  <string name="quick_settings_alert_slider_none_label">Todas notificações</string>
-  <string name="quick_settings_alert_slider_detail_disabled_message_description">As configurações adicionais não estão disponíveis quando o não perturbe está desativado.</string>
-  <string name="zen_footer_alert_slider_priority_only_summary">Somente notificações especificadas</string>
-  <string name="zen_footer_alert_slider_alarms_only_summary">Apenas alarmes e reprodução de mídia</string>
-  <string name="zen_footer_alert_slider_no_interruptions_summary">Sem sons e interrupções</string>
+  <string name="quick_settings_alert_slider_unavailable">El ajuste rápido del Alert Slider no está disponible</string>
+  <string name="quick_settings_alert_slider_detail_alarms_only_description">Esto bloqueará TODOS los sonidos y vibraciones exceptuando alarmas y reproducción multimedia.</string>
+  <string name="quick_settings_alert_slider_none_label">Todas las notificaciones</string>
+  <string name="quick_settings_alert_slider_detail_disabled_message_description">Los ajustes adicionales no están disponibles cuando el modo No Molestar está desactivado.</string>
+  <string name="zen_footer_alert_slider_priority_only_summary">Solo notificaciones especificadas</string>
+  <string name="zen_footer_alert_slider_alarms_only_summary">Solo alarmas y reproducción multimedia</string>
+  <string name="zen_footer_alert_slider_no_interruptions_summary">Sin sonidos e interrupciones</string>
   <string name="quick_settings_alert_slider_detail_priority_events_title">Eventos</string>
-  <string name="quick_settings_alert_slider_detail_priority_reminders_title">Lembretes</string>
-  <string name="alert_on_charged_level">Bateria está no nível ideal. Já pode desconectar o carregador</string>
-  <string name="battery_level_good_title">Optimally charged</string>
-  <string name="notification_channel_charge_alert">Nível de carga da bateria ideal</string>
+  <string name="quick_settings_alert_slider_detail_priority_reminders_title">Recordatorios</string>
+  <string name="alert_on_charged_level">La batería está en un nivel óptimo. Ahora ya puede desconectar el cargador</string>
+  <string name="battery_level_good_title">Cargado optimamente</string>
+  <string name="notification_channel_charge_alert">Nivel de carga óptima</string>
   <!-- Caffeine QS Tile -->
   <string name="quick_settings_caffeine_label">Cafeína</string>
-  <string name="accessibility_quick_settings_caffeine_off">Cafeína desativada</string>
-  <string name="accessibility_quick_settings_caffeine_on">Cafeína ativada</string>
+  <string name="accessibility_quick_settings_caffeine_off">Modo Cafeína apagado</string>
+  <string name="accessibility_quick_settings_caffeine_on">Modo Cafeína encendido</string>
   <!-- OnTheSpot: Extended Restart feature description message. [CHAR LIMIT=NONE] -->
-  <string name="extended_restart">Would you like to long press the restart button to access extended restart options?</string>
+  <string name="extended_restart">¿Desea mantener presionado el botón de reinicio para acceder a las opciones de reinicio extendido?</string>
   <!-- OnTheSpot: Title of the Extended Restart feature for the reset dialog. [CHAR LIMIT=NONE] -->
-  <string name="extended_restart_name">Extended Restart</string>
-  <string name="extended_restart_summary">Restart the device to different modes such as bootloader and recovery</string>
+  <string name="extended_restart_name">Reinicio extendido</string>
+  <string name="extended_restart_summary">Reiniciar el dispositivo a distintos modos como Bootloader y Recovery</string>
   <!-- Indication on the keyguard that is shown when the device is charging with a dash charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->
-  <string name="keyguard_indication_dash_charging_time">Dash Charging (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> until full)</string>
-  <string name="keyguard_plugged_in_dash_charging">Dash Charging</string>
+  <string name="keyguard_indication_dash_charging_time">Carga Dash (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> hasta completarse)</string>
+  <string name="keyguard_plugged_in_dash_charging">Carga Dash</string>
   <!-- The name of the recognition notification channel. -->
   <string name="ambient_play_recognition_channel">Recognized Music Notifications</string>
   <!-- The contents of the recognition notification. -->

@@ -20,42 +20,42 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- OnTheSpot: Action denial button text. [CHAR LIMIT=NONE] -->
-  <string name="on_the_spot_deny">NÃO</string>
+  <string name="on_the_spot_deny">NE</string>
   <!-- OnTheSpot: Action confirmation button text. [CHAR LIMIT=NONE] -->
-  <string name="on_the_spot_confirm">SIM</string>
+  <string name="on_the_spot_confirm">ANO</string>
   <!-- OnTheSpot: Quick Settings quick pull-down feature description message. [CHAR LIMIT=NONE] -->
-  <string name="quick_settings_quick_pull_down">Gostaria que o lado direito da barra de status descesse rapidamente o painel de Configurações rápidas?</string>
+  <string name="quick_settings_quick_pull_down">Přejete si stáhnout pravou stranu stavovéhé lišty a otevřít panel rychlého nastavení?</string>
   <!-- OnTheSpot: Title of the Quick Settings quick pull-down feature for the reset dialog. [CHAR LIMIT=NONE] -->
-  <string name="quick_settings_quick_pull_down_name">Descer rapidamente</string>
-  <string name="quick_settings_quick_pull_down_summary">Expandir automaticamente as Configurações rápidas ao puxar do lado da tela</string>
+  <string name="quick_settings_quick_pull_down_name">Rychlé stažení</string>
+  <string name="quick_settings_quick_pull_down_summary">Automaticky rozbalit panel rychlého nastavení při stažení ze strany obrazovky</string>
   <!-- Screenshot QS tile -->
-  <string name="quick_settings_screenshot_label">Captura de tela</string>
-  <string name="quick_settings_partial_screenshot_label">Captura parcial da tela</string>
+  <string name="quick_settings_screenshot_label">Snímek obrazovky</string>
+  <string name="quick_settings_partial_screenshot_label">Částečný snímek obrazovky</string>
   <!-- QuickSettings: Alert slider tile related strings (re-using some of the do not disturb ones) [CHAR LIMIT=NONE] -->
-  <string name="quick_settings_alert_slider_unavailable">Alert slider tile not available</string>
-  <string name="quick_settings_alert_slider_detail_alarms_only_description">Isso bloqueia TODOS os sons e vibrações, exceto aqueles de alarmes e reprodução de mídia.</string>
-  <string name="quick_settings_alert_slider_none_label">Todas notificações</string>
-  <string name="quick_settings_alert_slider_detail_disabled_message_description">As configurações adicionais não estão disponíveis quando o não perturbe está desativado.</string>
-  <string name="zen_footer_alert_slider_priority_only_summary">Somente notificações especificadas</string>
-  <string name="zen_footer_alert_slider_alarms_only_summary">Apenas alarmes e reprodução de mídia</string>
-  <string name="zen_footer_alert_slider_no_interruptions_summary">Sem sons e interrupções</string>
-  <string name="quick_settings_alert_slider_detail_priority_events_title">Eventos</string>
-  <string name="quick_settings_alert_slider_detail_priority_reminders_title">Lembretes</string>
-  <string name="alert_on_charged_level">Bateria está no nível ideal. Já pode desconectar o carregador</string>
-  <string name="battery_level_good_title">Optimally charged</string>
-  <string name="notification_channel_charge_alert">Nível de carga da bateria ideal</string>
+  <string name="quick_settings_alert_slider_unavailable">Dlaždice posuvníku oznámení není k dispozici</string>
+  <string name="quick_settings_alert_slider_detail_alarms_only_description">Toto blokuje VŠECHNY zvuky a vibrace s výjimkou těch, které pochází z oznámení a přehráváním médií.</string>
+  <string name="quick_settings_alert_slider_none_label">Všechna oznámení</string>
+  <string name="quick_settings_alert_slider_detail_disabled_message_description">Další nastavení nejsou dostupná, pokud je vypnut režim \"Nerušit\".</string>
+  <string name="zen_footer_alert_slider_priority_only_summary">Pouze specifikovaná oznámení</string>
+  <string name="zen_footer_alert_slider_alarms_only_summary">Pouze budíky a přehrávání médií</string>
+  <string name="zen_footer_alert_slider_no_interruptions_summary">Žádné zvuky a přerušení</string>
+  <string name="quick_settings_alert_slider_detail_priority_events_title">Události</string>
+  <string name="quick_settings_alert_slider_detail_priority_reminders_title">Připomínky</string>
+  <string name="alert_on_charged_level">Baterie je na optimální úrovni. Nyní můžete odpojit nabíječku</string>
+  <string name="battery_level_good_title">Optimálně nabito</string>
+  <string name="notification_channel_charge_alert">Optimální úroveň nabití baterie</string>
   <!-- Caffeine QS Tile -->
-  <string name="quick_settings_caffeine_label">Cafeína</string>
-  <string name="accessibility_quick_settings_caffeine_off">Cafeína desativada</string>
-  <string name="accessibility_quick_settings_caffeine_on">Cafeína ativada</string>
+  <string name="quick_settings_caffeine_label">Kofein</string>
+  <string name="accessibility_quick_settings_caffeine_off">Kofein vyp.</string>
+  <string name="accessibility_quick_settings_caffeine_on">Kofein zap.</string>
   <!-- OnTheSpot: Extended Restart feature description message. [CHAR LIMIT=NONE] -->
-  <string name="extended_restart">Would you like to long press the restart button to access extended restart options?</string>
+  <string name="extended_restart">Přejete si dlouhým stisknutím tlačítka restart přístup k rozšířeným možnostem restartu?</string>
   <!-- OnTheSpot: Title of the Extended Restart feature for the reset dialog. [CHAR LIMIT=NONE] -->
-  <string name="extended_restart_name">Extended Restart</string>
-  <string name="extended_restart_summary">Restart the device to different modes such as bootloader and recovery</string>
+  <string name="extended_restart_name">Rozšířený restart</string>
+  <string name="extended_restart_summary">Restartovat zařízení do různých režimů jako je bootloader a recovery</string>
   <!-- Indication on the keyguard that is shown when the device is charging with a dash charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->
-  <string name="keyguard_indication_dash_charging_time">Dash Charging (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> until full)</string>
-  <string name="keyguard_plugged_in_dash_charging">Dash Charging</string>
+  <string name="keyguard_indication_dash_charging_time">DASH nabíjení (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> do plného nabití)</string>
+  <string name="keyguard_plugged_in_dash_charging">DASH nabíjení</string>
   <!-- The name of the recognition notification channel. -->
   <string name="ambient_play_recognition_channel">Recognized Music Notifications</string>
   <!-- The contents of the recognition notification. -->

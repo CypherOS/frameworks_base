@@ -20,42 +20,42 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- OnTheSpot: Action denial button text. [CHAR LIMIT=NONE] -->
-  <string name="on_the_spot_deny">NÃO</string>
+  <string name="on_the_spot_deny">HAYIR</string>
   <!-- OnTheSpot: Action confirmation button text. [CHAR LIMIT=NONE] -->
-  <string name="on_the_spot_confirm">SIM</string>
+  <string name="on_the_spot_confirm">EVET</string>
   <!-- OnTheSpot: Quick Settings quick pull-down feature description message. [CHAR LIMIT=NONE] -->
-  <string name="quick_settings_quick_pull_down">Gostaria que o lado direito da barra de status descesse rapidamente o painel de Configurações rápidas?</string>
+  <string name="quick_settings_quick_pull_down">Hızlı ayarlar panelini hızlı aşağı çekmek için durum çubuğunun sağ tarafına eklemek ister misin?</string>
   <!-- OnTheSpot: Title of the Quick Settings quick pull-down feature for the reset dialog. [CHAR LIMIT=NONE] -->
-  <string name="quick_settings_quick_pull_down_name">Descer rapidamente</string>
-  <string name="quick_settings_quick_pull_down_summary">Expandir automaticamente as Configurações rápidas ao puxar do lado da tela</string>
+  <string name="quick_settings_quick_pull_down_name">Hızlı aşağı kaydırma</string>
+  <string name="quick_settings_quick_pull_down_summary">Ekranın kenarından çekildiğinde Hızlı Ayarları otomatik olarak genişletir</string>
   <!-- Screenshot QS tile -->
-  <string name="quick_settings_screenshot_label">Captura de tela</string>
-  <string name="quick_settings_partial_screenshot_label">Captura parcial da tela</string>
+  <string name="quick_settings_screenshot_label">Ekran görüntüsü</string>
+  <string name="quick_settings_partial_screenshot_label">Kısmi ekran görüntüsü</string>
   <!-- QuickSettings: Alert slider tile related strings (re-using some of the do not disturb ones) [CHAR LIMIT=NONE] -->
-  <string name="quick_settings_alert_slider_unavailable">Alert slider tile not available</string>
-  <string name="quick_settings_alert_slider_detail_alarms_only_description">Isso bloqueia TODOS os sons e vibrações, exceto aqueles de alarmes e reprodução de mídia.</string>
-  <string name="quick_settings_alert_slider_none_label">Todas notificações</string>
-  <string name="quick_settings_alert_slider_detail_disabled_message_description">As configurações adicionais não estão disponíveis quando o não perturbe está desativado.</string>
-  <string name="zen_footer_alert_slider_priority_only_summary">Somente notificações especificadas</string>
-  <string name="zen_footer_alert_slider_alarms_only_summary">Apenas alarmes e reprodução de mídia</string>
-  <string name="zen_footer_alert_slider_no_interruptions_summary">Sem sons e interrupções</string>
-  <string name="quick_settings_alert_slider_detail_priority_events_title">Eventos</string>
-  <string name="quick_settings_alert_slider_detail_priority_reminders_title">Lembretes</string>
-  <string name="alert_on_charged_level">Bateria está no nível ideal. Já pode desconectar o carregador</string>
-  <string name="battery_level_good_title">Optimally charged</string>
-  <string name="notification_channel_charge_alert">Nível de carga da bateria ideal</string>
+  <string name="quick_settings_alert_slider_unavailable">Uyarı kaydırıcı karesi mevcut değil</string>
+  <string name="quick_settings_alert_slider_detail_alarms_only_description">Bu, alarmlardan ve medya oynatmalarından gelen Tüm ses ve titreşimleri engeller.</string>
+  <string name="quick_settings_alert_slider_none_label">Tüm bildirimler</string>
+  <string name="quick_settings_alert_slider_detail_disabled_message_description">Rahatsız etmeyin kapalı olduğunda ek ayarlar kullanılamaz.</string>
+  <string name="zen_footer_alert_slider_priority_only_summary">Yalnızca belirtilen bildirimler</string>
+  <string name="zen_footer_alert_slider_alarms_only_summary">Yalnızca alarm ve medya oynatımı</string>
+  <string name="zen_footer_alert_slider_no_interruptions_summary">Ses ve kesintiler yok</string>
+  <string name="quick_settings_alert_slider_detail_priority_events_title">Etkinlikler</string>
+  <string name="quick_settings_alert_slider_detail_priority_reminders_title">Hatırlatmalar</string>
+  <string name="alert_on_charged_level">Pil en uygun seviyededir. Artık şarj cihazının bağlantısını kesebilirsiniz</string>
+  <string name="battery_level_good_title">Optimum şarj</string>
+  <string name="notification_channel_charge_alert">Optimum pil şarj seviyesi</string>
   <!-- Caffeine QS Tile -->
-  <string name="quick_settings_caffeine_label">Cafeína</string>
-  <string name="accessibility_quick_settings_caffeine_off">Cafeína desativada</string>
-  <string name="accessibility_quick_settings_caffeine_on">Cafeína ativada</string>
+  <string name="quick_settings_caffeine_label">Kafein</string>
+  <string name="accessibility_quick_settings_caffeine_off">Kafein kapalı</string>
+  <string name="accessibility_quick_settings_caffeine_on">Kafein açık</string>
   <!-- OnTheSpot: Extended Restart feature description message. [CHAR LIMIT=NONE] -->
-  <string name="extended_restart">Would you like to long press the restart button to access extended restart options?</string>
+  <string name="extended_restart">Genişletilmiş yeniden başlatma seçeneklerine erişmek için yeniden başlatma düğmesine uzun süre basmak ister misiniz?</string>
   <!-- OnTheSpot: Title of the Extended Restart feature for the reset dialog. [CHAR LIMIT=NONE] -->
-  <string name="extended_restart_name">Extended Restart</string>
-  <string name="extended_restart_summary">Restart the device to different modes such as bootloader and recovery</string>
+  <string name="extended_restart_name">Genişletilmiş yeniden başlatma</string>
+  <string name="extended_restart_summary">Cihazı önyükleme ve kurtarma gibi farklı modlara yeniden başlatın</string>
   <!-- Indication on the keyguard that is shown when the device is charging with a dash charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->
-  <string name="keyguard_indication_dash_charging_time">Dash Charging (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> until full)</string>
-  <string name="keyguard_plugged_in_dash_charging">Dash Charging</string>
+  <string name="keyguard_indication_dash_charging_time">Hızlı Şarj oluyor (tam doluma <xliff:g id="charging_time_left" example="4 saat ve 2 dakika">%s</xliff:g> kaldı)</string>
+  <string name="keyguard_plugged_in_dash_charging">Hızlı Şarj oluyor</string>
   <!-- The name of the recognition notification channel. -->
   <string name="ambient_play_recognition_channel">Recognized Music Notifications</string>
   <!-- The contents of the recognition notification. -->

@@ -20,7 +20,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- Pocket Lock -->
-  <string name="pocket_lock_message_long_press">Παρατεταμένο πάτημα στο κουμπί λειρουργίας για διεπαφή</string>
+  <string name="pocket_lock_message_long_press">Нажмите и удерживайте кнопку питания для взаимодействия</string>
   <!-- Defines the sysfs attribute path used by pocket bridge
         to communicate pocket state to the pocket judge kernel driver. -->
   <string name="config_pocketBridgeSysfsInpocket"></string>
@@ -28,22 +28,22 @@
   <string name="alert_slider_state_path"></string>
   <string name="alert_slider_uevent_match_path"></string>
   <!-- Vendor mismatched fingerprint warning [CHAR LIMIT=NONE] -->
-  <string name="system_error_vendorprint">Η εικόνα του προμυθευτή δεν ταιριάζει με την εικόνα του συστήματος. Παρακαλώ εγκαταστείστε την <xliff:g id="string">%s</xliff:g> εικόνα προμυθευτή για τη συσκευή σας</string>
+  <string name="system_error_vendorprint">Ваш образ ПО производителя не соответствует системе. Пожалуйста, прошейте <xliff:g id="string">%s</xliff:g> образ ПО производителя для вашего устройства</string>
   <!-- Extended Restart -->
   <!-- Defined in res/res/values/strings.xml -
     <string name="global_action_restart">Restart</string>-->
-  <string name="global_action_quick_restart">Γρήγορη επανεκκίνηση</string>
-  <string name="global_action_recovery">Ανάκτηση</string>
-  <string name="global_action_bootloader">Εκκινητής</string>
+  <string name="global_action_quick_restart">Быстрая перезагрузка</string>
+  <string name="global_action_recovery">Режим восстановления</string>
+  <string name="global_action_bootloader">Перезагрузка в Загрузчик</string>
   <!-- Shutdown Thread -->
-  <string name="global_restart">Επανεκκίνηση</string>
-  <string name="global_restart_message">Γίνεται επανεκκίνηση\u2026</string>
+  <string name="global_restart">Перезагрузка</string>
+  <string name="global_restart_message">Перезагрузка\u2026</string>
   <!-- Can be used in SysUIReboot -->
-  <string name="global_quick_restart">Γρήγορη επανεκκίνηση</string>
-  <string name="global_restart_recovery">Ανάκτηση</string>
-  <string name="global_restart_recovery_message">Γίνεται επανεκκίνηση σε\n περιβάλλον ανάκτησης\u2026</string>
+  <string name="global_quick_restart">Быстрая перезагрузка</string>
+  <string name="global_restart_recovery">Режим восстановления</string>
+  <string name="global_restart_recovery_message">Перезагрузка в режим восстановления\u2026</string>
   <!-- Can be used in SysUIReboot -->
-  <string name="global_restart_bootloader">Εκκινητής</string>
-  <string name="global_restart_bootloader_message">Γίνεται επανεκκίνηση σε\n περιβάλλον εκκίνησης\u2026</string>
+  <string name="global_restart_bootloader">Перезагрузка в Загрузчик</string>
+  <string name="global_restart_bootloader_message">Перезагрузка в режим загрузчика\u2026</string>
   <!-- Can be used in SysUIReboot -->
 </resources>
