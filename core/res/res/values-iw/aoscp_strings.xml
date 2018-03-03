@@ -20,7 +20,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- Pocket Lock -->
-  <string name="pocket_lock_message_long_press">Pressione continuamente o botão power para interagir</string>
   <!-- Defines the sysfs attribute path used by pocket bridge
         to communicate pocket state to the pocket judge kernel driver. -->
   <!-- Alert slider proc nodes paths. -->
@@ -28,14 +27,8 @@
   <!-- Extended Restart -->
   <!-- Defined in res/res/values/strings.xml -
     <string name="global_action_restart">Restart</string>-->
-  <string name="global_action_quick_restart">Reinício rápido</string>
   <!-- Shutdown Thread -->
-  <string name="global_restart">Reiniciar</string>
-  <string name="global_restart_message">Reiniciando\u2026</string>
   <!-- Can be used in SysUIReboot -->
-  <string name="global_quick_restart">Reinício rápido</string>
-  <string name="global_restart_recovery_message">Reiniciando para a recovery\u2026</string>
   <!-- Can be used in SysUIReboot -->
-  <string name="global_restart_bootloader_message">Reiniciando para o bootloader\u2026</string>
   <!-- Can be used in SysUIReboot -->
 </resources>

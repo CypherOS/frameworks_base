@@ -24,28 +24,15 @@
   <!-- OnTheSpot: Action confirmation button text. [CHAR LIMIT=NONE] -->
   <string name="on_the_spot_confirm">SIM</string>
   <!-- OnTheSpot: Quick Settings quick pull-down feature description message. [CHAR LIMIT=NONE] -->
-  <string name="quick_settings_quick_pull_down">Gostaria que o lado direito da barra de status descesse rapidamente o painel de Configurações rápidas?</string>
+  <string name="quick_settings_quick_pull_down">Quer que o lado direito da barra de status desça rapidamente o painel de Configurações rápidas?</string>
   <!-- OnTheSpot: Title of the Quick Settings quick pull-down feature for the reset dialog. [CHAR LIMIT=NONE] -->
   <string name="quick_settings_quick_pull_down_name">Descer rapidamente</string>
-  <string name="quick_settings_quick_pull_down_summary">Expandir automaticamente as Configurações rápidas ao puxar do lado da tela</string>
+  <string name="quick_settings_quick_pull_down_summary">Expander automaticamente as Configurações rápidas ao puxar no lado do ecrã</string>
   <!-- Screenshot QS tile -->
-  <string name="quick_settings_screenshot_label">Captura de tela</string>
-  <string name="quick_settings_partial_screenshot_label">Captura parcial da tela</string>
+  <string name="quick_settings_screenshot_label">Captura de ecrã</string>
+  <string name="quick_settings_partial_screenshot_label">Captura de ecrã parcial</string>
   <!-- QuickSettings: Alert slider tile related strings (re-using some of the do not disturb ones) [CHAR LIMIT=NONE] -->
-  <string name="quick_settings_alert_slider_detail_alarms_only_description">Isso bloqueia TODOS os sons e vibrações, exceto aqueles de alarmes e reprodução de mídia.</string>
-  <string name="quick_settings_alert_slider_none_label">Todas notificações</string>
-  <string name="quick_settings_alert_slider_detail_disabled_message_description">As configurações adicionais não estão disponíveis quando o não perturbe está desativado.</string>
-  <string name="zen_footer_alert_slider_priority_only_summary">Somente notificações especificadas</string>
-  <string name="zen_footer_alert_slider_alarms_only_summary">Apenas alarmes e reprodução de mídia</string>
-  <string name="zen_footer_alert_slider_no_interruptions_summary">Sem sons e interrupções</string>
-  <string name="quick_settings_alert_slider_detail_priority_events_title">Eventos</string>
-  <string name="quick_settings_alert_slider_detail_priority_reminders_title">Lembretes</string>
-  <string name="alert_on_charged_level">Bateria está no nível ideal. Já pode desconectar o carregador</string>
-  <string name="notification_channel_charge_alert">Nível de carga da bateria ideal</string>
   <!-- Caffeine QS Tile -->
-  <string name="quick_settings_caffeine_label">Cafeína</string>
-  <string name="accessibility_quick_settings_caffeine_off">Cafeína desativada</string>
-  <string name="accessibility_quick_settings_caffeine_on">Cafeína ativada</string>
   <!-- OnTheSpot: Extended Restart feature description message. [CHAR LIMIT=NONE] -->
   <!-- OnTheSpot: Title of the Extended Restart feature for the reset dialog. [CHAR LIMIT=NONE] -->
   <!-- Indication on the keyguard that is shown when the device is charging with a dash charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->

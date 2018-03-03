@@ -20,22 +20,27 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- Pocket Lock -->
-  <string name="pocket_lock_message_long_press">Pressione continuamente o botão power para interagir</string>
+  <string name="pocket_lock_message_long_press">Hou de aan/uit knop lang ingedrukt om het apparaat te gebruiken</string>
   <!-- Defines the sysfs attribute path used by pocket bridge
         to communicate pocket state to the pocket judge kernel driver. -->
   <!-- Alert slider proc nodes paths. -->
   <!-- Vendor mismatched fingerprint warning [CHAR LIMIT=NONE] -->
+  <string name="system_error_vendorprint">Uw vendor image komt niet overeen met het systeem. Installeer de <xliff:g id="string">%s</xliff:g> vendor image voor uw apparaat</string>
   <!-- Extended Restart -->
   <!-- Defined in res/res/values/strings.xml -
     <string name="global_action_restart">Restart</string>-->
-  <string name="global_action_quick_restart">Reinício rápido</string>
+  <string name="global_action_quick_restart">Snel opnieuw starten</string>
+  <string name="global_action_recovery">Recovery</string>
+  <string name="global_action_bootloader">Bootloader</string>
   <!-- Shutdown Thread -->
-  <string name="global_restart">Reiniciar</string>
-  <string name="global_restart_message">Reiniciando\u2026</string>
+  <string name="global_restart">Opnieuw opstarten</string>
+  <string name="global_restart_message">Opnieuw opstarten</string>
   <!-- Can be used in SysUIReboot -->
-  <string name="global_quick_restart">Reinício rápido</string>
-  <string name="global_restart_recovery_message">Reiniciando para a recovery\u2026</string>
+  <string name="global_quick_restart">Snel opnieuw starten</string>
+  <string name="global_restart_recovery">Recovery</string>
+  <string name="global_restart_recovery_message">Opnieuw opstarten naar recovery</string>
   <!-- Can be used in SysUIReboot -->
-  <string name="global_restart_bootloader_message">Reiniciando para o bootloader\u2026</string>
+  <string name="global_restart_bootloader">Bootloader</string>
+  <string name="global_restart_bootloader_message">Opnieuw opstarten naar bootloader</string>
   <!-- Can be used in SysUIReboot -->
 </resources>

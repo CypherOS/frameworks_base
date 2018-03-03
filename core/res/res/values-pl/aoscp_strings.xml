@@ -20,22 +20,27 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- Pocket Lock -->
-  <string name="pocket_lock_message_long_press">Pressione continuamente o botão power para interagir</string>
+  <string name="pocket_lock_message_long_press">Przytrzymaj przycisk zasilania aby uruchomić</string>
   <!-- Defines the sysfs attribute path used by pocket bridge
         to communicate pocket state to the pocket judge kernel driver. -->
   <!-- Alert slider proc nodes paths. -->
   <!-- Vendor mismatched fingerprint warning [CHAR LIMIT=NONE] -->
+  <string name="system_error_vendorprint">Twój obraz jest niezgodny z wersją systemu. Pobierz <xliff:g id="string">%s</xliff:g> obraz dla Twojego urządzenia</string>
   <!-- Extended Restart -->
   <!-- Defined in res/res/values/strings.xml -
     <string name="global_action_restart">Restart</string>-->
-  <string name="global_action_quick_restart">Reinício rápido</string>
+  <string name="global_action_quick_restart">Szybki restart</string>
+  <string name="global_action_recovery">Recovery</string>
+  <string name="global_action_bootloader">Bootloader</string>
   <!-- Shutdown Thread -->
-  <string name="global_restart">Reiniciar</string>
-  <string name="global_restart_message">Reiniciando\u2026</string>
+  <string name="global_restart">Restart</string>
+  <string name="global_restart_message">Ponowne uruchamianie\u2026</string>
   <!-- Can be used in SysUIReboot -->
-  <string name="global_quick_restart">Reinício rápido</string>
-  <string name="global_restart_recovery_message">Reiniciando para a recovery\u2026</string>
+  <string name="global_quick_restart">Szybki restart</string>
+  <string name="global_restart_recovery">Recovery</string>
+  <string name="global_restart_recovery_message">Uruchamianie do trybu odzyskiwania\u2026</string>
   <!-- Can be used in SysUIReboot -->
-  <string name="global_restart_bootloader_message">Reiniciando para o bootloader\u2026</string>
+  <string name="global_restart_bootloader">Bootloader</string>
+  <string name="global_restart_bootloader_message">Uruchamianie do bootloadera\u2026</string>
   <!-- Can be used in SysUIReboot -->
 </resources>

@@ -20,22 +20,27 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- Pocket Lock -->
-  <string name="pocket_lock_message_long_press">Pressione continuamente o botão power para interagir</string>
+  <string name="pocket_lock_message_long_press">Tenere premuto il tasto di accensione per interagire</string>
   <!-- Defines the sysfs attribute path used by pocket bridge
         to communicate pocket state to the pocket judge kernel driver. -->
   <!-- Alert slider proc nodes paths. -->
   <!-- Vendor mismatched fingerprint warning [CHAR LIMIT=NONE] -->
+  <string name="system_error_vendorprint">L\'immagine del fornitore non corrisponde con il sistema. Per favore carica l\'immagine del fornitore di <xliff:g id="string">%s </xliff:g> per il dispositivo</string>
   <!-- Extended Restart -->
   <!-- Defined in res/res/values/strings.xml -
     <string name="global_action_restart">Restart</string>-->
-  <string name="global_action_quick_restart">Reinício rápido</string>
+  <string name="global_action_quick_restart">Riavvio rapido</string>
+  <string name="global_action_recovery">Recovery</string>
+  <string name="global_action_bootloader">Bootloader</string>
   <!-- Shutdown Thread -->
-  <string name="global_restart">Reiniciar</string>
-  <string name="global_restart_message">Reiniciando\u2026</string>
+  <string name="global_restart">Riavvia</string>
+  <string name="global_restart_message">Riavvio in corso</string>
   <!-- Can be used in SysUIReboot -->
-  <string name="global_quick_restart">Reinício rápido</string>
-  <string name="global_restart_recovery_message">Reiniciando para a recovery\u2026</string>
+  <string name="global_quick_restart">Riavvio rapido</string>
+  <string name="global_restart_recovery">Recovery</string>
+  <string name="global_restart_recovery_message">Riavvia in modalità recovery</string>
   <!-- Can be used in SysUIReboot -->
-  <string name="global_restart_bootloader_message">Reiniciando para o bootloader\u2026</string>
+  <string name="global_restart_bootloader">Bootloader</string>
+  <string name="global_restart_bootloader_message">Riavvia in modalità bootloader</string>
   <!-- Can be used in SysUIReboot -->
 </resources>
