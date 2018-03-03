@@ -62,6 +62,10 @@
   <java-symbol type="string" name="global_restart_bootloader" />
   <java-symbol type="string" name="global_restart_bootloader_message" />
 
+  <!-- The list of vendor package signatures that should also be considered
+  platform signatures, specifically for use on devices with a vendor partition. -->
+  <java-symbol type="array" name="config_vendorPlatformSignatures" />
+
   <!-- Allow SystemUI to show the shutdown confirm dialog -->
   <java-symbol type="bool" name="config_showSysuiConfirmShutdown" />
   <java-symbol type="id" name="confirm_message"/>
@@ -72,4 +76,5 @@
   <java-symbol type="string" name="global_restart_confirm_message" />
   <java-symbol type="string" name="global_restart_recovery_confirm_message" />
   <java-symbol type="string" name="global_restart_bootloader_confirm_message" />
+
 </resources>
