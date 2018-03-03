@@ -7614,13 +7614,19 @@ public final class Settings {
          */
         public static final String FACE_AUTO_UNLOCK = "face_auto_unlock";
 
-
         /**
          * Whether Ambient Play is shown on the lockscreen
          *
          * @hide
          */
         public static final String AMBIENT_PLAY_LOCKSCREEN = "ambient_play_lockscreen";
+		
+		/**
+         * Whether Ambient Weather is shown on the lockscreen
+         *
+         * @hide
+         */
+        public static final String AMBIENT_WEATHER_LOCKSCREEN = "ambient_weather_lockscreen";
 
         /**
          * Settings to reset on user request. They will fall back to their default value (0).

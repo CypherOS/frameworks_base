@@ -18,6 +18,9 @@
 package com.android.systemui.ambientmusic;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -39,8 +42,16 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
     private TextView mText;
     private Context mContext;
 
+	// Ambient Play
     private String mTrackName;
     private String mArtistName;
+	
+	// Ambient Weather
+    private String mTemp;
+	private String mCondition;
+    private String mCity;
+	private boolean mIsAmbientPlay;
+	private Drawable mConditionCode;
 
     public AmbientIndicationContainer(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -49,6 +60,10 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
 
     public void hideIndication() {
         setIndication(null, null);
+    }
+	
+	public void hideWeatherIndication() {
+        setWeatherIndication(null, null, null, null);
     }
 
     public void initializeView(StatusBar statusBar) {
@@ -61,6 +76,7 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
         mText = (TextView)findViewById(R.id.ambient_indication_text);
         mIcon = (ImageView)findViewById(R.id.ambient_indication_icon);
         setIndication(mTrackName, mArtistName);
+		setWeatherIndication(mTemp, mCondition, mCity, mConditionCode);
     }
 
     @Override
@@ -71,13 +87,37 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
     public void setIndication(String trackName, String artistName) {
         mText.setText(String.format(mContext.getResources().getString(R.string.ambient_play_track_information),
                       trackName, artistName));
+		mIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_music_note_24dp));
         mTrackName = trackName;
         mArtistName = artistName;
         mAmbientIndication.setClickable(false);
         if (trackName == null && artistName == null) {
+			mIsAmbientPlay = false;
             mAmbientIndication.setVisibility(View.INVISIBLE);
         } else {
+			mIsAmbientPlay = true;
             mAmbientIndication.setVisibility(View.VISIBLE);
+        }
+    }
+	
+	public void setWeatherIndication(String temp, String condition, String city, Drawable conditionCode) {
+        mText.setText(String.format(mContext.getResources().getString(R.string.ambient_weather_condition_information),
+                      temp, condition, city));
+		if (conditionCode instanceof VectorDrawable) {
+			conditionCode.setTint(mContext.getResources().getColor(android.R.color.white));
+		}
+		mIcon.setImageDrawable(conditionCode);
+        mTemp = temp;
+		mCondition = condition;
+        mCity = city;
+		mConditionCode = conditionCode;
+        mAmbientIndication.setClickable(false);
+        if (temp == null && city == null) {
+            mAmbientIndication.setVisibility(View.INVISIBLE);
+        } else {
+			if (!mIsAmbientPlay) {
+				mAmbientIndication.setVisibility(View.VISIBLE);
+			}
         }
     }
 }
