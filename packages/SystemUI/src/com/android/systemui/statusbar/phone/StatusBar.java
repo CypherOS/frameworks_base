@@ -1467,6 +1467,11 @@ public class StatusBar extends SystemUI implements DemoMode,
             ((AutoReinflateContainer) mAmbientIndicationContainer).inflateLayout();
         }
     }
+	
+	private boolean hasPermission(String permission) {
+        return PackageManager.PERMISSION_GRANTED == mContext.getPackageManager().checkPermission(
+                permission, mContext.getPackageName());
+    }
 
     private Runnable mStartRecognition = new Runnable() {
         @Override
@@ -1485,7 +1490,9 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     private void startAmbientPlayListener() {
         mRecognition = new AmbientPlayRecognition(StatusBar.this);
-        mRecognition.startRecording();
+		if (hasPermission(android.Manifest.permission.RECORD_AUDIO)) {
+			mRecognition.startRecording();
+		}
         // If no match is found in 19 seconds, stop listening(The buffer has a max size of 20)
         mHandler.postDelayed(mStopRecognition, 19000);
     }
