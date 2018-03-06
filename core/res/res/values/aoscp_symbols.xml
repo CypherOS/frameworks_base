@@ -147,4 +147,7 @@
 
     <!-- Screenrecord -->
     <java-symbol type="bool" name="config_enableScreenrecordChord" />
+
+    <!-- Ambient Play -->
+    <java-symbol type="bool" name="config_supportAmbientPlay" />
 </resources>

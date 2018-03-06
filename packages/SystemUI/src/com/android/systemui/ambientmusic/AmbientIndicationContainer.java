@@ -89,6 +89,8 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
     public void setIndication(String trackName, String artistName) {
         int mAmbientPlayLockscreen = Settings.Secure.getIntForUser(mContext.getContentResolver(),
                     Settings.Secure.AMBIENT_PLAY_LOCKSCREEN, 1, UserHandle.USER_CURRENT);
+        int mAmbientPlay = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                    Settings.Secure.AMBIENT_PLAY, 1, UserHandle.USER_CURRENT);
         mText.setText(String.format(mContext.getResources().getString(R.string.ambient_play_track_information),
                       trackName, artistName));
         mIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_music_note_24dp));
@@ -100,7 +102,7 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
             mAmbientIndication.setVisibility(View.INVISIBLE);
         } else {
             mIsAmbientPlay = true;
-            if (mAmbientPlayLockscreen != 0) {
+            if (mAmbientPlay != 0 && mAmbientPlayLockscreen != 0) {
                 mAmbientIndication.setVisibility(View.VISIBLE);
             }
         }

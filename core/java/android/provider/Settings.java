@@ -7615,6 +7615,13 @@ public final class Settings {
         public static final String FACE_AUTO_UNLOCK = "face_auto_unlock";
 
         /**
+         * Whether Ambient Play enabled/disabled
+         *
+         * @hide
+         */
+        public static final String AMBIENT_PLAY = "ambient_play";
+
+        /**
          * Whether Ambient Play is shown on the lockscreen
          *
          * @hide
