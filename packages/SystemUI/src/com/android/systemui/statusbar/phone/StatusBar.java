@@ -1484,10 +1484,15 @@ public class StatusBar extends SystemUI implements DemoMode,
     };
 
     private void startAmbientPlayListener() {
+		int mAmbientPlay = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                    Settings.Secure.AMBIENT_PLAY, 1, mCurrentUserId);
+		boolean mAmbientPlaySupported = mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_supportAmbientPlay);
         mRecognition = new AmbientPlayRecognition(StatusBar.this);
-        mRecognition.startRecording();
-        // If no match is found in 19 seconds, stop listening(The buffer has a max size of 20)
-        mHandler.postDelayed(mStopRecognition, 19000);
+		if (mAmbientPlay != 0 && mAmbientPlaySupported) {
+			mRecognition.startRecording();
+			mHandler.postDelayed(mStopRecognition, 19000);
+		}
     }
 
     private Runnable mSetTrackInfo = new Runnable() {
@@ -6301,6 +6306,9 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
+			resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.AMBIENT_PLAY),
+                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.AMBIENT_PLAY_LOCKSCREEN),
                     false, this, UserHandle.USER_ALL);
@@ -6318,6 +6326,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             if (mAmbientIndicationContainer instanceof AutoReinflateContainer) {
                 ((AutoReinflateContainer) mAmbientIndicationContainer).inflateLayout();
             }
+			startAmbientPlayListener();
         }
     }
 
