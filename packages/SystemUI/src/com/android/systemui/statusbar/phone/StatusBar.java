@@ -190,6 +190,7 @@ import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.qs.QS;
 import com.android.systemui.plugins.statusbar.NotificationMenuRowPlugin.MenuItem;
 import com.android.systemui.plugins.statusbar.NotificationSwipeActionHelper.SnoozeOption;
+import com.android.systemui.providers.OmniJawsClient;
 import com.android.systemui.qs.QSFragment;
 import com.android.systemui.qs.QSPanel;
 import com.android.systemui.qs.QSTileHost;
@@ -276,7 +277,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         ActivatableNotificationView.OnActivatedListener,
         ExpandableNotificationRow.ExpansionLogger, NotificationData.Environment,
         ExpandableNotificationRow.OnExpandClickListener, InflationCallback,
-        ColorExtractor.OnColorsChangedListener, ConfigurationListener, AmbientPlayRecognition.Callback {
+        ColorExtractor.OnColorsChangedListener, ConfigurationListener, AmbientPlayRecognition.Callback,
+        OmniJawsClient.OmniJawsObserver {
     public static final boolean MULTIUSER_DEBUG = false;
 
     public static final boolean ENABLE_REMOTE_INPUT =
@@ -849,6 +851,11 @@ public class StatusBar extends SystemUI implements DemoMode,
     private View mNavigationBarView;
     private FlashlightController mFlashlightController;
 
+    private OmniJawsClient mWeatherClient;
+    private OmniJawsClient.WeatherInfo mWeatherData;
+    private boolean mWeatherEnabled;
+    private boolean mIsAmbientPlay;
+
     @Override
     public void start() {
         mNetworkController = Dependency.get(NetworkController.class);
@@ -1074,6 +1081,12 @@ public class StatusBar extends SystemUI implements DemoMode,
         mFlashlightController = Dependency.get(FlashlightController.class);
 
         startAmbientPlayListener();
+
+        mWeatherClient = new OmniJawsClient(mContext);
+        mWeatherEnabled = mWeatherClient.isOmniJawsEnabled();
+        mWeatherClient.addObserver(this);
+
+        queryAndUpdateWeather();
     }
 
     protected void createIconController() {
@@ -1480,6 +1493,8 @@ public class StatusBar extends SystemUI implements DemoMode,
     private Runnable mSetTrackInfo = new Runnable() {
         @Override
         public void run() {
+            mIsAmbientPlay = true;
+            ((AmbientIndicationContainer) mAmbientIndicationContainer).hideWeatherIndication();
             ((AmbientIndicationContainer) mAmbientIndicationContainer).setIndication(mResult.TrackName, mResult.ArtistName);
             showNowPlayingNotification(mResult.TrackName, mResult.ArtistName);
         }
@@ -1506,7 +1521,9 @@ public class StatusBar extends SystemUI implements DemoMode,
     private Runnable mHideTrackInfo = new Runnable() {
         @Override
         public void run() {
+            mIsAmbientPlay = false;
             ((AmbientIndicationContainer) mAmbientIndicationContainer).hideIndication();
+            queryAndUpdateWeather();
         }
     };
 
@@ -4949,8 +4966,16 @@ public class StatusBar extends SystemUI implements DemoMode,
     private void updateAmbientIndicationForKeyguard() {
         int mAmbientPlayLockscreen = Settings.Secure.getIntForUser(mContext.getContentResolver(),
                 Settings.Secure.AMBIENT_PLAY_LOCKSCREEN, 1, mCurrentUserId);
-        if (mAmbientIndicationContainer != null && mAmbientPlayLockscreen != 0) {
-            mAmbientIndicationContainer.setVisibility(View.VISIBLE);
+        int mAmbientWeatherLockscreen = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.AMBIENT_WEATHER_LOCKSCREEN, 1, mCurrentUserId);
+        if (mAmbientIndicationContainer != null) {
+			if (mAmbientPlayLockscreen == 0) {
+				((AmbientIndicationContainer) mAmbientIndicationContainer).hideIndication();
+			} else if (mAmbientWeatherLockscreen == 0) {
+				((AmbientIndicationContainer) mAmbientIndicationContainer).hideWeatherIndication();
+			} else {
+				mAmbientIndicationContainer.setVisibility(View.VISIBLE);
+			}
         }
     }
 
@@ -5094,6 +5119,32 @@ public class StatusBar extends SystemUI implements DemoMode,
             // Make sure we have the correct navbar/statusbar colors.
             mStatusBarWindowManager.setKeyguardDark(useDarkText);
         }
+    }
+
+    @Override
+    public void weatherUpdated() {
+        queryAndUpdateWeather();
+    }
+
+    public void queryAndUpdateWeather() {
+        try {
+            if (mWeatherEnabled && !mIsAmbientPlay) {
+                mWeatherClient.queryWeather();
+                mWeatherData = mWeatherClient.getWeatherInfo();
+                ((AmbientIndicationContainer) mAmbientIndicationContainer).setWeatherIndication(mWeatherData.temp + mWeatherData.tempUnits, mWeatherData.condition, 
+                               mWeatherData.city, mWeatherClient.getWeatherConditionImage(mWeatherData.conditionCode));
+                Log.d(TAG, "Ambient Weather indication set");
+            } else {
+                ((AmbientIndicationContainer) mAmbientIndicationContainer).hideWeatherIndication();
+            }
+       } catch(Exception e) {
+          // Do nothing
+       }
+    }
+
+    @Override
+    public void weatherError(int errorReason) {
+        if (DEBUG) Log.d(TAG, "weatherError " + errorReason);
     }
 
     private void updateDozingState() {
@@ -6266,6 +6317,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.AMBIENT_PLAY_LOCKSCREEN),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.AMBIENT_WEATHER_LOCKSCREEN),
                     false, this, UserHandle.USER_ALL);
         }
 
