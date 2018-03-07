@@ -18,6 +18,21 @@
 -->
 <resources>
 
+    <!-- Color Constants -->
+    <color name="theme_text1">#FFE8EAF6</color> <!-- text primary -->
+    <color name="theme_text2">#B3E8EAF6</color>  <!-- text secondary -->
+    <color name="theme_text3">#A0E8EAF6</color>  <!-- text tertiary -->
+    <color name="theme_text4">#deE8EAF6</color>  <!-- text with "de" alpha -->
+    <color name="theme_color1">#ff111519</color> <!-- PRIMARY DARK -->
+    <color name="theme_color2">#ff222a33</color> <!-- PRIMARY LIGHT -->
+    <color name="theme_color3">#ff78b8ff</color> <!-- ACCENT  LIGHT -->
+    <color name="theme_color4">#ff5fabff</color> <!-- ACCENT  DARK -->
+    <color name="theme_color5">#ffabd3ff</color> <!-- ACCENT -->
+    <color name="theme_color6">#b3e8eaf6</color> <!-- WIFI ICON IN DETAILS -->
+    <color name="theme_color7">#ff383f47</color> <!-- FLOATING DIALOG COLOR ON VERY DARK THEMES MAKE THIS A BIT LIGHTER -->
+    <color name="theme_color8">#ffadabff</color> <!-- SPECIAL (CHECK WHERE THIS IS ASSIGNED) -->
+    <color name="theme_color9">#e6383f47</color> <!-- TOAST (NEEDS SOME ALPHA) -->
+
     <!-- Immersive cling -->
     <color name="immersive_cling_bg_color">@*android:color/background_material_dark</color>
     <color name="immersive_cling_text_color">@android:color/white</color>
@@ -25,6 +40,28 @@
     
     <!-- Resolver -->
     <color name="resolver_list_bg">@*android:color/background_material_dark</color>
+	
+	<!-- Notifications -->
+    <color name="notification_legacy_background_color">@*android:color/theme_color7</color>
+    <color name="notification_material_background_dimmed_color">@*android:color/theme_color1</color>
+    <color name="notification_material_background_low_priority_color">@*android:color/theme_color2</color>
+    <color name="notification_divider_color">@*android:color/theme_color4</color>
+    <color name="notification_shade_background_color">@*android:color/theme_color1</color>
+    <color name="notification_ripple_untinted_color">@*android:color/theme_color4</color>
+    <color name="notification_ripple_color_low_priority">@*android:color/theme_color3</color>
+    <color name="notification_ripple_tinted_color">@*android:color/theme_color5</color>
+    <color name="notification_gear_color">@*android:color/theme_color6</color>
+    <color name="notification_guts_bg_color">@*android:color/theme_color7</color>
+
+    <color name="notification_material_background_color">@*android:color/theme_color7</color>
+    <color name="notification_default_color">@*android:color/theme_text1</color> <!-- Gray 600 -->
+	<color name="notification_action_list">@*android:color/theme_color1</color>
+    <color name="notification_action_list_dark">@*android:color/theme_color2</color>
+    <color name="notification_primary_text_color_light">@*android:color/theme_text1</color>
+    <color name="notification_secondary_text_color_light">@*android:color/theme_text2</color>
+    <color name="notification_progress_background_color">@*android:color/theme_text2</color>
+    <color name="notification_snooze_text">@*android:color/theme_text1</color>
+    <color name="notification_text_color1">@*android:color/theme_text1</color>
 
 </resources>
 
