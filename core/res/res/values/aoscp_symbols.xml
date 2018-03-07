@@ -40,4 +40,6 @@
   <!-- PlatLogo -->
   <java-symbol type="drawable" name="platlogo_aoscp" />
 
+  <!-- Forcefully tint notification icon text -->
+  <java-symbol type="bool" name="config_useDarkBgNotificationIconTextTinting" />
 </resources>
