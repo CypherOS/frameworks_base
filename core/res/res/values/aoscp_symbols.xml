@@ -150,4 +150,7 @@
 
     <!-- Ambient Play -->
     <java-symbol type="bool" name="config_supportAmbientPlay" />
+
+    <!-- Forcefully tint notification icon text -->
+    <java-symbol type="bool" name="config_useDarkBgNotificationIconTextTinting" />
 </resources>
