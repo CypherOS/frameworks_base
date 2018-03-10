@@ -134,4 +134,12 @@
          1: The default platform interface
          2: The advanced minimal interface -->
     <integer name="config_multiUserVersion">1</integer>
+
+    <!-- True if the notification's dynamic app icon/title tint should be optimised for dark
+    backgrounds (requires config_allowNotificationIconTextTinting to be true)-->
+    <bool name="config_useDarkBgNotificationIconTextTinting">false</bool>
+
+    <!-- for notification overlays to force what they need -->
+    <bool name="config_useDarkBgNotificationTintingOverride">false</bool>
+    <bool name="config_notificationTintingOverride">false</bool>
 </resources>
