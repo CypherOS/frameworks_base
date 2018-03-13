@@ -602,6 +602,19 @@ public final class PowerManagerService extends SystemService
     private boolean mOneFingerSwipeDownEnabled;
     private boolean mOneFingerSwipeLeftEnabled;
     private boolean mTwoFingerSwipeEnabled;
+	
+	// Fingerprint Gestures
+	private boolean mSupportsFPSingleTapConfig;
+	private boolean mSupportsFPDoubleTapConfig;
+	private boolean mSupportsFPLongPressConfig;
+	private boolean mSupportsFPSwipeLeftConfig;
+	private boolean mSupportsFPSwipeRightConfig;
+	
+	private boolean mFPSingleTapEnabled;
+	private boolean mFPDoubleTapEnabled;
+	private boolean mFPLongPressEnabled;
+	private boolean mFPSwipeLeftEnabled;
+	private boolean mFPSwipeRightEnabled;
 
     // Power features defined in hardware/libhardware/include/hardware/power.h.
     private static final int POWER_FEATURE_GESTURES = 1;
@@ -618,6 +631,12 @@ public final class PowerManagerService extends SystemService
     private static final int POWER_FEATURE_ONE_FINGER_SWIPE_DOWN = 12;
     private static final int POWER_FEATURE_ONE_FINGER_SWIPE_LEFT = 13;
     private static final int POWER_FEATURE_TWO_FINGER_SWIPE = 14;
+	// Fingerprint Gestures
+	private static final int POWER_FEATURE_FINGERPRINT_SINGLE_TAP = 15;
+	private static final int POWER_FEATURE_FINGERPRINT_DOUBLE_TAP = 16;
+	private static final int POWER_FEATURE_FINGERPRINT_LONG_PRESS = 17;
+	private static final int POWER_FEATURE_FINGERPRINT_SWIPE_LEFT = 18;
+	private static final int POWER_FEATURE_FINGERPRINT_SWIPE_RIGHT = 19;
 
     private final ArrayList<PowerManagerInternal.LowPowerModeListener> mLowPowerModeListeners
             = new ArrayList<PowerManagerInternal.LowPowerModeListener>();
@@ -741,6 +760,12 @@ public final class PowerManagerService extends SystemService
             nativeSetFeature(POWER_FEATURE_ONE_FINGER_SWIPE_DOWN, 0);
             nativeSetFeature(POWER_FEATURE_ONE_FINGER_SWIPE_LEFT, 0);
             nativeSetFeature(POWER_FEATURE_TWO_FINGER_SWIPE, 0);
+			// Fingerprint Gestures
+			nativeSetFeature(POWER_FEATURE_FINGERPRINT_SINGLE_TAP, 0);
+			nativeSetFeature(POWER_FEATURE_FINGERPRINT_DOUBLE_TAP, 0);
+			nativeSetFeature(POWER_FEATURE_FINGERPRINT_LONG_PRESS, 0);
+			nativeSetFeature(POWER_FEATURE_FINGERPRINT_SWIPE_LEFT, 0);
+			nativeSetFeature(POWER_FEATURE_FINGERPRINT_SWIPE_RIGHT, 0);
         }
     }
 
@@ -951,6 +976,22 @@ public final class PowerManagerService extends SystemService
         resolver.registerContentObserver(Settings.System.getUriFor(
                 Settings.System.NAVIGATION_BAR_ENABLED),
                 false, mSettingsObserver, UserHandle.USER_ALL);
+		// Fingerprint Gestures
+		resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.FINGERPRINT_GESTURE_SINGLE_TAP),
+                false, mSettingsObserver, UserHandle.USER_ALL);
+		resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.FINGERPRINT_GESTURE_DOUBLE_TAP),
+                false, mSettingsObserver, UserHandle.USER_ALL);
+		resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.FINGERPRINT_GESTURE_LONG_PRESS),
+                false, mSettingsObserver, UserHandle.USER_ALL);
+		resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.FINGERPRINT_GESTURE_SWIPE_LEFT),
+                false, mSettingsObserver, UserHandle.USER_ALL);
+		resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.FINGERPRINT_GESTURE_SWIPE_RIGHT),
+                false, mSettingsObserver, UserHandle.USER_ALL);
         IVrManager vrManager = (IVrManager) getBinderService(Context.VR_SERVICE);
         if (vrManager != null) {
             try {
@@ -1045,6 +1086,17 @@ public final class PowerManagerService extends SystemService
                 com.android.internal.R.integer.config_oneFingerSwipeLeftKeyCode) > 0;
         mSupportsTwoFingerSwipeConfig = resources.getInteger(
                 com.android.internal.R.integer.config_twoFingerSwipeKeyCode) > 0;
+		// Fingerprint Gestures
+		mSupportsFPSingleTapConfig = resources.getInteger(
+                com.android.internal.R.integer.config_fingerprintSingleTapKeyCode) > 0;
+		mSupportsFPDoubleTapConfig = resources.getInteger(
+                com.android.internal.R.integer.config_fingerprintDoubleTapKeyCode) > 0;
+	    mSupportsFPLongPressConfig = resources.getInteger(
+                com.android.internal.R.integer.config_fingerprintLongPressKeyCode) > 0;
+		mSupportsFPSwipeLeftConfig = resources.getInteger(
+                com.android.internal.R.integer.config_fingerprintSwipeLeftKeyCode) > 0;
+		mSupportsFPSwipeRightConfig = resources.getInteger(
+                com.android.internal.R.integer.config_fingerprintSwipeRightKeyCode) > 0;
     }
 
     private void updateSettingsLocked() {
@@ -1239,6 +1291,62 @@ public final class PowerManagerService extends SystemService
             if (twoFingerSwipeEnabled != mTwoFingerSwipeEnabled) {
                 mTwoFingerSwipeEnabled = twoFingerSwipeEnabled;
                 nativeSetFeature(POWER_FEATURE_TWO_FINGER_SWIPE, mTwoFingerSwipeEnabled ? 1 : 0);
+            }
+        }
+		
+		// Fingerprint Gestures
+		if (mSupportsFPSingleTapConfig) {
+            boolean singleTapEnabled = Settings.System.getIntForUser(resolver,
+                    Settings.System.FINGERPRINT_GESTURE_SINGLE_TAP, mContext.getResources()
+                    .getInteger(com.android.internal.R.integer.config_fingerprintSingleTapDefault),
+                    UserHandle.USER_CURRENT) > 0 && mGesturesEnabled;
+            if (singleTapEnabled != mFPSingleTapEnabled) {
+                mFPSingleTapEnabled = singleTapEnabled;
+                nativeSetFeature(POWER_FEATURE_FINGERPRINT_SINGLE_TAP, mFPSingleTapEnabled ? 1 : 0);
+            }
+        }
+		
+		if (mSupportsFPDoubleTapConfig) {
+            boolean doubleTapEnabled = Settings.System.getIntForUser(resolver,
+                    Settings.System.FINGERPRINT_GESTURE_DOUBLE_TAP, mContext.getResources()
+                    .getInteger(com.android.internal.R.integer.config_fingerprintDoubleTapDefault),
+                    UserHandle.USER_CURRENT) > 0 && mGesturesEnabled;
+            if (doubleTapEnabled != mFPDoubleTapEnabled) {
+                mFPDoubleTapEnabled = doubleTapEnabled;
+                nativeSetFeature(POWER_FEATURE_FINGERPRINT_DOUBLE_TAP, mFPDoubleTapEnabled ? 1 : 0);
+            }
+        }
+		
+		if (mSupportsFPLongPressConfig) {
+            boolean longPressEnabled = Settings.System.getIntForUser(resolver,
+                    Settings.System.FINGERPRINT_GESTURE_LONG_PRESS, mContext.getResources()
+                    .getInteger(com.android.internal.R.integer.config_fingerprintLongPressDefault),
+                    UserHandle.USER_CURRENT) > 0 && mGesturesEnabled;
+            if (longPressEnabled != mFPLongPressEnabled) {
+                mFPLongPressEnabled = longPressEnabled;
+                nativeSetFeature(POWER_FEATURE_FINGERPRINT_LONG_PRESS, mFPLongPressEnabled ? 1 : 0);
+            }
+        }
+		
+		if (mSupportsFPSwipeLeftConfig) {
+            boolean swipeLeftEnabled = Settings.System.getIntForUser(resolver,
+                    Settings.System.FINGERPRINT_GESTURE_SWIPE_LEFT, mContext.getResources()
+                    .getInteger(com.android.internal.R.integer.config_fingerprintSwipeLeftDefault),
+                    UserHandle.USER_CURRENT) > 0 && mGesturesEnabled;
+            if (swipeLeftEnabled != mFPSwipeLeftEnabled) {
+                mFPSwipeLeftEnabled = swipeLeftEnabled;
+                nativeSetFeature(POWER_FEATURE_FINGERPRINT_SWIPE_LEFT, mFPSwipeLeftEnabled ? 1 : 0);
+            }
+        }
+		
+		if (mSupportsFPSwipeRightConfig) {
+            boolean swipeRightEnabled = Settings.System.getIntForUser(resolver,
+                    Settings.System.FINGERPRINT_GESTURE_SWIPE_RIGHT, mContext.getResources()
+                    .getInteger(com.android.internal.R.integer.config_fingerprintSwipeRightDefault),
+                    UserHandle.USER_CURRENT) > 0 && mGesturesEnabled;
+            if (swipeRightEnabled != mFPSwipeRightEnabled) {
+                mFPSwipeRightEnabled = swipeRightEnabled;
+                nativeSetFeature(POWER_FEATURE_FINGERPRINT_SWIPE_RIGHT, mFPSwipeRightEnabled ? 1 : 0);
             }
         }
 
@@ -3737,6 +3845,12 @@ public final class PowerManagerService extends SystemService
             pw.println("  mOneFingerSwipeDownEnabled=" + mOneFingerSwipeDownEnabled);
             pw.println("  mOneFingerSwipeLeftEnabled=" + mOneFingerSwipeLeftEnabled);
             pw.println("  mTwoFingerSwipeEnabled=" + mTwoFingerSwipeEnabled);
+			// Fingerprint Gestures
+			pw.println("  mFPSingleTapEnabled=" + mFPSingleTapEnabled);
+			pw.println("  mFPDoubleTapEnabled=" + mFPDoubleTapEnabled);
+			pw.println("  mFPLongPressEnabled=" + mFPLongPressEnabled);
+			pw.println("  mFPSwipeLeftEnabled=" + mFPSwipeLeftEnabled);
+			pw.println("  mFPSwipeRightEnabled=" + mFPSwipeRightEnabled);
 
             final int sleepTimeout = getSleepTimeoutLocked();
             final int screenOffTimeout = getScreenOffTimeoutLocked(sleepTimeout);
