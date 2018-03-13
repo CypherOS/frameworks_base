@@ -4410,6 +4410,36 @@ public final class Settings {
          * @hide
          */
         public static final String GESTURE_TWO_FINGER_SWIPE = "gesture_two_finger_swipe";
+		
+		/**
+         * Controls whether fingerprint single tap gesture is enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURE_SINGLE_TAP = "fingerprint_gesture_single_tap";
+		
+		/**
+         * Controls whether fingerprint double tap gesture is enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURE_DOUBLE_TAP = "fingerprint_gesture_double_tap";
+		
+		/**
+         * Controls whether fingerprint long press gesture is enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURE_LONG_PRESS = "fingerprint_gesture_long_press";
+		
+		/**
+         * Controls whether fingerprint swipe left gesture is enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURE_SWIPE_LEFT = "fingerprint_gesture_swipe_left";
+		
+		/**
+         * Controls whether fingerprint swipe right gesture is enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURE_SWIPE_RIGHT = "fingerprint_gesture_swipe_right";
 
         /**
          * Controls which resolution is used with screen record.
@@ -4497,7 +4527,12 @@ public final class Settings {
             GESTURE_ONE_FINGER_SWIPE_RIGHT,
             GESTURE_ONE_FINGER_SWIPE_DOWN,
             GESTURE_ONE_FINGER_SWIPE_LEFT,
-            SCREEN_RECORD_QUALITY
+            SCREEN_RECORD_QUALITY,
+			FINGERPRINT_GESTURE_SINGLE_TAP,
+			FINGERPRINT_GESTURE_DOUBLE_TAP,
+			FINGERPRINT_GESTURE_LONG_PRESS,
+			FINGERPRINT_GESTURE_SWIPE_LEFT,
+			FINGERPRINT_GESTURE_SWIPE_RIGHT
         };
 
         /**

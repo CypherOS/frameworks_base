@@ -77,7 +77,7 @@ public class KeyHandler {
     private static final int GESTURE_REQUEST = 1;
     private static final int GESTURE_WAKE_LOCK_DURATION = 3000; // ms
 
-    private static final int MAX_SUPPORTED_GESTURES = 15;
+    private static final int MAX_SUPPORTED_GESTURES = 20;
 
     // Default value for gesture enabled state.
     // 1 = enabled, 0 = disabled.
@@ -147,6 +147,19 @@ public class KeyHandler {
     private int mOneFingerSwipeLeftGesture;
     private int mDrawMGesture;
     private int mDrawWGesture;
+	
+	// Fingerprint Gestures
+	private int mFingerprintSingleTapKeyCode;
+    private int mFingerprintDoubleTapKeyCode;
+    private int mFingerprintLongPressKeyCode;
+    private int mFingerprintSwipeLeftKeyCode;
+    private int mFingerprintSwipeRightKeyCode;
+	
+    private int mFingerprintSingleTapGesture;
+    private int mFingerprintDoubleTapGesture;
+    private int mFingerprintLongPressGesture;
+    private int mFingerprintSwipeLeftGesture;
+    private int mFingerprintSwipeRightGesture;
   
     private IKeyguardDismissCallback mCallback;
 
@@ -235,6 +248,13 @@ public class KeyHandler {
         mOneFingerSwipeLeftKeyCode = resources.getInteger(R.integer.config_oneFingerSwipeLeftKeyCode);
         mDrawMKeyCode = resources.getInteger(R.integer.config_drawMKeyCode);
         mDrawWKeyCode = resources.getInteger(R.integer.config_drawWKeyCode);
+		
+		// Fingerprint Gestures device key codes.
+		mFingerprintSingleTapKeyCode = resources.getInteger(R.integer.config_fingerprintSingleTapKeyCode);
+        mFingerprintDoubleTapKeyCode = resources.getInteger(R.integer.config_fingerprintDoubleTapKeyCode);
+        mFingerprintLongPressKeyCode = resources.getInteger(R.integer.config_fingerprintLongPressKeyCode);
+        mFingerprintSwipeLeftKeyCode = resources.getInteger(R.integer.config_fingerprintSwipeLeftKeyCode);
+        mFingerprintSwipeRightKeyCode = resources.getInteger(R.integer.config_fingerprintSwipeRightKeyCode);
 
         mGestures.clear();
         mGestures.put(mDrawOKeyCode, mDrawOGesture);
@@ -249,6 +269,12 @@ public class KeyHandler {
         mGestures.put(mOneFingerSwipeLeftKeyCode, mOneFingerSwipeLeftGesture);
         mGestures.put(mDrawMKeyCode, mDrawMGesture);
         mGestures.put(mDrawWKeyCode, mDrawWGesture);
+		// Fingerprint Gestures
+		mGestures.put(mFingerprintSingleTapKeyCode, mFingerprintSingleTapGesture);
+        mGestures.put(mFingerprintDoubleTapKeyCode, mFingerprintDoubleTapGesture);
+        mGestures.put(mFingerprintLongPressKeyCode, mFingerprintLongPressGesture);
+        mGestures.put(mFingerprintSwipeLeftKeyCode, mFingerprintSwipeLeftGesture);
+        mGestures.put(mFingerprintSwipeRightKeyCode, mFingerprintSwipeRightGesture);
 
         // Trigger configuration changed.
         onConfigurationChanged();
@@ -355,6 +381,47 @@ public class KeyHandler {
         if (drawWGesture != mDrawWGesture) {
             mDrawWGesture = drawWGesture;
             mGestures.put(mDrawWKeyCode, mDrawWGesture);
+        }
+		
+		// Fingerprint Gestures
+		int singleTapGesture = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.FINGERPRINT_GESTURE_SINGLE_TAP, mContext.getResources()
+                        .getInteger(com.android.internal.R.integer.config_fingerprintSingleTapDefault));
+        if (singleTapGesture != mFingerprintSingleTapGesture) {
+            mFingerprintSingleTapGesture = singleTapGesture;
+            mGestures.put(mFingerprintSingleTapKeyCode, mFingerprintSingleTapGesture);
+        }
+		
+		int doubleTapGesture = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.FINGERPRINT_GESTURE_DOUBLE_TAP, mContext.getResources()
+                        .getInteger(com.android.internal.R.integer.config_fingerprintDoubleTapDefault));
+        if (doubleTapGesture != mFingerprintDoubleTapGesture) {
+            mFingerprintDoubleTapGesture = doubleTapGesture;
+            mGestures.put(mFingerprintDoubleTapKeyCode, mFingerprintDoubleTapGesture);
+        }
+		
+		int longPressGesture = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.FINGERPRINT_GESTURE_LONG_PRESS, mContext.getResources()
+                        .getInteger(com.android.internal.R.integer.config_fingerprintLongPressDefault));
+        if (longPressGesture != mFingerprintLongPressGesture) {
+            mFingerprintLongPressGesture = longPressGesture;
+            mGestures.put(mFingerprintLongPressKeyCode, mFingerprintLongPressGesture);
+        }
+		
+		int swipeLeftGesture = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.FINGERPRINT_GESTURE_SWIPE_LEFT, mContext.getResources()
+                        .getInteger(com.android.internal.R.integer.config_fingerprintSwipeLeftDefault));
+        if (swipeLeftGesture != mFingerprintSwipeLeftGesture) {
+            mFingerprintSwipeLeftGesture = swipeLeftGesture;
+            mGestures.put(mFingerprintSwipeLeftKeyCode, mFingerprintSwipeLeftGesture);
+        }
+		
+		int swipeRightGesture = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.FINGERPRINT_GESTURE_SWIPE_RIGHT, mContext.getResources()
+                        .getInteger(com.android.internal.R.integer.config_fingerprintSwipeRightDefault));
+        if (swipeRightGesture != mFingerprintSwipeRightGesture) {
+            mFingerprintSwipeRightGesture = swipeRightGesture;
+            mGestures.put(mFingerprintSwipeRightKeyCode, mFingerprintSwipeRightGesture);
         }
     }
 
@@ -493,6 +560,22 @@ public class KeyHandler {
                 false, mObserver, UserHandle.USER_ALL);
         resolver.registerContentObserver(Settings.System.getUriFor(
                 Settings.System.GESTURE_TWO_FINGER_SWIPE),
+                false, mObserver, UserHandle.USER_ALL);
+		// Fingerprint Gestures
+		resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.FINGERPRINT_GESTURE_SINGLE_TAP),
+                false, mObserver, UserHandle.USER_ALL);
+		resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.FINGERPRINT_GESTURE_DOUBLE_TAP),
+                false, mObserver, UserHandle.USER_ALL);
+		resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.FINGERPRINT_GESTURE_LONG_PRESS),
+                false, mObserver, UserHandle.USER_ALL);
+		resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.FINGERPRINT_GESTURE_SWIPE_LEFT),
+                false, mObserver, UserHandle.USER_ALL);
+		resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.FINGERPRINT_GESTURE_SWIPE_RIGHT),
                 false, mObserver, UserHandle.USER_ALL);
     }
 

@@ -156,4 +156,18 @@
 
     <!-- Whether device has turbo power charging support -->
     <java-symbol type="bool" name="config_hasTurboPowerCharger" />
+	
+	<!-- Fingerprint Gestures Settings -->
+    <java-symbol type="integer" name="config_fingerprintSingleTapKeyCode" />
+    <java-symbol type="integer" name="config_fingerprintDoubleTapKeyCode" />
+    <java-symbol type="integer" name="config_fingerprintLongPressKeyCode" />
+    <java-symbol type="integer" name="config_fingerprintSwipeLeftKeyCode" />
+    <java-symbol type="integer" name="config_fingerprintSwipeRightKeyCode" />
+	
+    <java-symbol type="integer" name="config_fingerprintSingleTapDefault" />
+    <java-symbol type="integer" name="config_fingerprintDoubleTapDefault" />
+    <java-symbol type="integer" name="config_fingerprintLongPressDefault" />
+    <java-symbol type="integer" name="config_fingerprintSwipeLeftDefault" />
+    <java-symbol type="integer" name="config_fingerprintSwipeRightDefault" />
+  
 </resources>
