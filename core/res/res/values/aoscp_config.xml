@@ -217,4 +217,36 @@
 
     <!-- Whether device has turbo power charging support -->
     <bool name="config_hasTurboPowerCharger">false</bool>
+	
+	<!-- Key codes of fingerprint gestures. If the gesture is not supported set it to 0. -->
+	<integer name="config_fingerprintSingleTapKeyCode">0</integer>
+	
+    <integer name="config_fingerprintDoubleTapKeyCode">0</integer>
+
+    <integer name="config_fingerprintLongPressKeyCode">0</integer>
+
+    <integer name="config_fingerprintSwipeLeftKeyCode">0</integer>
+
+    <integer name="config_fingerprintSwipeRightKeyCode">0</integer>
+
+	<!-- Default settings for fingerprint gestures
+            0 - Disabled
+            1 - Wake device
+            2 - Toggle flashlight
+            3 - Toggle airplane mode
+            4 - Play/Pause music
+            5 - Next music
+            6 - Previous music
+            7 - Open camera
+            8 - Open dialer -->
+    <integer name="config_fingerprintSingleTapDefault">0</integer>
+
+    <integer name="config_fingerprintDoubleTapDefault">0</integer>
+
+    <integer name="config_fingerprintLongPressDefault">0</integer>
+
+    <integer name="config_fingerprintSwipeLeftDefault">0</integer>
+
+    <integer name="config_fingerprintSwipeRightDefault">0</integer>
+    
 </resources>
