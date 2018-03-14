@@ -29,6 +29,9 @@ public interface GlobalActions extends Plugin {
     default void showShutdownUi(boolean isReboot, boolean isRebootRecovery, 
                                 boolean isRebootBootloader, String reason) {
     }
+	default void showConfirmShutdownUi(boolean isReboot, boolean isRebootRecovery, 
+                                boolean isRebootBootloader, String reason) {
+    }
 
     @ProvidesInterface(version = GlobalActionsManager.VERSION)
     public interface GlobalActionsManager {

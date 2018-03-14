@@ -62,4 +62,6 @@
   <java-symbol type="string" name="global_restart_bootloader" />
   <java-symbol type="string" name="global_restart_bootloader_message" />
 
+   <!-- Allow SystemUI to show the shutdown confirm dialog -->
+   <java-symbol type="bool" name="config_showSysuiShutdown" />
 </resources>
