@@ -2816,12 +2816,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         mHasNavigationBar = res.getBoolean(com.android.internal.R.bool.config_showNavigationBar);
 
-        // Override prop based on our internal config. carlosavignano@aospa.co
+        // Override prop based on user setting. carlosavignano@aospa.co
         // TODO> Create a setting helper to centralize navigation bar settings.
-        final boolean defaultToNavigationBar = res
-                .getBoolean(com.android.internal.R.bool.config_defaultToNavigationBar);
         mNavBarEnabled = Settings.System.getIntForUser(resolver,
-                Settings.System.NAVIGATION_BAR_ENABLED, defaultToNavigationBar ? 1 : 0,
+                Settings.System.NAVIGATION_BAR_ENABLED, 0,
                         UserHandle.USER_CURRENT) == 1;
         if (mDeviceHardwareKeys != 0) {
             SystemProperties.set("qemu.hw.mainkeys", mNavBarEnabled ? "0" : "1");
@@ -2919,10 +2917,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 mWakeGestureEnabledSetting = wakeGestureEnabledSetting;
                 updateWakeGestureListenerLp();
             }
-            final boolean defaultToNavigationBar = resources
-                    .getBoolean(com.android.internal.R.bool.config_defaultToNavigationBar);
             final boolean navBarEnabled = Settings.System.getIntForUser(resolver,
-                    Settings.System.NAVIGATION_BAR_ENABLED, defaultToNavigationBar ? 1 : 0,
+                    Settings.System.NAVIGATION_BAR_ENABLED, 0,
                             UserHandle.USER_CURRENT) == 1;
             if (navBarEnabled != mNavBarEnabled) {
                 mNavBarEnabled = navBarEnabled;
