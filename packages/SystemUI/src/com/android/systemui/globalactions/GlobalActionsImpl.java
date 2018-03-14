@@ -116,4 +116,64 @@ public class GlobalActionsImpl implements GlobalActions {
 
         d.show();
     }
+	
+	@Override
+    public void showConfirmShutdownUi(boolean isReboot, boolean isRebootRecovery,
+                boolean isRebootBootloader, String reason) {
+        GradientDrawable background = new GradientDrawable(mContext);
+        background.setAlpha((int) (SHUTDOWN_SCRIM_ALPHA * 255));
+
+        Dialog d = new Dialog(mContext,
+                com.android.systemui.R.style.Theme_SystemUI_Dialog_GlobalActions);
+        // Window initialization
+        Window window = d.getWindow();
+        window.getAttributes().width = ViewGroup.LayoutParams.MATCH_PARENT;
+        window.getAttributes().height = ViewGroup.LayoutParams.MATCH_PARENT;
+        window.setType(WindowManager.LayoutParams.TYPE_VOLUME_OVERLAY);
+        window.requestFeature(Window.FEATURE_NO_TITLE);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND
+                | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR);
+        window.addFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                        | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                        | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                        | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        window.setBackgroundDrawable(background);
+        window.setWindowAnimations(R.style.Animation_Toast);
+
+        d.setContentView(R.layout.shutdown_confirm_dialog);
+        d.setCancelable(false);
+
+        int color = Utils.getColorAttr(mContext, com.android.systemui.R.attr.wallpaperTextColor);
+        boolean onKeyguard = mContext.getSystemService(
+                KeyguardManager.class).isKeyguardLocked();
+
+		ImageView icon = d.findViewById(R.id.icon);
+        icon.setColorFilter(color);	
+        TextView message = d.findViewById(R.id.confirm_message);
+        message.setTextColor(color);
+		String confirmIcon = mContext.getResources().getDrawable(R.drawable.ic_lock_power_off);
+        String confirmMessage = mContext.getResources().getString(R.string.global_shutdown_confirm_message);
+        if (reason != null && reason.equals(PowerManager.REBOOT_REQUESTED_BY_DEVICE_OWNER)) {
+			confirmIcon = mContext.getResources().getDrawable(R.drawable.ic_restart);
+            confirmMessage = mContext.getResources().getString(R.string.global_restart_confirm_message);
+        } else if (reason != null && reason.equals(PowerManager.REBOOT_RECOVERY)) {
+			confirmIcon = mContext.getResources().getDrawable(R.drawable.ic_restart_recovery);
+            confirmMessage = mContext.getResources().getString(R.string.global_restart_recovery_confirm_message);
+        } else if (reason != null && reason.equals(PowerManager.REBOOT_BOOTLOADER)) {
+			confirmIcon = mContext.getResources().getDrawable(R.drawable.ic_restart_bootloader);
+            confirmMessage = mContext.getResources().getString(R.string.global_restart_bootloader_confirm_message);
+        }
+        message.setText(confirmMessage);
+		icon.setDrawable(confirmIcon);
+        Point displaySize = new Point();
+        mContext.getDisplay().getRealSize(displaySize);
+        GradientColors colors = Dependency.get(SysuiColorExtractor.class).getColors(
+                onKeyguard ? WallpaperManager.FLAG_LOCK : WallpaperManager.FLAG_SYSTEM);
+        background.setColors(colors, false);
+        background.setScreenSize(displaySize.x, displaySize.y);
+
+        d.show();
+    }
 }

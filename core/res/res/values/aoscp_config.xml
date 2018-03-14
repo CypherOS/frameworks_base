@@ -214,4 +214,7 @@
 
     <!-- Whether device has turbo power charging support -->
     <bool name="config_hasTurboPowerCharger">false</bool>
+	
+	<!-- Allow SystemUI to show the shutdown confirm dialog -->
+    <bool name="config_showSysuiConfirmShutdown">true</bool>
 </resources>
