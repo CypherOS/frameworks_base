@@ -581,11 +581,9 @@ public class StatusBar extends SystemUI implements DemoMode,
         public void onChange(boolean selfChange) {
             final Configuration newConfiguration = new Configuration();
             boolean wasUsing = mUseNavBar;
-            boolean defaultToNavigationBar = mContext.getResources()
-                    .getBoolean(com.android.internal.R.bool.config_defaultToNavigationBar);
             mUseNavBar = Settings.System.getIntForUser(
                     mContext.getContentResolver(), Settings.System.NAVIGATION_BAR_ENABLED,
-                    defaultToNavigationBar ? 1 : 0, UserHandle.USER_CURRENT) != 0;
+                    0, UserHandle.USER_CURRENT) != 0;
             Log.d(TAG, "navbar is " + (mUseNavBar ? "enabled" : "disabled"));
             if (wasUsing != mUseNavBar) {
                 setNavBarEnabled(mUseNavBar);
