@@ -43,7 +43,7 @@ public class SettingConfirmationSnackbarView extends RelativeLayout {
     private static final String LOG_TAG = SettingConfirmationHelper.LOG_TAG;
 
     /** Amount of milliseconds for how long the animations should last. */
-    private static final int ANIMATION_DURATION = 250;
+    private static final int ANIMATION_DURATION = 300;
     /** Amount of milliseconds for how long to show the snackbar. */
     private static final int TIMEOUT_DURATION = 30000;
 
@@ -201,7 +201,7 @@ public class SettingConfirmationSnackbarView extends RelativeLayout {
         animate().translationY(getHeight())
                 .setInterpolator(AnimationUtils.loadInterpolator(getContext(),
                         android.R.interpolator.fast_out_slow_in))
-                .setDuration(getTranslationY() == 0 ? 0 : ANIMATION_DURATION)
+                .setDuration(ANIMATION_DURATION)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationStart(final Animator animation) {
