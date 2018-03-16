@@ -5244,8 +5244,7 @@ public class Notification implements Parcelable
         if (isColorizedMedia()) {
             return true;
         }
-        return extras.getBoolean(EXTRA_COLORIZED)
-                && (hasColorizedPermission() || isForegroundService());
+        return extras.getBoolean(EXTRA_COLORIZED); // && (hasColorizedPermission() || isForegroundService()) : Disabled to allow colorized notifications with only "setColorized"
     }
 
     /**
