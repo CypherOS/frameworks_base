@@ -1060,6 +1060,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         mFlashlightController = Dependency.get(FlashlightController.class);
 
+		mRecognition = new AmbientPlayRecognition(StatusBar.this);
         updateAmbientPlayState();
 
         mWeatherClient = new OmniJawsClient(mContext);
@@ -1476,7 +1477,6 @@ public class StatusBar extends SystemUI implements DemoMode,
     };
 
     private void startAmbientPlayRecognition() {
-        mRecognition = new AmbientPlayRecognition(StatusBar.this);
         mRecognition.startRecording();
         mHandler.postDelayed(mStopRecognition, 19000);
     }
