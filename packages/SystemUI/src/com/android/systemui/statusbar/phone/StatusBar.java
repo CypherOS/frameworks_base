@@ -1060,7 +1060,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         mFlashlightController = Dependency.get(FlashlightController.class);
 
-        startAmbientPlayListener();
+        updateAmbientPlayState();
 
         mWeatherClient = new OmniJawsClient(mContext);
         mWeatherEnabled = mWeatherClient.isOmniJawsEnabled();
@@ -1444,11 +1444,27 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
     }
 
+    private void updateAmbientPlayState() {
+        int mAmbientPlay = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                    Settings.Secure.AMBIENT_PLAY, 1, mCurrentUserId);
+        boolean mAmbientPlaySupported = mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_supportAmbientPlay);
+        if (mAmbientPlay != 0 && mAmbientPlaySupported) {
+            startAmbientPlayRecognition();
+        } else { 
+            /** 
+             * If recognition is disabled, then we check if the thread is running. 
+             * If so, interrupt it and stop the recording process. 
+             */
+            mRecognition.stopRecording();
+        }
+    }
+
     private Runnable mStartRecognition = new Runnable() {
         @Override
         public void run() {
             Log.v(TAG, "Will start listening again in 60 seconds");
-            startAmbientPlayListener();
+            updateAmbientPlayState();
         }
     };
 
@@ -1459,16 +1475,10 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
     };
 
-    private void startAmbientPlayListener() {
-        int mAmbientPlay = Settings.Secure.getIntForUser(mContext.getContentResolver(),
-                    Settings.Secure.AMBIENT_PLAY, 1, mCurrentUserId);
-        boolean mAmbientPlaySupported = mContext.getResources().getBoolean(
-                    com.android.internal.R.bool.config_supportAmbientPlay);
+    private void startAmbientPlayRecognition() {
         mRecognition = new AmbientPlayRecognition(StatusBar.this);
-        if (mAmbientPlay != 0 && mAmbientPlaySupported) {
-            mRecognition.startRecording();
-            mHandler.postDelayed(mStopRecognition, 19000);
-        }
+        mRecognition.startRecording();
+        mHandler.postDelayed(mStopRecognition, 19000);
     }
 
     private Runnable mSetTrackInfo = new Runnable() {
@@ -6290,7 +6300,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             if (mAmbientIndicationContainer instanceof AutoReinflateContainer) {
                 ((AutoReinflateContainer) mAmbientIndicationContainer).inflateLayout();
             }
-            startAmbientPlayListener();
+            updateAmbientPlayState();
         }
     }
 
