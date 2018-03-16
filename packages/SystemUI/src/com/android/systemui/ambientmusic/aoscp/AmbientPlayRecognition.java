@@ -17,12 +17,15 @@
 package com.android.systemui.ambientmusic.aoscp;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -54,6 +57,13 @@ public class AmbientPlayRecognition {
         private boolean mDataSending = false;
         private boolean mResultGiven = false;
         private long mLastMatchTryTime;
+		
+		private Context mContext;
+		
+		int mAmbientPlay = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                    Settings.Secure.AMBIENT_PLAY, 1, UserHandle.USER_CURRENT);
+        boolean mAmbientPlaySupported = mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_supportAmbientPlay);
 
         public void run() {
             Log.d(TAG, "Started reading recorder...");
@@ -83,7 +93,9 @@ public class AmbientPlayRecognition {
 
                     long currentTime = SystemClock.uptimeMillis();
                     if (currentTime - mLastMatchTryTime >= TRY_MATCH_INTERVAL) {
-                        tryMatchCurrentBuffer();
+						if (mAmbientPlay != 0 && mAmbientPlaySupported) {
+							tryMatchCurrentBuffer();
+						}
                         mLastMatchTryTime = SystemClock.uptimeMillis();
                     }
                 }
@@ -91,7 +103,7 @@ public class AmbientPlayRecognition {
 
             Log.d(TAG, "Broke out of recording loop, mResultGiven=" + mResultGiven);
 
-            if (!mResultGiven) {
+            if (!mResultGiven && mAmbientPlay != 0 && mAmbientPlaySupported) {
                 tryMatchCurrentBuffer();
             }
         }
