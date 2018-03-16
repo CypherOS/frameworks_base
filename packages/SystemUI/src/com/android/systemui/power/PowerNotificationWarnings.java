@@ -249,7 +249,8 @@ public class PowerNotificationWarnings implements PowerUI.WarningsUI {
                         .setOnlyAlertOnce(true)
                         .setDeleteIntent(pendingBroadcast(ACTION_DISMISSED_WARNING))
                         .setVisibility(Notification.VISIBILITY_PUBLIC)
-                        .setColor(Utils.getColorAttr(mContext, android.R.attr.colorError));
+                        .setColor(Utils.getColorAttr(mContext, android.R.attr.colorError))
+                        .setColorized(true);
         if (hasBatterySettings()) {
             nb.setContentIntent(pendingBroadcast(ACTION_SHOW_BATTERY_SETTINGS));
         }
@@ -282,7 +283,8 @@ public class PowerNotificationWarnings implements PowerUI.WarningsUI {
                         .setOnlyAlertOnce(true)
                         .setVisibility(Notification.VISIBILITY_PUBLIC)
                         .setAutoCancel(true)
-                        .setColor(mContext.getColor(R.color.battery_level_good_color));
+                        .setColor(mContext.getColor(R.color.battery_level_good_color))
+                        .setColorized(true);
         if (hasBatterySettings()) {
             nb.setContentIntent(pendingBroadcast(ACTION_SHOW_BATTERY_SETTINGS));
         }
