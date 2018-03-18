@@ -1451,12 +1451,12 @@ public class StatusBar extends SystemUI implements DemoMode,
                     com.android.internal.R.bool.config_supportAmbientPlay);
         if (mAmbientPlay != 0 && mAmbientPlaySupported) {
             startAmbientPlayRecognition();
-        } else { 
+        } else {
             /** 
              * If recognition is disabled, then we check if the thread is running. 
              * If so, interrupt it and stop the recording process. 
              */
-            mRecognition.stopRecording();
+            stopAmbientPlayRecognition();
         }
     }
 
@@ -1479,6 +1479,11 @@ public class StatusBar extends SystemUI implements DemoMode,
         mRecognition = new AmbientPlayRecognition(StatusBar.this);
         mRecognition.startRecording();
         mHandler.postDelayed(mStopRecognition, 19000);
+    }
+	
+	private void stopAmbientPlayRecognition() {
+        mRecognition = new AmbientPlayRecognition(StatusBar.this);
+        mRecognition.stopRecording();
     }
 
     private Runnable mSetTrackInfo = new Runnable() {
