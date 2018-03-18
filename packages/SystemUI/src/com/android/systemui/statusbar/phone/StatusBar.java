@@ -580,13 +580,15 @@ public class StatusBar extends SystemUI implements DemoMode,
         @Override
         public void onChange(boolean selfChange) {
             final Configuration newConfiguration = new Configuration();
-            boolean wasUsing = mUseNavBar;
-            mUseNavBar = Settings.System.getIntForUser(
-                    mContext.getContentResolver(), Settings.System.NAVIGATION_BAR_ENABLED,
-                    0, UserHandle.USER_CURRENT) != 0;
-            Log.d(TAG, "navbar is " + (mUseNavBar ? "enabled" : "disabled"));
-            if (wasUsing != mUseNavBar) {
-                setNavBarEnabled(mUseNavBar);
+			int mUseNavBar = Settings.System.getIntForUser(
+			        mContext.getContentResolver(), Settings.System.NAVIGATION_BAR_ENABLED, 0, mCurrentUserId);
+            if (mUseNavBar == 1) {
+                setNavBarEnabled(true);
+                if (mAssistManager != null) {
+                    mAssistManager.onConfigurationChanged(newConfiguration);
+                }
+			} else {
+				setNavBarEnabled(false);
                 if (mAssistManager != null) {
                     mAssistManager.onConfigurationChanged(newConfiguration);
                 }
@@ -6148,9 +6150,6 @@ public class StatusBar extends SystemUI implements DemoMode,
     protected boolean mUseHeadsUp = false;
     protected boolean mHeadsUpTicker = false;
     protected boolean mDisableNotificationAlerts = false;
-
-    // Enable navigation bar.
-    protected boolean mUseNavBar = false;
 
     protected DevicePolicyManager mDevicePolicyManager;
     protected PowerManager mPowerManager;
