@@ -184,6 +184,26 @@ public class Build {
             CPU_ABI2 = "";
         }
     }
+	
+	/** Various aoscp version information. */
+    public static class AOSCP {
+		
+		/**
+         * The user-visible aoscp build number from the settings menu.
+         */
+        public static final String BUILD_NUMBER = getString("ro.aoscp.build");
+		
+		/**
+         * The user-visible aoscp codename from the settings menu.
+         */
+        public static final String CODENAME = getString("ro.aoscp.codename");
+		
+		/**
+         * The user-visible aoscp version from the settings menu.
+         */
+        public static final String VERSION = getString("ro.aoscp.version");
+		
+	}
 
     /** Various version strings. */
     public static class VERSION {
