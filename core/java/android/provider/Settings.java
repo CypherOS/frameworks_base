@@ -7134,6 +7134,13 @@ public final class Settings {
         public static final String QS_AUTO_ADDED_TILES = "qs_auto_tiles";
 
         /**
+         * Whether to allow untrusted overlays to be installed
+         *
+         * @hide
+         */
+        public static final String ALLOW_UNTRUSTED_OVERLAYS = "allow_untrusted_overlays";
+
+        /**
          * This are the settings to be backed up.
          *
          * NOTE: Settings are backed up and restored in the order they appear
