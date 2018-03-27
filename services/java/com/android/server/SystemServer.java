@@ -65,6 +65,7 @@ import com.android.server.audio.AudioService;
 import com.android.server.camera.CameraServiceProxy;
 import com.android.server.car.CarServiceHelperService;
 import com.android.server.clipboard.ClipboardService;
+import com.android.server.cm.ColorManagerService;
 import com.android.server.connectivity.IpConnectivityMetrics;
 import com.android.server.coverage.CoverageService;
 import com.android.server.devicepolicy.DevicePolicyManagerService;
@@ -631,6 +632,11 @@ public final class SystemServer {
         // Manages Overlay packages
         traceBeginAndSlog("StartOverlayManagerService");
         mSystemServiceManager.startService(new OverlayManagerService(mSystemContext, installer));
+        traceEnd();
+
+        // Manages Color Manager themes
+        traceBeginAndSlog("StartColorManagerService");
+        mSystemServiceManager.startService(new ColorManagerService(mSystemContext));
         traceEnd();
 
         // The sensor service needs access to package manager service, app ops
