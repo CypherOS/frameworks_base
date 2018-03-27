@@ -4029,6 +4029,16 @@ public abstract class Context {
      * @hide
      */
     public static final String OVERLAY_SERVICE = "overlay";
+	
+	/**
+     * Use with {@link #getSystemService} to retrieve a {@link
+     * android.content.cm.ColorManager} for managing aoscp themes.
+     *
+     * @see #getSystemService
+     * @see android.content.cm.ColorManager
+     * @hide
+     */
+    public static final String COLOR_MANAGER = "colormanager";
 
     /**
      * Use with {@link #getSystemService} to retrieve a
