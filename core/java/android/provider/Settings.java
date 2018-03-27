@@ -7005,6 +7005,24 @@ public final class Settings {
                 "managed_profile_contact_remote_search";
 
         /**
+         * Which theme is set via Color Manager
+         *
+         * 0 - Automatic (Wallpaper based)
+         * 1 - Light
+         * 2 - Dark
+         * 3 - Black
+         * @hide
+         */
+        public static final String DEVICE_THEME = "device_theme";
+
+        /**
+         * Which accent is set via Color Manager
+         *
+         * @hide
+         */
+        public static final String DEVICE_ACCENT = "device_accent";
+
+        /**
          * Whether or not the automatic storage manager is enabled and should run on the device.
          *
          * @hide
