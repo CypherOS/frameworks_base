@@ -37,6 +37,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.IRestrictionsManager;
 import android.content.RestrictionsManager;
+import android.content.cm.IColorManager;
+import android.content.cm.ColorManager;
 import android.content.pm.IShortcutService;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
@@ -793,6 +795,15 @@ final class SystemServiceRegistry {
                     return null;
                 }
             }});
+			
+		registerService(Context.COLOR_MANAGER, ColorManager.class,
+                new CachedServiceFetcher<ColorManager>() {
+            @Override
+            public ColorManager createService(ContextImpl ctx) {
+				IBinder binder = ServiceManager.getService(Context.COLOR_MANAGER);
+				IColorManager service = IColorManager.Stub.asInterface(binder);
+				return new ColorManager(ctx.getOuterContext(), service);
+		    }});
 
         registerService(Context.MEDIA_PROJECTION_SERVICE, MediaProjectionManager.class,
                 new CachedServiceFetcher<MediaProjectionManager>() {
