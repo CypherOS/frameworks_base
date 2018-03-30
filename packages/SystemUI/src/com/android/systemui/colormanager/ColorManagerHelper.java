@@ -39,29 +39,56 @@ public class ColorManagerHelper {
             "co.aoscp.theme.settings.dark",
     };
 
-    // Package names for accents
+    // Accent Packages
     private static final String ACCENT_DEFAULT = "default";
-    private static final String ACCENT_DEEP_PURPLE = "co.aoscp.accent.deeppurple";
+	// Accent Packages: Blue
+    private static final String ACCENT_BLUE = "co.aoscp.accent.blue";
     private static final String ACCENT_INDIGO = "co.aoscp.accent.indigo";
+	private static final String ACCENT_OCEANIC = "co.aoscp.accent.oceanic";
+	private static final String ACCENT_BRIGHTSKY = "co.aoscp.accent.brightsky";
+	// Accent Packages: Green
+	private static final String ACCENT_GREEN = "co.aoscp.accent.green";
+	private static final String ACCENT_LIMA_BEAN = "co.aoscp.accent.limabean";
+	private static final String ACCENT_LIME = "co.aoscp.accent.lime";
+	private static final String ACCENT_TEAL = "co.aoscp.accent.teal";
+	// Accent Packages: Pink
     private static final String ACCENT_PINK = "co.aoscp.accent.pink";
+	private static final String ACCENT_PLAY_BOY = "co.aoscp.accent.playboy";
+	// Accent Packages: Purple
     private static final String ACCENT_PURPLE = "co.aoscp.accent.purple";
+	private static final String ACCENT_DEEP_VALLEY = "co.aoscp.accent.deepvalley";
+	// Accent Packages: Red
     private static final String ACCENT_RED = "co.aoscp.accent.red";
-    private static final String ACCENT_SKY_BLUE = "co.aoscp.accent.skyblue";
-    private static final String ACCENT_TEAL = "co.aoscp.accent.teal";
+	private static final String ACCENT_BLOODY_MARY = "co.aoscp.accent.bloodymary";
+	// Accent Packages: Yellow
+	private static final String ACCENT_YELLOW = "co.aoscp.accent.yellow";
+	private static final String ACCENT_SUN_FLOWER = "co.aoscp.accent.sunflower";
+	// Accent Packages: Other
+	private static final String ACCENT_BLACK = "co.aoscp.accent.black";
+	private static final String ACCENT_GREY = "co.aoscp.accent.grey";
     private static final String ACCENT_WHITE = "co.aoscp.accent.white";
-    private static final String ACCENT_YELLOW = "co.aoscp.accent.yellow";
 
     private static final String[] ACCENTS = {
             ACCENT_DEFAULT,
-            ACCENT_DEEP_PURPLE,
+            ACCENT_BLUE,
             ACCENT_INDIGO,
-            ACCENT_PINK,
-            ACCENT_PURPLE,
-            ACCENT_RED,
-            ACCENT_SKY_BLUE,
+            ACCENT_OCEANIC,
+            ACCENT_BRIGHTSKY,
+            ACCENT_GREEN,
+            ACCENT_LIMA_BEAN,
+            ACCENT_LIME,
             ACCENT_TEAL,
-            ACCENT_WHITE,
-            ACCENT_YELLOW,
+            ACCENT_PINK,
+			ACCENT_PLAY_BOY,
+			ACCENT_PURPLE,
+			ACCENT_DEEP_VALLEY,
+			ACCENT_RED,
+			ACCENT_BLOODY_MARY,
+			ACCENT_YELLOW,
+			ACCENT_SUN_FLOWER,
+			ACCENT_BLACK,
+			ACCENT_GREY,
+			ACCENT_WHITE,
     };
 
     public static boolean isUsingDarkTheme(IOverlayManager om, int userId) {
@@ -103,31 +130,61 @@ public class ColorManagerHelper {
                 restoreDefaultAccent(om, userId);
                 break;
             case 1:
-                om.setEnabledExclusive(ACCENT_DEEP_PURPLE, true, userId);
+                om.setEnabledExclusive(ACCENT_BLUE, true, userId);
                 break;
             case 2:
                 om.setEnabledExclusive(ACCENT_INDIGO, true, userId);
                 break;
             case 3:
-                om.setEnabledExclusive(ACCENT_PINK, true, userId);
+                om.setEnabledExclusive(ACCENT_OCEANIC, true, userId);
                 break;
             case 4:
-                om.setEnabledExclusive(ACCENT_PURPLE, true, userId);
+                om.setEnabledExclusive(ACCENT_BRIGHTSKY, true, userId);
                 break;
             case 5:
-                om.setEnabledExclusive(ACCENT_RED, true, userId);
+                om.setEnabledExclusive(ACCENT_GREEN, true, userId);
                 break;
             case 6:
-                om.setEnabledExclusive(ACCENT_SKY_BLUE, true, userId);
+                om.setEnabledExclusive(ACCENT_LIMA_BEAN, true, userId);
                 break;
             case 7:
-                om.setEnabledExclusive(ACCENT_TEAL, true, userId);
+                om.setEnabledExclusive(ACCENT_LIME, true, userId);
                 break;
             case 8:
-                om.setEnabledExclusive(ACCENT_WHITE, true, userId);
+                om.setEnabledExclusive(ACCENT_TEAL, true, userId);
                 break;
             case 9:
+                om.setEnabledExclusive(ACCENT_PINK, true, userId);
+                break;
+			case 10:
+                om.setEnabledExclusive(ACCENT_PLAY_BOY, true, userId);
+                break;
+            case 11:
+                om.setEnabledExclusive(ACCENT_PURPLE, true, userId);
+                break;
+            case 12:
+                om.setEnabledExclusive(ACCENT_DEEP_VALLEY, true, userId);
+                break;
+            case 13:
+                om.setEnabledExclusive(ACCENT_RED, true, userId);
+                break;
+            case 14:
+                om.setEnabledExclusive(ACCENT_BLOODY_MARY, true, userId);
+                break;
+            case 15:
                 om.setEnabledExclusive(ACCENT_YELLOW, true, userId);
+                break;
+            case 16:
+                om.setEnabledExclusive(ACCENT_SUN_FLOWER, true, userId);
+                break;
+            case 17:
+                om.setEnabledExclusive(ACCENT_BLACK, true, userId);
+                break;
+            case 18:
+                om.setEnabledExclusive(ACCENT_GREY, true, userId);
+                break;
+			case 19:
+                om.setEnabledExclusive(ACCENT_WHITE, true, userId);
                 break;
         }
     }
