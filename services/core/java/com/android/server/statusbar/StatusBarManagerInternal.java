@@ -89,6 +89,9 @@ public interface StatusBarManagerInternal {
 
     boolean showShutdownUi(boolean isReboot, boolean isRebootRecovery,
                 boolean isRebootBootloader, String requestString);
+				
+	boolean showConfirmShutdownUi(boolean isReboot, boolean isRebootRecovery,
+                boolean isRebootBootloader, String requestString);
 
     public interface GlobalActionsListener {
         /**
