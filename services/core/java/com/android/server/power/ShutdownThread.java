@@ -184,6 +184,9 @@ public final class ShutdownThread extends Thread {
         Log.d(TAG, "Notifying thread to start shutdown longPressBehavior=" + longPressBehavior);
 
         if (confirm) {
+			if (showSysuiConfirm()) {
+                return;
+            }
             final CloseDialogReceiver closer = new CloseDialogReceiver(context);
             if (sConfirmDialog != null) {
                 sConfirmDialog.dismiss();
@@ -414,6 +417,23 @@ public final class ShutdownThread extends Thread {
 
         pd.show();
         return pd;
+    }
+	
+	private static boolean showSysuiConfirm() {
+        Log.d(TAG, "Attempting to use SysUI confirm shutdown UI");
+        try {
+            StatusBarManagerInternal service = LocalServices.getService(
+                    StatusBarManagerInternal.class);
+            if (service.showConfirmShutdownUi(mReboot, mRebootRecovery, mRebootBootloader, mReason)) {
+                // Sysui will handle confirm shutdown UI.
+                Log.d(TAG, "SysUI handling shutdown confirmation UI");
+                return true;
+            }
+        } catch (Exception e) {
+            // If anything went wrong, ignore it and use fallback ui
+        }
+        Log.d(TAG, "SysUI is unavailable");
+        return false;
     }
 
     private static boolean showSysuiReboot() {
