@@ -41,8 +41,8 @@
 
     <!-- True if the gesture service should be started at system start -->
     <bool name="config_enableGestureService">false</bool>
-	
-	<!--  Define optional package verifier name -->
+
+    <!--  Define optional package verifier name -->
     <string name="config_optionalPackageVerifierName" translatable="false"></string>
 
     <!-- The duration (in milliseconds) for the outgoing sms authorization request to timeout.-->
@@ -67,4 +67,7 @@
         <item>recovery</item>
         <item>bootloader</item>
     </string-array>
+
+    <!-- Allow SystemUI to show the shutdown confirm dialog -->
+    <bool name="config_showSysuiConfirmShutdown">true</bool>
 </resources>

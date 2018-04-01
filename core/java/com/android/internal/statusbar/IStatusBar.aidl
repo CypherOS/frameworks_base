@@ -126,4 +126,6 @@ oneway interface IStatusBar
 
     void showShutdownUi(boolean isReboot, boolean isRebootBootloader,
                 boolean isRebootRecovery, String reason);
+    void showConfirmShutdownUi(boolean isReboot, boolean isRebootBootloader,
+                boolean isRebootRecovery, String reason);
 }

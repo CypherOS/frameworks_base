@@ -353,6 +353,21 @@ public class StatusBarManagerService extends IStatusBarService.Stub {
             }
             return false;
         }
+
+        @Override
+        public boolean showConfirmShutdownUi(boolean isReboot, boolean isRebootRecovery,
+                boolean isRebootBootloader, String reason) {
+            if (!mContext.getResources().getBoolean(R.bool.config_showSysuiConfirmShutdown)) {
+                return false;
+            }
+            if (mBar != null) {
+                try {
+                    mBar.showConfirmShutdownUi(isReboot, isRebootRecovery, isRebootBootloader, reason);
+                    return true;
+                } catch (RemoteException ex) {}
+            }
+            return false;
+        }
     };
 
     // ================================================================================

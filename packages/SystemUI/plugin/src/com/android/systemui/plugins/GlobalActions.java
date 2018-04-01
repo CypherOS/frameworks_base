@@ -26,7 +26,10 @@ public interface GlobalActions extends Plugin {
     int VERSION = 1;
 
     void showGlobalActions(GlobalActionsManager manager);
-    default void showShutdownUi(boolean isReboot, boolean isRebootRecovery, 
+    default void showShutdownUi(boolean isReboot, boolean isRebootRecovery,
+                                boolean isRebootBootloader, String reason) {
+    }
+    default void showConfirmShutdownUi(boolean isReboot, boolean isRebootRecovery,
                                 boolean isRebootBootloader, String reason) {
     }
 

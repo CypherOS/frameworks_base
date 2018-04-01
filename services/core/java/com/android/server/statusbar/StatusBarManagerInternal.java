@@ -90,6 +90,9 @@ public interface StatusBarManagerInternal {
     boolean showShutdownUi(boolean isReboot, boolean isRebootRecovery,
                 boolean isRebootBootloader, String requestString);
 
+    boolean showConfirmShutdownUi(boolean isReboot, boolean isRebootRecovery,
+                boolean isRebootBootloader, String requestString);
+
     public interface GlobalActionsListener {
         /**
          * Called when sysui starts and connects its status bar, or when the status bar binder

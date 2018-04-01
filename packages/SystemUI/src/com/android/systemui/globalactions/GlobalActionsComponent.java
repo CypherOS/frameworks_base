@@ -48,7 +48,14 @@ public class GlobalActionsComponent extends SystemUI implements Callbacks, Globa
     @Override
     public void handleShowShutdownUi(boolean isReboot, boolean isRebootRecovery,
                 boolean isRebootBootloader, String reason) {
-        mExtension.get().showShutdownUi(isReboot, isRebootRecovery, 
+        mExtension.get().showShutdownUi(isReboot, isRebootRecovery,
+                                        isRebootBootloader, reason);
+    }
+
+    @Override
+    public void handleShowConfirmShutdownUi(boolean isReboot, boolean isRebootRecovery,
+                boolean isRebootBootloader, String reason) {
+        mExtension.get().showConfirmShutdownUi(isReboot, isRebootRecovery,
                                         isRebootBootloader, reason);
     }
 
