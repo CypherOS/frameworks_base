@@ -3779,6 +3779,7 @@ HPLcom/android/server/statusbar/StatusBarManagerInternal;->showPictureInPictureM
 HPLcom/android/server/statusbar/StatusBarManagerInternal;->showRecentApps(ZZ)V
 HPLcom/android/server/statusbar/StatusBarManagerInternal;->showScreenPinningRequest(I)V
 HPLcom/android/server/statusbar/StatusBarManagerInternal;->showShutdownUi(ZLjava/lang/String;)Z
+HPLcom/android/server/statusbar/StatusBarManagerInternal;->showConfirmShutdownUi(ZLjava/lang/String;)Z
 HPLcom/android/server/statusbar/StatusBarManagerInternal;->startAssist(Landroid/os/Bundle;)V
 HPLcom/android/server/statusbar/StatusBarManagerInternal;->toggleKeyboardShortcutsMenu(I)V
 HPLcom/android/server/statusbar/StatusBarManagerInternal;->toggleRecentApps()V
