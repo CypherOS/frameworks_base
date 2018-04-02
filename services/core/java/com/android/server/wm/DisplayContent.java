@@ -2735,7 +2735,7 @@ class DisplayContent extends WindowContainer<DisplayContent.DisplayChildWindowCo
         do {
             repeats++;
             if (repeats > 6) {
-                Slog.w(TAG, "Animation repeat aborted after too many iterations");
+                repeats = 1;
                 clearLayoutNeeded();
                 break;
             }
@@ -2767,7 +2767,7 @@ class DisplayContent extends WindowContainer<DisplayContent.DisplayChildWindowCo
             if (repeats < LAYOUT_REPEAT_THRESHOLD) {
                 performLayout(repeats == 1, false /* updateInputWindows */);
             } else {
-                Slog.w(TAG, "Layout repeat skipped after too many iterations");
+                performLayout(repeats == 0, false /* updateInputWindows */);
             }
 
             // FIRST AND ONE HALF LOOP: Make WindowManagerPolicy think it is animating.
