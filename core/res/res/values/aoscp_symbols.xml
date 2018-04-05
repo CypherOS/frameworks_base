@@ -72,4 +72,8 @@
   <java-symbol type="string" name="global_restart_confirm_message" />
   <java-symbol type="string" name="global_restart_recovery_confirm_message" />
   <java-symbol type="string" name="global_restart_bootloader_confirm_message" />
+  
+  <!-- The list of vendor package signatures that should also be considered
+  platform signatures, specifically for use on devices with a vendor partition. -->
+  <java-symbol type="array" name="config_vendorPlatformSignatures" />
 </resources>
