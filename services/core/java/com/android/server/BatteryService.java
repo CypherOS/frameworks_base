@@ -70,9 +70,14 @@ import com.android.server.am.BatteryStatsService;
 import com.android.server.lights.Light;
 import com.android.server.lights.LightsManager;
 
+import libcore.io.IoUtils;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayDeque;
@@ -169,6 +174,9 @@ public final class BatteryService extends SystemService {
     private int mLastPlugType = -1; // Extra state so we can detect first run
 
     private boolean mBatteryLevelLow;
+
+    private boolean mOemFastCharger;
+    private boolean mLastOemFastCharger;
 
     private long mDischargeStartTime;
     private int mDischargeStartLevel;
@@ -469,6 +477,8 @@ public final class BatteryService extends SystemService {
         shutdownIfNoPowerLocked();
         shutdownIfOverTempLocked();
 
+        mOemFastCharger = isOemFastCharger();
+
         if (force || (mHealthInfo.batteryStatus != mLastBatteryStatus ||
                 mHealthInfo.batteryHealth != mLastBatteryHealth ||
                 mHealthInfo.batteryPresent != mLastBatteryPresent ||
@@ -479,7 +489,8 @@ public final class BatteryService extends SystemService {
                 mHealthInfo.maxChargingCurrent != mLastMaxChargingCurrent ||
                 mHealthInfo.maxChargingVoltage != mLastMaxChargingVoltage ||
                 mHealthInfo.batteryChargeCounter != mLastChargeCounter ||
-                mInvalidCharger != mLastInvalidCharger)) {
+                mInvalidCharger != mLastInvalidCharger ||
+                mOemFastCharger != mLastOemFastCharger)) {
 
             if (mPlugType != mLastPlugType) {
                 if (mLastPlugType == BATTERY_PLUGGED_NONE) {
@@ -650,6 +661,7 @@ public final class BatteryService extends SystemService {
             mLastChargeCounter = mHealthInfo.batteryChargeCounter;
             mLastBatteryLevelCritical = mBatteryLevelCritical;
             mLastInvalidCharger = mInvalidCharger;
+            mLastOemFastCharger = mOemFastCharger;
         }
     }
 
@@ -677,6 +689,7 @@ public final class BatteryService extends SystemService {
         intent.putExtra(BatteryManager.EXTRA_MAX_CHARGING_CURRENT, mHealthInfo.maxChargingCurrent);
         intent.putExtra(BatteryManager.EXTRA_MAX_CHARGING_VOLTAGE, mHealthInfo.maxChargingVoltage);
         intent.putExtra(BatteryManager.EXTRA_CHARGE_COUNTER, mHealthInfo.batteryChargeCounter);
+        intent.putExtra(BatteryManager.EXTRA_OEM_FAST_CHARGER, mOemFastCharger);
         if (DEBUG) {
             Slog.d(TAG, "Sending ACTION_BATTERY_CHANGED. scale:" + BATTERY_SCALE
                     + ", info:" + mHealthInfo.toString());
@@ -727,6 +740,32 @@ public final class BatteryService extends SystemService {
         mContext.sendBroadcastAsUser(intent, UserHandle.ALL,
                 android.Manifest.permission.BATTERY_STATS);
         mLastBatteryLevelChangedSentMs = SystemClock.elapsedRealtime();
+    }
+
+    private boolean isOemFastCharger() {
+        for (String path : mContext.getResources().getStringArray(
+                com.android.internal.R.array.config_oemFastChargerStatusPaths)) {
+            FileReader statusReader = null;
+            BufferedReader br = null;
+            try {
+                statusReader = new FileReader(path);
+                br = new BufferedReader(statusReader);
+                 final String state = br.readLine();
+                if ("1".equals(state)) {
+                    return true;
+                }
+            } catch (FileNotFoundException e) {
+                Slog.e(TAG, "Could not find oem fast charger status path: "
+                    + path);
+            } catch (IOException e) {
+                Slog.e(TAG, "Failed to read oem fast charger status path: "
+                    + path);
+            } finally {
+                IoUtils.closeQuietly(br);
+                IoUtils.closeQuietly(statusReader);
+            }
+        }
+        return false;
     }
 
     private void logBatteryStatsLocked() {
