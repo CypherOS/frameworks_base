@@ -79,4 +79,7 @@
 
   <!-- Path to fast charging status file to detect whether an oem fast charger is active -->
   <java-symbol type="array" name="config_oemFastChargerStatusPaths" />
+
+  <!-- Whether the device requires overlays to be in /system/overlay -->
+  <java-symbol type="bool" name="config_hasSystemOverlayPath" />
 </resources>
