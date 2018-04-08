@@ -79,4 +79,7 @@
     <!-- Paths to fast charging status file to detect whether an oem fast charger is active -->
     <string-array name="config_oemFastChargerStatusPaths" translatable="false">
     </string-array>
+
+	<!-- Whether the device requires overlays to be in /system/overlay -->
+    <bool name="config_hasSystemOverlayPath">false</bool>
 </resources>
