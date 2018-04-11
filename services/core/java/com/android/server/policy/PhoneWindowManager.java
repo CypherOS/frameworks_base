@@ -2521,15 +2521,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mNavigationBarCanMove = width != height && shortSizeDp < 600;
 
         mHasNavigationBar = res.getBoolean(com.android.internal.R.bool.config_showNavigationBar);
-		mSupportsFPNavigation = res.getBoolean(com.android.internal.R.bool.config_supportsFPNavigation);
 		
 		// Override the hw prop based on the navigation bar state
 		mNavBarEnabled = Settings.System.getIntForUser(resolver,
                     Settings.System.NAVIGATION_BAR_ENABLED, mHasNavigationBar ? 0 : 1, UserHandle.USER_CURRENT) == 1;
 		if (mDeviceHardwareKeys != 0) {
-			if (mSupportsFPNavigation) {
-				SystemProperties.set("sys.fpnav.enabled", mNavBarEnabled ? "1" : "0");
-			}
 			SystemProperties.set("qemu.hw.mainkeys", mNavBarEnabled ? "0" : "1");
 		}
 
@@ -2624,15 +2620,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 updateWakeGestureListenerLp();
             }
 
+			mSupportsFPNavigation = res.getBoolean(com.android.internal.R.bool.config_supportsFPNavigation);
             final boolean navBarEnabled = Settings.System.getIntForUser(resolver,
                         Settings.System.NAVIGATION_BAR_ENABLED, mHasNavigationBar ? 0 : 1, UserHandle.USER_CURRENT) == 1;
             if (navBarEnabled != mNavBarEnabled) {
                 mNavBarEnabled = navBarEnabled;
 				if (mDeviceHardwareKeys != 0) {
-					if (mSupportsFPNavigation) {
-						SystemProperties.set("sys.fpnav.enabled", mNavBarEnabled ? "1" : "0");
-					}
 					SystemProperties.set("qemu.hw.mainkeys", mNavBarEnabled ? "0" : "1");
+				}
+				if (mSupportsFPNavigation) {
+				    SystemProperties.set("sys.fpnav.enabled", mNavBarEnabled ? "1" : "0");
 				}
             }
 
