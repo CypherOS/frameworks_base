@@ -485,6 +485,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mStatusBarHeight;
     WindowState mNavigationBar = null;
     boolean mHasNavigationBar = false;
+	boolean mSupportsFPNavigation;
     boolean mNavigationBarCanMove = false; // can the navigation bar ever move to the side?
     int mNavigationBarPosition = NAV_BAR_BOTTOM;
     int[] mNavigationBarHeightForRotationDefault = new int[4];
@@ -2592,6 +2593,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     public void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
+		final Resources res = mContext.getResources();
         boolean updateRotation = false;
         synchronized (mLock) {
             mEndcallBehavior = Settings.System.getIntForUser(resolver,
@@ -2619,12 +2621,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 updateWakeGestureListenerLp();
             }
 
+			mSupportsFPNavigation = res.getBoolean(com.android.internal.R.bool.config_supportsFPNavigation);
             final boolean navBarEnabled = Settings.System.getIntForUser(resolver,
                         Settings.System.NAVIGATION_BAR_ENABLED, mHasNavigationBar ? 0 : 1, UserHandle.USER_CURRENT) == 1;
             if (navBarEnabled != mNavBarEnabled) {
                 mNavBarEnabled = navBarEnabled;
 				if (mDeviceHardwareKeys != 0) {
 					SystemProperties.set("qemu.hw.mainkeys", mNavBarEnabled ? "0" : "1");
+				}
+				if (mSupportsFPNavigation) {
+				    SystemProperties.set("sys.fpnav.enabled", mNavBarEnabled ? "1" : "0");
 				}
             }
 
