@@ -138,4 +138,8 @@
 
   <!-- Whether to allow process with media UID to access CameraServiceProxy -->
   <java-symbol type="bool" name="config_allowMediaUidForCameraServiceProxy" />
+
+  <!-- Determines whether the device supports fingerprint navigation -->
+  <java-symbol type="bool" name="config_supportsFPNavigation" />
+
 </resources>

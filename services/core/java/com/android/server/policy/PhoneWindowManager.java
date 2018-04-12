@@ -538,6 +538,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private final int[] mStatusBarHeightForRotation = new int[4];
     WindowState mNavigationBar = null;
     boolean mHasNavigationBar = false;
+    boolean mSupportsFPNavigation;
     boolean mNavigationBarCanMove = false; // can the navigation bar ever move to the side?
     @NavigationBarPosition
     int mNavigationBarPosition = NAV_BAR_BOTTOM;
@@ -1132,6 +1133,21 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             } else {
                 updateSettings();
                 updateRotation(false);
+                updateFPNavigationStatus();
+            }
+        }
+
+    private void updateFPNavigationStatus() {
+        ContentResolver resolver = mContext.getContentResolver();
+        final Resources res = mContext.getResources();
+        mSupportsFPNavigation = res.getBoolean(com.android.internal.R.bool.config_supportsFPNavigation);
+        int navBarSetting = Settings.System.getIntForUser(resolver,
+                        Settings.System.NAVIGATION_BAR_ENABLED, 1, UserHandle.USER_CURRENT);
+        if (mSupportsFPNavigation) {
+            if (navBarSetting != 0) {
+                SystemProperties.set("sys.fpnav.enabled", "0");
+            } else {
+                SystemProperties.set("sys.fpnav.enabled", "1");
             }
         }
     }
