@@ -103,6 +103,9 @@
   <java-symbol type="integer" name="config_longPressOnAppSwitchKeyBehavior" />
   <java-symbol type="integer" name="config_longPressOnCameraKeyBehavior" />
 
-   <!-- Internal default to navigation bar value -->
-   <java-symbol type="bool" name="config_defaultToNavigationBar" />
+  <!-- Determines whether the device supports fingerprint navigation -->
+  <java-symbol type="bool" name="config_supportsFPNavigation" />
+
+  <!-- Internal default to navigation bar value -->
+  <java-symbol type="bool" name="config_defaultToNavigationBar" />
 </resources>

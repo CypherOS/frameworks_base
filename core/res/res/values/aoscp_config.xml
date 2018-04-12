@@ -143,4 +143,6 @@
     <!-- Internal default to navigation bar value -->
     <bool name="config_defaultToNavigationBar">true</bool>
 
+    <!-- Determines whether the device supports fingerprint navigation -->
+    <bool name="config_supportsFPNavigation">false</bool>
 </resources>
