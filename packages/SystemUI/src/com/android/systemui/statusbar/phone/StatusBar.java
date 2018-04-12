@@ -510,6 +510,8 @@ public class StatusBar extends SystemUI implements DemoMode,
     private ScreenPinningRequest mScreenPinningRequest;
 
     private final MetricsLogger mMetricsLogger = Dependency.get(MetricsLogger.class);
+	
+	private boolean mNavigationBarViewAttached;
 
     // ensure quick settings is disabled until the current user makes it through the setup wizard
     private boolean mUserSetup = false;
@@ -1272,6 +1274,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     protected void createNavigationBar() {
+		if (mNavigationBarViewAttached) return;
         mNavigationBarView = NavigationBarFragment.create(mContext, (tag, fragment) -> {
             mNavigationBar = (NavigationBarFragment) fragment;
             if (mLightBarController != null) {
@@ -1279,6 +1282,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             }
             mNavigationBar.setCurrentSysuiVisibility(mSystemUiVisibility);
         });
+		mNavigationBarViewAttached = true;
     }
 
     /**
@@ -4215,6 +4219,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (mNavigationBarView != null) {
             mWindowManager.removeViewImmediate(mNavigationBarView);
             mNavigationBarView = null;
+			mNavigationBarViewAttached = false;
         }
         mContext.unregisterReceiver(mBroadcastReceiver);
         mContext.unregisterReceiver(mDemoReceiver);
@@ -7664,7 +7669,6 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     // Reset navigation bar visibility after adding its view to window manager.
     public static final boolean RESET_SYSTEMUI_VISIBILITY_FOR_NAVBAR = true;
-    private boolean mNavigationBarViewAttached;
     protected boolean mUseNavBar = false;
 
     final private ContentObserver mNavBarObserver = new ContentObserver(mHandler) {
@@ -7704,11 +7708,11 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     private void removeNavigationBar() {
-        if (mNavigationBarView != null) {
-            if (DEBUG) Log.v(TAG, "removeNavigationBar: about to remove " + mNavigationBarView);
-            mWindowManager.removeViewImmediate(mNavigationBarView);
-            mNavigationBarView = null;
-        }
+		if (DEBUG) Log.v(TAG, "removeNavigationBar: about to remove " + mNavigationBarView);
+        if (!mNavigationBarViewAttached || mNavigationBarView == null) return;
+        mWindowManager.removeViewImmediate(mNavigationBarView);
+        mNavigationBarView = null;
+		mNavigationBarViewAttached = false;
     }
 
     private void resetSystemUIVisibility() {
