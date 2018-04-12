@@ -2483,6 +2483,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
         mDisplay = display;
 
+		final ContentResolver resolver = mContext.getContentResolver();
         final Resources res = mContext.getResources();
         int shortSize, longSize;
         if (width > height) {
@@ -2519,6 +2520,17 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mNavigationBarCanMove = width != height && shortSizeDp < 600;
 
         mHasNavigationBar = res.getBoolean(com.android.internal.R.bool.config_showNavigationBar);
+		
+		// Override the hw prop based on the navigation bar state
+		mNavBarEnabled = Settings.System.getIntForUser(resolver,
+                    Settings.System.NAVIGATION_BAR_ENABLED, mHasNavigationBar ? 1 : 0, UserHandle.USER_CURRENT) == 1;
+		if (mDeviceHardwareKeys != 0) {
+			if (mNavBarEnabled) {
+			    SystemProperties.set("qemu.hw.mainkeys", "0");
+			} else {
+				SystemProperties.set("qemu.hw.mainkeys", "1");
+			}
+		}
 
         // Allow a system property to override this. Used by the emulator.
         // See also hasNavigationBar().
@@ -2612,9 +2624,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
 
             final boolean navBarEnabled = Settings.System.getIntForUser(resolver,
-                    Settings.System.NAVIGATION_BAR_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
+                        Settings.System.NAVIGATION_BAR_ENABLED, mHasNavigationBar ? 1 : 0, UserHandle.USER_CURRENT) == 1;
             if (navBarEnabled != mNavBarEnabled) {
                 mNavBarEnabled = navBarEnabled;
+				if (mDeviceHardwareKeys != 0) {
+					if (mNavBarEnabled) {
+						SystemProperties.set("qemu.hw.mainkeys", "0");
+					} else {
+						SystemProperties.set("qemu.hw.mainkeys", "1");
+					}
+				}
             }
 
             readConfigurationDependentBehaviors();

@@ -7658,10 +7658,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
     };
 
-    /*
-     * AOSPA Navigation Bar
-     */
-
     // Reset navigation bar visibility after adding its view to window manager.
     public static final boolean RESET_SYSTEMUI_VISIBILITY_FOR_NAVBAR = true;
     private boolean mNavigationBarViewAttached;
@@ -7671,9 +7667,11 @@ public class StatusBar extends SystemUI implements DemoMode,
         @Override
         public void onChange(boolean selfChange) {
             boolean wasUsing = mUseNavBar;
+			boolean hasNavigationBar = mContext.getResources()
+                    .getBoolean(com.android.internal.R.bool.config_showNavigationBar);
             mUseNavBar = Settings.System.getIntForUser(
-                    mContext.getContentResolver(), Settings.System.NAVIGATION_BAR_ENABLED, 0,
-                    UserHandle.USER_CURRENT) != 0;
+                    mContext.getContentResolver(), Settings.System.NAVIGATION_BAR_ENABLED, 
+					hasNavigationBar ? 1 : 0, UserHandle.USER_CURRENT) != 0;
             Log.d(TAG, "navbar is " + (mUseNavBar ? "enabled" : "disabled"));
             if (wasUsing != mUseNavBar) {
                 setNavBarEnabled(mUseNavBar);
