@@ -485,6 +485,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mStatusBarHeight;
     WindowState mNavigationBar = null;
     boolean mHasNavigationBar = false;
+	boolean mSupportsFPNavigation;
     boolean mNavigationBarCanMove = false; // can the navigation bar ever move to the side?
     int mNavigationBarPosition = NAV_BAR_BOTTOM;
     int[] mNavigationBarHeightForRotationDefault = new int[4];
@@ -1073,11 +1074,28 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             updateSettings();
         }
 
-        @Override public void onChange(boolean selfChange) {
+        @Override 
+		public void onChange(boolean selfChange) {
             updateSettings();
             updateRotation(false);
+			updateFPNavigationStatus();
         }
     }
+
+	private void updateFPNavigationStatus() {
+		ContentResolver resolver = mContext.getContentResolver();
+		final Resources res = mContext.getResources();
+		mSupportsFPNavigation = res.getBoolean(com.android.internal.R.bool.config_supportsFPNavigation);
+		int navBarSetting = Settings.System.getIntForUser(resolver,
+                        Settings.System.NAVIGATION_BAR_ENABLED, 1, UserHandle.USER_CURRENT);
+		if (mSupportsFPNavigation) {
+			if (navBarSetting != 0) {
+				SystemProperties.set("sys.fpnav.enabled", "0");
+			} else {
+				SystemProperties.set("sys.fpnav.enabled", "1");
+			}
+		}
+	}
 
     class MyWakeGestureListener extends WakeGestureListener {
         MyWakeGestureListener(Context context, Handler handler) {
@@ -2524,7 +2542,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 		// Override the hw prop based on the navigation bar state
 		mNavBarEnabled = Settings.System.getIntForUser(resolver,
                     Settings.System.NAVIGATION_BAR_ENABLED, mHasNavigationBar ? 1 : 0, UserHandle.USER_CURRENT) == 1;
-		if (mDeviceHardwareKeys != 0) {
+		if (mDeviceHardwareKeys != 0 || mSupportsFPNavigation) {
 			if (mNavBarEnabled) {
 			    SystemProperties.set("qemu.hw.mainkeys", "0");
 			} else {
@@ -2596,6 +2614,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     public void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
+		final Resources res = mContext.getResources();
         boolean updateRotation = false;
         synchronized (mLock) {
             mEndcallBehavior = Settings.System.getIntForUser(resolver,
@@ -2627,7 +2646,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         Settings.System.NAVIGATION_BAR_ENABLED, mHasNavigationBar ? 1 : 0, UserHandle.USER_CURRENT) == 1;
             if (navBarEnabled != mNavBarEnabled) {
                 mNavBarEnabled = navBarEnabled;
-				if (mDeviceHardwareKeys != 0) {
+				if (mDeviceHardwareKeys != 0 || mSupportsFPNavigation) {
 					if (mNavBarEnabled) {
 						SystemProperties.set("qemu.hw.mainkeys", "0");
 					} else {
