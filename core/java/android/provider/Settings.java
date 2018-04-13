@@ -4281,8 +4281,52 @@ public final class Settings {
                 BOOLEAN_VALIDATOR;
 
         /**
-         * Whether Ambient Play is shown on the lockscreen
+         * Controls whether fingerprint gestures are enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURES_ENABLED = "fingerprint_gestures_enabled";
+
+        /**
+         * Controls whether double tap fingerprint gesture is enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURES_DOUBLE_TAP = "fingerprint_gestures_double_tap";
+
+        /**
+         * Controls whether longpress fingerprint gesture is enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURES_LONGPRESS = "fingerprint_gestures_longpress";
+
+        /**
+         * Controls whether swipe up fingerprint gesture is enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURES_SWIPE_UP = "fingerprint_gestures_swipe_up";
+
+        /**
+         * Controls whether swipe down fingerprint gesture is enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURES_SWIPE_DOWN = "fingerprint_gestures_swipe_down";
+
+        /**
+         * Controls whether swipe left fingerprint gesture is enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURES_SWIPE_LEFT = "fingerprint_gestures_swipe_left";
+
+        /**
+         * Controls whether swipe right fingerprint gesture is enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURES_SWIPE_RIGHT = "fingerprint_gestures_swipe_right";
+
+        /**
+         * Settings to backup. This is here so that it's in the same place as the settings
+         * keys and easy to update.
          *
+         * Whether Ambient Play is shown on the lockscreen
          * @hide
          */
         public static final String AMBIENT_RECOGNITION_KEYGUARD = "ambient_recognition_keyguard";
@@ -4400,6 +4444,13 @@ public final class Settings {
             NOTIFICATION_VIBRATION_INTENSITY,
             HAPTIC_FEEDBACK_INTENSITY,
             DISPLAY_COLOR_MODE
+            FINGERPRINT_GESTURES_ENABLED,
+            FINGERPRINT_GESTURES_DOUBLE_TAP,
+            FINGERPRINT_GESTURES_LONGPRESS,
+            FINGERPRINT_GESTURES_SWIPE_UP,
+            FINGERPRINT_GESTURES_SWIPE_DOWN,
+            FINGERPRINT_GESTURES_SWIPE_LEFT,
+            FINGERPRINT_GESTURES_SWIPE_RIGHT
         };
 
         /**
