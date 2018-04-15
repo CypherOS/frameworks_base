@@ -172,4 +172,7 @@
 
     <!-- Whether the device supports fingerprint gestures -->
     <bool name="config_supportsFPGestures">false</bool>
+	
+	<!-- If this is true, Ambient Play will be available on the device. -->
+	<bool name="config_supportsAmbientPlay">true</bool>
 </resources>

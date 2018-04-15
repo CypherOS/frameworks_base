@@ -126,4 +126,7 @@
 
   <!-- Whether the device supports fingerprint gestures -->
   <java-symbol type="bool" name="config_supportsFPGestures" />
+  
+  <!-- Ambient Play -->
+  <java-symbol type="bool" name="config_supportsAmbientPlay" />
 </resources>

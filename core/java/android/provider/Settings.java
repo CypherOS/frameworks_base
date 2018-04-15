@@ -7240,6 +7240,20 @@ public final class Settings {
          * @hide
          */
         public static final String DEVICE_ACCENT = "device_accent";
+		
+		/**
+         * Whether Ambient Play enabled/disabled
+         *
+         * @hide
+         */
+        public static final String AMBIENT_PLAY = "ambient_play";
+		
+		/**
+         * Whether Ambient Play is shown on the lockscreen
+         *
+         * @hide
+         */
+        public static final String AMBIENT_PLAY_LOCKSCREEN = "ambient_play_lockscreen";
 
         /**
          * Whether or not the automatic storage manager is enabled and should run on the device.
