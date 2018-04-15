@@ -172,4 +172,7 @@
 
     <!-- Whether the device supports fingerprint gestures -->
     <bool name="config_supportsFPGestures">false</bool>
+	
+	<!-- Determines whether to use OEM signal strength configurations -->
+    <bool name="config_usesOemSignalConfiguration">false</bool>
 </resources>

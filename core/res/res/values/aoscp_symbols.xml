@@ -126,4 +126,7 @@
 
   <!-- Whether the device supports fingerprint gestures -->
   <java-symbol type="bool" name="config_supportsFPGestures" />
+  
+  <!-- Determines whether to use OEM signal strength configurations -->
+  <java-symbol type="bool" name="config_usesOemSignalConfiguration" />
 </resources>
