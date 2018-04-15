@@ -30,6 +30,7 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.CountDownTimer;
@@ -228,10 +229,10 @@ public class TaskViewHeader extends FrameLayout
         mDarkInfoIcon = context.getDrawable(R.drawable.recents_info_dark);
         mDisabledTaskBarBackgroundColor =
                 context.getColor(R.color.recents_task_bar_disabled_background_color);
-        mLightLockedDrawable = context.getDrawable(R.drawable.recents_locked_light);
-        mLightUnlockedDrawable = context.getDrawable(R.drawable.recents_unlocked_light);
-        mDarkLockedDrawable = context.getDrawable(R.drawable.recents_locked_dark);
-        mDarkUnlockedDrawable = context.getDrawable(R.drawable.recents_unlocked_dark);
+        mLightLockedDrawable = context.getDrawable(R.drawable.ic_recents_task_lock_light);
+        mLightUnlockedDrawable = context.getDrawable(R.drawable.ic_recents_task_unlock_light);
+        mDarkLockedDrawable = context.getDrawable(R.drawable.ic_recents_task_lock_dark);
+        mDarkUnlockedDrawable = context.getDrawable(R.drawable.ic_recents_task_unlock_dark);
 
         // Configure the background and dim
         mBackground = new HighlightColorDrawable();
@@ -478,9 +479,13 @@ public class TaskViewHeader extends FrameLayout
     }
 
     private void updateLockTaskDrawable() {
-        mLockTaskButton.setImageDrawable(mTask.useLightOnPrimaryColor ?
+		mLockTaskButton.setImageDrawable(mTask.useLightOnPrimaryColor ?
                 (Recents.sLockedTasks.contains(mTask) ? mLightLockedDrawable : mLightUnlockedDrawable) :
                 (Recents.sLockedTasks.contains(mTask) ? mDarkLockedDrawable : mDarkUnlockedDrawable));
+		Drawable drawable = mLockTaskButton.getDrawable();
+		if (drawable instanceof Animatable) {
+			((Animatable) drawable).start();
+		}
     }
 
     /**

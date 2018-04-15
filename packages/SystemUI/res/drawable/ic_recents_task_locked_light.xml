@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2018 CypherOS
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+                 xmlns:aapt="http://schemas.android.com/aapt">
+	<aapt:attr name="android:drawable">
+	    <vector 
+		    android:height="24dp"
+			android:width="24dp"
+			android:viewportHeight="24.0"
+			android:viewportWidth="24.0">
+			<group 
+			    android:name="group_main">
+				<group 
+				    android:name="group_1"
+					android:translateX="1188"
+					android:translateY="1188"
+					android:pivotX="12"
+					android:pivotY="12"
+					android:scaleX="100"
+					android:scaleY="100">
+					<path 
+					    android:name="path_1" 
+						android:fillColor="@color/recents_task_bar_light_icon_color"
+						android:fillAlpha="1"
+						android:fillType="nonZero"
+						android:pathData=" M12 17 C13.1,17 14,16.1 14,15 C14,13.9 13.1,13 12,13 C10.9,13 10,13.9 10,15 C10,16.1 10.9,17 12,17c "/>
+					<path 
+					    android:name="path_2" 
+						android:fillColor="@color/recents_task_bar_light_icon_color" 
+						android:fillAlpha="1"
+						android:fillType="nonZero"
+						android:pathData=" M18 8 C18,8 17,8 17,8 C17,8 15.1,8 15.1,8 C15.1,8 15,8 15,8 C15,8 6,8 6,8 C4.9,8 4,8.9 4,10 C4,10 4,20 4,20 C4,21.1 4.9,22 6,22 C6,22 18,22 18,22 C19.1,22 20,21.1 20,20 C20,20 20,10 20,10 C20,8.9 19.1,8 18,8c  M18 20 C18,20 6,20 6,20 C6,20 6,10 6,10 C6,10 18,10 18,10 C18,10 18,20 18,20c "/>
+				</group>
+				<group 
+				    android:name="group_2"
+					android:translateX="1188"
+					android:translateY="1188"
+					android:pivotX="12"
+					android:pivotY="12"
+					android:scaleX="100"
+					android:scaleY="100">
+					<path 
+					    android:name="path_3"
+						android:fillColor="@color/recents_task_bar_light_icon_color"
+						android:fillAlpha="1"
+						android:fillType="nonZero"
+						android:pathData=" M8.9 6 C8.9,4.29 10.29,2.9 12,2.9 C13.71,2.9 15.1,4.29 15.1,6 C15.1,6 15.1,8 15.1,8 C15.1,8 17,8 17,8 C17,8 17,6 17,6 C17,3.24 14.76,1 12,1 C9.24,1 7,3.24 7,6 C7,6 7,8 7,8 C7,8 8.9,8 8.9,8 C8.9,8 8.9,6 8.9,6c "/>
+				</group>
+				<group 
+				    android:name="group_3" 
+					android:translateX="1200"
+					android:translateY="1200"
+					android:scaleX="-1">
+					<path 
+					    android:name="path_4"
+						android:strokeColor="#ffffff"
+						android:strokeLineCap="round"
+						android:strokeLineJoin="round"
+						android:strokeWidth="237"
+						android:strokeAlpha="1"
+						android:trimPathStart="0"
+						android:trimPathEnd="0.88"
+						android:trimPathOffset="0"
+						android:pathData=" M-405.33 -398.67 C-405.33,-398.67 -405.25,-454 -405.25,-538.11 C-405.25,-782 -284,-1004 0,-1004 C284,-1004 406.4,-830 406.4,-602.29 C406.4,-514 405.5,-400 405.5,-400 "/>
+				</group>
+			</group>
+			<group 
+			    android:name="time_group"/>
+		</vector>
+	</aapt:attr>
+	<target 
+	    android:name="path_4">
+		<aapt:attr name="android:animation">
+		    <set 
+			    android:ordering="together">
+			    <objectAnimator 
+				    android:propertyName="trimPathEnd" 
+					android:duration="250"
+					android:startOffset="0"
+					android:valueFrom="0.88"
+					android:valueTo="1"
+					android:valueType="floatType">
+					<aapt:attr name="android:interpolator">
+					    <pathInterpolator 
+						    android:pathData="M 0.0,0.0 c0.782,0.001 0.765,1.002 1.0,1.0"/>
+					</aapt:attr>
+				</objectAnimator>
+		    </set>
+		</aapt:attr>
+	</target>
+	<target 
+	    android:name="time_group">
+		    <aapt:attr name="android:animation">
+			    <set android:ordering="together">
+				    <objectAnimator 
+					    android:propertyName="translateX" 
+						android:duration="267" 
+						android:startOffset="0" 
+						android:valueFrom="0" 
+						android:valueTo="1" 
+						android:valueType="floatType"/>
+				</set>
+			</aapt:attr>
+	</target>
+</animated-vector>
