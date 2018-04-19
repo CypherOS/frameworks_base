@@ -75,7 +75,6 @@ public class FingerprintKeyHandler {
     private static final boolean DEBUG = true;
 
     private static final int MAX_SUPPORTED_FINGERPRINT_GESTURES = 15;
-    private static final int FINGERPRINT_GESTURES_DEFAULT = 0;
 
     // Dummy camera id for CameraManager.
     private static final String DUMMY_CAMERA_ID = "";
@@ -127,7 +126,8 @@ public class FingerprintKeyHandler {
 
     private long[] mVibePattern;
 
-    private boolean mFPGesturesEnabled;
+    private boolean mSupportsFPNavigation;
+    private boolean mNavBarEnabled;
 
     private SparseIntArray mGestures = new SparseIntArray(MAX_SUPPORTED_FINGERPRINT_GESTURES);
 
@@ -189,11 +189,11 @@ public class FingerprintKeyHandler {
     }
 
     private void onConfigurationChanged() {
-        boolean gesturesEnabled = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.FINGERPRINT_GESTURES_ENABLED, FINGERPRINT_GESTURES_DEFAULT) != 0;
-        if (gesturesEnabled != mFPGesturesEnabled) {
-            mFPGesturesEnabled = gesturesEnabled;
-        }
+        final Resources resources = mContext.getResources();
+        mNavBarEnabled = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NAVIGATION_BAR_ENABLED, 0) != 0;
+        mSupportsFPNavigation = resources.getBoolean(
+                com.android.internal.R.bool.config_supportsFPNavigation);
 
         int doubleTapGesture = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.FINGERPRINT_GESTURES_DOUBLE_TAP, mContext.getResources()
@@ -306,9 +306,6 @@ public class FingerprintKeyHandler {
     private void registerObservers() {
         final ContentResolver resolver = mContext.getContentResolver();
         resolver.registerContentObserver(Settings.System.getUriFor(
-                Settings.System.FINGERPRINT_GESTURES_ENABLED),
-                false, mObserver, UserHandle.USER_ALL);
-        resolver.registerContentObserver(Settings.System.getUriFor(
                 Settings.System.FINGERPRINT_GESTURES_DOUBLE_TAP),
                 false, mObserver, UserHandle.USER_ALL);
         resolver.registerContentObserver(Settings.System.getUriFor(
@@ -384,7 +381,13 @@ public class FingerprintKeyHandler {
             Log.w(TAG, "handleKeyEvent(): event.toString(): " + event.toString());
         }
 
-        if (!mSystemReady || !mFPGesturesEnabled || isDisabledByPhoneState()) {
+        if (mSupportsFPNavigation) {
+            if (!mSystemReady || mNavBarEnabled || isDisabledByPhoneState()) {
+                return false;
+            }
+        }
+
+        if (!mSystemReady || isDisabledByPhoneState()) {
             return false;
         }
 
