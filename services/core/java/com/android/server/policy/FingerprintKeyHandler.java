@@ -96,6 +96,8 @@ public class FingerprintKeyHandler {
     private static final int ASSISTANT = 7;
 
     private Context mContext;
+    private PowerManager mPowerManager;
+    private PowerManagerInternal mPowerManagerInternal;
     private String mCameraId;
     private Handler mHandler;
     private HandlerThread mHandlerThread;
@@ -158,6 +160,7 @@ public class FingerprintKeyHandler {
         getStatusBarService();
         getCameraManager();
         getKeyguardManager();
+        getPowerManager();
 
         // Get camera id
         prepareCameraId();
@@ -285,6 +288,16 @@ public class FingerprintKeyHandler {
         }
     }
 
+    private void getPowerManager() {
+        if (mPowerManager == null) {
+            mPowerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        }
+        if (mPowerManagerInternal == null) {
+            mPowerManagerInternal = LocalServices.getService(PowerManagerInternal.class);
+
+        }
+    }
+
     private void prepareCameraId() {
         String cameraId = DUMMY_CAMERA_ID;
         try {
@@ -348,6 +361,15 @@ public class FingerprintKeyHandler {
                         intent.addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
                         intent.putExtra("state", enabled);
                         mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
+                        if (!mPowerManager.isInteractive()) {
+                            mPowerManager.wakeUp(SystemClock.uptimeMillis());
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mPowerManager.goToSleep(SystemClock.uptimeMillis());
+                                }
+                            }, 1500);
+                        }
                     }
                 });
                 break;
