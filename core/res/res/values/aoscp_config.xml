@@ -162,7 +162,11 @@
             4 - Next music
             5 - Previous music
             6 - Take screenshot
-            7 - Assistant -->
+            7 - Assistant
+            8 - Home Button
+            9 - Back Button
+            10 - AppSwitch
+            11 - Wake device -->
     <integer name="config_fpDoubleTapDefault">0</integer>
     <integer name="config_fpLongpressDefault">0</integer>
     <integer name="config_fpSwipeUpDefault">0</integer>
