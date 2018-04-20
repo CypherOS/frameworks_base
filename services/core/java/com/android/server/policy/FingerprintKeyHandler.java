@@ -59,6 +59,7 @@ import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.WindowManagerGlobal;
+import android.view.WindowManagerPolicy;
 
 import com.android.server.LocalServices;
 import com.android.server.statusbar.StatusBarManagerInternal;
@@ -96,6 +97,8 @@ public class FingerprintKeyHandler {
     private static final int ASSISTANT = 7;
 
     private Context mContext;
+	private PowerManager mPowerManager;
+    private PowerManagerInternal mPowerManagerInternal;
     private String mCameraId;
     private Handler mHandler;
     private HandlerThread mHandlerThread;
@@ -158,6 +161,7 @@ public class FingerprintKeyHandler {
         getStatusBarService();
         getCameraManager();
         getKeyguardManager();
+		getPowerManager();
 
         // Get camera id
         prepareCameraId();
@@ -284,6 +288,16 @@ public class FingerprintKeyHandler {
             mCameraManager = (CameraManager) mContext.getSystemService(Context.CAMERA_SERVICE);
         }
     }
+	
+	private void getPowerManager() {
+        if (mPowerManager == null) {
+            mPowerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        }
+        if (mPowerManagerInternal == null) {
+            mPowerManagerInternal = LocalServices.getService(PowerManagerInternal.class);
+
+        }
+    }
 
     private void prepareCameraId() {
         String cameraId = DUMMY_CAMERA_ID;
@@ -337,6 +351,8 @@ public class FingerprintKeyHandler {
                 break;
             case AIRPLANE:
                 doHapticFeedback(true);
+				final int policyFlags = 0;
+				final boolean interactive = (policyFlags & WindowManagerPolicy.FLAG_INTERACTIVE) != 0;
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -348,6 +364,15 @@ public class FingerprintKeyHandler {
                         intent.addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
                         intent.putExtra("state", enabled);
                         mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
+						if (!interactive) {
+							mPowerManager.wakeUp(SystemClock.uptimeMillis());
+							mHandler.postDelayed(new Runnable() {
+								@Override
+								public void run() {
+									mPowerManager.goToSleep(SystemClock.uptimeMillis());
+								}
+							}, 1500);
+						}
                     }
                 });
                 break;
