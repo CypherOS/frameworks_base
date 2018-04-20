@@ -94,6 +94,10 @@ public class FingerprintKeyHandler {
     private static final int MUSIC_PREVIOUS = 5;
     private static final int SCREENSHOT = 6;
     private static final int ASSISTANT = 7;
+    private static final int HOME = 8;
+    private static final int BACK = 9;
+    private static final int APP_SWITCH = 10;
+    private static final int WAKE_UP = 11;
 
     private Context mContext;
     private PowerManager mPowerManager;
@@ -387,6 +391,21 @@ public class FingerprintKeyHandler {
                 break;
             case ASSISTANT:
                 triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_ASSIST);
+                break;
+            case HOME:
+                triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_HOME);
+                break;
+            case BACK:
+                triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_BACK);
+                break;
+            case APP_SWITCH:
+                triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_APP_SWITCH);
+                break;
+            case WAKE_UP:
+                if (!mPowerManager.isInteractive()) {
+                    mPowerManager.wakeUp(SystemClock.uptimeMillis());
+                }
+                handled = true;
                 break;
             default:
                 handled = false;
