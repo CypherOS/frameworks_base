@@ -114,6 +114,7 @@ public class FingerprintKeyHandler {
     private boolean mTorchEnabled;
     private boolean mSystemReady = false;
 
+    private int mSingleTapKeyCode;
     private int mDoubleTapKeyCode;
     private int mLongPressKeyCode;
     private int mSwipeUpKeyCode;
@@ -121,6 +122,7 @@ public class FingerprintKeyHandler {
     private int mSwipeLeftKeyCode;
     private int mSwipeRightKeyCode;
 
+    private int mSingleTapGesture;
     private int mDoubleTapGesture;
     private int mLongPressGesture;
     private int mSwipeUpGesture;
@@ -177,6 +179,7 @@ public class FingerprintKeyHandler {
         final Resources resources = mContext.getResources();
 
         // Fingerprint Gesture Keycodes
+        mSingleTapKeyCode = resources.getInteger(R.integer.config_fpSingleTapKeyCode);
         mDoubleTapKeyCode = resources.getInteger(R.integer.config_fpDoubleTapKeyCode);
         mLongPressKeyCode = resources.getInteger(R.integer.config_fpLongpressKeyCode);
         mSwipeUpKeyCode = resources.getInteger(R.integer.config_fpSwipeUpKeyCode);
@@ -185,6 +188,7 @@ public class FingerprintKeyHandler {
         mSwipeRightKeyCode = resources.getInteger(R.integer.config_fpSwipeRightKeyCode);
 
         mGestures.clear();
+        mGestures.put(mSingleTapKeyCode, mSingleTapGesture);
         mGestures.put(mDoubleTapKeyCode, mDoubleTapGesture);
         mGestures.put(mLongPressKeyCode, mLongPressGesture);
         mGestures.put(mSwipeUpKeyCode, mSwipeUpGesture);
@@ -201,6 +205,14 @@ public class FingerprintKeyHandler {
                 Settings.System.NAVIGATION_BAR_ENABLED, 0) != 0;
         mSupportsFPNavigation = resources.getBoolean(
                 com.android.internal.R.bool.config_supportsFPNavigation);
+
+        int singleTapGesture = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.FINGERPRINT_GESTURES_SINGLE_TAP, mContext.getResources()
+                        .getInteger(com.android.internal.R.integer.config_fpSingleTapDefault));
+        if (singleTapGesture != mSingleTapGesture) {
+            mSingleTapGesture = singleTapGesture;
+            mGestures.put(mSingleTapKeyCode, mSingleTapGesture);
+        }
 
         int doubleTapGesture = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.FINGERPRINT_GESTURES_DOUBLE_TAP, mContext.getResources()
@@ -322,6 +334,9 @@ public class FingerprintKeyHandler {
 
     private void registerObservers() {
         final ContentResolver resolver = mContext.getContentResolver();
+        resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.FINGERPRINT_GESTURES_SINGLE_TAP),
+                false, mObserver, UserHandle.USER_ALL);
         resolver.registerContentObserver(Settings.System.getUriFor(
                 Settings.System.FINGERPRINT_GESTURES_DOUBLE_TAP),
                 false, mObserver, UserHandle.USER_ALL);
