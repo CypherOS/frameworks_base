@@ -244,6 +244,7 @@ public class FooterConfirm extends FooterConfirmLayout {
         MarginLayoutParams params;
         params = createMarginLayoutParams(
                 parent, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM);
+		view.setBackgroundColor(com.android.internal.R.attr.colorPrimary);
 
         mIcon = (ImageView) view.findViewById(R.id.icon);
 
