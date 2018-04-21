@@ -402,24 +402,34 @@ public class FingerprintKeyHandler {
                 handled = isMusicActive() && dispatchMediaKeyWithWakeLockToMediaSession(KeyEvent.KEYCODE_MEDIA_NEXT);
                 break;
             case SCREENSHOT:
-                triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_SYSRQ);
-                handled = true;
+                if (mPowerManager.isInteractive()) {
+                    triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_SYSRQ);
+                    handled = true;
+                }
                 break;
             case ASSISTANT:
-                triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_ASSIST);
-                handled = true;
+                if (mPowerManager.isInteractive()) {
+                    triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_ASSIST);
+                    handled = true;
+                }
                 break;
             case HOME:
-                triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_HOME);
-                handled = true;
+                if (mPowerManager.isInteractive()) {
+                    triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_HOME);
+                    handled = true;
+                }
                 break;
             case BACK:
-                triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_BACK);
-                handled = true;
+                if (mPowerManager.isInteractive()) {
+                    triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_BACK);
+                    handled = true;
+                }
                 break;
             case APP_SWITCH:
-                triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_APP_SWITCH);
-                handled = true;
+                if (mPowerManager.isInteractive()) {
+                    triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_APP_SWITCH);
+                    handled = true;
+                }
                 break;
             case WAKE_UP:
                 if (!mPowerManager.isInteractive()) {
