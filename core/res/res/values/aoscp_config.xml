@@ -147,6 +147,7 @@
     <bool name="config_supportsFPNavigation">false</bool>
 
     <!-- Key codes of fingerprint gestures. If the gesture is not supported set it to 0. -->
+	<integer name="config_fpSingleTapKeyCode">0</integer>
     <integer name="config_fpDoubleTapKeyCode">0</integer>
     <integer name="config_fpLongpressKeyCode">0</integer>
     <integer name="config_fpSwipeUpKeyCode">0</integer>
@@ -167,6 +168,7 @@
             9 - Back Button
             10 - AppSwitch
             11 - Wake device -->
+	<integer name="config_fpSingleTapDefault">0</integer>
     <integer name="config_fpDoubleTapDefault">0</integer>
     <integer name="config_fpLongpressDefault">0</integer>
     <integer name="config_fpSwipeUpDefault">0</integer>

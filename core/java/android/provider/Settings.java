@@ -4087,6 +4087,12 @@ public final class Settings {
          * it to PRIVATE_SETTINGS below. Also add a validator that can validate
          * the setting value. See an example above.
          */
+		 
+		/**
+         * Controls whether single tap fingerprint gesture is enabled.
+         * @hide
+         */
+        public static final String FINGERPRINT_GESTURES_SINGLE_TAP = "fingerprint_gestures_single_tap";
 
         /**
          * Controls whether double tap fingerprint gesture is enabled.
@@ -4265,6 +4271,7 @@ public final class Settings {
             NOTIFICATION_SOUND,
             ACCELEROMETER_ROTATION,
             SHOW_BATTERY_PERCENT,
+			FINGERPRINT_GESTURES_SINGLE_TAP,
             FINGERPRINT_GESTURES_DOUBLE_TAP,
             FINGERPRINT_GESTURES_LONGPRESS,
             FINGERPRINT_GESTURES_SWIPE_UP,
