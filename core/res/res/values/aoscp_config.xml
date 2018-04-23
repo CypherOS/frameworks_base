@@ -220,4 +220,7 @@
 
     <!-- Whether to to intercept inputs on screen off. -->
     <bool name="config_enableKeyHandler">false</bool>
+
+    <!-- Allow Opa (Pixel navbar) layout -->
+    <bool name="config_allowOpaLayout">false</bool>
 </resources>
