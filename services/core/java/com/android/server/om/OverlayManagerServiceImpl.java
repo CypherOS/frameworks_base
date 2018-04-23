@@ -57,6 +57,7 @@ final class OverlayManagerServiceImpl {
     private final OverlayChangeListener mListener;
     
     static final String ACCENT_PACKAGE = "co.aoscp.accent";
+	static final String NAVBAR_PACKAGE = "co.aoscp.navbar";
 
     OverlayManagerServiceImpl(@NonNull final PackageManagerHelper packageManager,
             @NonNull final IdmapManager idmapManager,
@@ -376,6 +377,12 @@ final class OverlayManagerServiceImpl {
                 }
 
                 if (disabledOverlayPackageName.startsWith(ACCENT_PACKAGE)) {
+                    // Disable the overlay.
+                    modified |= mSettings.setEnabled(disabledOverlayPackageName, userId, false);
+                    modified |= updateState(targetPackage, disabledOverlayPackageInfo, userId);
+                }
+				
+				if (disabledOverlayPackageName.startsWith(NAVBAR_PACKAGE)) {
                     // Disable the overlay.
                     modified |= mSettings.setEnabled(disabledOverlayPackageName, userId, false);
                     modified |= updateState(targetPackage, disabledOverlayPackageInfo, userId);
