@@ -183,6 +183,7 @@ import com.android.systemui.fragments.FragmentHostManager;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.keyguard.ScreenLifecycle;
 import com.android.systemui.keyguard.WakefulnessLifecycle;
+import com.android.systemui.navigation.NavbarThemeHelper;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.qs.QS;
 import com.android.systemui.plugins.statusbar.NotificationMenuRowPlugin.MenuItem;
@@ -898,6 +899,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         mSettingsObserver.onChange(false); // set up
         mColorManagerObserver.observe();
         mColorManagerObserver.update();
+		mNavbarThemeObserver.observe();
+        mNavbarThemeObserver.update();
         mCommandQueue.disable(switches[0], switches[6], false /* animate */);
         setSystemUiVisibility(switches[1], switches[7], switches[8], 0xffffffff,
                 fullscreenStackBounds, dockedStackBounds);
@@ -4693,6 +4696,15 @@ public class StatusBar extends SystemUI implements DemoMode,
         } catch (RemoteException e) {
         }
     }
+	
+	public void updateNavbarTheme() {
+        int navBarTheme = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.NAVBAR_THEME, 0, mCurrentUserId);
+        try {
+            NavbarThemeHelper.updateNavbarTheme(mOverlayManager, mCurrentUserId, navBarTheme);
+        } catch (RemoteException e) {
+        }
+    }
 
     /**
      * Switches theme from light to dark and vice-versa.
@@ -5918,6 +5930,29 @@ public class StatusBar extends SystemUI implements DemoMode,
         public void update() {
             updateTheme();
             updateAccent();
+        }
+    }
+	
+	private NavbarThemeObserver mNavbarThemeObserver = new NavbarThemeObserver(mHandler);
+    private class NavbarThemeObserver extends ContentObserver {
+        NavbarThemeObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.NAVBAR_THEME),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            update();
+        }
+
+        public void update() {
+            updateNavbarTheme();
         }
     }
 

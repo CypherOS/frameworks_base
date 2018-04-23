@@ -630,14 +630,19 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     }
 
     public void setOpaEnabled(boolean enabled) {
+        int navBarTheme = Settings.Secure.getIntForUser(this.getContext().getContentResolver(),
+            Settings.Secure.NAVBAR_THEME, 0, UserHandle.USER_CURRENT);
         final boolean isEnabled = Settings.System.getIntForUser(this.getContext().getContentResolver(),
             Settings.System.NAVIGATION_BAR_ANIMATION, 1, UserHandle.USER_CURRENT) == 1;
         final boolean configValue = getContext().getResources().getBoolean(com.android.internal.R.bool.config_allowOpaLayout);
-        final boolean shouldEnable = configValue && (enabled || UserManager.isDeviceInDemoMode(getContext())) && isEnabled;
+        final boolean shouldEnable = configValue && (enabled || UserManager.isDeviceInDemoMode(getContext())) && isEnabled && navBarTheme == 1;
+		final boolean shouldEnableHalo = navBarTheme == 1;
         mOpaEnabled = shouldEnable;
 
         int visibility = shouldEnable ? View.VISIBLE : View.INVISIBLE;
+		int visibilityHalo = shouldEnableHalo ? View.VISIBLE : View.INVISIBLE;
 
+		mHalo.setVisibility(visibilityHalo);
         mBlue.setVisibility(visibility);
         mRed.setVisibility(visibility);
         mYellow.setVisibility(visibility);
