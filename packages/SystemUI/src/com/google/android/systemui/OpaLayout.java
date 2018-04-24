@@ -91,8 +91,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     private View mBlue;
     private View mGreen;
     private View mYellow;
-    private View mWhite;
-    private View mHalo;
+    private ImageView mWhite;
+    private ImageView mHalo;
 
     private int mDarkMode;
     private int mLightMode;
@@ -585,11 +585,15 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         ((ImageView) mWhite).setImageResource(resId);
     }
 
+	@Override
     public void setDarkIntensity(float darkIntensity) {
-        int backgroundColor = getBackgroundColor(darkIntensity);
-        ((ImageView) mWhite).setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_ATOP));
-        ((ImageView) mHalo).setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_ATOP));
-        invalidate();
+        Drawable drawable = getDrawable();
+        if (drawable != null) {
+            ((mWhite) getDrawable()).setDarkIntensity(darkIntensity);
+			((mHalo) getDrawable()).setDarkIntensity(darkIntensity);
+            invalidate();
+        }
+        mRipple.setDarkIntensity(darkIntensity);
     }
 
     private int getBackgroundColor(float darkIntensity) {
