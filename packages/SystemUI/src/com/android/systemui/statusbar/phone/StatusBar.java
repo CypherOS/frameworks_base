@@ -4702,6 +4702,9 @@ public class StatusBar extends SystemUI implements DemoMode,
                 Settings.Secure.NAVBAR_THEME, 0, mCurrentUserId);
         try {
             NavbarThemeHelper.updateNavbarTheme(mOverlayManager, mCurrentUserId, navBarTheme);
+			if (mLightBarController != null) {
+                mNavigationBar.setLightBarController(mLightBarController);
+            }
         } catch (RemoteException e) {
         }
     }
