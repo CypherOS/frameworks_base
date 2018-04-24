@@ -158,8 +158,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 
     public OpaLayout(Context context) {
         super(context);
-        mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
-        mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
+        mDarkMode = context.getColor(R.color.dark_mode_icon_color_dual_tone_fill);
+        mLightMode = context.getColor(R.color.light_mode_icon_color_dual_tone_fill);
 
         if (mNavBarAnimationObserver == null) {
             mNavBarAnimationObserver = new NavBarAnimationObserver(new Handler());
@@ -169,8 +169,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 
     public OpaLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
-        mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
+        mDarkMode = context.getColor(R.color.dark_mode_icon_color_dual_tone_fill);
+        mLightMode = context.getColor(R.color.light_mode_icon_color_dual_tone_fill);
 
         if (mNavBarAnimationObserver == null) {
             mNavBarAnimationObserver = new NavBarAnimationObserver(new Handler());
@@ -180,8 +180,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
-        mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
+        mDarkMode = context.getColor(R.color.dark_mode_icon_color_dual_tone_fill);
+        mLightMode = context.getColor(R.color.light_mode_icon_color_dual_tone_fill);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KeyButtonView,
                 defStyleAttr, 0);
@@ -203,8 +203,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mDarkMode = context.getColor(R.color.dark_mode_icon_color_single_tone);
-        mLightMode = context.getColor(R.color.light_mode_icon_color_single_tone);
+        mDarkMode = context.getColor(R.color.dark_mode_icon_color_dual_tone_fill);
+        mLightMode = context.getColor(R.color.light_mode_icon_color_dual_tone_fill);
 
         if (mNavBarAnimationObserver == null) {
             mNavBarAnimationObserver = new NavBarAnimationObserver(new Handler());
@@ -587,8 +587,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 
     public void setDarkIntensity(float darkIntensity) {
         int backgroundColor = getBackgroundColor(darkIntensity);
-        ((ImageView) mWhite).setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_ATOP));
-        ((ImageView) mHalo).setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_ATOP));
+        ((ImageView) mWhite).setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_IN));
+        ((ImageView) mHalo).setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_IN));
         invalidate();
     }
 
@@ -630,14 +630,20 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     }
 
     public void setOpaEnabled(boolean enabled) {
+        int navBarTheme = Settings.Secure.getIntForUser(this.getContext().getContentResolver(),
+            Settings.Secure.NAVBAR_THEME, 0, UserHandle.USER_CURRENT);
         final boolean isEnabled = Settings.System.getIntForUser(this.getContext().getContentResolver(),
-            Settings.System.NAVIGATION_BAR_ANIMATION, 1, UserHandle.USER_CURRENT) == 1;
+            Settings.System.NAVIGATION_BAR_ANIMATION, 0, UserHandle.USER_CURRENT) == 1;
         final boolean configValue = getContext().getResources().getBoolean(com.android.internal.R.bool.config_allowOpaLayout);
-        final boolean shouldEnable = configValue && (enabled || UserManager.isDeviceInDemoMode(getContext())) && isEnabled;
+        final boolean shouldEnable = configValue && (enabled || UserManager.isDeviceInDemoMode(getContext())) && isEnabled && navBarTheme == 1;
+        final boolean shouldEnableHalo = navBarTheme == 1;
         mOpaEnabled = shouldEnable;
 
-        int visibility = shouldEnable ? View.VISIBLE : View.INVISIBLE;
+        int visibility = shouldEnable ? View.VISIBLE : View.GONE;
+        int visibilityHalo = shouldEnableHalo ? View.VISIBLE : View.GONE;
+        int isPressed = mIsPressed ? View.VISIBLE : View.GONE;
 
+        mHalo.setVisibility(visibilityHalo);
         mBlue.setVisibility(visibility);
         mRed.setVisibility(visibility);
         mYellow.setVisibility(visibility);
