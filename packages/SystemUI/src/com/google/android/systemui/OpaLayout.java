@@ -584,21 +584,16 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     public void setImageResource(int resId) {
         ((ImageView) mWhite).setImageResource(resId);
     }
-
+	
+	@Override
     public void setDarkIntensity(float darkIntensity) {
-        int backgroundColor = getBackgroundColor(darkIntensity);
-        ((ImageView) mWhite).setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_ATOP));
-        ((ImageView) mHalo).setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_ATOP));
-        invalidate();
-    }
-
-    private int getBackgroundColor(float darkIntensity) {
-        return getColorForDarkIntensity(
-                darkIntensity, mLightMode, mDarkMode);
-    }
-
-    private int getColorForDarkIntensity(float darkIntensity, int lightMode, int darkMode) {
-        return (int) ArgbEvaluator.getInstance().evaluate(darkIntensity, lightMode, darkMode);
+        Drawable drawable = getDrawable();
+        if (drawable != null) {
+			((mWhite) getDrawable()).setDarkIntensity(darkIntensity);
+			((mHalo) getDrawable()).setDarkIntensity(darkIntensity);
+            invalidate();
+        }
+        mRipple.setDarkIntensity(darkIntensity);
     }
 
     public void setVertical(boolean vertical) {
@@ -630,14 +625,19 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     }
 
     public void setOpaEnabled(boolean enabled) {
+        int navBarTheme = Settings.Secure.getIntForUser(this.getContext().getContentResolver(),
+            Settings.Secure.NAVBAR_THEME, 0, UserHandle.USER_CURRENT);
         final boolean isEnabled = Settings.System.getIntForUser(this.getContext().getContentResolver(),
             Settings.System.NAVIGATION_BAR_ANIMATION, 1, UserHandle.USER_CURRENT) == 1;
         final boolean configValue = getContext().getResources().getBoolean(com.android.internal.R.bool.config_allowOpaLayout);
-        final boolean shouldEnable = configValue && (enabled || UserManager.isDeviceInDemoMode(getContext())) && isEnabled;
+        final boolean shouldEnable = configValue && (enabled || UserManager.isDeviceInDemoMode(getContext())) && isEnabled && navBarTheme == 1;
+		final boolean shouldEnableHalo = navBarTheme == 1;
         mOpaEnabled = shouldEnable;
 
         int visibility = shouldEnable ? View.VISIBLE : View.INVISIBLE;
+		int visibilityHalo = shouldEnableHalo ? View.VISIBLE : View.INVISIBLE;
 
+		mHalo.setVisibility(visibilityHalo);
         mBlue.setVisibility(visibility);
         mRed.setVisibility(visibility);
         mYellow.setVisibility(visibility);

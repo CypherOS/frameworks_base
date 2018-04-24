@@ -7346,6 +7346,15 @@ public final class Settings {
          */
         public static final String DEVICE_ACCENT = "device_accent";
 
+		/**
+         * Which theme is set for Navbar
+         *
+         * 0 - Default
+         * 1 - Pixel
+         * @hide
+         */
+        public static final String NAVBAR_THEME = "navbar_theme";
+
         /**
          * Whether or not the automatic storage manager is enabled and should run on the device.
          *
