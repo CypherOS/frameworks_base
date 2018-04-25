@@ -16,13 +16,17 @@
 
 package com.android.systemui.statusbar;
 
+import android.annotation.ColorInt;
 import android.annotation.DrawableRes;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.net.NetworkBadging;
 import android.telephony.SubscriptionInfo;
 import android.util.ArraySet;
 import android.util.AttributeSet;
@@ -78,8 +82,10 @@ public class SignalClusterView extends LinearLayout implements NetworkController
     private boolean mEthernetVisible = false;
     private int mEthernetIconId = 0;
     private int mLastEthernetIconId = -1;
+    private int mWifiBadgeId = -1;
     private boolean mWifiVisible = false;
     private int mWifiStrengthId = 0;
+    private int mLastWifiBadgeId = -1;
     private int mLastWifiStrengthId = -1;
     private boolean mWifiIn;
     private boolean mWifiOut;
@@ -289,6 +295,7 @@ public class SignalClusterView extends LinearLayout implements NetworkController
             boolean activityIn, boolean activityOut, String description, boolean isTransient) {
         mWifiVisible = statusIcon.visible && !mBlockWifi;
         mWifiStrengthId = statusIcon.icon;
+        mWifiBadgeId = statusIcon.iconOverlay;
         mWifiDescription = statusIcon.contentDescription;
         mWifiIn = activityIn && mActivityEnabled && mWifiVisible;
         mWifiOut = activityOut && mActivityEnabled && mWifiVisible;
@@ -426,6 +433,7 @@ public class SignalClusterView extends LinearLayout implements NetworkController
             mWifi.setImageDrawable(null);
             mWifiDark.setImageDrawable(null);
             mLastWifiStrengthId = -1;
+            mLastWifiBadgeId = -1;
         }
 
         for (PhoneState state : mPhoneStates) {
@@ -484,10 +492,16 @@ public class SignalClusterView extends LinearLayout implements NetworkController
                     (mEthernetVisible ? "VISIBLE" : "GONE")));
 
         if (mWifiVisible) {
-            if (mWifiStrengthId != mLastWifiStrengthId) {
-                setIconForView(mWifi, mWifiStrengthId);
-                setIconForView(mWifiDark, mWifiStrengthId);
+            if (mWifiStrengthId != mLastWifiStrengthId || mWifiBadgeId != mLastWifiBadgeId) {
+                if (mWifiBadgeId == -1) {
+                    setIconForView(mWifi, mWifiStrengthId);
+                    setIconForView(mWifiDark, mWifiStrengthId);
+                } else {
+                    setBadgedWifiIconForView(mWifi, mWifiStrengthId, mWifiBadgeId);
+                    setBadgedWifiIconForView(mWifiDark, mWifiStrengthId, mWifiBadgeId);
+                }
                 mLastWifiStrengthId = mWifiStrengthId;
+                mLastWifiBadgeId = mWifiBadgeId;
             }
             mIconLogger.onIconShown(SLOT_WIFI);
             mWifiGroup.setContentDescription(mWifiDescription);
@@ -584,6 +598,10 @@ public class SignalClusterView extends LinearLayout implements NetworkController
         // Using the imageView's context to retrieve the Drawable so that theme is preserved.
         Drawable icon = imageView.getContext().getDrawable(iconId);
 
+        setScaledIcon(imageView, icon);
+    }
+
+    private void setScaledIcon(ImageView imageView, Drawable icon) {
         if (mIconScaleFactor == 1.f) {
             imageView.setImageDrawable(icon);
         } else {
@@ -591,6 +609,33 @@ public class SignalClusterView extends LinearLayout implements NetworkController
         }
     }
 
+    /**
+     * Creates and sets a LayerDrawable from the given ids on the given view.
+     *
+     * <p>This method will also scale the icon by {@link #mIconScaleFactor} if appropriate.
+     */
+    private void setBadgedWifiIconForView(ImageView imageView, @DrawableRes int wifiPieId,
+            @DrawableRes int badgeId) {
+        // TODO(sghuman): Delete this method and revert to N badging logic
+        // Using the imageView's context to retrieve the Drawable so that theme is preserved.;
+        LayerDrawable icon = new LayerDrawable(new Drawable[] {
+                imageView.getContext().getDrawable(wifiPieId),
+                imageView.getContext().getDrawable(NetworkBadging.BADGING_NONE)});
+
+        // The LayerDrawable shares an underlying state so we must mutate the object to change the
+        // color between the light and dark themes.
+        icon.mutate().setTint(getColorAttr(imageView.getContext(), R.attr.singleToneColor));
+
+        setScaledIcon(imageView, icon);
+    }
+
+    /** Returns the given color attribute value, or white if not defined. */
+    @ColorInt private static int getColorAttr(Context context, int attr) {
+        TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
+        @ColorInt int colorAccent = ta.getColor(0, Color.WHITE);
+        ta.recycle();
+        return colorAccent;
+    }
 
     @Override
     public void onDarkChanged(Rect tintArea, float darkIntensity, int tint) {

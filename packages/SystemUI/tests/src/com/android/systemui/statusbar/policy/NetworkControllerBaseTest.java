@@ -19,6 +19,7 @@ package com.android.systemui.statusbar.policy;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
+import android.net.NetworkScoreManager;
 import android.net.wifi.WifiManager;
 import android.os.Looper;
 import android.provider.Settings;
@@ -83,6 +84,7 @@ public class NetworkControllerBaseTest extends SysuiTestCase {
     protected Config mConfig;
     protected CallbackHandler mCallbackHandler;
     protected SubscriptionDefaults mMockSubDefaults;
+    protected NetworkScoreManager mMockNetworkScoreManager;
     protected DeviceProvisionedController mMockProvisionController;
     protected DeviceProvisionedListener mUserCallback;
 
@@ -112,6 +114,8 @@ public class NetworkControllerBaseTest extends SysuiTestCase {
         mMockCm = mock(ConnectivityManager.class);
         mMockSubDefaults = mock(SubscriptionDefaults.class);
         mNetCapabilities = new NetworkCapabilities();
+        mMockNetworkScoreManager = mock(NetworkScoreManager.class);
+
         when(mMockCm.isNetworkSupported(ConnectivityManager.TYPE_MOBILE)).thenReturn(true);
         when(mMockCm.getDefaultNetworkCapabilitiesForUser(0)).thenReturn(
                 new NetworkCapabilities[] { mNetCapabilities });
@@ -132,7 +136,8 @@ public class NetworkControllerBaseTest extends SysuiTestCase {
             return null;
         }).when(mMockProvisionController).addCallback(any());
 
-        mNetworkController = new NetworkControllerImpl(mContext, mMockCm, mMockTm, mMockWm, mMockSm,
+        mNetworkController = new NetworkControllerImpl(mContext, mMockCm, mMockNetworkScoreManager,
+                mMockTm, mMockWm, mMockSm,
                 mConfig, Looper.getMainLooper(), mCallbackHandler,
                 mock(AccessPointControllerImpl.class), mock(DataUsageController.class),
                 mMockSubDefaults, mMockProvisionController);
@@ -173,8 +178,8 @@ public class NetworkControllerBaseTest extends SysuiTestCase {
     protected NetworkControllerImpl setUpNoMobileData() {
       when(mMockCm.isNetworkSupported(ConnectivityManager.TYPE_MOBILE)).thenReturn(false);
       NetworkControllerImpl networkControllerNoMobile
-              = new NetworkControllerImpl(mContext, mMockCm, mMockTm, mMockWm, mMockSm,
-                        mConfig, mContext.getMainLooper(), mCallbackHandler,
+              = new NetworkControllerImpl(mContext, mMockCm, mMockNetworkScoreManager, mMockTm,
+                        mMockWm, mMockSm, mConfig, mContext.getMainLooper(), mCallbackHandler,
                         mock(AccessPointControllerImpl.class),
                         mock(DataUsageController.class), mMockSubDefaults,
                         mock(DeviceProvisionedController.class));
