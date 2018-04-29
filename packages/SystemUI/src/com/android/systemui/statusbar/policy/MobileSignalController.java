@@ -44,6 +44,7 @@ import com.android.systemui.statusbar.policy.NetworkControllerImpl.SubscriptionD
 
 import java.io.PrintWriter;
 import java.util.BitSet;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -224,11 +225,21 @@ public class MobileSignalController extends SignalController<
         } else {
             mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE, TelephonyIcons.LTE);
             if (mConfig.hideLtePlus) {
-                mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE_CA,
-                        TelephonyIcons.LTE);
+				if (mConfig.showIms && isImsSubscriber) {
+					mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE_CA,
+                            TelephonyIcons.LTE_VOICE);
+				} else {
+					mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE_CA,
+					        TelephonyIcons.LTE);
+				}
             } else {
-                mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE_CA,
-                        TelephonyIcons.LTE_PLUS);
+				if (mConfig.showIms && isImsSubscriber) {
+					mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE_CA,
+                            TelephonyIcons.LTE_VOICE);
+				} else {
+					mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE_CA,
+					        TelephonyIcons.LTE_PLUS);
+				}
             }
         }
         mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_IWLAN, TelephonyIcons.WFC);
@@ -303,6 +314,23 @@ public class MobileSignalController extends SignalController<
         callback.setMobileDataIndicators(statusIcon, qsIcon, typeIcon, qsTypeIcon,
                 activityIn, activityOut, dataContentDescription, description, icons.mIsWide,
                 mSubscriptionInfo.getSubscriptionId(), mCurrentState.roaming);
+    }
+	
+	private boolean isImsSubscriber() {
+        List<SubscriptionInfo> subInfos = SubscriptionManager.from(mContext)
+                        .getActiveSubscriptionInfoList();
+        if (subInfos != null) {
+            for (SubscriptionInfo subInfo: subInfos) {
+                int subId = subInfo.getSubscriptionId();
+                if (mPhone != null
+                        && mPhone.isImsRegisteredForSubscriber(subId)) {
+                    return true;
+                }
+            }
+        } else {
+            Log.e(mTag, "Invalid SubscriptionInfo");
+        }
+        return false;
     }
 
     @Override

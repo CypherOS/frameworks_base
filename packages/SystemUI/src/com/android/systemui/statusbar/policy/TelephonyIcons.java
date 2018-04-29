@@ -31,11 +31,13 @@ class TelephonyIcons {
     static final int QS_DATA_4G_PLUS = R.drawable.ic_qs_signal_4g_plus;
     static final int QS_DATA_LTE = R.drawable.ic_qs_signal_lte;
     static final int QS_DATA_LTE_PLUS = R.drawable.ic_qs_signal_lte_plus;
+	static final int QS_DATA_LTE_VOICE = R.drawable.ic_qs_signal_lte_voice;
 
     static final int FLIGHT_MODE_ICON = R.drawable.stat_sys_airplane_mode;
 
     static final int ICON_LTE = R.drawable.stat_sys_data_fully_connected_lte;
     static final int ICON_LTE_PLUS = R.drawable.stat_sys_data_fully_connected_lte_plus;
+	static final int ICON_LTE_VOICE = R.drawable.stat_sys_data_fully_connected_lte_voice;
     static final int ICON_G = R.drawable.stat_sys_data_fully_connected_g;
     static final int ICON_E = R.drawable.stat_sys_data_fully_connected_e;
     static final int ICON_H = R.drawable.stat_sys_data_fully_connected_h;
@@ -220,6 +222,21 @@ class TelephonyIcons {
             TelephonyIcons.ICON_LTE_PLUS,
             true,
             TelephonyIcons.QS_DATA_LTE_PLUS
+            );
+			
+	static final MobileIconGroup LTE_VOICE = new MobileIconGroup(
+            "LTE_VOICE",
+            null,
+            null,
+            AccessibilityContentDescriptions.PHONE_SIGNAL_STRENGTH,
+            0, 0,
+            0,
+            0,
+            AccessibilityContentDescriptions.PHONE_SIGNAL_STRENGTH[0],
+            R.string.accessibility_data_connection_lte_voice,
+            TelephonyIcons.ICON_LTE_VOICE,
+            true,
+            TelephonyIcons.QS_DATA_LTE_VOICE
             );
 
     static final MobileIconGroup DATA_DISABLED = new MobileIconGroup(
