@@ -43,6 +43,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.settingslib.R;
+import com.android.settingslib.Utils;
 
 public class FooterConfirm extends FooterConfirmLayout {
 
@@ -244,7 +245,7 @@ public class FooterConfirm extends FooterConfirmLayout {
         MarginLayoutParams params;
         params = createMarginLayoutParams(
                 parent, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM);
-        view.setBackgroundColor(res.getColor(R.color.footer_confirm_background));
+        view.setBackgroundColor(Utils.getColorAttr(context, android.R.attr.colorPrimary));
 
         mIcon = (ImageView) view.findViewById(R.id.icon);
 
