@@ -19,4 +19,6 @@
     <bool name="config_statusBarBurnInProtection">false</bool>
     <integer name="config_shift_interval">60</integer>
 
+	<!-- Wether to show the voLTE icon in the statusbar -->
+	<bool name="config_showImsForSubscriber">false</bool>
 </resources>
