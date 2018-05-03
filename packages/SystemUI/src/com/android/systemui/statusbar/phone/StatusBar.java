@@ -1000,6 +1000,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         mScreenPinningRequest = new ScreenPinningRequest(mContext);
         mFalsingManager = FalsingManager.getInstance(mContext);
+        mSwapNavKeyObserver.onChange(true); // set up navigation key swap observer
 
         Dependency.get(ActivityStarterDelegate.class).setActivityStarterImpl(this);
 
@@ -1274,6 +1275,9 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         // listen for NAVIGATION_BAR_ENABLED setting (per-user)
         resetNavBarObserver();
+
+        // listen for SWAP_NAVIGATION_KEYS setting (per-user)
+        resetSwapNavKeyObserver();
     }
 
     protected void createNavigationBar() {
@@ -3911,6 +3915,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         // End old BaseStatusBar.userSwitched
         if (MULTIUSER_DEBUG) mNotificationPanelDebugText.setText("USER " + newUserId);
         resetNavBarObserver();
+        resetSwapNavKeyObserver();
         animateCollapsePanels();
         updatePublicMode();
         mNotificationData.filterAndSort();
@@ -7757,5 +7762,29 @@ public class StatusBar extends SystemUI implements DemoMode,
     private void resetSystemUIVisibility() {
         checkBarModes();
         notifyUiVisibilityChanged(mSystemUiVisibility);
+    }
+
+    final private ContentObserver mSwapNavKeyObserver = new ContentObserver(mHandler) {
+        @Override
+        public void onChange(boolean selfChange) {
+            boolean wasUsing = NavigationBarFragment.mUseSwapKey;
+            NavigationBarFragment.mUseSwapKey = Settings.System.getIntForUser(
+                    mContext.getContentResolver(), Settings.System.SWAP_NAVIGATION_KEYS, 0,
+                    UserHandle.USER_CURRENT) != 0;
+            Log.d(TAG, "navbar is " + (NavigationBarFragment.mUseSwapKey ? "swapped" : "regular"));
+            if (wasUsing != NavigationBarFragment.mUseSwapKey) {
+                if (mNavigationBar != null) {
+                    mNavigationBar.onConfigurationChanged(mContext.getResources().getConfiguration());
+                }
+            }
+        }
+    };
+
+    private void resetSwapNavKeyObserver() {
+        mContext.getContentResolver().unregisterContentObserver(mSwapNavKeyObserver);
+        mSwapNavKeyObserver.onChange(false);
+        mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.SWAP_NAVIGATION_KEYS), true,
+                mSwapNavKeyObserver, mCurrentUserId);
     }
 }
