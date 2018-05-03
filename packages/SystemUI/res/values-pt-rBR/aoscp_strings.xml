@@ -26,4 +26,11 @@
     <string name="keyguard_indication_fast_charging_time">Carregamento rápido (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> until full)</string>
     <string name="keyguard_plugged_in_fast_charging">Carregamento rápido</string>
 
+    <!-- Heads Up QS Tile -->
+    <string name="quick_settings_heads_up_label">Heads up</string>
+    <string name="accessibility_quick_settings_heads_up_off">Heads up desativado.</string>
+    <string name="accessibility_quick_settings_heads_up_on">Heads up ativo.</string>
+    <string name="accessibility_quick_settings_heads_up_changed_off">Heads up desativado.</string>
+    <string name="accessibility_quick_settings_heads_up_changed_on">Heads up ativado.</string>
+
 </resources>
