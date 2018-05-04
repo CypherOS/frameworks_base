@@ -223,4 +223,10 @@
 
     <!-- Allow Opa (Pixel navbar) layout -->
     <bool name="config_allowOpaLayout">true</bool>
+
+    <!-- Descriptor: Path to the vendors biometrics hal, required to send commands.
+         TransactionId: The transaction id required to send to the biometrics hal.
+    -->
+    <string name="config_vendorBiometricsDescriptor" translatable="false"></string>
+    <integer name="config_vendorBiometricsTransactionId">0</integer>
 </resources>
