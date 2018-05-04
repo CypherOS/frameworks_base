@@ -173,4 +173,11 @@
   <!-- Notification Volume Stream -->
   <java-symbol type="drawable" name="ic_audio_notification_new" />
   <java-symbol type="drawable" name="ic_audio_notification_mute_new" />
+
+  <!-- Descriptor: Path to the vendors biometrics hal, required to send commands.
+	   TransactionId: The transaction id required to send to the biometrics hal.
+  -->
+  <java-symbol type="string" name="config_vendorBiometricsDescriptor" />
+  <java-symbol type="integer" name="config_vendorBiometricsTransactionId" />
+
 </resources>
