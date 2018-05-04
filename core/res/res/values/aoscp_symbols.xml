@@ -169,5 +169,11 @@
   <java-symbol type="drawable" name="ic_wifi_signal_round_2" />
   <java-symbol type="drawable" name="ic_wifi_signal_round_3" />
   <java-symbol type="drawable" name="ic_wifi_signal_round_4" />
+  
+  <!-- Descriptor: Path to the vendors biometrics hal, required to send commands.
+	   TransactionId: The transaction id required to send to the biometrics hal.
+  -->
+  <java-symbol type="string" name="config_vendorBiometricsDescriptor" />
+  <java-symbol type="integer" name="config_vendorBiometricsTransactionId" />
 
 </resources>
