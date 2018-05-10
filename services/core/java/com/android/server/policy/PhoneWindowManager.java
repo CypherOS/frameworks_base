@@ -1146,9 +1146,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             } catch (Throwable t) {
                 // Ignore, IExtBiometricsFingerprint is not available.
             }
+            if (sExtBiometricsFingerprint == null) return;
+            Log.d(TAG, "Can't send command to hal, vendor biometrics is null");
             sExtBiometricsFingerprint.sendCmdToHal(useNavBar
-                    ? ExtBiometricsFingerprint.MSG_NAV_DISABLE
-                    : ExtBiometricsFingerprint.MSG_NAV_ENABLE);
+                    ? ExtBiometricsFingerprint.MMI_TYPE_NAV_DISABLE
+                    : ExtBiometricsFingerprint.MMI_TYPE_NAV_ENABLE);
             Log.d(TAG, "Sending FP Navigation Command to HAL");
         }
     }
