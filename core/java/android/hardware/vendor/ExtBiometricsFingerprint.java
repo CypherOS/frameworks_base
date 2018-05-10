@@ -29,8 +29,8 @@ import android.util.Log;
 import com.android.internal.R;
 
 public class ExtBiometricsFingerprint {
-    public static int MSG_NAV_ENABLE = 41;
-    public static int MSG_NAV_DISABLE = 42;
+    public static final int MMI_TYPE_NAV_ENABLE = 41;
+    public static final int MMI_TYPE_NAV_DISABLE = 42;
 
     private static final String TAG = "VendorBiomectricsB2Hal";
 
@@ -57,18 +57,23 @@ public class ExtBiometricsFingerprint {
             return -1;
         }
 
+        HwParcel data = new HwParcel();
+		HwParcel reply = new HwParcel();
+ 
         try {
-            HwParcel data = new HwParcel();
-            HwParcel reply = new HwParcel();
-
             data.writeInterfaceToken(mBiometricsDescriptor);
             data.writeInt32(cmdId);
 
             sBiometricsFingerprint.transact(mBiometricsTransactionId, data, reply, 0);
+			
+			reply.verifySuccess();
+            data.releaseTemporaryStorage();
 
             return reply.readInt32();
         } catch (Throwable t) {
             return -1;
+		} finally {
+            reply.release();
         }
     }
 }
