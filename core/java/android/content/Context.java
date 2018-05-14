@@ -4039,6 +4039,17 @@ public abstract class Context {
      */
     @SystemApi
     public static final String VR_SERVICE = "vrmanager";
+	
+	/**
+	 * Use with {@link #getSystemService} to retrieve a
+     * {@link android.client.UpdateManager} for queuing 
+	 * system updates.
+     *
+     * @hide
+     * @see #getSystemService
+     * @see android.client.UpdateManager
+     */
+    public static final String COTA_SERVICE = "cota";
 
     /**
      * Use with {@link #getSystemService} to retrieve an

@@ -616,6 +616,7 @@ LOCAL_STATIC_JAVA_LIBRARIES :=                          \
     android.hardware.vibrator-V1.0-java-constants        \
     android.hardware.vibrator-V1.1-java-constants        \
     android.hardware.wifi-V1.0-java-constants            \
+	volley                                               \
 
 include hardware/interfaces/cas/1.0/CasHal.mk
 
