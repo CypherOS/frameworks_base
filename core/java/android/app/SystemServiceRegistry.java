@@ -31,6 +31,7 @@ import android.app.usage.StorageStatsManager;
 import android.app.usage.UsageStatsManager;
 import android.appwidget.AppWidgetManager;
 import android.bluetooth.BluetoothManager;
+import android.client.UpdateManager;
 import android.companion.CompanionDeviceManager;
 import android.companion.ICompanionDeviceManager;
 import android.content.ClipboardManager;
@@ -709,6 +710,13 @@ final class SystemServiceRegistry {
             public TrustManager createService() throws ServiceNotFoundException {
                 IBinder b = ServiceManager.getServiceOrThrow(Context.TRUST_SERVICE);
                 return new TrustManager(b);
+            }});
+
+		registerService(Context.COTA_SERVICE, UpdateManager.class,
+                new CachedServiceFetcher<UpdateManager>() {
+            @Override
+            public UpdateManager createService(ContextImpl ctx) throws ServiceNotFoundException {
+                return new UpdateManager(ctx);
             }});
 
         registerService(Context.FINGERPRINT_SERVICE, FingerprintManager.class,

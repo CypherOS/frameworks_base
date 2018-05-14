@@ -186,4 +186,16 @@
   <!-- Battery Light -->
   <java-symbol type="bool" name="config_multiColorBatteryLed" />
   <java-symbol type="bool" name="config_intrusiveBatteryLed" />
+  
+  <!-- CypherOS Over-The-Air Updates -->
+  <!-- Errors -->
+  <java-symbol type="string" name="error_cannot_resume" />
+  <java-symbol type="string" name="error_device_not_found" />
+  <java-symbol type="string" name="error_file_already_exists" />
+  <java-symbol type="string" name="error_file_error" />
+  <java-symbol type="string" name="error_http_data_error" />
+  <java-symbol type="string" name="error_insufficient_space" />
+  <java-symbol type="string" name="error_too_many_redirects" />
+  <java-symbol type="string" name="error_unhandled_http_code" />
+  <java-symbol type="string" name="error_unknown" />
 </resources>
