@@ -33,4 +33,22 @@
     <string name="accessibility_quick_settings_heads_up_changed_off">Heads up desativado.</string>
     <string name="accessibility_quick_settings_heads_up_changed_on">Heads up ativado.</string>
 
+    <!-- QuickSettings: Alert slider tile related strings (re-using some of the do not disturb ones) [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_alert_slider_unavailable">Atalho para controle de alerta deslizante não disponível</string>
+    <string name="quick_settings_alert_slider_detail_alarms_only_description">Isso bloqueia TODOS os sons e vibrações, exceto os de alarmes e reprodução de mídia.</string>
+    <string name="quick_settings_alert_slider_none_label">Todas as notificações</string>
+    <string name="quick_settings_alert_slider_detail_disabled_message_description">Configurações adicionais não estão disponíveis quando não perturbe está desativado.</string>
+
+    <string name="zen_footer_alert_slider_priority_only_summary">Apenas notificações especificadas</string>
+    <string name="zen_footer_alert_slider_alarms_only_summary">Apenas alarmes e reprodução de mídia</string>
+    <string name="zen_footer_alert_slider_no_interruptions_summary">Nenhum som e interrupções</string>
+
+    <string name="quick_settings_alert_slider_detail_priority_events_title">Eventos</string>
+    <string name="quick_settings_alert_slider_detail_priority_reminders_title">Lembretes</string>
+  
+      <!-- AmbientPlay: The contents of the displayed recognition. -->
+    <string name="ambient_recognition_notification">Tocando Agora</string>
+    <string name="ambient_recognition_notification_channel">Notificações de músicas reconhecidas</string>
+    <string name="ambient_recognition_information">%1$s by %2$s</string>
+
 </resources>
