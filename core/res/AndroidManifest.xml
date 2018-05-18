@@ -958,6 +958,7 @@
         android:label="@string/permlab_recordAudio"
         android:description="@string/permdesc_recordAudio"
         android:protectionLevel="dangerous|instant"/>
+	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <!-- ====================================================================== -->
     <!-- Permissions for accessing the UCE Service                              -->
@@ -1253,6 +1254,7 @@
         android:description="@string/permdesc_createNetworkSockets"
         android:label="@string/permlab_createNetworkSockets"
         android:protectionLevel="normal|instant" />
+	<uses-permission android:name="android.permission.INTERNET"/>
 
     <!-- Allows applications to access information about networks.
          <p>Protection level: normal
