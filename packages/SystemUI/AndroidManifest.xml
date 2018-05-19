@@ -204,6 +204,10 @@
     <uses-permission android:name="android.permission.SHUTDOWN" />
     <uses-permission android:name="android.permission.SET_ACTIVITY_WATCHER" />
 
+    <!-- Ambient Indication -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
     <application
         android:name=".SystemUIApplication"
         android:persistent="true"

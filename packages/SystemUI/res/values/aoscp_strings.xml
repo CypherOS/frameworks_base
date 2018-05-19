@@ -46,4 +46,9 @@
     <string name="quick_settings_alert_slider_detail_priority_events_title">Events</string>
     <string name="quick_settings_alert_slider_detail_priority_reminders_title">Reminders</string>
 
+    <!-- AmbientPlay: The contents of the displayed recognition. -->
+    <string name="ambient_recognition_notification">Now Playing</string>
+    <string name="ambient_recognition_notification_channel">Recognized Music Notifications</string>
+    <string name="ambient_recognition_information">%1$s by %2$s</string>
+
 </resources>
