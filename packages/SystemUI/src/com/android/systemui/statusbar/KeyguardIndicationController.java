@@ -16,6 +16,7 @@
 
 package com.android.systemui.statusbar;
 
+import android.animation.ValueAnimator;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -37,6 +38,8 @@ import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+
+import aoscp.support.lottie.LottieAnimationView;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.app.IBatteryStats;
@@ -68,6 +71,7 @@ public class KeyguardIndicationController {
     private ViewGroup mIndicationArea;
     private KeyguardIndicationTextView mTextView;
     private KeyguardIndicationTextView mDisclosure;
+	private LottieAnimationView mChargingIndication;
     private final UserManager mUserManager;
     private final IBatteryStats mBatteryInfo;
     private final SettableWakeLock mWakeLock;
@@ -119,6 +123,8 @@ public class KeyguardIndicationController {
         mDisclosure = (KeyguardIndicationTextView) indicationArea.findViewById(
                 R.id.keyguard_indication_enterprise_disclosure);
         mLockIcon = lockIcon;
+		mChargingIndication = (LottieAnimationView) indicationArea.findViewById(
+                R.id.charging_indication);
         mWakeLock = new SettableWakeLock(wakeLock);
 
         Resources res = context.getResources();
@@ -327,8 +333,29 @@ public class KeyguardIndicationController {
                 mTextView.switchIndication(mRestingIndication);
                 mTextView.setTextColor(mInitialTextColor);
             }
+
+			if (updateMonitor.isScreenOn() && mPowerPluggedIn) {
+				updateChargingIndication();
+			}
         }
     }
+
+	private void updateChargingIndication() {
+		mChargingIndication.setVisibility(View.VISIBLE);
+		ValueAnimator anim = ValueAnimator.ofFloat(0f, 1f).setDuration(944);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnim) {
+                mChargingIndication.setProgress((Float) valueAnim.getAnimatedValue());
+            }
+        });
+
+        if (mChargingIndication.getProgress() == 0f) {
+            anim.start();
+        } else {
+            mChargingIndication.setProgress(0f);
+        }
+	}
 
     private String computePowerIndication() {
         if (mPowerCharged) {
