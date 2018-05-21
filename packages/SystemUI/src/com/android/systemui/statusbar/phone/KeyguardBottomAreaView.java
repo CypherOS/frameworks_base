@@ -24,6 +24,7 @@ import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_LEFT_UNLO
 import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_RIGHT_BUTTON;
 import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_RIGHT_UNLOCK;
 
+import android.animation.ValueAnimator;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.app.admin.DevicePolicyManager;
@@ -39,6 +40,7 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
@@ -58,6 +60,8 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import aoscp.support.lottie.LottieAnimationView;
 
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.internal.widget.LockPatternUtils;
@@ -120,6 +124,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     private KeyguardAffordanceView mRightAffordanceView;
     private KeyguardAffordanceView mLeftAffordanceView;
     private LockIcon mLockIcon;
+	private LottieAnimationView mChargingIndication;
     private ViewGroup mIndicationArea;
     private TextView mEnterpriseDisclosure;
     private TextView mIndicationText;
@@ -232,6 +237,8 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         mRightAffordanceView = findViewById(R.id.camera_button);
         mLeftAffordanceView = findViewById(R.id.left_button);
         mLockIcon = findViewById(R.id.lock_icon);
+		mChargingIndication = (LottieAnimationView) findViewById(
+                R.id.charging_indication);
         mIndicationArea = findViewById(R.id.keyguard_indication_area);
         mEnterpriseDisclosure = findViewById(
                 R.id.keyguard_indication_enterprise_disclosure);
@@ -676,6 +683,25 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
             mAffordanceHelper.updatePreviews();
         }
     }
+	
+	private void updateChargingIndication() {
+		KeyguardUpdateMonitor um = KeyguardUpdateMonitor.getInstance(mContext);
+		if (!um.isScreenOn()) return;
+		mChargingIndication.setVisibility(View.VISIBLE);
+		ValueAnimator anim = ValueAnimator.ofFloat(0f, 1f).setDuration(944);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnim) {
+                mChargingIndication.setProgress((Float) valueAnim.getAnimatedValue());
+            }
+        });
+
+        if (mChargingIndication.getProgress() == 0f) {
+            anim.start();
+        } else {
+            mChargingIndication.setProgress(0f);
+        }
+	}
 
     public void startFinishDozeAnimation() {
         long delay = 0;
@@ -719,7 +745,17 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     };
 
     private final KeyguardUpdateMonitorCallback mUpdateMonitorCallback =
-            new KeyguardUpdateMonitorCallback() {
+            new KeyguardUpdateMonitorCallback() {				
+				@Override
+				public void onRefreshBatteryInfo(KeyguardUpdateMonitor.BatteryStatus status) {
+					boolean isChargingOrFull = status.status == BatteryManager.BATTERY_STATUS_CHARGING
+					        || status.status == BatteryManager.BATTERY_STATUS_FULL;
+				    boolean wasPluggedIn = mPowerPluggedIn;
+					mPowerPluggedIn = status.isPluggedIn() && isChargingOrFull;
+					if (!wasPluggedIn && mPowerPluggedIn) {
+						updateChargingIndication();
+					}
+				}
                 @Override
                 public void onUserSwitchComplete(int userId) {
                     updateCameraVisibility();
