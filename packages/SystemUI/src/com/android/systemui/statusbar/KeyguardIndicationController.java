@@ -16,6 +16,7 @@
 
 package com.android.systemui.statusbar;
 
+import android.animation.ValueAnimator;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -37,6 +38,8 @@ import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+
+import aoscp.support.lottie.LottieAnimationView;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.app.IBatteryStats;
@@ -68,6 +71,7 @@ public class KeyguardIndicationController {
     private ViewGroup mIndicationArea;
     private KeyguardIndicationTextView mTextView;
     private KeyguardIndicationTextView mDisclosure;
+    private LottieAnimationView mChargingIndication;
     private final UserManager mUserManager;
     private final IBatteryStats mBatteryInfo;
     private final SettableWakeLock mWakeLock;
@@ -93,6 +97,7 @@ public class KeyguardIndicationController {
 
     private final DevicePolicyManager mDevicePolicyManager;
     private boolean mDozing;
+    private boolean mIsAmbientPlayShowing;
 
     /**
      * Creates a new KeyguardIndicationController and registers callbacks.
@@ -113,6 +118,8 @@ public class KeyguardIndicationController {
                 WakeLock wakeLock) {
         mContext = context;
         mIndicationArea = indicationArea;
+        mChargingIndication = (LottieAnimationView) indicationArea.findViewById(
+                R.id.charging_indication);
         mTextView = (KeyguardIndicationTextView) indicationArea.findViewById(
                 R.id.keyguard_indication_text);
         mInitialTextColor = mTextView != null ? mTextView.getCurrentTextColor() : Color.WHITE;
@@ -178,6 +185,10 @@ public class KeyguardIndicationController {
         } else {
             mDisclosure.setVisibility(View.GONE);
         }
+    }
+
+    public void setChargingIndicator(boolean visible) {
+        mIsAmbientPlayShowing = visible;
     }
 
     public void setVisible(boolean visible) {
@@ -294,6 +305,7 @@ public class KeyguardIndicationController {
                 } else {
                     mTextView.switchIndication(null);
                 }
+                mChargingIndication.setVisibility(View.GONE);
                 return;
             }
 
@@ -327,6 +339,28 @@ public class KeyguardIndicationController {
                 mTextView.switchIndication(mRestingIndication);
                 mTextView.setTextColor(mInitialTextColor);
             }
+            updateChargingIndication();
+        }
+    }
+
+    private void updateChargingIndication() {
+        if (!mDozing && !mIsAmbientPlayShowing && mPowerPluggedIn) {
+            mChargingIndication.setVisibility(View.VISIBLE);
+            ValueAnimator anim = ValueAnimator.ofFloat(0f, 1f).setDuration(4000);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnim) {
+                    mChargingIndication.setProgress((Float) valueAnim.getAnimatedValue());
+                }
+            });
+
+            if (mChargingIndication.getProgress() == 0f) {
+                anim.start();
+            } else {
+                mChargingIndication.setProgress(0f);
+            }
+        } else {
+            mChargingIndication.setVisibility(View.GONE);
         }
     }
 
