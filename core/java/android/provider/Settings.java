@@ -7494,6 +7494,12 @@ public final class Settings {
          * @hide
          */
         public static final String DEVICE_ACCENT = "device_accent";
+		
+		/**
+         * Whether specific elements use an alpha when theming
+         * @hide
+         */
+        public static final String DEVICE_THEME_ALPHA = "device_theme_alpha";
 
         /**
          * Enable face auto unlock on secure lock screens
