@@ -17,12 +17,14 @@
 package com.android.systemui.qs;
 
 import android.content.Context;
+import android.content.ContentResolver;
 import android.database.ContentObserver;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -47,15 +49,16 @@ public class QSContainerImpl extends FrameLayout {
     private QSCustomizer mQSCustomizer;
     private View mQSFooter;
     private float mFullElevation;
-
-    private Context mContext;
-    private Drawable mBackground;
+	
+	private Context mContext;
+	private Drawable mBackground;
+	private Handler mHandler;
 
     public QSContainerImpl(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
-        Handler mHandler = new Handler();
-        mColorManagerObserver.observe();
+		mContext = context;
+		Handler mHandler = new Handler();
+		mColorManagerObserver.observe();
     }
 
     @Override
@@ -67,14 +70,14 @@ public class QSContainerImpl extends FrameLayout {
         mQSCustomizer = findViewById(R.id.qs_customize);
         mQSFooter = findViewById(R.id.qs_footer);
         mFullElevation = mQSPanel.getElevation();
-        mBackground = mContext.getDrawable(R.drawable.qs_background_primary);
-        mColorManagerObserver.update();
+		mBackground = mContext.getDrawable(R.drawable.qs_background_primary);
+		mColorManagerObserver.update();
 
         setClickable(true);
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
     }
-
-    private ColorManagerObserver mColorManagerObserver = new ColorManagerObserver(mHandler);
+	
+	private ColorManagerObserver mColorManagerObserver = new ColorManagerObserver(mHandler);
     private class ColorManagerObserver extends ContentObserver {
         ColorManagerObserver(Handler handler) {
             super(handler);
@@ -142,17 +145,18 @@ public class QSContainerImpl extends FrameLayout {
         updateExpansion();
     }
 
-    protected void updateBackgroundAlpha() {
-        if (mBackground == null) return;
-        int alpha = Settings.Secure.getIntForUser(
-            mContext.getContentResolver(), DEVICE_THEME_ALPHA, 1, UserHandle.USER_CURRENT);
-        if (alpha != 0) {
-            mBackground.setAlpha(0.87);
-        } else {
-            mBackground.setAlpha(1.0);
-        }
-        setBackground(mBackground);
-    }
+	protected void updateBackgroundAlpha() {
+		if (mBackground == null) return;
+		int alpha = Settings.Secure.getIntForUser(
+		        mContext.getContentResolver(), DEVICE_THEME_ALPHA, 
+				1, UserHandle.USER_CURRENT);
+		if (alpha != 0) {
+			mBackground.setAlpha(222);
+		} else {
+			mBackground.setAlpha(255);
+		}
+		setBackground(mBackground);
+	}
 
     public void updateExpansion() {
         int height = calculateContainerHeight();
