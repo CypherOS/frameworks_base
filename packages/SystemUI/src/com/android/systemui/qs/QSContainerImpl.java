@@ -17,12 +17,14 @@
 package com.android.systemui.qs;
 
 import android.content.Context;
+import android.content.ContentResolver;
 import android.database.ContentObserver;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -50,6 +52,7 @@ public class QSContainerImpl extends FrameLayout {
 
     private Context mContext;
     private Drawable mBackground;
+    private Handler mHandler;
 
     public QSContainerImpl(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -147,9 +150,9 @@ public class QSContainerImpl extends FrameLayout {
         int alpha = Settings.Secure.getIntForUser(
             mContext.getContentResolver(), DEVICE_THEME_ALPHA, 1, UserHandle.USER_CURRENT);
         if (alpha != 0) {
-            mBackground.setAlpha(0.87);
+            mBackground.setAlpha(222);
         } else {
-            mBackground.setAlpha(1.0);
+            mBackground.setAlpha(255);
         }
         setBackground(mBackground);
     }
