@@ -18,11 +18,14 @@ package com.android.systemui.statusbar;
 
 import android.annotation.DrawableRes;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.telephony.SubscriptionInfo;
 import android.util.ArraySet;
 import android.util.AttributeSet;
@@ -52,6 +55,8 @@ import com.android.systemui.tuner.TunerService.Tunable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static android.provider.Settings.System.NETWORK_MONITOR;
 
 // Intimately tied to the design of res/layout/signal_cluster_view.xml
 public class SignalClusterView extends LinearLayout implements NetworkControllerImpl.SignalCallback,
@@ -281,7 +286,9 @@ public class SignalClusterView extends LinearLayout implements NetworkController
     }
 
     private void updateActivityEnabled() {
-        mActivityEnabled = mContext.getResources().getBoolean(R.bool.config_showActivity);
+        mActivityEnabled = Settings.System.getIntForUser(
+		        mContext.getContentResolver(), NETWORK_MONITOR, 
+				1, UserHandle.USER_CURRENT) != 0;
     }
 
     @Override
