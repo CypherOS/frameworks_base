@@ -18,11 +18,17 @@ package com.android.systemui.statusbar;
 
 import android.annotation.DrawableRes;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.telephony.SubscriptionInfo;
 import android.util.ArraySet;
 import android.util.AttributeSet;
@@ -52,6 +58,8 @@ import com.android.systemui.tuner.TunerService.Tunable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static android.provider.Settings.System.NETWORK_MONITOR;
 
 // Intimately tied to the design of res/layout/signal_cluster_view.xml
 public class SignalClusterView extends LinearLayout implements NetworkControllerImpl.SignalCallback,
@@ -116,8 +124,9 @@ public class SignalClusterView extends LinearLayout implements NetworkController
     private boolean mBlockMobile;
     private boolean mBlockWifi;
     private boolean mBlockEthernet;
-    private boolean mActivityEnabled;
     private boolean mForceBlockWifi;
+
+    private Handler mHandler;
 
     private final IconLogger mIconLogger = Dependency.get(IconLogger.class);
 
@@ -148,7 +157,9 @@ public class SignalClusterView extends LinearLayout implements NetworkController
         mIconScaleFactor = typedValue.getFloat();
         mNetworkController = Dependency.get(NetworkController.class);
         mSecurityController = Dependency.get(SecurityController.class);
-        updateActivityEnabled();
+
+        mHandler = new Handler();
+        mMonitorObserver.observe();
     }
 
     public void setForceBlockWifi() {
@@ -205,6 +216,7 @@ public class SignalClusterView extends LinearLayout implements NetworkController
         mWifiSignalSpacer =           findViewById(R.id.wifi_signal_spacer);
         mMobileSignalGroup =          findViewById(R.id.mobile_signal_group);
 
+        mMonitorObserver.update();
         maybeScaleVpnAndNoSimsIcons();
     }
 
@@ -280,18 +292,49 @@ public class SignalClusterView extends LinearLayout implements NetworkController
         });
     }
 
-    private void updateActivityEnabled() {
-        mActivityEnabled = mContext.getResources().getBoolean(R.bool.config_showActivity);
+    protected void updateMonitorVisibility() {
+        mWifiActivityIn.setVisibility(mWifiIn ? View.VISIBLE : View.GONE);
+        mWifiActivityOut.setVisibility(mWifiOut ? View.VISIBLE : View.GONE);
+        for (PhoneState state : mPhoneStates) {
+            if (state != null) {
+                state.updateMonitorVisibility();
+            }
+        }
+    }
+
+    private MonitorObserver mMonitorObserver = new MonitorObserver(mHandler);
+    private class MonitorObserver extends ContentObserver {
+        MonitorObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NETWORK_MONITOR),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            update();
+        }
+
+        public void update() {
+            updateMonitorVisibility();
+        }
     }
 
     @Override
     public void setWifiIndicators(boolean enabled, IconState statusIcon, IconState qsIcon,
             boolean activityIn, boolean activityOut, String description, boolean isTransient) {
+        boolean isMonitor = Settings.System.getIntForUser(mContext.getContentResolver(), 
+                    NETWORK_MONITOR, 1, UserHandle.USER_CURRENT) != 0;
         mWifiVisible = statusIcon.visible && !mBlockWifi;
         mWifiStrengthId = statusIcon.icon;
         mWifiDescription = statusIcon.contentDescription;
-        mWifiIn = activityIn && mActivityEnabled && mWifiVisible;
-        mWifiOut = activityOut && mActivityEnabled && mWifiVisible;
+        mWifiIn = activityIn && isMonitor && mWifiVisible;
+        mWifiOut = activityOut && isMonitor && mWifiVisible;
 
         apply();
     }
@@ -300,6 +343,8 @@ public class SignalClusterView extends LinearLayout implements NetworkController
     public void setMobileDataIndicators(IconState statusIcon, IconState qsIcon, int statusType,
             int qsType, boolean activityIn, boolean activityOut, String typeContentDescription,
             String description, boolean isWide, int subId, boolean roaming) {
+        boolean isMonitor = Settings.System.getIntForUser(mContext.getContentResolver(), 
+                    NETWORK_MONITOR, 1, UserHandle.USER_CURRENT) != 0;
         PhoneState state = getState(subId);
         if (state == null) {
             return;
@@ -311,8 +356,8 @@ public class SignalClusterView extends LinearLayout implements NetworkController
         state.mMobileTypeDescription = typeContentDescription;
         state.mIsMobileTypeIconWide = statusType != 0 && isWide;
         state.mRoaming = roaming;
-        state.mActivityIn = activityIn && mActivityEnabled;
-        state.mActivityOut = activityOut && mActivityEnabled;
+        state.mActivityIn = activityIn && isMonitor;
+        state.mActivityOut = activityOut && isMonitor;
 
         apply();
     }
@@ -502,8 +547,7 @@ public class SignalClusterView extends LinearLayout implements NetworkController
                     (mWifiVisible ? "VISIBLE" : "GONE"),
                     mWifiStrengthId));
 
-        mWifiActivityIn.setVisibility(mWifiIn ? View.VISIBLE : View.GONE);
-        mWifiActivityOut.setVisibility(mWifiOut ? View.VISIBLE : View.GONE);
+        updateMonitorVisibility();
 
         boolean anyMobileVisible = false;
         int firstMobileTypeId = 0;
@@ -712,10 +756,14 @@ public class SignalClusterView extends LinearLayout implements NetworkController
 
             mMobileType.setVisibility(mMobileTypeId != 0 ? View.VISIBLE : View.GONE);
             mMobileRoaming.setVisibility(mRoaming ? View.VISIBLE : View.GONE);
-            mMobileActivityIn.setVisibility(mActivityIn ? View.VISIBLE : View.GONE);
-            mMobileActivityOut.setVisibility(mActivityOut ? View.VISIBLE : View.GONE);
+            updateMonitorVisibility();
 
             return mMobileVisible;
+        }
+
+        public void updateMonitorVisibility() {
+            mMobileActivityIn.setVisibility(mActivityIn ? View.VISIBLE : View.GONE);
+            mMobileActivityOut.setVisibility(mActivityOut ? View.VISIBLE : View.GONE);
         }
 
         public void populateAccessibilityEvent(AccessibilityEvent event) {
