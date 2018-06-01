@@ -54,7 +54,7 @@ public class KernelCpuSpeedReader {
      * @param cpuNumber The cpu (cpu0, cpu1, etc) whose state to read.
      */
     public KernelCpuSpeedReader(int cpuNumber, int numSpeedSteps) {
-        mProcFileStats = String.format("/sys/devices/system/cpu/cpu%d/cpufreq/stats/time_in_state",
+        mProcFileStats = String.format("/sys/devices/system/cpu/cpufreq/stats/cpu%d/time_in_state",
                 cpuNumber);
         mProcFileOnline = String.format("/sys/devices/system/cpu/cpu%d/online",
                 cpuNumber);
