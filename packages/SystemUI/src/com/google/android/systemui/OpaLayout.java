@@ -46,8 +46,8 @@ import com.android.systemui.statusbar.policy.KeyButtonDrawable;
 import com.android.systemui.statusbar.policy.KeyButtonRipple;
 import com.android.systemui.statusbar.policy.KeyButtonView;
 
-public class OpaLayout extends FrameLayout implements ButtonInterface {
-
+public class OpaLayout/* extends FrameLayout implements ButtonInterface*/ {
+/*
     private static final int ANIMATION_STATE_NONE = 0;
     private static final int ANIMATION_STATE_DIAMOND = 1;
     private static final int ANIMATION_STATE_RETRACT = 2;
@@ -649,5 +649,5 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         mYellow.setVisibility(visibility);
         mGreen.setVisibility(visibility);
     }
-
+*/
 }
