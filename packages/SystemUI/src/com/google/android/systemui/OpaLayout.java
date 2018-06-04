@@ -46,8 +46,8 @@ import com.android.systemui.statusbar.policy.KeyButtonDrawable;
 import com.android.systemui.statusbar.policy.KeyButtonRipple;
 import com.android.systemui.statusbar.policy.KeyButtonView;
 
-public class OpaLayout/* extends FrameLayout implements ButtonInterface*/ {
-/*
+public class OpaLayout extends FrameLayout implements ButtonInterface {
+
     private static final int ANIMATION_STATE_NONE = 0;
     private static final int ANIMATION_STATE_DIAMOND = 1;
     private static final int ANIMATION_STATE_RETRACT = 2;
@@ -93,10 +93,7 @@ public class OpaLayout/* extends FrameLayout implements ButtonInterface*/ {
     private View mYellow;
     private View mWhite;
     private View mHalo;
-
-    private int mDarkMode;
-    private int mLightMode;
-
+	
     private View mTop;
     private View mRight;
     private View mLeft;
@@ -158,9 +155,6 @@ public class OpaLayout/* extends FrameLayout implements ButtonInterface*/ {
 
     public OpaLayout(Context context) {
         super(context);
-        mDarkMode = context.getColor(R.color.dark_mode_icon_color_dual_tone_fill);
-        mLightMode = context.getColor(R.color.light_mode_icon_color_dual_tone_fill);
-
         if (mNavBarAnimationObserver == null) {
             mNavBarAnimationObserver = new NavBarAnimationObserver(new Handler());
         }
@@ -169,9 +163,6 @@ public class OpaLayout/* extends FrameLayout implements ButtonInterface*/ {
 
     public OpaLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mDarkMode = context.getColor(R.color.dark_mode_icon_color_dual_tone_fill);
-        mLightMode = context.getColor(R.color.light_mode_icon_color_dual_tone_fill);
-
         if (mNavBarAnimationObserver == null) {
             mNavBarAnimationObserver = new NavBarAnimationObserver(new Handler());
         }
@@ -180,9 +171,6 @@ public class OpaLayout/* extends FrameLayout implements ButtonInterface*/ {
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mDarkMode = context.getColor(R.color.dark_mode_icon_color_dual_tone_fill);
-        mLightMode = context.getColor(R.color.light_mode_icon_color_dual_tone_fill);
-
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KeyButtonView,
                 defStyleAttr, 0);
 
@@ -203,9 +191,6 @@ public class OpaLayout/* extends FrameLayout implements ButtonInterface*/ {
 
     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mDarkMode = context.getColor(R.color.dark_mode_icon_color_dual_tone_fill);
-        mLightMode = context.getColor(R.color.light_mode_icon_color_dual_tone_fill);
-
         if (mNavBarAnimationObserver == null) {
             mNavBarAnimationObserver = new NavBarAnimationObserver(new Handler());
         }
@@ -522,7 +507,10 @@ public class OpaLayout/* extends FrameLayout implements ButtonInterface*/ {
         mGreen = findViewById(R.id.green);
         mWhite = findViewById(R.id.white);
         mHalo = findViewById(R.id.halo);
-        mHome = (KeyButtonView) findViewById(R.id.home_button);
+		mHome = (KeyButtonView) findViewById(R.id.home_button);
+		mHalo.setImageDrawable(KeyButtonDrawable.create(new ContextThemeWrapper(mContext, 
+		        R.style.DualToneLightTheme).getDrawable(R.drawable.ic_sysbar_halo), new ContextThemeWrapper(
+				getContext(), R.style.DualToneDarkTheme).getDrawable(R.drawable.ic_sysbar_halo)));
 
         setOpaEnabled(true);
     }
@@ -585,20 +573,14 @@ public class OpaLayout/* extends FrameLayout implements ButtonInterface*/ {
         ((ImageView) mWhite).setImageResource(resId);
     }
 
-    public void setDarkIntensity(float darkIntensity) {
-        int backgroundColor = getBackgroundColor(darkIntensity);
-        ((ImageView) mWhite).setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_IN));
-        ((ImageView) mHalo).setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_IN));
-        invalidate();
-    }
-
-    private int getBackgroundColor(float darkIntensity) {
-        return getColorForDarkIntensity(
-                darkIntensity, mLightMode, mDarkMode);
-    }
-
-    private int getColorForDarkIntensity(float darkIntensity, int lightMode, int darkMode) {
-        return (int) ArgbEvaluator.getInstance().evaluate(darkIntensity, lightMode, darkMode);
+	public void setDarkIntensity(float intensity) {
+        if (mWhite.getDrawable() instanceof KeyButtonDrawable) {
+            ((KeyButtonDrawable) mWhite.getDrawable()).setDarkIntensity(intensity);
+        }
+        ((KeyButtonDrawable) mHalo.getDrawable()).setDarkIntensity(intensity);
+        mWhite.invalidate();
+        mHalo.invalidate();
+        mHome.setDarkIntensity(intensity);
     }
 
     public void setVertical(boolean vertical) {
@@ -649,5 +631,4 @@ public class OpaLayout/* extends FrameLayout implements ButtonInterface*/ {
         mYellow.setVisibility(visibility);
         mGreen.setVisibility(visibility);
     }
-*/
 }
