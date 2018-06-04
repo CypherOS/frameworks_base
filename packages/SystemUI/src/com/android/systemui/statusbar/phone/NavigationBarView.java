@@ -25,12 +25,14 @@ import android.annotation.DrawableRes;
 import android.app.ActivityManager;
 import android.app.StatusBarManager;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -61,6 +63,8 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.function.Consumer;
 
+import static android.provider.Settings.Secure.NAVBAR_THEME;
+
 public class NavigationBarView extends FrameLayout implements PluginListener<NavGesture> {
     final static boolean DEBUG = false;
     final static String TAG = "StatusBar/NavBarView";
@@ -86,6 +90,7 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
     private KeyButtonDrawable mBackIcon, mBackLandIcon, mBackAltIcon, mBackAltLandIcon;
     private KeyButtonDrawable mBackCarModeIcon, mBackLandCarModeIcon;
     private KeyButtonDrawable mBackAltCarModeIcon, mBackAltLandCarModeIcon;
+	private KeyButtonDrawable mHaloIcon;
     private KeyButtonDrawable mHomeDefaultIcon, mHomeCarModeIcon;
     private KeyButtonDrawable mRecentIcon;
     private KeyButtonDrawable mDockedIcon;
@@ -230,6 +235,11 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
         mButtonDispatchers.put(R.id.ime_switcher, new ButtonDispatcher(R.id.ime_switcher));
         mButtonDispatchers.put(R.id.accessibility_button,
                 new ButtonDispatcher(R.id.accessibility_button));
+		mButtonDispatchers.put(R.id.halo, new ButtonDispatcher(R.id.halo));
+		if (mNavBarThemeObserver == null) {
+            mNavBarThemeObserver = new NavBarThemeObserver(new Handler());
+        }
+        mNavBarThemeObserver.observe();
     }
 
     public BarTransitions getBarTransitions() {
@@ -257,6 +267,26 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
     public void setSwapKeys(boolean swapKeys) {
         if (swapKeys != mSwapKeys) {
             mSwapKeys = swapKeys;
+        }
+    }
+	
+	private NavBarThemeObserver mNavBarThemeObserver;
+    private class NavBarThemeObserver extends ContentObserver {
+        NavBarThemeObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.NAVBAR_THEME),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+           super.onChange(selfChange, uri);
+           updateHaloIcon();
         }
     }
 
@@ -302,6 +332,10 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
     public ButtonDispatcher getHomeButton() {
         return mButtonDispatchers.get(R.id.home);
     }
+	
+	public ButtonDispatcher getHaloButton() {
+        return mButtonDispatchers.get(R.id.halo);
+    }
 
     public ButtonDispatcher getImeSwitchButton() {
         return mButtonDispatchers.get(R.id.ime_switcher);
@@ -340,6 +374,8 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
                     R.drawable.ic_sysbar_back_ime, R.drawable.ic_sysbar_back_ime_dark);
             mBackAltLandIcon = mBackAltIcon;
 
+			mHaloIcon = getDrawable(ctx,
+                    R.drawable.ic_sysbar_halo, R.drawable.ic_sysbar_halo_dark);
             mHomeDefaultIcon = getDrawable(ctx,
                     R.drawable.ic_sysbar_home, R.drawable.ic_sysbar_home_dark);
             mRecentIcon = getDrawable(ctx,
@@ -636,6 +672,13 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
         mBarTransitions.reapplyDarkIntensity();
     }
 
+	private void updateHaloIcon() {
+		boolean showHalo = Settings.Secure.getIntForUser(
+		        mContext.getContentResolver(), NAVBAR_THEME, 0) == 1;
+		getHaloButton().setImageDrawable(mHaloIcon);
+        getHaloButton().setVisibility(showHalo ? View.VISIBLE : View.INVISIBLE);
+	}
+
     public boolean isVertical() {
         return mVertical;
     }
@@ -846,6 +889,7 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
         dumpButton(pw, "rcnt", getRecentsButton());
         dumpButton(pw, "menu", getMenuButton());
         dumpButton(pw, "a11y", getAccessibilityButton());
+		dumpButton(pw, "halo", getHaloButton());
 
         pw.println("    }");
     }
