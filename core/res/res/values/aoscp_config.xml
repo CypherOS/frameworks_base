@@ -244,4 +244,9 @@
 
     <!-- Whether device has physical tri state switch -->
     <bool name="config_hasAlertSlider">false</bool>
+	
+    <!-- Kernel Proc File Stats Path -->
+    <string-array name="config_kernelProcFileStats" translatable="false">
+        <item>/sys/devices/system/cpu/cpu%d/cpufreq/stats/time_in_state</item>
+    </string-array>
 </resources>
