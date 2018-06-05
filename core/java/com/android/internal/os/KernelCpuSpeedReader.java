@@ -27,6 +27,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 
+import com.android.internal.R;
+
 /**
  * Reads CPU time of a specific core spent at various frequencies and provides a delta from the
  * last call to {@link #readDelta}. Each line in the proc file has the format:
@@ -54,7 +56,7 @@ public class KernelCpuSpeedReader {
      * @param cpuNumber The cpu (cpu0, cpu1, etc) whose state to read.
      */
     public KernelCpuSpeedReader(int cpuNumber, int numSpeedSteps) {
-        mProcFileStats = String.format("/sys/devices/system/cpu/cpu%d/cpufreq/stats/time_in_state",
+        mProcFileStats = String.format(R.config.config_kernelProcFileStats,
                 cpuNumber);
         mProcFileOnline = String.format("/sys/devices/system/cpu/cpu%d/online",
                 cpuNumber);
