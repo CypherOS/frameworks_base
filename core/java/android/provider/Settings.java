@@ -4337,6 +4337,16 @@ public final class Settings {
         public static final String NETWORK_MONITOR = "network_monitor";
 
         /**
+         * Which searchbar theme is set via Luna Launcher
+         * 0 - System Default
+         * 1 - Theme (Light/Dark), based on Color Manager
+         * 2 - System Accent
+         * 3 - Wallpaper
+         * @hide
+         */
+        public static final String LUNA_SEARCHBAR_THEME = "luna_searchbar_theme";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4549,6 +4559,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(BATTERY_LIGHT_MEDIUM_COLOR);
             PRIVATE_SETTINGS.add(BATTERY_LIGHT_REALLY_FULL_COLOR);
             PRIVATE_SETTINGS.add(NETWORK_MONITOR);
+            PRIVATE_SETTINGS.add(LUNA_SEARCHBAR_THEME);
         }
 
         /**
