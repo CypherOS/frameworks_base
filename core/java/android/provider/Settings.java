@@ -7509,6 +7509,16 @@ public final class Settings {
          */
         public static final String DEVICE_THEME_ALPHA = "device_theme_alpha";
 
+		/**
+         * Which searchbar theme is set via Luna Launcher
+         * 0 - System Default
+         * 1 - Theme (Light/Dark), based on Color Manager
+         * 2 - System Accent
+         * 3 - Wallpaper
+         * @hide
+         */
+        public static final String LUNA_SEARCHBAR_THEME = "luna_searchbar_theme";
+
         /**
          * Enable face auto unlock on secure lock screens
          *
