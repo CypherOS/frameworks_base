@@ -54,31 +54,35 @@ public class RecoginitionObserverFactory extends RecoginitionObserver {
             mLastMatchTryTime = SystemClock.uptimeMillis();
 
             while (!isInterrupted() && mBuffer != null && mBufferIndex < mBuffer.length) {
-                int read;
-                synchronized (this) {
-                    read = mRecorder.read(mBuffer, mBufferIndex, Math.min(512, mBuffer.length - mBufferIndex));
+				if (mRecorder != null && mBufferIndex != null) {
+					int read;
+                    synchronized (this) {
+                        read = mRecorder.read(mBuffer, mBufferIndex, Math.min(512, mBuffer.length - mBufferIndex));
 
-                    if (read == AudioRecord.ERROR_BAD_VALUE) {
-                        Log.d(TAG, "BAD_VALUE while reading recorder");
-                        break;
-                    } else if (read == AudioRecord.ERROR_INVALID_OPERATION) {
-                        Log.d(TAG, "INVALID_OPERATION while reading recorder");
-                        break;
-                    } else if (read >= 0) {
-                        mBufferIndex += read;
+                        if (read == AudioRecord.ERROR_BAD_VALUE) {
+                            Log.d(TAG, "BAD_VALUE while reading recorder");
+                            break;
+                        } else if (read == AudioRecord.ERROR_INVALID_OPERATION) {
+                            Log.d(TAG, "INVALID_OPERATION while reading recorder");
+                            break;
+                        } else if (read >= 0) {
+                            mBufferIndex += read;
+                        }
                     }
-                }
 
-                if (read >= 0) {
-                    if (mBufferIndex > 10) {
-                        mManager.dispatchRecognitionAudio((float) computeAverageAmplitude(mBuffer, mBufferIndex - 10, 4));
+                    if (read >= 0) {
+                        if (mBufferIndex > 10) {
+                            mManager.dispatchRecognitionAudio((float) computeAverageAmplitude(mBuffer, mBufferIndex - 10, 4));
+                        }
+                        long currentTime = SystemClock.uptimeMillis();
+                        if (currentTime - mLastMatchTryTime >= MATCH_INTERVAL) {
+                            tryMatchCurrentBuffer();
+                            mLastMatchTryTime = SystemClock.uptimeMillis();
+                        }
                     }
-                    long currentTime = SystemClock.uptimeMillis();
-                    if (currentTime - mLastMatchTryTime >= MATCH_INTERVAL) {
-                        tryMatchCurrentBuffer();
-                        mLastMatchTryTime = SystemClock.uptimeMillis();
-                    }
-                }
+				} else {
+					stopRecording();
+				}
             }
 
             Log.d(TAG, "Broke out of recording loop, mResultGiven=" + mResultGiven);
