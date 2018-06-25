@@ -4295,7 +4295,7 @@ public final class Settings {
 
         /** @hide */
         public static final Validator STATUSBAR_CLOCK_STYLE_VALIDATOR =
-                new InclusiveIntegerRangeValidator(0, 1);
+                new InclusiveIntegerRangeValidator(0, 2);
 
         /**
          * Whether to show seconds next to clock in status bar
