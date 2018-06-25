@@ -22,7 +22,12 @@ import static com.android.systemui.statusbar.phone.StatusBar.reinflateSignalClus
 import android.annotation.Nullable;
 import android.app.Fragment;
 import android.app.StatusBarManager;
+import android.content.ContentResolver;
+import android.database.ContentObserver;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +66,9 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     private DarkIconManager mDarkIconManager;
     private SignalClusterView mSignalClusterView;
     private LinearLayout mCenterClockLayout;
+	
+	private ClockPositionObserver mClockPositionObserver;
+	private ContentResolver mContentResolver;
 
     private SignalCallback mSignalCallback = new SignalCallback() {
         @Override
@@ -72,9 +80,37 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		mContentResolver = getContext().getContentResolver();
         mKeyguardMonitor = Dependency.get(KeyguardMonitor.class);
         mNetworkController = Dependency.get(NetworkController.class);
         mStatusBarComponent = SysUiServiceProvider.getComponent(getContext(), StatusBar.class);
+		mClockPositionObserver = new ClockPositionObserver(new Handler());
+    }
+	
+	class ClockPositionObserver extends ContentObserver {
+
+        ClockPositionObserver(Handler handler) {
+            super(handler);
+        }
+		
+		void observe() {
+            mContentResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_CLOCK_STYLE),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        void unobserve() {
+            getContext().getContentResolver().unregisterContentObserver(this);
+        }
+		
+		@Override
+        public void onChange(boolean selfChange) {
+            update();
+        }
+
+        public void update() {
+            updateClockLayout();
+        }
     }
 
     @Override
@@ -99,6 +135,8 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         // Default to showing until we know otherwise.
         showSystemIconArea(false);
         initEmergencyCryptkeeperText();
+		mClockPositionObserver.observe();
+        mClockPositionObserver.update();
     }
 
     @Override
@@ -127,6 +165,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         if (mNetworkController.hasEmergencyCryptKeeperText()) {
             mNetworkController.removeCallback(mSignalCallback);
         }
+		mClockPositionObserver.unobserve();
     }
 
     public void initNotificationIconArea(NotificationIconAreaController
@@ -274,4 +313,12 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             parent.removeView(emergencyViewStub);
         }
     }
+
+	private void updateClockLayout() {
+		int clockPosition = Settings.System.getIntForUser(mContentResolver,
+                Settings.System.STATUSBAR_CLOCK_STYLE, 0, 
+				UserHandle.USER_CURRENT);
+		final boolean centerVisibility = clockPosition == 1;
+		mCenterClockLayout.setVisibility(centerVisibility ? View.VISIBLE : View.GONE);
+	}
 }
