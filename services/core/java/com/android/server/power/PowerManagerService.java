@@ -64,6 +64,7 @@ import android.service.power.SuspendBlockerProto;
 import android.service.power.WakeLockProto;
 import android.service.vr.IVrManager;
 import android.service.vr.IVrStateCallbacks;
+import android.text.TextUtils;
 import android.util.EventLog;
 import android.util.KeyValueListParser;
 import android.util.Log;
@@ -198,6 +199,9 @@ public final class PowerManagerService extends SystemService
 
     // System Property indicating that retail demo mode is currently enabled.
     private static final String SYSTEM_PROPERTY_RETAIL_DEMO_ENABLED = "sys.retaildemo.enabled";
+
+    // System Property indicating that offscreen gestures are currently enabled.
+    private static final String SYSTEM_PROPERTY_GESTURES = "sys.gestures.offscreen";
 
     // Possible reasons for shutting down for use in data/misc/reboot/last_shutdown_reason
     private static final String REASON_SHUTDOWN = "shutdown";
@@ -1070,7 +1074,7 @@ public final class PowerManagerService extends SystemService
         mTheaterModeEnabled = Settings.Global.getInt(mContext.getContentResolver(),
                 Settings.Global.THEATER_MODE_ON, 0) == 1;
         mAlwaysOnEnabled = mAmbientDisplayConfiguration.alwaysOnEnabled(UserHandle.USER_CURRENT);
-		
+
         if (mSupportsDoubleTapWakeConfig) {
             boolean doubleTapWakeEnabled = Settings.Secure.getIntForUser(resolver,
                     Settings.Secure.DOUBLE_TAP_TO_WAKE, DEFAULT_DOUBLE_TAP_TO_WAKE,
@@ -1079,13 +1083,16 @@ public final class PowerManagerService extends SystemService
                 mDoubleTapWakeEnabled = doubleTapWakeEnabled;
                 nativeSetFeature(POWER_FEATURE_DOUBLE_TAP_TO_WAKE, mDoubleTapWakeEnabled ? 1 : 0);
             }
-        }			
+        }
 
         boolean gesturesEnabled = Settings.System.getIntForUser(resolver,
                 Settings.System.GESTURES_ENABLED, 0, UserHandle.USER_CURRENT) != 0;
         if (gesturesEnabled != mGesturesEnabled) {
             mGesturesEnabled = gesturesEnabled;
             nativeSetFeature(POWER_FEATURE_GESTURES, mGesturesEnabled ? 1 : 0);
+            if (!TextUtils.isEmpty(SYSTEM_PROPERTY_GESTURES)) {
+                SystemProperties.set(SYSTEM_PROPERTY_GESTURES, mGesturesEnabled ? "1" : "0");
+            }
         }
 
         if (mSupportsDoubleTapConfig) {
