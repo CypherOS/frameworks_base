@@ -63,6 +63,11 @@ public class HeadsUpTile extends QSTileImpl<BooleanState> {
     }
 
     @Override
+    protected void handleLongClick() {
+        handleClick();
+    }
+
+    @Override
     public CharSequence getTileLabel() {
         return mContext.getString(R.string.quick_settings_heads_up_label);
     }
