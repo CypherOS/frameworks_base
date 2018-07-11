@@ -346,6 +346,12 @@ public class BatteryMeterView extends LinearLayout implements
                 }
                 mForceShowPercent = true;
                 break;
+            case BatteryMeterDrawableBase.BATTERY_STYLE_HIDDEN:
+                if (mBatteryIconView != null) {
+                    mBatteryIconView.setVisibility(View.GONE);
+                }
+                mForceShowPercent = false;
+                break;
             default:
                 mDrawable.setMeterStyle(style);
                 if (mBatteryIconView != null) {
