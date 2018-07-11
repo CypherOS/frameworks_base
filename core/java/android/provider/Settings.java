@@ -7763,6 +7763,7 @@ public final class Settings {
          * 1: Display the battery an icon in landscape mode
          * 2: Display the battery as a circle
          * 4: Display the battery as text
+		 * 5: Hide the battery style
          * default: 0
          * @hide
          */
