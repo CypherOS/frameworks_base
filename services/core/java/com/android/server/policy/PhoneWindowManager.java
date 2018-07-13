@@ -158,7 +158,6 @@ import android.hardware.hdmi.HdmiPlaybackClient.OneTouchPlayCallback;
 import android.hardware.input.InputManager;
 import android.hardware.input.InputManagerInternal;
 import android.hardware.power.V1_0.PowerHint;
-import android.hardware.vendor.ExtBiometricsFingerprint;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.AudioSystem;
@@ -234,6 +233,8 @@ import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.autofill.AutofillManagerInternal;
 import android.view.inputmethod.InputMethodManagerInternal;
+
+import co.aoscp.internal.biomectrics.IExtBiometricsFingerprint;
 
 import com.android.internal.R;
 import com.android.internal.annotations.GuardedBy;
@@ -914,8 +915,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     private static final int MSG_REQUEST_TRANSIENT_BARS_ARG_STATUS = 0;
     private static final int MSG_REQUEST_TRANSIENT_BARS_ARG_NAVIGATION = 1;
-
-    private static ExtBiometricsFingerprint sExtBiometricsFingerprint;
+	
+	private IExtBiometricsFingerprint mBioFingerprint;
 
     private boolean mHasAlertSlider = false;
 
@@ -1158,16 +1159,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.NAVIGATION_BAR_ENABLED, 1, UserHandle.USER_CURRENT) != 0;
         if (mSupportsFPNavigation) {
             try {
-                sExtBiometricsFingerprint = new ExtBiometricsFingerprint(mContext);
+				mBioFingerprint = IExtBiometricsFingerprint.Stub.asInterface(ServiceManager.getService("extbiomectrics"));
+				mBioFingerprint.sendCmdToHal(useNavBar
+                        ? mBioFingerprint.MMI_TYPE_NAV_DISABLE
+                        : mBioFingerprint.MMI_TYPE_NAV_ENABLE);
+                Log.d(TAG, "Sending fingerprint navigation command to HAL");
             } catch (Throwable t) {
-                // Ignore, IExtBiometricsFingerprint is not available.
+                Log.d(TAG, "Can't send command to hal, biometrics ext is not available");
             }
-            if (sExtBiometricsFingerprint == null) return;
-            Log.d(TAG, "Can't send command to hal, vendor biometrics is null");
-            sExtBiometricsFingerprint.sendCmdToHal(useNavBar
-                    ? ExtBiometricsFingerprint.MMI_TYPE_NAV_DISABLE
-                    : ExtBiometricsFingerprint.MMI_TYPE_NAV_ENABLE);
-            Log.d(TAG, "Sending FP Navigation Command to HAL");
         }
     }
 
