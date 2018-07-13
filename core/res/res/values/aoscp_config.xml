@@ -227,12 +227,6 @@
     <!-- Allow Opa (Pixel navbar) layout -->
     <bool name="config_allowOpaLayout">true</bool>
 
-    <!-- Descriptor: Path to the vendors biometrics hal, required to send commands.
-         TransactionId: The transaction id required to send to the biometrics hal.
-    -->
-    <string name="config_vendorBiometricsDescriptor" translatable="false"></string>
-    <integer name="config_vendorBiometricsTransactionId">0</integer>
-
     <!-- Doze Addon: should the TYPE_PROXIMITY sensor be used as a pulse signal. -->
     <bool name="config_dozePulseHandWave">true</bool>
 
