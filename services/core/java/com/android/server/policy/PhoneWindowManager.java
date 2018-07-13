@@ -158,7 +158,6 @@ import android.hardware.hdmi.HdmiPlaybackClient.OneTouchPlayCallback;
 import android.hardware.input.InputManager;
 import android.hardware.input.InputManagerInternal;
 import android.hardware.power.V1_0.PowerHint;
-import android.hardware.vendor.ExtBiometricsFingerprint;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.AudioSystem;
@@ -234,6 +233,8 @@ import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.autofill.AutofillManagerInternal;
 import android.view.inputmethod.InputMethodManagerInternal;
+
+import co.aoscp.huawei.biometrics.ExtBiometricsFingerprint;
 
 import com.android.internal.R;
 import com.android.internal.annotations.GuardedBy;
@@ -1159,15 +1160,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (mSupportsFPNavigation) {
             try {
                 sExtBiometricsFingerprint = new ExtBiometricsFingerprint(mContext);
+				sExtBiometricsFingerprint.sendCmdToHal(useNavBar
+                        ? ExtBiometricsFingerprint.MMI_TYPE_NAV_DISABLE
+                        : ExtBiometricsFingerprint.MMI_TYPE_NAV_ENABLE);
+                Log.d(TAG, "Sending FP Navigation Command to HAL");
             } catch (Throwable t) {
-                // Ignore, IExtBiometricsFingerprint is not available.
+                Log.d(TAG, "Can't send command to hal, vendor biometrics is not available");
             }
-            if (sExtBiometricsFingerprint == null) return;
-            Log.d(TAG, "Can't send command to hal, vendor biometrics is null");
-            sExtBiometricsFingerprint.sendCmdToHal(useNavBar
-                    ? ExtBiometricsFingerprint.MMI_TYPE_NAV_DISABLE
-                    : ExtBiometricsFingerprint.MMI_TYPE_NAV_ENABLE);
-            Log.d(TAG, "Sending FP Navigation Command to HAL");
         }
     }
 
