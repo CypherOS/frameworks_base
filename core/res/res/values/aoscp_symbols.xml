@@ -198,4 +198,7 @@
   
   <!-- Kernel Proc File Stats Path -->
   <java-symbol type="string" name="config_kernelProcFileStats" />
+
+  <!-- Whether device ignores the RSSNR signal implementation -->
+  <java-symbol type="bool" name="config_ignoreRssnrSignalLevel" />
 </resources>
