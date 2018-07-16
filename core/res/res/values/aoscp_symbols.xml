@@ -81,4 +81,6 @@
   <java-symbol type="string" name="global_restart_bootloader" />
   <java-symbol type="string" name="global_restart_bootloader_message" />
 
+  <!-- Whether device ignores the RSSNR signal implementation -->
+  <java-symbol type="bool" name="config_ignoreRssnrSignalLevel" />
 </resources>

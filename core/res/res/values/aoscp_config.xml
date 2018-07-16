@@ -126,4 +126,7 @@
         <item>recovery</item>
         <item>bootloader</item>
     </string-array>
+
+    <!-- Whether device ignores the RSSNR signal implementation -->
+    <bool name="config_ignoreRssnrSignalLevel">false</bool>
 </resources>
