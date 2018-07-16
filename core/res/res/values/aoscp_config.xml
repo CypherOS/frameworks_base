@@ -247,4 +247,7 @@
 
     <!-- Kernel Proc File Stats Path -->
     <string name="config_kernelProcFileStats" translatable="false">/sys/devices/system/cpu/cpu%d/cpufreq/stats/time_in_state</string>
+
+    <!-- Whether device ignores the RSSNR signal implementation -->
+    <bool name="config_ignoreRssnrSignalLevel">false</bool>
 </resources>
