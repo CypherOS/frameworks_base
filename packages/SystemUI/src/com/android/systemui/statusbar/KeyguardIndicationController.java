@@ -346,19 +346,7 @@ public class KeyguardIndicationController {
     private void updateChargingIndication() {
         if (!mDozing && !mIsAmbientPlayShowing && mPowerPluggedIn) {
             mChargingIndication.setVisibility(View.VISIBLE);
-            ValueAnimator anim = ValueAnimator.ofFloat(0f, 1f).setDuration(4000);
-            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnim) {
-                    mChargingIndication.setProgress((Float) valueAnim.getAnimatedValue());
-                }
-            });
-
-            if (mChargingIndication.getProgress() == 0f) {
-                anim.start();
-            } else {
-                mChargingIndication.setProgress(0f);
-            }
+			mChargingIndication.playAnimation();
         } else {
             mChargingIndication.setVisibility(View.GONE);
         }

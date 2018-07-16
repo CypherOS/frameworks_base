@@ -105,18 +105,6 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
     }
 
     private void doMusicNoteAnimation() {
-        ValueAnimator anim = ValueAnimator.ofFloat(0f, 1f).setDuration(4000);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnim) {
-                mIcon.setProgress((Float) valueAnim.getAnimatedValue());
-            }
-        });
-
-        if (mIcon.getProgress() == 0f) {
-            anim.start();
-        } else {
-            mIcon.setProgress(0f);
-        }
+		mIcon.playAnimation();
     }
 }
