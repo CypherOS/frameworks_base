@@ -868,6 +868,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     // Gesture key handler.
     private KeyHandler mKeyHandler;
+	
+	// Alert slider handler.
+    private AlertSliderHandler mAlertSliderHandler;
 
     // Fallback actions by key code.
     private final SparseArray<KeyCharacterMap.FallbackAction> mFallbackActions =
@@ -2517,6 +2520,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 getBoolean(com.android.internal.R.bool.config_enableKeyHandler);
         if (enableKeyHandler) {
             mKeyHandler = new KeyHandler(mContext);
+        }
+
+		boolean hasAlertSlider = context.getResources().
+                getBoolean(com.android.internal.R.bool.config_hasExtAlertSlider);
+		if (hasAlertSlider) {
+            mAlertSliderHandler = new AlertSliderHandler(mContext);
         }
 
         mWindowManagerInternal.registerAppTransitionListener(new AppTransitionListener() {
@@ -6923,6 +6932,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
 
+		if (mAlertSliderHandler != null) {
+			if (mAlertSliderHandler.handleKeyEvent(event)) {
+				return 0;
+			}
+        }
+
         // Apply custom policy for supported key codes.
         if (canApplyCustomPolicy(keyCode) && !isCustomSource) {
             if (mNavBarEnabled && !navBarKey /* TODO> && !isADBVirtualKeyOrAnyOtherKeyThatWeNeedToHandleAKAWhenMonkeyTestOrWHATEVER! */) {
@@ -8463,6 +8478,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
         if (mKeyHandler != null) {
             mKeyHandler.systemReady();
+        }
+
+		if (mAlertSliderHandler != null) {
+            mAlertSliderHandler.systemReady();
         }
         mAutofillManagerInternal = LocalServices.getService(AutofillManagerInternal.class);
     }

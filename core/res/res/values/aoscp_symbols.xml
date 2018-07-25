@@ -201,4 +201,10 @@
 
   <!-- Whether device ignores the RSSNR signal implementation -->
   <java-symbol type="bool" name="config_ignoreRssnrSignalLevel" />
+
+  <!-- Alert slider with keycode extension -->
+  <java-symbol type="bool" name="config_hasExtAlertSlider" />
+  <java-symbol type="integer" name="config_sliderNormalKeyCode" />
+  <java-symbol type="integer" name="config_sliderVibrationKeyCode" />
+  <java-symbol type="integer" name="config_sliderSilenceKeyCode" />
 </resources>

@@ -250,4 +250,10 @@
 
     <!-- Whether device ignores the RSSNR signal implementation -->
     <bool name="config_ignoreRssnrSignalLevel">false</bool>
+
+	<!-- Whether device has physical keycode base tri state switch -->
+	<bool name="config_hasExtAlertSlider">false</bool>
+	<integer name="config_sliderNormalKeyCode">0</integer>
+    <integer name="config_sliderVibrationKeyCode">0</integer>
+    <integer name="config_sliderSilenceKeyCode">0</integer>
 </resources>
