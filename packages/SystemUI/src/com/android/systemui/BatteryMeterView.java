@@ -222,9 +222,6 @@ public class BatteryMeterView extends LinearLayout implements
         final boolean showing = mBatteryPercentView != null;
         int style = Settings.System.getIntForUser(getContext().getContentResolver(),
                 SHOW_BATTERY_PERCENT, 0, mUser);
-        if (mForceShowPercent) {
-            style = 1; // Default view
-        }
         switch (style) {
             case 1:
                 if (!showing) {
@@ -247,10 +244,19 @@ public class BatteryMeterView extends LinearLayout implements
                 mDrawable.setShowPercent(true);
                 break;
             default:
-                if (showing) {
-                    removeView(mBatteryPercentView);
+			    if (mForceShowPercent && !showing) {
+					mBatteryPercentView = loadPercentView();
+                    if (mTextColor != 0) mBatteryPercentView.setTextColor(mTextColor);
+                    updatePercentText();
+                    addView(mBatteryPercentView,
+                            0,
+                            new ViewGroup.LayoutParams(
+                                    LayoutParams.WRAP_CONTENT,
+                                    LayoutParams.MATCH_PARENT));
+				} else {
+					removeView(mBatteryPercentView);
                     mBatteryPercentView = null;
-                }
+				}
                 mDrawable.setShowPercent(false);
                 break;
         }
