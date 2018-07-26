@@ -33,4 +33,7 @@
     <string-array name="config_forceEnabledComponents" translatable="false">
     </string-array>
 
+    <!-- Determines whether AOD is enabled/disabled by default -->
+    <bool name="config_dozeAlwaysOnDisplayDefault">false</bool>
+
 </resources>
