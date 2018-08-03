@@ -204,4 +204,11 @@
 
   <!-- Determines whether AOD is enabled/disabled by default -->
   <java-symbol type="bool" name="config_dozeAlwaysOnDisplayDefault" />
+  
+  <!-- Default clock position
+       0 = Right
+       1 = Center
+       2 = Left
+  -->
+  <java-symbol type="integer" name="config_defaultClockPosition" />
 </resources>
