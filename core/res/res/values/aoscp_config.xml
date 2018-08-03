@@ -256,4 +256,11 @@
          Disabled = false
     -->
     <bool name="config_dozeAlwaysOnDisplayDefault">false</bool>
+  
+    <!-- Default clock position
+         0 = Right
+         1 = Center
+         2 = Left
+    -->
+    <integer name="config_defaultClockPosition">0</integer>
 </resources>
