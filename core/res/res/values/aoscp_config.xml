@@ -256,4 +256,7 @@
          Disabled = false
     -->
     <bool name="config_dozeAlwaysOnDisplayDefault">false</bool>
+
+	<!-- Whether the device has a notch -->
+    <bool name="config_deviceHasNotchDisplay">false</bool>
 </resources>
