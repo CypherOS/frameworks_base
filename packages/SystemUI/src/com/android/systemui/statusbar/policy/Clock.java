@@ -95,7 +95,8 @@ public class Clock extends TextView implements DemoMode, CommandQueue.Callbacks,
 
     protected int mClockDateDisplay = CLOCK_DATE_DISPLAY_GONE;
     protected int mClockDateStyle = CLOCK_DATE_STYLE_REGULAR;
-    protected int mClockStyle = STYLE_CLOCK_RIGHT;
+    protected int mClockStyle;
+    protected int mClockStyleDefault;
     protected boolean mShowClock;
     private int mAmPmStyle;
     private final boolean mShowDark;
@@ -161,6 +162,9 @@ public class Clock extends TextView implements DemoMode, CommandQueue.Callbacks,
         } finally {
             a.recycle();
         }
+        mClockStyleDefault = context.getResources().getInteger(
+                com.android.internalR.integer.config_defaultClockPosition);
+        mClockStyle = mClockStyleDefault;
     }
 
     @Override
