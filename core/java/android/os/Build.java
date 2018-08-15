@@ -186,6 +186,30 @@ public class Build {
             CPU_ABI2 = "";
         }
     }
+	
+	/** Various aoscp version information. */
+    public static class LUNA {
+		
+		/**
+         * The Luna platform build number for aoscp.
+         */
+        public static final String BUILD_NUMBER = getString("ro.aoscp.build");
+		
+		/**
+         * The Luna platform maintenance patch for aoscp.
+         */
+        public static final String MAINTENANCE_PATCH = getString("ro.aoscp.maintenance_patch");
+		
+		/**
+         * The Luna platform version for aoscp.
+         */
+        public static final String VERSION = getString("ro.aoscp.version");
+		
+		/**
+         * The Luna platform version code for aoscp.
+         */
+        public static final String VERSION_CODE = getString("ro.aoscp.version_code");
+	}
 
     /** Various version strings. */
     public static class VERSION {
