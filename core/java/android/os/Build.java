@@ -209,6 +209,18 @@ public class Build {
          * The Luna platform version code for aoscp.
          */
         public static final String VERSION_CODE = getString("ro.aoscp.version_code");
+
+		/**
+         * The Luna platform build number override from an OEM vendor prop.
+		 * In return, this should retarget the default build number.
+         */
+        public static final String BUILD_NUMBER_OVERRIDE = getString("ro.vendor.override.build_display");
+		
+		/**
+         * The Luna platform security patch level override from an OEM vendor prop.
+		 * In return, this should retarget the default patch level.
+         */
+        public static final String SECURITY_PATCH_OVERRIDE = getString("ro.vendor.override.security_patch");
     }
 
     /** Various version strings. */
