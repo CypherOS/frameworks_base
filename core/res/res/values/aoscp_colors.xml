@@ -40,6 +40,7 @@
 
     <!-- SysUiTheme: Moved here from SystemUI -->
     <color name="zen_introduction">#ffffffff</color>
+    <color name="qs_icon_active_color">#ffffffff</color>
 
     <!-- SysUiTheme: NOTIFICATIONS moved here from SystemUI -->
     <color name="notification_legacy_background_color">#ff1a1a1a</color>
