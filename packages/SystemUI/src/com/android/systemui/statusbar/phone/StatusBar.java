@@ -59,6 +59,7 @@ import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -160,6 +161,7 @@ import com.android.systemui.charging.WirelessChargingAnimation;
 import com.android.systemui.classifier.FalsingLog;
 import com.android.systemui.classifier.FalsingManager;
 import com.android.systemui.colorextraction.SysuiColorExtractor;
+import com.android.systemui.colormanager.ColorManagerHelper;
 import com.android.systemui.doze.DozeHost;
 import com.android.systemui.doze.DozeLog;
 import com.android.systemui.doze.DozeReceiver;
@@ -714,6 +716,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         mContext.registerReceiver(mWallpaperChangedReceiver, wallpaperChangedFilter);
         mWallpaperChangedReceiver.onReceive(mContext, null);
 
+		mColorManagerObserver.observe();
+        mColorManagerObserver.update();
         mLockscreenUserManager.setUpWithPresenter(this, mEntryManager);
         mCommandQueue.disable(switches[0], switches[6], false /* animate */);
         setSystemUiVisibility(switches[1], switches[7], switches[8], 0xffffffff,
@@ -2068,14 +2072,11 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     public boolean isUsingDarkTheme() {
-        OverlayInfo themeInfo = null;
-        try {
-            themeInfo = mOverlayManager.getOverlayInfo("com.android.systemui.theme.dark",
-                    mLockscreenUserManager.getCurrentUserId());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        return themeInfo != null && themeInfo.isEnabled();
+        return ColorManagerHelper.isUsingDarkTheme(mOverlayManager, mLockscreenUserManager);
+    }
+
+	public boolean isUsingBlackTheme() {
+        return ColorManagerHelper.isUsingBlackTheme(mOverlayManager, mLockscreenUserManager);
     }
 
     @Nullable
@@ -2785,6 +2786,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             pw.println("    overlay manager not initialized!");
         } else {
             pw.println("    dark overlay on: " + isUsingDarkTheme());
+			pw.println("    black overlay on: " + isUsingBlackTheme());
         }
         final boolean lightWpTheme = mContext.getThemeResId() == R.style.Theme_SystemUI_Light;
         pw.println("    light wallpaper theme: " + lightWpTheme);
@@ -3848,27 +3850,62 @@ public class StatusBar extends SystemUI implements DemoMode,
         Trace.endSection();
     }
 
+	/**
+     * Switches system accent from a support list of accents.
+     */
+	public void updateAccent() {
+        int systemAccent = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.SYSTEM_ACCENT, 0, mLockscreenUserManager.getCurrentUserId());
+        try {
+            ColorManagerHelper.updateAccent(mOverlayManager, mLockscreenUserManager.getCurrentUserId(), systemAccent);
+        } catch (RemoteException e) {
+        }
+    }
+
     /**
      * Switches theme from light to dark and vice-versa.
      */
     protected void updateTheme() {
         final boolean inflated = mStackScroller != null;
 
-        // The system wallpaper defines if QS should be light or dark.
-        WallpaperColors systemColors = mColorExtractor
-                .getWallpaperColors(WallpaperManager.FLAG_SYSTEM);
-        final boolean useDarkTheme = systemColors != null
-                && (systemColors.getColorHints() & WallpaperColors.HINT_SUPPORTS_DARK_THEME) != 0;
-        if (isUsingDarkTheme() != useDarkTheme) {
-            mUiOffloadThread.submit(() -> {
-                try {
-                    mOverlayManager.setEnabled("com.android.systemui.theme.dark",
-                            useDarkTheme, mLockscreenUserManager.getCurrentUserId());
-                } catch (RemoteException e) {
-                    Log.w(TAG, "Can't change theme", e);
-                }
-            });
+		int systemTheme = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.SYSTEM_THEME, 0, mLockscreenUserManager.getCurrentUserId());
+		boolean useBlackTheme = false;
+        boolean useDarkTheme = false;
+		if (systemTheme == 0) {
+			// The system wallpaper defines if QS should be light or dark.
+			WallpaperColors systemColors = mColorExtractor
+			        .getWallpaperColors(WallpaperManager.FLAG_SYSTEM);
+			final boolean useDarkTheme = systemColors != null
+                    && (systemColors.getColorHints() & WallpaperColors.HINT_SUPPORTS_DARK_THEME) != 0;
+		} else {
+            useDarkTheme = systemTheme == 2;
+            useBlackTheme = systemTheme == 3;
         }
+
+        if (isUsingDarkTheme() != useDarkTheme) {
+			for (String darkTheme: ColorManagerHelper.DARK_THEME) {
+				mUiOffloadThread.submit(() -> {
+					try {
+						mOverlayManager.setEnabled(darkTheme, useDarkTheme, mLockscreenUserManager.getCurrentUserId());
+					} catch (RemoteException e) {
+						Log.w(TAG, "Can't change theme", e);
+					}
+				});
+			}
+		}
+
+		if (isUsingBlackTheme() != useBlackTheme) {
+			for (String blackTheme: ColorManagerHelper.BLACK_THEME) {
+				mUiOffloadThread.submit(() -> {
+					try {
+						mOverlayManager.setEnabled(blackTheme, useBlackTheme, mLockscreenUserManager.getCurrentUserId());
+					} catch (RemoteException e) {
+						Log.w(TAG, "Can't change theme", e);
+					}
+				});
+			}
+		}
 
         // Lock wallpaper defines the color of the majority of the views, hence we'll use it
         // to set our default theme.
@@ -5601,6 +5638,33 @@ public class StatusBar extends SystemUI implements DemoMode,
     @Override
     public Handler getHandler() {
         return mHandler;
+    }
+	
+	private ColorManagerObserver mColorManagerObserver = new ColorManagerObserver(mHandler);
+    private class ColorManagerObserver extends ContentObserver {
+        ColorManagerObserver(Handler handler) {
+            super(handler);
+        }
+		
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.SYSTEM_THEME),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.SYSTEM_ACCENT),
+                    false, this, UserHandle.USER_ALL);
+        }
+		
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            update();
+        }
+		
+        public void update() {
+            updateTheme();
+            updateAccent();
+        }
     }
 
     private final NotificationInfo.CheckSaveListener mCheckSaveListener =
