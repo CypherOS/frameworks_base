@@ -63,6 +63,8 @@ final class OverlayManagerServiceImpl {
     private final OverlayManagerSettings mSettings;
     private final String[] mDefaultOverlays;
     private final OverlayChangeListener mListener;
+    
+    static final String ACCENT_PACKAGE = "co.aoscp.accent";
 
     /**
      * Helper method to merge the overlay manager's (as read from overlays.xml)
@@ -512,9 +514,11 @@ final class OverlayManagerServiceImpl {
                     continue;
                 }
 
-                // Disable the overlay.
-                modified |= mSettings.setEnabled(disabledOverlayPackageName, userId, false);
-                modified |= updateState(targetPackageName, disabledOverlayPackageName, userId, 0);
+				if (disabledOverlayPackageName.startsWith(ACCENT_PACKAGE)) {
+					// Disable the overlay.
+					modified |= mSettings.setEnabled(disabledOverlayPackageName, userId, false);
+					modified |= updateState(targetPackageName, disabledOverlayPackageName, userId, 0);
+				}
             }
 
             // Enable the selected overlay.
