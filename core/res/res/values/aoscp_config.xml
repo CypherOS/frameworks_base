@@ -47,7 +47,10 @@
     <!-- Older rotation sensors are not setting event.timestamp correctly. Setting to
          true will use SystemClock.elapsedRealtimeNanos() to set timestamp. -->
     <bool name="config_useSystemClockforRotationSensor">false</bool>
-	
-	<!-- Whether notify fingerprint client of successful cancelled authentication -->
+
+    <!-- Whether notify fingerprint client of successful cancelled authentication -->
     <bool name="config_notifyClientOnFingerprintCancelSuccess">false</bool>
+
+    <!-- Whether Color Manager is available -->
+    <bool name="config_colorManagerAvailable">true</bool>
 </resources>
