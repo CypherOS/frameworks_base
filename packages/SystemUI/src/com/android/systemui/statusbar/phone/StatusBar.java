@@ -71,6 +71,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.UserInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -160,6 +161,7 @@ import com.android.systemui.charging.WirelessChargingAnimation;
 import com.android.systemui.classifier.FalsingLog;
 import com.android.systemui.classifier.FalsingManager;
 import com.android.systemui.colorextraction.SysuiColorExtractor;
+import com.android.systemui.colormanager.ColorManagerHelper;
 import com.android.systemui.doze.DozeHost;
 import com.android.systemui.doze.DozeLog;
 import com.android.systemui.doze.DozeReceiver;
@@ -494,6 +496,15 @@ public class StatusBar extends SystemUI implements DemoMode,
             notifyUiVisibilityChanged(requested);
         }
     };
+	
+	protected boolean mColorManagerAvailable;
+	protected final ContentObserver mColorManagerObserver = new ContentObserver(mHandler) {
+        @Override
+        public void onChange(boolean selfChange) {
+            updateTheme();
+			updateAccent();
+        }
+    };
 
     protected boolean mDozing;
     private boolean mDozingRequested;
@@ -679,6 +690,14 @@ public class StatusBar extends SystemUI implements DemoMode,
         mPowerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
 
         mDeviceProvisionedController = Dependency.get(DeviceProvisionedController.class);
+
+		mColorManagerAvailable = res.getBoolean(com.android.internal.R.bool.config_colorManagerAvailable);
+		mContext.getContentResolver().registerContentObserver(
+                Settings.Secure.getUriFor(Settings.Secure.SYSTEM_THEME),
+                true, mColorManagerObserver, UserHandle.USER_ALL);
+		mContext.getContentResolver().registerContentObserver(
+                Settings.Secure.getUriFor(Settings.Secure.SYSTEM_ACCENT),
+                true, mColorManagerObserver, UserHandle.USER_ALL);
 
         mBarService = IStatusBarService.Stub.asInterface(
                 ServiceManager.getService(Context.STATUS_BAR_SERVICE));
@@ -2068,14 +2087,19 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     public boolean isUsingDarkTheme() {
-        OverlayInfo themeInfo = null;
-        try {
-            themeInfo = mOverlayManager.getOverlayInfo("com.android.systemui.theme.dark",
-                    mLockscreenUserManager.getCurrentUserId());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        return themeInfo != null && themeInfo.isEnabled();
+		OverlayInfo themeInfo = null;
+		try {
+			themeInfo = mOverlayManager.getOverlayInfo("com.android.systemui.theme.dark",
+				    mLockscreenUserManager.getCurrentUserId());
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		return mColorManagerAvailable ? ColorManagerHelper.isUsingDarkTheme(mOverlayManager, mLockscreenUserManager) : 
+			    themeInfo != null && themeInfo.isEnabled();
+    }
+	
+	public boolean isUsingBlackTheme() {
+        return ColorManagerHelper.isUsingBlackTheme(mOverlayManager, mLockscreenUserManager);
     }
 
     @Nullable
@@ -2785,6 +2809,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             pw.println("    overlay manager not initialized!");
         } else {
             pw.println("    dark overlay on: " + isUsingDarkTheme());
+			pw.println("    black overlay on: " + isUsingBlackTheme());
         }
         final boolean lightWpTheme = mContext.getThemeResId() == R.style.Theme_SystemUI_Light;
         pw.println("    light wallpaper theme: " + lightWpTheme);
@@ -3849,26 +3874,89 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     /**
+     * Switches system accent from a support list of accents.
+     */
+    public void updateAccent() {
+        final int systemAccent = Settings.Secure.getInt(mContext.getContentResolver(),
+                Settings.Secure.SYSTEM_ACCENT, 0);
+        try {
+            ColorManagerHelper.updateAccent(mOverlayManager, mLockscreenUserManager, systemAccent);
+        } catch (RemoteException e) {
+        }
+    }
+
+    /**
      * Switches theme from light to dark and vice-versa.
      */
     protected void updateTheme() {
         final boolean inflated = mStackScroller != null;
+		// 0 = Auto, 1 = Light, 2 = Dark, 3 = Black
+        final int systemTheme = Settings.Secure.getInt(mContext.getContentResolver(),
+                Settings.Secure.SYSTEM_THEME, 0);
 
         // The system wallpaper defines if QS should be light or dark.
         WallpaperColors systemColors = mColorExtractor
                 .getWallpaperColors(WallpaperManager.FLAG_SYSTEM);
-        final boolean useDarkTheme = systemColors != null
-                && (systemColors.getColorHints() & WallpaperColors.HINT_SUPPORTS_DARK_THEME) != 0;
-        if (isUsingDarkTheme() != useDarkTheme) {
-            mUiOffloadThread.submit(() -> {
-                try {
-                    mOverlayManager.setEnabled("com.android.systemui.theme.dark",
-                            useDarkTheme, mLockscreenUserManager.getCurrentUserId());
-                } catch (RemoteException e) {
-                    Log.w(TAG, "Can't change theme", e);
-                }
-            });
+        final boolean useDarkTheme;
+		final boolean useBlackTheme;
+
+		switch (systemTheme) {
+			case 0:
+                useDarkTheme = systemColors != null && (systemColors.getColorHints() &
+                        WallpaperColors.HINT_SUPPORTS_DARK_THEME) != 0;
+				useBlackTheme = false;
+                break;
+            case 1:
+                useDarkTheme = false;
+				useBlackTheme = false;
+                break;
+            case 2:
+                useDarkTheme = true;
+				useBlackTheme = false;
+                break;
+            case 3:
+                useDarkTheme = false;
+				useBlackTheme = true;
+                break;
         }
+
+        if (isUsingDarkTheme() != useDarkTheme) {
+			if (mColorManagerAvailable) {
+				for (String darkTheme: ColorManagerHelper.DARK_THEME) {
+					mUiOffloadThread.submit(() -> {
+						try {
+							mOverlayManager.setEnabled(darkTheme,
+                                    useDarkTheme, mLockscreenUserManager.getCurrentUserId());
+						} catch (RemoteException e) {
+							Log.d(TAG, "Can't change theme");
+						}
+					});
+				}
+			} else {
+                mUiOffloadThread.submit(() -> {
+                    try {
+                        mOverlayManager.setEnabled("com.android.systemui.theme.dark",
+                                useDarkTheme, mLockscreenUserManager.getCurrentUserId());
+                    } catch (RemoteException e) {
+                        Log.w(TAG, "Can't change theme", e);
+                    }
+                });
+            }
+		}
+		
+		if (isUsingBlackTheme() != useBlackTheme) {
+			if (!mColorManagerAvailable) return;
+			for (String blackTheme: ColorManagerHelper.BLACK_THEME) {
+				mUiOffloadThread.submit(() -> {
+					try {
+						mOverlayManager.setEnabled(blackTheme,
+                                useBlackTheme, mLockscreenUserManager.getCurrentUserId());
+					} catch (RemoteException e) {
+						Log.d(TAG, "Can't change theme");
+					}
+				});
+			}
+		}
 
         // Lock wallpaper defines the color of the majority of the views, hence we'll use it
         // to set our default theme.
