@@ -22,4 +22,10 @@ public class SettingsCompat {
 
     public static final String SWIPE_UP_SETTING_NAME
             = Settings.Secure.SWIPE_UP_TO_SWITCH_APPS_ENABLED;
+  
+    public static final String COLOR_MANAGER_THEME
+            = Settings.Secure.SYSTEM_THEME;
+  
+    public static final String COLOR_MANAGER_ACCENT
+            = Settings.Secure.SYSTEM_ACCENT;
 }
