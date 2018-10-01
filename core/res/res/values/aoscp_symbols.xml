@@ -96,4 +96,7 @@
   <java-symbol type="string" name="alert_slider_state_path" />
   <java-symbol type="string" name="alert_slider_uevent_match_path" />
   <java-symbol type="bool" name="config_hasAlertSlider" />
+
+  <!-- Whether to cleanup fingerprints upon connection to the daemon and when user switches -->
+  <java-symbol type="bool" name="config_cleanupUnusedFingerprints" />
 </resources>
