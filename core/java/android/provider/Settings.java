@@ -4250,6 +4250,12 @@ public final class Settings {
          * @hide
          */
         public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
+		
+		/**
+         * Opens the QS panel with one drag on the left/right side
+         * @hide
+         */
+        public static final String QUICK_PULLDOWN = "quick_pulldown";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
