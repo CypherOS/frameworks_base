@@ -5241,6 +5241,7 @@ public final class Settings {
          * @return The setting's current value, or 'def' if it is not defined
          * or not a valid integer.
          */
+		@SystemApi
         public static int getInt(ContentResolver cr, String name, int def) {
             return getIntForUser(cr, name, def, cr.getUserId());
         }
@@ -5277,6 +5278,7 @@ public final class Settings {
          *
          * @return The setting's current value.
          */
+		@SystemApi
         public static int getInt(ContentResolver cr, String name)
                 throws SettingNotFoundException {
             return getIntForUser(cr, name, cr.getUserId());

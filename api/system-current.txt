@@ -4252,7 +4252,10 @@ package android.provider {
   }
 
   public static final class Settings.Secure extends android.provider.Settings.NameValueTable {
-    method public static boolean putString(android.content.ContentResolver, java.lang.String, java.lang.String, java.lang.String, boolean);
+    ctor public Settings.Secure();
+	method public static boolean putString(android.content.ContentResolver, java.lang.String, java.lang.String, java.lang.String, boolean);
+    method public static int getInt(android.content.ContentResolver, java.lang.String, int);
+    method public static int getInt(android.content.ContentResolver, java.lang.String) throws android.provider.Settings.SettingNotFoundException;
     method public static void resetToDefaults(android.content.ContentResolver, java.lang.String);
     field public static final java.lang.String AUTOFILL_FEATURE_FIELD_CLASSIFICATION = "autofill_field_classification";
     field public static final java.lang.String AUTOFILL_USER_DATA_MAX_CATEGORY_COUNT = "autofill_user_data_max_category_count";
@@ -4261,6 +4264,10 @@ package android.provider {
     field public static final java.lang.String AUTOFILL_USER_DATA_MAX_VALUE_LENGTH = "autofill_user_data_max_value_length";
     field public static final java.lang.String AUTOFILL_USER_DATA_MIN_VALUE_LENGTH = "autofill_user_data_min_value_length";
     field public static final java.lang.String INSTANT_APPS_ENABLED = "instant_apps_enabled";
+  }
+  
+  public static class Settings.SettingNotFoundException extends android.util.AndroidException {
+    ctor public Settings.SettingNotFoundException(java.lang.String);
   }
 
   public final class TimeZoneRulesDataContract {
