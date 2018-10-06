@@ -4235,6 +4235,19 @@ package android.provider {
   }
 
   public static final class Settings.Global extends android.provider.Settings.NameValueTable {
+  ctor public Settings.Global();
+    method public static float getFloat(android.content.ContentResolver, java.lang.String, float);
+    method public static float getFloat(android.content.ContentResolver, java.lang.String) throws android.provider.Settings.SettingNotFoundException;
+    method public static int getInt(android.content.ContentResolver, java.lang.String, int);
+    method public static int getInt(android.content.ContentResolver, java.lang.String) throws android.provider.Settings.SettingNotFoundException;
+    method public static long getLong(android.content.ContentResolver, java.lang.String, long);
+    method public static long getLong(android.content.ContentResolver, java.lang.String) throws android.provider.Settings.SettingNotFoundException;
+    method public static java.lang.String getString(android.content.ContentResolver, java.lang.String);
+    method public static android.net.Uri getUriFor(java.lang.String);
+    method public static boolean putFloat(android.content.ContentResolver, java.lang.String, float);
+    method public static boolean putInt(android.content.ContentResolver, java.lang.String, int);
+    method public static boolean putLong(android.content.ContentResolver, java.lang.String, long);
+    method public static boolean putString(android.content.ContentResolver, java.lang.String, java.lang.String);
     method public static boolean putString(android.content.ContentResolver, java.lang.String, java.lang.String, java.lang.String, boolean);
     method public static void resetToDefaults(android.content.ContentResolver, java.lang.String);
     field public static final java.lang.String AUTOFILL_COMPAT_MODE_ALLOWED_PACKAGES = "autofill_compat_mode_allowed_packages";
@@ -4252,6 +4265,19 @@ package android.provider {
   }
 
   public static final class Settings.Secure extends android.provider.Settings.NameValueTable {
+    ctor public Settings.Secure();
+	method public static float getFloat(android.content.ContentResolver, java.lang.String, float);
+    method public static float getFloat(android.content.ContentResolver, java.lang.String) throws android.provider.Settings.SettingNotFoundException;
+    method public static int getInt(android.content.ContentResolver, java.lang.String, int);
+    method public static int getInt(android.content.ContentResolver, java.lang.String) throws android.provider.Settings.SettingNotFoundException;
+    method public static long getLong(android.content.ContentResolver, java.lang.String, long);
+    method public static long getLong(android.content.ContentResolver, java.lang.String) throws android.provider.Settings.SettingNotFoundException;
+    method public static java.lang.String getString(android.content.ContentResolver, java.lang.String);
+    method public static android.net.Uri getUriFor(java.lang.String);
+	method public static boolean putFloat(android.content.ContentResolver, java.lang.String, float);
+    method public static boolean putInt(android.content.ContentResolver, java.lang.String, int);
+    method public static boolean putLong(android.content.ContentResolver, java.lang.String, long);
+    method public static boolean putString(android.content.ContentResolver, java.lang.String, java.lang.String);
     method public static boolean putString(android.content.ContentResolver, java.lang.String, java.lang.String, java.lang.String, boolean);
     method public static void resetToDefaults(android.content.ContentResolver, java.lang.String);
     field public static final java.lang.String AUTOFILL_FEATURE_FIELD_CLASSIFICATION = "autofill_field_classification";
@@ -4261,6 +4287,27 @@ package android.provider {
     field public static final java.lang.String AUTOFILL_USER_DATA_MAX_VALUE_LENGTH = "autofill_user_data_max_value_length";
     field public static final java.lang.String AUTOFILL_USER_DATA_MIN_VALUE_LENGTH = "autofill_user_data_min_value_length";
     field public static final java.lang.String INSTANT_APPS_ENABLED = "instant_apps_enabled";
+  }
+  
+  public static class Settings.SettingNotFoundException extends android.util.AndroidException {
+    ctor public Settings.SettingNotFoundException(java.lang.String);
+  }
+
+  public static final class Settings.System extends android.provider.Settings.NameValueTable {
+    ctor public Settings.System();
+	method public static float getFloat(android.content.ContentResolver, java.lang.String, float);
+    method public static float getFloat(android.content.ContentResolver, java.lang.String) throws android.provider.Settings.SettingNotFoundException;
+    method public static int getInt(android.content.ContentResolver, java.lang.String, int);
+    method public static int getInt(android.content.ContentResolver, java.lang.String) throws android.provider.Settings.SettingNotFoundException;
+    method public static long getLong(android.content.ContentResolver, java.lang.String, long);
+    method public static long getLong(android.content.ContentResolver, java.lang.String) throws android.provider.Settings.SettingNotFoundException;
+    method public static java.lang.String getString(android.content.ContentResolver, java.lang.String);
+    method public static android.net.Uri getUriFor(java.lang.String);
+	method public static boolean putConfiguration(android.content.ContentResolver, android.content.res.Configuration);
+    method public static boolean putFloat(android.content.ContentResolver, java.lang.String, float);
+    method public static boolean putInt(android.content.ContentResolver, java.lang.String, int);
+    method public static boolean putLong(android.content.ContentResolver, java.lang.String, long);
+    method public static boolean putString(android.content.ContentResolver, java.lang.String, java.lang.String);
   }
 
   public final class TimeZoneRulesDataContract {
