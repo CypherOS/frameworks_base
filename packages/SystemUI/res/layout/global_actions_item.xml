@@ -44,7 +44,7 @@
         android:layout_gravity="top|center_horizontal"
         android:paddingTop="10dp"
         android:gravity="center"
-        android:textSize="12sp"
+        android:textSize="8sp"
         android:textAppearance="?android:attr/textAppearanceSmall"
         />
 
