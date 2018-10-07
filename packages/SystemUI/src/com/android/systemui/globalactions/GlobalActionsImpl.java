@@ -36,6 +36,7 @@ import com.android.internal.colorextraction.drawable.GradientDrawable;
 import com.android.settingslib.Utils;
 import com.android.systemui.Dependency;
 import com.android.systemui.SysUiServiceProvider;
+import com.android.systemui.aoscp.globalactions.GlobalActionsDialogLight;
 import com.android.systemui.colorextraction.SysuiColorExtractor;
 import com.android.systemui.plugins.GlobalActions;
 import com.android.systemui.statusbar.CommandQueue;
@@ -50,6 +51,7 @@ public class GlobalActionsImpl implements GlobalActions, CommandQueue.Callbacks 
     private final KeyguardMonitor mKeyguardMonitor;
     private final DeviceProvisionedController mDeviceProvisionedController;
     private GlobalActionsDialog mGlobalActions;
+	private GlobalActionsDialogLight mGlobalActionsLight;
     private boolean mDisabled;
 
     public GlobalActionsImpl(Context context) {
@@ -67,10 +69,15 @@ public class GlobalActionsImpl implements GlobalActions, CommandQueue.Callbacks 
     @Override
     public void showGlobalActions(GlobalActionsManager manager) {
         if (mDisabled) return;
-        if (mGlobalActions == null) {
-            mGlobalActions = new GlobalActionsDialog(mContext, manager);
-        }
-        mGlobalActions.showDialog(mKeyguardMonitor.isShowing(),
+        //if (mGlobalActions == null) {
+            //mGlobalActions = new GlobalActionsDialog(mContext, manager);
+        //}
+        //mGlobalActions.showDialog(mKeyguardMonitor.isShowing(),
+                //mDeviceProvisionedController.isDeviceProvisioned());
+		if (mGlobalActionsLight == null) {
+			mGlobalActionsLight = new GlobalActionsDialogLight(mContext, manager);
+		}
+		mGlobalActionsLight.createDialog(mKeyguardMonitor.isShowing(),
                 mDeviceProvisionedController.isDeviceProvisioned());
     }
 
