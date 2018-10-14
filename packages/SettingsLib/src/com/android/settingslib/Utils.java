@@ -157,6 +157,27 @@ public class Utils {
                 .bake();
     }
 
+    /**
+     * Returns a small circular icon for a user.
+     */
+    public static Drawable getSmallUserIcon(Context context, UserManager um, UserInfo user) {
+        final int iconSmall = UserIconDrawable.getSmallSizeForList(context);
+        if (user.isManagedProfile()) {
+            Drawable drawable =  UserIconDrawable.getManagedUserDrawable(context);
+            drawable.setBounds(0, 0, iconSmall, iconSmall);
+            return drawable;
+        }
+        if (user.iconPath != null) {
+            Bitmap icon = um.getUserIcon(user.id);
+            if (icon != null) {
+                return new UserIconDrawable(iconSmall).setIcon(icon).bake();
+            }
+        }
+        return new UserIconDrawable(iconSmall).setIconDrawable(
+                UserIcons.getDefaultUserIcon(context.getResources(), user.id, /* light= */ false))
+                .bake();
+    }
+
     /** Formats a double from 0.0..100.0 with an option to round **/
     public static String formatPercentage(double percentage, boolean round) {
         final int localPercentage = round ? Math.round((float) percentage) : (int) percentage;
