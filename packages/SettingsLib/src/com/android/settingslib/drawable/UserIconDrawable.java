@@ -99,6 +99,16 @@ public class UserIconDrawable extends Drawable implements Drawable.Callback {
         return (int) context.getResources().getDimension(R.dimen.circle_avatar_size);
     }
 
+	/**
+     * Gets the preferred list-item size of this drawable.
+     * @param context
+     * @return size in pixels
+	 * Default size is small (24dp)
+     */
+    public static int getSmallSizeForList(Context context) {
+        return (int) context.getResources().getDimension(R.dimen.circle_avatar_size_small);
+    }
+
     public UserIconDrawable() {
         this(0);
     }
