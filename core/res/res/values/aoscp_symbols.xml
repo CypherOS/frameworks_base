@@ -83,4 +83,7 @@
 
   <!-- Whether device ignores the RSSNR signal implementation -->
   <java-symbol type="bool" name="config_ignoreRssnrSignalLevel" />
+
+  <!-- Determines which version of MultiUser to use -->
+  <java-symbol type="integer" name="config_multiUserVersion" />
 </resources>
