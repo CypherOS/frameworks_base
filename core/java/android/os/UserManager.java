@@ -1079,6 +1079,18 @@ public class UserManager {
     public static final int USER_OPERATION_ERROR_MAX_USERS = 6;
 
     /**
+     * MultiUser: Version 1.
+     * The default platform implementation of MultiUser.
+     */
+    public static final int MULTI_USER_V1 = 1;
+
+    /**
+     * MultiUser: Version 2.
+     * The 2nd/advanced iteration of MultiUser.
+     */
+    public static final int MULTI_USER_V2 = 2;
+
+    /**
      * Result returned from various user operations.
      *
      * @hide
@@ -1142,6 +1154,13 @@ public class UserManager {
         return getMaxSupportedUsers() > 1
                 && SystemProperties.getBoolean("fw.show_multiuserui",
                 Resources.getSystem().getBoolean(R.bool.config_enableMultiUserUI));
+    }
+
+    /**
+     * @return which version of multi user will be used.
+     */
+    public static int getMultiUserVersion() {
+        return Resources.getSystem().getBoolean(R.bool.config_multiUserVersion);
     }
 
     /**
