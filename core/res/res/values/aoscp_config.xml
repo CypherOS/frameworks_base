@@ -129,4 +129,9 @@
 
     <!-- Whether device ignores the RSSNR signal implementation -->
     <bool name="config_ignoreRssnrSignalLevel">false</bool>
+
+    <!-- The version of MultiUser to use at runtime.
+         1: The default platform interface
+         2: The advanced minimal interface -->
+    <integer name="config_multiUserVersion">1</integer>
 </resources>
