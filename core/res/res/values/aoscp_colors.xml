@@ -27,6 +27,7 @@
     <color name="theme_color7">@color/background_floating_material_light</color>
     <color name="theme_color8"></color>
     <color name="theme_color9">#E6EEEEEE</color>
+    <color name="theme_color900">#ff212121</color>
     <color name="theme_text1">@color/primary_text_material_light</color>
     <color name="theme_text2">@color/secondary_text_material_light</color>
     <color name="theme_text3">@color/secondary_text_material_light</color>
