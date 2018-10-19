@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.os.UserManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -55,11 +56,16 @@ public class KeyguardUserSwitcher {
     private ObjectAnimator mBgAnimator;
     private UserSwitcherController mUserSwitcherController;
     private boolean mAnimating;
+	
+	private int mMultiUserVersion;
 
     public KeyguardUserSwitcher(Context context, ViewStub userSwitcher,
             KeyguardStatusBarView statusBarView, NotificationPanelView panelView) {
+		mMultiUserVersion = UserManager.getMultiUserVersion();
         boolean keyguardUserSwitcherEnabled =
-                context.getResources().getBoolean(R.bool.config_keyguardUserSwitcher) || ALWAYS_ON;
+                context.getResources().getBoolean(R.bool.config_keyguardUserSwitcher) 
+				|| mMultiUserVersion == UserManager.MULTI_USER_V2 
+				|| ALWAYS_ON;
         UserSwitcherController userSwitcherController = Dependency.get(UserSwitcherController.class);
         if (userSwitcherController != null && keyguardUserSwitcherEnabled) {
             mUserSwitcherContainer = (Container) userSwitcher.inflate();
