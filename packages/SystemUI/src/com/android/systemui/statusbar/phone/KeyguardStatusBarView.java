@@ -25,6 +25,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.UserManager;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -89,6 +90,8 @@ public class KeyguardStatusBarView extends RelativeLayout
     private View mCutoutSpace;
     private ViewGroup mStatusIconArea;
     private int mLayoutState = LAYOUT_NONE;
+	
+	private int mMultiUserVersion;
 
     /**
      * Draw this many pixels into the left/right side of the cutout to optimally use the space
@@ -109,6 +112,8 @@ public class KeyguardStatusBarView extends RelativeLayout
         mBatteryView = mSystemIconsContainer.findViewById(R.id.battery);
         mCutoutSpace = findViewById(R.id.cutout_space_view);
         mStatusIconArea = findViewById(R.id.status_icon_area);
+		
+		mMultiUserVersion = UserManager.getMultiUserVersion();
 
         loadDimens();
         updateUserSwitcher();
@@ -178,13 +183,18 @@ public class KeyguardStatusBarView extends RelativeLayout
         }
         if (mKeyguardUserSwitcher == null) {
             // If we have no keyguard switcher, the screen width is under 600dp. In this case,
-            // we don't show the multi-user avatar unless there is more than 1 user on the device.
-            if (mUserSwitcherController != null
-                    && mUserSwitcherController.getSwitchableUserCount() > 1) {
-                mMultiUserSwitch.setVisibility(View.VISIBLE);
-            } else {
-                mMultiUserSwitch.setVisibility(View.GONE);
-            }
+            // we don't show the multi-user avatar unless there is more than 1 user on the device
+			// when using Multi-user v1.
+			if (mMultiUserVersion != UserManager.MULTI_USER_V2) {
+				if (mUserSwitcherController != null
+				        && mUserSwitcherController.getSwitchableUserCount() > 1) {
+					mMultiUserSwitch.setVisibility(View.VISIBLE);
+				} else {
+					mMultiUserSwitch.setVisibility(View.GONE);
+				}
+			} else {
+				mMultiUserSwitch.setVisibility(View.VISIBLE);
+			}
         }
         mBatteryView.setForceShowPercent(mBatteryCharging);
     }
