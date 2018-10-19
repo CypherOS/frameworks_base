@@ -25,6 +25,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.UserManager;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -90,6 +91,8 @@ public class KeyguardStatusBarView extends RelativeLayout
     private ViewGroup mStatusIconArea;
     private int mLayoutState = LAYOUT_NONE;
 
+    private int mMultiUserVersion;
+
     /**
      * Draw this many pixels into the left/right side of the cutout to optimally use the space
      */
@@ -110,6 +113,8 @@ public class KeyguardStatusBarView extends RelativeLayout
         mCutoutSpace = findViewById(R.id.cutout_space_view);
         mStatusIconArea = findViewById(R.id.status_icon_area);
 
+        mMultiUserVersion = UserManager.getMultiUserVersion();
+
         loadDimens();
         updateUserSwitcher();
         mBatteryController = Dependency.get(BatteryController.class);
@@ -119,8 +124,10 @@ public class KeyguardStatusBarView extends RelativeLayout
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
+        final boolean isMultiUserV2 = mMultiUserVersion == UserManager.MULTI_USER_V2;
         MarginLayoutParams lp = (MarginLayoutParams) mMultiUserAvatar.getLayoutParams();
-        lp.width = lp.height = getResources().getDimensionPixelSize(
+        lp.width = lp.height = getResources().getDimensionPixelSize(isMultiUserV2 ?
+                com.android.settingslib.R.dimen.circle_avatar_size_small :
                 R.dimen.multi_user_avatar_keyguard_size);
         mMultiUserAvatar.setLayoutParams(lp);
 
@@ -172,18 +179,24 @@ public class KeyguardStatusBarView extends RelativeLayout
             if (mMultiUserSwitch.getParent() != null) {
                 getOverlay().remove(mMultiUserSwitch);
             }
-            mStatusIconArea.addView(mMultiUserSwitch, 0);
+            // MultiUserSwitch should always be placed in the last spot
+            mStatusIconArea.addView(mMultiUserSwitch, -1);
         } else if (mMultiUserSwitch.getParent() == mStatusIconArea && mKeyguardUserSwitcherShowing) {
             mStatusIconArea.removeView(mMultiUserSwitch);
         }
         if (mKeyguardUserSwitcher == null) {
             // If we have no keyguard switcher, the screen width is under 600dp. In this case,
-            // we don't show the multi-user avatar unless there is more than 1 user on the device.
-            if (mUserSwitcherController != null
-                    && mUserSwitcherController.getSwitchableUserCount() > 1) {
-                mMultiUserSwitch.setVisibility(View.VISIBLE);
+            // we don't show the multi-user avatar unless there is more than 1 user on the device
+            // when using Multi-user v1.
+            if (mMultiUserVersion != UserManager.MULTI_USER_V2) {
+                if (mUserSwitcherController != null
+                        && mUserSwitcherController.getSwitchableUserCount() > 1) {
+                    mMultiUserSwitch.setVisibility(View.VISIBLE);
+                } else {
+                    mMultiUserSwitch.setVisibility(View.GONE);
+                }
             } else {
-                mMultiUserSwitch.setVisibility(View.GONE);
+                mMultiUserSwitch.setVisibility(View.VISIBLE);
             }
         }
         mBatteryView.setForceShowPercent(mBatteryCharging);

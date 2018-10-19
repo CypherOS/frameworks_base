@@ -99,6 +99,8 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
     private final CellSignalState mInfo = new CellSignalState();
     private OnClickListener mExpandClickListener;
 
+    private int mMultiUserVersion;
+
     public QSFooterImpl(Context context, AttributeSet attrs) {
         super(context, attrs);
         mColorForeground = Utils.getColorAttr(context, android.R.attr.colorForeground);
@@ -131,6 +133,8 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
 
         mDragHandle = findViewById(R.id.qs_drag_handle_view);
         mActionsContainer = findViewById(R.id.qs_footer_actions_container);
+
+        mMultiUserVersion = UserManager.getMultiUserVersion();
 
         // RenderThread is doing more harm than good when touching the header (to expand quick
         // settings), so disable it for this view
@@ -299,7 +303,8 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
         for (UserInfo user : userManager.getUsers(true)) {
             if (user.supportsSwitchToByUser()) {
                 ++switchableUserCount;
-                if (switchableUserCount > 1) {
+                if (switchableUserCount > 1
+                    || mMultiUserVersion == UserManager.MULTI_USER_V2) {
                     return true;
                 }
             }
