@@ -20,13 +20,20 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.os.VibrationEffect;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.View;
@@ -138,6 +145,11 @@ public abstract class PanelView extends FrameLayout {
     private boolean mGestureWaitForTouchSlop;
     private boolean mIgnoreXTouchSlop;
     private boolean mExpandLatencyTracking;
+	private boolean mDoubleTapToSleepEnabled;
+	
+	private GestureDetector mDoubleTapGesture;
+	private Handler mHandler = new Handler();
+    private SettingsObserver mSettingsObserver;
 
     protected void onExpandingFinished() {
         mBar.onExpandingFinished();
@@ -211,6 +223,18 @@ public abstract class PanelView extends FrameLayout {
         mVibratorHelper = Dependency.get(VibratorHelper.class);
         mVibrateOnOpening = mContext.getResources().getBoolean(
                 R.bool.config_vibrateOnIconAnimation);
+				
+		mSettingsObserver = new SettingsObserver(mHandler);
+        mDoubleTapGesture = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+                if (pm != null) {
+                    pm.goToSleep(e.getEventTime());
+                }
+                return true;
+            }
+        });
     }
 
     protected void loadDimens() {
@@ -396,6 +420,11 @@ public abstract class PanelView extends FrameLayout {
                 trackMovement(event);
                 endMotionEvent(event, x, y, false /* forceCancel */);
                 break;
+        }
+		
+		if (mDoubleTapToSleepEnabled
+		    && mStatusBar.getBarState() == StatusBarState.KEYGUARD) {
+            mDoubleTapGesture.onTouchEvent(event);
         }
         return !mGestureWaitForTouchSlop || mTracking;
     }
@@ -817,6 +846,13 @@ public abstract class PanelView extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mViewName = getResources().getResourceName(getId());
+		mSettingsObserver.observe();
+    }
+	
+	@Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mSettingsObserver.unobserve();
     }
 
     public String getName() {
@@ -1267,5 +1303,34 @@ public abstract class PanelView extends FrameLayout {
         mFixedDuration = animationDuration;
         collapse(false /* delayed */, 1.0f /* speedUpFactor */);
         mFixedDuration = NO_FIXED_DURATION;
+    }
+	
+	class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+         void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DOUBLE_TAP_SLEEP_GESTURE), false, this);
+            update();
+        }
+         void unobserve() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.unregisterContentObserver(this);
+        }
+         @Override
+        public void onChange(boolean selfChange) {
+            update();
+        }
+         @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            update();
+        }
+         public void update() {
+            ContentResolver resolver = mContext.getContentResolver();
+            mDoubleTapToSleepEnabled = Settings.System.getInt(
+                    resolver, Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 0) != 0;
+        }
     }
 }
