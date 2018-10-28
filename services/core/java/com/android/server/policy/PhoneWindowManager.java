@@ -1127,9 +1127,21 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             } else {
                 updateSettings();
                 updateRotation(false);
+				updateFingerprintNavigation();
             }
         }
     }
+
+	private void updateFingerprintNavigation() {
+		final boolean navBarEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.NAVIGATION_BAR_ENABLED, defaultToNavigationBar ? 1 : 0,
+                UserHandle.USER_CURRENT) == 1;
+		final boolean isFingerprintNavigation = mContext.getResources().getBoolean(
+		        com.android.internal.R.bool.config_supportsFingerprintNavigation);
+		if (isFingerprintNavigation) {
+			SystemProperties.set("sys.fpnav.enabled", navBarEnabled ? "0" : "1");
+		}
+	}
 
     class MyWakeGestureListener extends WakeGestureListener {
         MyWakeGestureListener(Context context, Handler handler) {
