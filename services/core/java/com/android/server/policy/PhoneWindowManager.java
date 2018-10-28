@@ -1127,7 +1127,22 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             } else {
                 updateSettings();
                 updateRotation(false);
+                updateFingerprintNavigation();
             }
+        }
+    }
+
+    private void updateFingerprintNavigation() {
+		final boolean defaultToNavigationBar = mContext.getResources().getBoolean(
+		        com.android.internal.R.bool.config_defaultToNavigationBar);
+        final boolean navBarEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.NAVIGATION_BAR_ENABLED, defaultToNavigationBar ? 1 : 0,
+                UserHandle.USER_CURRENT) == 1;
+        final boolean isFingerprintNavigation = mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_supportsFingerprintNavigation);
+        final boolean canUse = mScreenOnFully && !isKeyguardShowingAndNotOccluded() && !navBarEnabled;
+        if (isFingerprintNavigation) {
+            SystemProperties.set("sys.fpnav.enabled", canUse ? "1" : "0");
         }
     }
 
@@ -2863,6 +2878,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (mImmersiveModeConfirmation != null) {
                 mImmersiveModeConfirmation.loadSetting(mCurrentUserId);
             }
+            updateFingerprintNavigation();
         }
         synchronized (mWindowManagerFuncs.getWindowManagerLock()) {
             PolicyControl.reloadFromSetting(mContext);
