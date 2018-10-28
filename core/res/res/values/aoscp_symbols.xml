@@ -99,4 +99,7 @@
 
   <!-- Whether to cleanup fingerprints upon connection to the daemon and when user switches -->
   <java-symbol type="bool" name="config_cleanupUnusedFingerprints" />
+
+  <!-- Determines whether the device supports fingerprint navigation -->
+  <java-symbol type="bool" name="config_supportsFingerprintNavigation" />
 </resources>
