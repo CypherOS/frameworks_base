@@ -148,4 +148,7 @@
 
     <!-- Whether to cleanup fingerprints upon connection to the daemon and when user switches -->
     <bool name="config_cleanupUnusedFingerprints">true</bool>
+
+	<!-- Determines whether the device supports fingerprint navigation -->
+    <bool name="config_supportsFingerprintNavigation">false</bool>
 </resources>
