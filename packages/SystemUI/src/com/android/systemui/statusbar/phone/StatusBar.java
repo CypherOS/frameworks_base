@@ -131,6 +131,8 @@ import android.widget.DateTimeView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import aoscp.system.UiInterpreter;
+
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.colorextraction.ColorExtractor;
 import com.android.internal.logging.MetricsLogger;
@@ -162,7 +164,6 @@ import com.android.systemui.charging.WirelessChargingAnimation;
 import com.android.systemui.classifier.FalsingLog;
 import com.android.systemui.classifier.FalsingManager;
 import com.android.systemui.colorextraction.SysuiColorExtractor;
-import com.android.systemui.colormanager.ColorManagerHelper;
 import com.android.systemui.doze.DozeHost;
 import com.android.systemui.doze.DozeLog;
 import com.android.systemui.doze.DozeReceiver;
@@ -507,6 +508,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     };
 
     protected boolean mColorManagerAvailable;
+	protected UiInterpreter mUiInterpreter;
     protected final ContentObserver mColorManagerObserver = new ContentObserver(mHandler) {
         @Override
         public void onChange(boolean selfChange) {
@@ -701,6 +703,9 @@ public class StatusBar extends SystemUI implements DemoMode,
         mDeviceProvisionedController = Dependency.get(DeviceProvisionedController.class);
 
         mColorManagerAvailable = res.getBoolean(com.android.internal.R.bool.config_colorManagerAvailable);
+		if (mColorManagerAvailable) {
+			mUiInterpreter = new UiInterpreter(mContext).getColorManager();
+		}
         mContext.getContentResolver().registerContentObserver(
                 Settings.Secure.getUriFor(Settings.Secure.SYSTEM_THEME),
                 true, mColorManagerObserver, UserHandle.USER_ALL);
@@ -2112,12 +2117,12 @@ public class StatusBar extends SystemUI implements DemoMode,
         } catch (RemoteException e) {
                 e.printStackTrace();
         }
-        return mColorManagerAvailable ? ColorManagerHelper.isUsingDarkTheme(mOverlayManager, mLockscreenUserManager) : 
+        return mColorManagerAvailable ? mUiInterpreter.isUsingDarkTheme(mOverlayManager) : 
                 themeInfo != null && themeInfo.isEnabled();
     }
 
     public boolean isUsingBlackTheme() {
-        return ColorManagerHelper.isUsingBlackTheme(mOverlayManager, mLockscreenUserManager);
+        return mUiInterpreter.isUsingBlackTheme(mOverlayManager);
     }
 
     @Nullable
@@ -3901,7 +3906,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         final int systemAccent = Settings.Secure.getInt(mContext.getContentResolver(),
                 Settings.Secure.SYSTEM_ACCENT, 0);
         try {
-            ColorManagerHelper.updateAccent(mOverlayManager, mLockscreenUserManager, systemAccent);
+            mUiInterpreter.updateAccent(mOverlayManager, systemAccent);
         } catch (RemoteException e) {
         }
     }
@@ -3947,7 +3952,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         if (isUsingDarkTheme() != useDarkTheme) {
             if (mColorManagerAvailable) {
-                for (String darkTheme: ColorManagerHelper.DARK_THEME) {
+                for (String darkTheme: mUiInterpreter.DARK_THEME) {
                     mUiOffloadThread.submit(() -> {
                         try {
                             mOverlayManager.setEnabled(darkTheme,
@@ -3971,7 +3976,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         if (isUsingBlackTheme() != useBlackTheme) {
             if (!mColorManagerAvailable) return;
-            for (String blackTheme: ColorManagerHelper.BLACK_THEME) {
+            for (String blackTheme: mUiInterpreter.BLACK_THEME) {
                 mUiOffloadThread.submit(() -> {
                     try {
                         mOverlayManager.setEnabled(blackTheme,
