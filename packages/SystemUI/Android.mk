@@ -27,10 +27,12 @@ LOCAL_USE_AAPT2 := true
 
 LOCAL_MODULE_TAGS := optional
 
+AOSCP_FRAMEWORK_PATH := ../../system
 RELATIVE_FINGERPRINT_PATH := ../../core/java/android/hardware/fingerprint
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
+	$(call all-java-files-under, $(AOSCP_FRAMEWORK_PATH)) \
     $(call all-Iaidl-files-under, src) \
     $(call all-Iaidl-files-under, $(RELATIVE_FINGERPRINT_PATH))
 
