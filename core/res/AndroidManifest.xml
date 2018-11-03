@@ -606,6 +606,9 @@
 	<!-- One-Hand Mode -->
     <protected-broadcast android:name="com.android.server.wm.onehand.intent.action.ONEHAND_TRIGGER_EVENT" />
 
+    <!-- Ambient Indication -->
+    <protected-broadcast android:name="com.android.internal.util.ambient.play.AMBIENT_PLAY_SONG_MATCH" />
+
     <!-- ====================================================================== -->
     <!--                          RUNTIME PERMISSIONS                           -->
     <!-- ====================================================================== -->
