@@ -26,11 +26,12 @@ import android.text.TextUtils;
 
 public class AmbientDisplayConfiguration {
 
-    private boolean mEnabled;
     private final Context mContext;
+    private final boolean mAlwaysOnByDefault;
 
     public AmbientDisplayConfiguration(Context context) {
         mContext = context;
+        mAlwaysOnByDefault = mContext.getResources().getBoolean(R.bool.config_dozeAlwaysOnEnabled);
     }
 
     public boolean enabled(int user) {
@@ -102,9 +103,8 @@ public class AmbientDisplayConfiguration {
     }
 
     public boolean alwaysOnEnabled(int user) {
-        mEnabled = mContext.getResources().getBoolean(R.bool.config_dozeAlwaysOnDisplayDefault);
-        return boolSettingDefaultConfig(Settings.Secure.DOZE_ALWAYS_ON, user) && alwaysOnAvailable()
-                && !accessibilityInversionEnabled(user);
+        return boolSetting(Settings.Secure.DOZE_ALWAYS_ON, user, mAlwaysOnByDefault ? 1 : 0)
+                && alwaysOnAvailable() && !accessibilityInversionEnabled(user);
     }
 
     public boolean alwaysOnAvailable() {
@@ -143,10 +143,6 @@ public class AmbientDisplayConfiguration {
 
     private boolean boolSettingDefaultOff(String name, int user) {
         return boolSetting(name, user, 0);
-    }
-
-    private boolean boolSettingDefaultConfig(String name, int user) {
-        return boolSetting(name, user, mEnabled ? 1 : 0);
     }
 
     private boolean boolSetting(String name, int user, int def) {
