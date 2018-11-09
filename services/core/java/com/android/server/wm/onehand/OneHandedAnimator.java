@@ -558,7 +558,7 @@ class OneHandedAnimator {
                 if (userId == UserHandle.USER_ALL) return;
 
                 if (isUserSetupCompleted(userId)
-                        && OneHandedSettings.isFeatureEnabledSettingNotFound(mContext, userId)) {
+                        && !OneHandedSettings.isQuickStep(mContext)) {
                     OneHandedSettings.setFeatureEnabled(mContext, true, userId);
                 }
             }

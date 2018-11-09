@@ -5,9 +5,10 @@ import android.database.ContentObserver;
 import android.os.UserHandle;
 import android.provider.Settings;
 
+import static android.provider.Settings.System.ONEHANDED_MODE;
+
 class OneHandedSettings {
 
-    private static final String SETTINGS_FEATURE_ENABLED = "com.android.onehand.onehanded_mode";
     private static final String SETTINGS_YADJ = "com.android.onehand.yadj";
     private static final String SETTINGS_XADJ = "com.android.onehand.xadj";
     private static final String SETTINGS_SCALE = "com.android.onehand.scale";
@@ -36,7 +37,8 @@ class OneHandedSettings {
     }
 
     static void setFeatureEnabled(Context ctx, boolean enabled, int userId) {
-        Settings.System.putIntForUser(ctx.getContentResolver(), SETTINGS_FEATURE_ENABLED, enabled ? 1 : 0, userId);
+		final boolean permitted = !isQuickStep(ctx) && enabled;
+        Settings.System.putIntForUser(ctx.getContentResolver(), ONEHANDED_MODE, permitted ? 1 : 0, userId);
     }
 
     static int getSavedGravity(Context ctx, int defaultGravity) {
@@ -56,22 +58,20 @@ class OneHandedSettings {
     }
 
     static boolean isFeatureEnabled(Context ctx) {
-        return Settings.System.getIntForUser(ctx.getContentResolver(), SETTINGS_FEATURE_ENABLED, 0, OneHandedAnimator.getCurrentUser()) != 0;
+		final boolean permitted = !isQuickStep(ctx);
+        return Settings.System.getIntForUser(ctx.getContentResolver(), ONEHANDED_MODE, permitted ? 1 : 0, OneHandedAnimator.getCurrentUser()) != 0;
     }
 
-    static boolean isFeatureEnabledSettingNotFound(Context ctx, int userId) {
-        try {
-            Settings.System.getIntForUser(ctx.getContentResolver(), SETTINGS_FEATURE_ENABLED, userId);
-            return false;
-        } catch (Settings.SettingNotFoundException e) {
-            return true;
-        }
+	static boolean isQuickStep(Context ctx) {
+		final int defaultValue = ctx.getResources()
+                .getBoolean(com.android.internal.R.bool.config_swipe_up_gesture_default) ? 1 : 0;
+        return Settings.Secure.getInt(ctx.getContentResolver(), Settings.Secure.SWIPE_UP_TO_SWITCH_APPS_ENABLED, defaultValue) != 0;
     }
 
     static void registerFeatureEnableDisableObserver(Context ctx,
                             ContentObserver observer) {
         ctx.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(SETTINGS_FEATURE_ENABLED),
+                Settings.System.getUriFor(ONEHANDED_MODE),
                 true,
                 observer, UserHandle.USER_ALL);
     }
