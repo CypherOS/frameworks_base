@@ -4310,6 +4310,12 @@ public final class Settings {
          * @hide
          */
         public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
+		
+		/**
+         * Enable OneHanded Mode
+         * @hide
+         */
+        public static final String ONEHANDED_MODE = "onehanded_mode";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -4503,6 +4509,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(AMBIENT_RECOGNITION_KEYGUARD);
             PRIVATE_SETTINGS.add(AMBIENT_RECOGNITION_NOTIFICATION);
             PRIVATE_SETTINGS.add(WEATHER_LOCKSCREEN_UNIT);
+			PRIVATE_SETTINGS.add(ONEHANDED_MODE);
         }
 
         /**
