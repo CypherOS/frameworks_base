@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.IWindowManager;
@@ -67,7 +68,16 @@ public class SlideTouchEvent {
     }
 
     public void handleTouchEvent(MotionEvent event) {
+        final int defaultValue = mContext.getResources()
+                .getBoolean(com.android.internal.R.bool.config_swipe_up_gesture_default) ? 1 : 0;
+        final boolean isQuickStep = Settings.Secure.getInt(
+        mContext.getContentResolver(), Settings.Secure.SWIPE_UP_TO_SWITCH_APPS_ENABLED, defaultValue) != 0;
         if (event == null) {
+            return;
+        }
+
+        // Disable if we're using QuickStep
+        if (isQuickStep) {
             return;
         }
 
