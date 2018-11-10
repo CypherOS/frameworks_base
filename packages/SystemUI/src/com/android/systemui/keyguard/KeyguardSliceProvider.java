@@ -25,22 +25,37 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.BlurMaskFilter;
+import android.graphics.BlurMaskFilter.Blur;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Icon;
 import android.icu.text.DateFormat;
 import android.icu.text.DisplayContext;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.provider.Settings;
 import android.service.notification.ZenModeConfig;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.systemui.R;
+import com.android.systemui.smartspace.SmartSpaceCard;
+import com.android.systemui.smartspace.SmartSpaceController;
+import com.android.systemui.smartspace.SmartSpaceData;
+import com.android.systemui.smartspace.SmartSpaceUpdateListener;
 import com.android.systemui.statusbar.policy.NextAlarmController;
 import com.android.systemui.statusbar.policy.NextAlarmControllerImpl;
 import com.android.systemui.statusbar.policy.ZenModeController;
 import com.android.systemui.statusbar.policy.ZenModeControllerImpl;
+import com.android.systemui.util.Assert;
 
+import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +63,7 @@ import java.util.concurrent.TimeUnit;
 import androidx.slice.Slice;
 import androidx.slice.SliceProvider;
 import androidx.slice.builders.ListBuilder;
+import androidx.slice.builders.ListBuilder.HeaderBuilder;
 import androidx.slice.builders.ListBuilder.RowBuilder;
 import androidx.slice.builders.SliceAction;
 
@@ -55,7 +71,10 @@ import androidx.slice.builders.SliceAction;
  * Simple Slice provider that shows the current date.
  */
 public class KeyguardSliceProvider extends SliceProvider implements
-        NextAlarmController.NextAlarmChangeCallback, ZenModeController.Callback {
+        NextAlarmController.NextAlarmChangeCallback, ZenModeController.Callback,
+        SmartSpaceUpdateListener {
+			
+	private static final boolean DEBUG = Log.isLoggable("KeyguardSliceProvider", 3);
 
     public static final String KEYGUARD_SLICE_URI = "content://com.android.systemui.keyguard/main";
     public static final String KEYGUARD_DATE_URI = "content://com.android.systemui.keyguard/date";
@@ -64,6 +83,11 @@ public class KeyguardSliceProvider extends SliceProvider implements
     public static final String KEYGUARD_DND_URI = "content://com.android.systemui.keyguard/dnd";
     public static final String KEYGUARD_ACTION_URI =
             "content://com.android.systemui.keyguard/action";
+	
+	// Smartspace
+	private final Uri mSmartSpaceMainUri = Uri.parse("content://com.android.systemui.keyguard/smartSpace/main");
+    private final Uri mSmartSpaceSecondaryUri = Uri.parse("content://com.android.systemui.keyguard/smartSpace/secondary");
+    private final Uri mWeatherUri = Uri.parse("content://com.android.systemui.keyguard/smartSpace/weather");
 
     /**
      * Only show alarms that will ring within N hours.
@@ -88,6 +112,11 @@ public class KeyguardSliceProvider extends SliceProvider implements
     protected AlarmManager mAlarmManager;
     protected ContentResolver mContentResolver;
     private AlarmManager.AlarmClockInfo mNextAlarmInfo;
+	
+	// Smartspace
+	private boolean mHideSensitiveContent;
+    private final Object mLock = new Object();
+    private SmartSpaceData mSmartSpaceData;
 
     /**
      * Receiver responsible for time ticking and updating the date format.
@@ -127,12 +156,88 @@ public class KeyguardSliceProvider extends SliceProvider implements
 
     @Override
     public Slice onBindSlice(Uri sliceUri) {
+		boolean hideSensitiveData;
+		SmartSpaceCard currentCard = mSmartSpaceData.getCurrentCard();
+        SmartSpaceCard weatherCard = mSmartSpaceData.getWeatherCard();
+        synchronized (mLock) {
+            hideSensitiveData = mHideSensitiveContent;
+        }
         ListBuilder builder = new ListBuilder(getContext(), mSliceUri);
-        builder.addRow(new RowBuilder(builder, mDateUri).setTitle(mLastText));
+		if (isDndSuppressingNotifications() || currentCard == null || currentCard.isExpired() || TextUtils.isEmpty(currentCard.getTitle())) {
+			builder.addRow(new RowBuilder(builder, mDateUri).setTitle(mLastText));
+		} else if (hideSensitiveData) {
+			if (DEBUG) {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("Not showing current card. SmartSpaceCard: ");
+                stringBuilder.append(currentCard);
+                stringBuilder.append(" hide sensitive data: true");
+                Log.d("KeyguardSliceProvider", stringBuilder.toString());
+            }
+			builder.addRow(new RowBuilder(builder, this.mDateUri).setTitle(mLastText));
+		} else {
+			HeaderBuilder headerBuilder = new HeaderBuilder(builder, mSmartSpaceMainUri).setTitle(currentCard.getTitle());
+            RowBuilder contentBuilder = new RowBuilder(builder, mSmartSpaceSecondaryUri).setTitle(currentCard.getSubtitle());
+            Bitmap icon = currentCard.getIcon();
+            if (icon != null) {
+                contentBuilder.addEndItem(Icon.createWithBitmap(icon));
+            }
+            builder.setHeader(headerBuilder).addRow(contentBuilder);
+		}
+		if (!(weatherCard == null || weatherCard.isExpired())) {
+            RowBuilder weatherBuilder = new RowBuilder(builder, mWeatherUri).setTitle(weatherCard.getTitle());
+            Bitmap icon2 = weatherCard.getIcon();
+            if (icon2 != null) {
+                Icon weatherIcon = Icon.createWithBitmap(icon2);
+                weatherIcon.setTintMode(Mode.DST);
+                weatherBuilder.addEndItem(weatherIcon);
+            }
+            builder.addRow(weatherBuilder);
+        }
         addNextAlarm(builder);
         addZenMode(builder);
         addPrimaryAction(builder);
-        return builder.build();
+		Slice slice = builder.build();
+		if (DEBUG) {
+            StringBuilder stringBuilder2 = new StringBuilder();
+            stringBuilder2.append("Binding slice: ");
+            stringBuilder2.append(slice);
+            Log.d("KeyguardSliceProvider", stringBuilder2.toString());
+        }
+        return slice;
+    }
+
+	public void onSmartSpaceUpdated(SmartSpaceData smartspaceData) {
+        Assert.isMainThread();
+        mSmartSpaceData = smartspaceData;
+        SmartSpaceCard weatherCard = mSmartSpaceData.getWeatherCard();
+        if (weatherCard == null || weatherCard.getIcon() == null || weatherCard.isIconProcessed()) {
+            notifyChange();
+            return;
+        }
+        weatherCard.setIconProcessed(true);
+        new AddShadowTask(this, weatherCard).execute(new Bitmap[]{weatherCard.getIcon()});
+    }
+	
+	public void onGsaChanged() {
+    }
+	
+	public void onSensitiveModeChanged(boolean hidePrivateData) {
+        boolean changed = false;
+        synchronized (mLock) {
+            if (mHideSensitiveContent != hidePrivateData) {
+                mHideSensitiveContent = hidePrivateData;
+                changed = true;
+                if (DEBUG) {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append("Public mode changed, hide data: ");
+                    stringBuilder.append(hidePrivateData);
+                    Log.d("KeyguardSliceProvider", stringBuilder.toString());
+                }
+            }
+        }
+        if (changed) {
+            notifyChange();
+        }
     }
 
     protected void addPrimaryAction(ListBuilder builder) {
@@ -195,6 +300,8 @@ public class KeyguardSliceProvider extends SliceProvider implements
         mDatePattern = getContext().getString(R.string.system_ui_aod_date_pattern);
         registerClockUpdate();
         updateClock();
+		SmartSpaceController.get(getContext()).setListener(this);
+        mSmartSpaceData = new SmartSpaceData();
         return true;
     }
 
@@ -259,6 +366,7 @@ public class KeyguardSliceProvider extends SliceProvider implements
             mLastText = text;
             mContentResolver.notifyChange(mSliceUri, null /* observer */);
         }
+		notifyChange();
     }
 
     protected String getFormattedDate() {
@@ -289,5 +397,51 @@ public class KeyguardSliceProvider extends SliceProvider implements
                     mUpdateNextAlarm, mHandler);
         }
         updateNextAlarm();
+    }
+
+	public void notifyChange() {
+        mContentResolver.notifyChange(mSliceUri, null);
+    }
+
+	private static class AddShadowTask extends AsyncTask<Bitmap, Void, Bitmap> {
+
+        private final float mBlurRadius;
+        private final WeakReference<KeyguardSliceProvider> mProviderReference;
+        private final SmartSpaceCard mWeatherCard;
+
+        AddShadowTask(KeyguardSliceProvider provider, SmartSpaceCard weatherCard) {
+            mProviderReference = new WeakReference(provider);
+            mWeatherCard = weatherCard;
+            mBlurRadius = provider.getContext().getResources().getDimension(R.dimen.smartspace_icon_shadow);
+        }
+
+        protected Bitmap doInBackground(Bitmap... bitmaps) {
+            return applyShadow(bitmaps[0]);
+        }
+
+        protected void onPostExecute(Bitmap bitmap) {
+            mWeatherCard.setIcon(bitmap);
+            KeyguardSliceProvider provider = (KeyguardSliceProvider) mProviderReference.get();
+            if (provider != null) {
+                provider.notifyChange();
+            }
+        }
+
+        private Bitmap applyShadow(Bitmap icon) {
+            BlurMaskFilter blurMask = new BlurMaskFilter(mBlurRadius, Blur.NORMAL);
+            Paint blurPaint = new Paint();
+            blurPaint.setMaskFilter(blurMask);
+            int[] offset = new int[2];
+            Bitmap shadow = icon.extractAlpha(blurPaint, offset);
+            Bitmap target = Bitmap.createBitmap(icon.getWidth(), icon.getHeight(), Config.ARGB_8888);
+            Canvas out = new Canvas(target);
+            Paint drawPaint = new Paint();
+            drawPaint.setAlpha(70);
+            out.drawBitmap(shadow, (float) offset[0], ((float) offset[1]) + (this.mBlurRadius / 2.0f), drawPaint);
+            shadow.recycle();
+            drawPaint.setAlpha(255);
+            out.drawBitmap(icon, 0.0f, 0.0f, drawPaint);
+            return target;
+        }
     }
 }

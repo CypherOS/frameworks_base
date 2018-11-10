@@ -21,5 +21,8 @@
     <!-- Indication on the keyguard that is shown when the device is charging with a fast charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->
     <string name="keyguard_indication_fast_charging_time">Fast Charging (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> until full)</string>
     <string name="keyguard_plugged_in_fast_charging">Fast Charging</string>
+	
+	<!-- Smartspace -->
+	<string name="smartspace_hours_mins">%1$s %2$s</string>
 
 </resources>
