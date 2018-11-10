@@ -190,6 +190,7 @@ import com.android.systemui.recents.events.activity.AppTransitionFinishedEvent;
 import com.android.systemui.recents.events.activity.UndockingTaskEvent;
 import com.android.systemui.recents.misc.SystemServicesProxy;
 import com.android.systemui.shared.system.WindowManagerWrapper;
+import com.android.systemui.smartspace.SmartSpaceController;
 import com.android.systemui.stackdivider.Divider;
 import com.android.systemui.stackdivider.WindowManagerProxy;
 import com.android.systemui.statusbar.ActivatableNotificationView;
@@ -764,6 +765,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         mWallpaperChangedReceiver.onReceive(mContext, null);
 
         mLockscreenUserManager.setUpWithPresenter(this, mEntryManager);
+		mLockscreenUserManager.updateAodVisibilitySettings();
         mCommandQueue.disable(switches[0], switches[6], false /* animate */);
         setSystemUiVisibility(switches[1], switches[7], switches[8], 0xffffffff,
                 fullscreenStackBounds, dockedStackBounds);
@@ -3017,6 +3019,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         for (Map.Entry<String, ?> entry : Prefs.getAll(mContext).entrySet()) {
             pw.print("  "); pw.print(entry.getKey()); pw.print("="); pw.println(entry.getValue());
         }
+		SmartSpaceController.get(mContext).dump(fd, pw, args);
     }
 
     static void dumpBarTransitions(PrintWriter pw, String var, BarTransitions transitions) {
@@ -3325,6 +3328,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         mLockscreenWallpaper.setCurrentUser(newUserId);
         mScrimController.setCurrentUser(newUserId);
         updateMediaMetaData(true, false);
+		SmartSpaceController.get(mContext).reloadData();
     }
 
     /**
