@@ -44,6 +44,7 @@ import com.android.systemui.Dependency;
 import com.android.systemui.Dumpable;
 import com.android.systemui.OverviewProxyService;
 import com.android.systemui.R;
+import com.android.systemui.smartspace.SmartSpaceController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
 
 import java.io.FileDescriptor;
@@ -316,6 +317,11 @@ public class NotificationLockscreenUserManager implements Dumpable {
         } else {
             setLockscreenAllowRemoteInput(false);
         }
+		updateAodVisibilitySettings();
+    }
+
+	public void updateAodVisibilitySettings() {
+        SmartSpaceController.get(mContext).setHideSensitiveData(userAllowsPrivateNotificationsInPublic(mCurrentUserId));
     }
 
     /**
