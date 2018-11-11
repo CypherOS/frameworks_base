@@ -43,7 +43,7 @@ import java.util.List;
 
 import com.android.systemui.R;
 
-import com.android.internal.util.ambient.play.AmbientPlayHistoryManager;
+import com.android.internal.ambient.play.AmbientPlayHistoryManager;
 
 public class AmbientIndicationManager {
 

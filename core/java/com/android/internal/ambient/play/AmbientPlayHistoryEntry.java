@@ -13,7 +13,7 @@
  * if not, see <http://www.gnu.org/licenses>.
  */
 
-package com.android.internal.util.ambient.play;
+package com.android.internal.ambient.play;
 
 public class AmbientPlayHistoryEntry {
     private int id;

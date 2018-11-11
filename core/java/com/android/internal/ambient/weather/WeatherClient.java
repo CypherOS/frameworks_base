@@ -17,7 +17,7 @@
  *
  */
 
-package com.android.internal.util.ambient.weather;
+package com.android.internal.ambient.weather;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
