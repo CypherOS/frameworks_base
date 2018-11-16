@@ -14,11 +14,11 @@
  * if not, see <http://www.gnu.org/licenses>.
  */
 
-package com.android.systemui.ambient.play;
+package com.android.internal.ambient.play;
 
 public interface AmbientIndicationManagerCallback {
 
-    void onRecognitionResult(RecognitionObserver.Observable observed);
+    void onRecognitionResult(DataObserver observed);
 
     void onRecognitionNoResult();
 

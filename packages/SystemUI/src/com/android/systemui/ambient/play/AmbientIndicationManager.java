@@ -43,9 +43,12 @@ import java.util.List;
 
 import com.android.systemui.R;
 
+import com.android.internal.ambient.play.AmbientIndicationManagerCallback;
+import com.android.internal.ambient.play.AmbientManager;
 import com.android.internal.ambient.play.AmbientPlayHistoryManager;
+import com.android.internal.ambient.play.DataObserver;
 
-public class AmbientIndicationManager {
+public class AmbientIndicationManager extends AmbientManager {
 
     private static final String TAG = "AmbientIndicationManager";
     private Context mContext;
@@ -62,8 +65,6 @@ public class AmbientIndicationManager {
     private long lastUpdated = 0;
     private boolean isRecognitionObserverBusy = false;
     public boolean DEBUG = false;
-
-    private List<AmbientIndicationManagerCallback> mCallbacks;
 
     private boolean needsUpdate() {
         if (!isRecognitionEnabled) {
@@ -161,6 +162,7 @@ public class AmbientIndicationManager {
     };
 
     public AmbientIndicationManager(Context context) {
+		super(context);
         mContext = context;
         mCallbacks = new ArrayList<>();
         mContentResolver = context.getContentResolver();
@@ -252,7 +254,7 @@ public class AmbientIndicationManager {
         callback.onSettingsChanged(Settings.System.AMBIENT_RECOGNITION_NOTIFICATION, isRecognitionNotificationEnabled);
     }
 
-    public void dispatchRecognitionResult(RecognitionObserver.Observable observed) {
+    public void dispatchRecognitionResult(DataObserver observed) {
         isRecognitionObserverBusy = false;
         lastUpdated = System.currentTimeMillis();
         NO_MATCH_COUNT = 0;
@@ -265,12 +267,7 @@ public class AmbientIndicationManager {
         }
         AmbientPlayHistoryManager.addSong(observed.Song, observed.Artist, mContext);
         AmbientPlayHistoryManager.sendMatchBroadcast(mContext);
-        for (AmbientIndicationManagerCallback cb : mCallbacks) {
-            try {
-                cb.onRecognitionResult(observed);
-            } catch (Exception ignored) {
-            }
-        }
+		initResultCallback(observed);
         updateAmbientPlayAlarm(false);
     }
 
@@ -282,12 +279,7 @@ public class AmbientIndicationManager {
         }else{
             NO_MATCH_COUNT = 0;
         }
-        for (AmbientIndicationManagerCallback cb : mCallbacks) {
-            try {
-                cb.onRecognitionNoResult();
-            } catch (Exception ignored) {
-            }
-        }
+		initNoResultCallback();
         updateAmbientPlayAlarm(false);
     }
 
@@ -299,22 +291,12 @@ public class AmbientIndicationManager {
         }else{
             NO_MATCH_COUNT = 0;
         }
-        for (AmbientIndicationManagerCallback cb : mCallbacks) {
-            try {
-                cb.onRecognitionError();
-            } catch (Exception ignored) {
-            }
-        }
+		initErrorCallback();
         updateAmbientPlayAlarm(false);
     }
 
     private void dispatchSettingsChanged(String key, boolean newValue) {
-        for (AmbientIndicationManagerCallback cb : mCallbacks) {
-            try {
-                cb.onSettingsChanged(key, newValue);
-            } catch (Exception ignored) {
-            }
-        }
+		initSettingsCallback(key, newValue);
     }
 
     private void showNotification(String song, String artist) {
