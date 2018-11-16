@@ -39,8 +39,6 @@ import static com.android.systemui.statusbar.phone.BarTransitions.MODE_TRANSPARE
 import static com.android.systemui.statusbar.phone.BarTransitions.MODE_WARNING;
 
 import com.android.systemui.ambient.play.AmbientIndicationManager;
-import com.android.systemui.ambient.play.AmbientIndicationManagerCallback;
-import com.android.systemui.ambient.play.RecognitionObserver.Observable;
 import com.android.systemui.ambient.play.AmbientIndicationContainer;
 
 import android.animation.Animator;
@@ -136,6 +134,8 @@ import android.widget.DateTimeView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.internal.ambient.play.AmbientIndicationManagerCallback;
+import com.android.internal.ambient.play.DataObserver;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.colorextraction.ColorExtractor;
 import com.android.internal.logging.MetricsLogger;
@@ -1145,7 +1145,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     private AmbientIndicationManagerCallback mAmbientCallback = new AmbientIndicationManagerCallback() {
         @Override
-        public void onRecognitionResult(Observable observed) {
+        public void onRecognitionResult(DataObserver observed) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
