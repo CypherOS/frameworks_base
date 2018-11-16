@@ -39,7 +39,6 @@ import static com.android.systemui.statusbar.phone.BarTransitions.MODE_TRANSPARE
 import static com.android.systemui.statusbar.phone.BarTransitions.MODE_WARNING;
 
 import com.android.systemui.ambient.play.AmbientIndicationManager;
-import com.android.systemui.ambient.play.AmbientIndicationManagerCallback;
 import com.android.systemui.ambient.play.RecognitionObserver.Observable;
 import com.android.systemui.ambient.play.AmbientIndicationContainer;
 
@@ -136,6 +135,7 @@ import android.widget.DateTimeView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.internal.ambient.play.AmbientIndicationManagerCallback;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.colorextraction.ColorExtractor;
 import com.android.internal.logging.MetricsLogger;

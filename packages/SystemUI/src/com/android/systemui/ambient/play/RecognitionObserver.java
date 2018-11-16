@@ -32,6 +32,8 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.android.internal.ambient.play.AmbientIndicationManagerCallback;
+
 import org.apache.commons.lang.StringEscapeUtils;
 
 /**
