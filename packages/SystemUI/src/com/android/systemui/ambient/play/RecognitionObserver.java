@@ -32,6 +32,9 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.android.internal.ambient.play.AmbientIndicationManagerCallback;
+import com.android.internal.ambient.play.DataObserver;
+
 import org.apache.commons.lang.StringEscapeUtils;
 
 /**
@@ -64,7 +67,7 @@ public class RecognitionObserver implements AmbientIndicationManagerCallback {
     }
 
     @Override
-    public void onRecognitionResult(Observable observed) {
+    public void onRecognitionResult(DataObserver observed) {
 
     }
 
@@ -87,22 +90,6 @@ public class RecognitionObserver implements AmbientIndicationManagerCallback {
                 stopRecording();
                 mManager.dispatchRecognitionNoResult();
             }
-        }
-    }
-
-    /**
-     * Class storing fingerprinting results
-     */
-    public static class Observable {
-
-        public String Artist;
-        public String Album;
-        public String Song;
-        public String ArtworkUrl;
-
-        @Override
-        public String toString() {
-            return Artist + " - " + Song + " (" + Album + "); " + ArtworkUrl;
         }
     }
 
@@ -214,7 +201,7 @@ public class RecognitionObserver implements AmbientIndicationManagerCallback {
                 reportResult(null);
             } else {
                 // Return result where everything is fine
-                Observable observed = new Observable();
+                DataObserver observed = new DataObserver();
 
                 Pattern data_re = Pattern.compile("<track .*?artist_name=\"(.*?)\".*?album_name=\"(.*?)\".*?track_name=\"(.*?)\".*?album_primary_image=\"(.*?)\".*?>",
                         Pattern.DOTALL | Pattern.MULTILINE);
@@ -234,11 +221,11 @@ public class RecognitionObserver implements AmbientIndicationManagerCallback {
             }
         }
 
-        private boolean isNullResult(Observable observed){
+        private boolean isNullResult(DataObserver observed){
             return observed == null || observed.Artist == null || observed.Song == null;
         }
 
-        private void reportResult(Observable observed) {
+        private void reportResult(DataObserver observed) {
             stopRecording();
             // If the recording is still active and we have no match, don't do anything. Otherwise,
             // report the result.
