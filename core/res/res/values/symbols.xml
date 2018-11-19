@@ -2942,6 +2942,7 @@
 
   <java-symbol type="string" name="config_dozeDoubleTapSensorType" />
   <java-symbol type="bool" name="config_dozePulsePickup" />
+  <java-symbol type="string" name="config_dozePickupSensorType" />
 
   <!-- Used for MimeIconUtils. -->
   <java-symbol type="drawable" name="ic_doc_apk" />
