@@ -90,7 +90,7 @@ public class DozeSensors {
                         DozeLog.PULSE_REASON_SENSOR_SIGMOTION, false /* touchCoords */,
                         false /* touchscreen */),
                 mPickupSensor = new TriggerSensor(
-                        mSensorManager.getDefaultSensor(Sensor.TYPE_PICK_UP_GESTURE),
+                        findSensorWithType(config.pickupSensorType()),
                         Settings.Secure.DOZE_PULSE_ON_PICK_UP,
                         config.pulseOnPickupAvailable(),
                         DozeLog.PULSE_REASON_SENSOR_PICKUP, false /* touchCoords */,
