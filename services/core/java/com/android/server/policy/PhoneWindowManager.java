@@ -506,6 +506,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     AccessibilityManager mAccessibilityManager;
     BurnInProtectionHelper mBurnInProtectionHelper;
     AppOpsManager mAppOpsManager;
+	AlertSliderHandler mAlertSliderHandler;
     AlertSliderObserver mAlertSliderObserver;
     private ScreenshotHelper mScreenshotHelper;
     private boolean mHasFeatureWatch;
@@ -2514,6 +2515,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mKeyDoubleTapRunnable.put(keyCode, createDoubleTapTimeoutRunnable(keyCode));
             mKeyDoubleTapBehaviorDefaultResId.put(keyCode, getKeyDoubleTapBehaviorResId(keyCode));
             mKeyLongPressBehaviorDefaultResId.put(keyCode, getKeyLongPressBehaviorResId(keyCode));
+        }
+
+		boolean hasAlertSlider = context.getResources().
+                getBoolean(com.android.internal.R.bool.config_hasAlertSlider);
+        if (hasAlertSlider) {
+            mAlertSliderHandler = new AlertSliderHandler(mContext);
         }
 
         mWindowManagerInternal.registerAppTransitionListener(new AppTransitionListener() {
@@ -6810,6 +6817,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     + ", canApplyCustomPolicy = " + canApplyCustomPolicy(keyCode));
         }
 
+		if (mAlertSliderHandler != null) {
+			if (mAlertSliderHandler.handleKeyEvent(event)) {
+				return 0;
+			}
+		}
+
         // Apply custom policy for supported key codes.
         if (canApplyCustomPolicy(keyCode) && !isCustomSource) {
             if (mNavBarEnabled && !navBarKey /* TODO> && !isADBVirtualKeyOrAnyOtherKeyThatWeNeedToHandleAKAWhenMonkeyTestOrWHATEVER! */) {
@@ -8426,6 +8439,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         mSystemGestures.systemReady();
         mImmersiveModeConfirmation.systemReady();
+
+		if (mAlertSliderHandler != null) {
+            mAlertSliderHandler.systemReady();
+        }
 
         mAutofillManagerInternal = LocalServices.getService(AutofillManagerInternal.class);
     }
