@@ -13,20 +13,15 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
 
-    <!-- The width/height of the charging indicator view on keyguard. -->
-    <dimen name="keyguard_charging_indication_height">48dp</dimen>
-    <dimen name="keyguard_charging_indication_width">24dp</dimen>
-	
 	<!-- OPA -->
-	<dimen name="halo_diameter">18.0dip</dimen>
-	<dimen name="halo_inner_radius">8.0dip</dimen>
-    <dimen name="halo_thickness">1.0dip</dimen>
-	<dimen name="opa_diamond_translation">16.0dip</dimen>
-	<dimen name="opa_dot_diam">10.0dip</dimen>
-	<dimen name="opa_line_x_trans_bg">30.0dip</dimen>
-	<dimen name="opa_line_x_trans_ry">15.0dip</dimen>
-    <dimen name="opa_line_y_translation">16.0dip</dimen>
+	<style name="DotStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:alpha">0.0</item>
+    </style>
 
 </resources>
