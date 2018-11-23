@@ -176,6 +176,7 @@ import com.android.systemui.fragments.FragmentHostManager;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.keyguard.ScreenLifecycle;
 import com.android.systemui.keyguard.WakefulnessLifecycle;
+import com.android.systemui.opa.OpaDispatcher;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.qs.QS;
 import com.android.systemui.plugins.statusbar.NotificationSwipeActionHelper.SnoozeOption;
@@ -662,6 +663,8 @@ public class StatusBar extends SystemUI implements DemoMode,
     private boolean mRecognitionEnabledOnKeyguard;
     private Handler ambientClearingHandler;
     private Runnable ambientClearingRunnable;
+	
+	private OpaDispatcher mOpaDispatcher;
 
     @Override
     public void start() {
@@ -830,6 +833,8 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         mAmbientIndicationManager = new AmbientIndicationManager(mContext);
         mAmbientIndicationManager.registerCallback(mAmbientCallback);
+
+		mOpaDispatcher = new OpaDispatcher(mContext);
 
         mScreenPinningRequest = new ScreenPinningRequest(mContext);
         mFalsingManager = FalsingManager.getInstance(mContext);
