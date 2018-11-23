@@ -4321,6 +4321,16 @@ public final class Settings {
         /** @hide */
         private static final Validator DEVICE_INTRODUCTION_COMPLETED_VALIDATOR =
                BOOLEAN_VALIDATOR;
+			   
+		/**
+         * Whether opa layout is enabled
+         * @hide
+         */
+        public static final String OPA_ENABLED = "opa_enabled";
+
+        /** @hide */
+        private static final Validator OPA_ENABLED_VALIDATOR =
+               BOOLEAN_VALIDATOR;
 
         /**
          * IMPORTANT: If you add a new public settings you also have to add it to
@@ -4535,6 +4545,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(WEATHER_LOCKSCREEN_UNIT);
             PRIVATE_SETTINGS.add(ONEHANDED_MODE);
             PRIVATE_SETTINGS.add(DEVICE_INTRODUCTION_COMPLETED);
+			PRIVATE_SETTINGS.add(OPA_ENABLED);
         }
 
         /**
@@ -4631,6 +4642,7 @@ public final class Settings {
             VALIDATORS.put(AMBIENT_RECOGNITION_NOTIFICATION, AMBIENT_RECOGNITION_NOTIFICATION_VALIDATOR);
             VALIDATORS.put(WEATHER_LOCKSCREEN_UNIT, WEATHER_LOCKSCREEN_UNIT_VALIDATOR);
             VALIDATORS.put(DEVICE_INTRODUCTION_COMPLETED, DEVICE_INTRODUCTION_COMPLETED_VALIDATOR);
+			VALIDATORS.put(OPA_ENABLED, OPA_ENABLED_VALIDATOR);
         }
 
         /**
