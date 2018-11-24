@@ -15,7 +15,10 @@
  */
 package com.android.systemui.ambient.play;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -38,6 +41,35 @@ public class AmbientIndicationContainer extends AutoReinflateContainer {
 
     private String mSong;
     private String mArtist;
+	
+	final Animator.AnimatorListener mRecognitionSequence = new AnimatorListenerAdapter() {
+		@Override
+		public void onAnimationStart(Animator animator) {
+
+		}
+		
+		@Override
+		public void onAnimationEnd(Animator animator) {
+			mIcon.setAnimation(R.raw.ambient_music_manual_mode_listen);
+			mIcon.loop(true);
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					mIcon.playAnimation();
+				}
+			}, 300);
+		}
+		
+		@Override
+		public void onAnimationCancel(Animator animator) {
+
+		}
+		
+		@Override 
+		public void onAnimationRepeat(Animator animation) {
+
+		}
+    };
 
     public AmbientIndicationContainer(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -61,6 +93,32 @@ public class AmbientIndicationContainer extends AutoReinflateContainer {
         }
     }
 
+	public void showManualIndication(boolean recognized) {
+		if (recognized) {
+			if (mAmbientIndication != null && mSong != null && mArtist != null){
+				mAmbientIndication.setVisibility(View.VISIBLE);
+				mAmbientIndication.setClickable(false);
+				mIcon.setAnimation(R.raw.ambient_music_manual_mode);
+				mIcon.playAnimation();
+				mText.setText(String.format(mContext.getResources().getString(
+				        com.android.internal.R.string.ambient_recognition_information), mSong, mArtist));
+			}
+			return;
+		}
+		mAmbientIndication.setVisibility(View.VISIBLE);
+		mAmbientIndication.setClickable(true);
+		mIcon.setAnimation(R.raw.ambient_music_manual_mode);
+		mIcon.playAnimation();
+		mIcon.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mIcon.setAnimation(R.raw.ambient_music_manual_mode_start);
+				mIcon.addAnimatorListener(mRecognitionSequence);
+				mIcon.playAnimation();
+			}
+		});
+	}
+
     public void initializeView(StatusBar statusBar) {
         mStatusBar = statusBar;
         addInflateListener(new AmbientIndicationInflateListener(this));
@@ -73,10 +131,17 @@ public class AmbientIndicationContainer extends AutoReinflateContainer {
         setIndication(mSong, mArtist);
     }
 
-    public void setIndication(String song, String artist) {
+    public void setIndication(String song, String artist, boolean manualMode) {
         mSong = song;
         mArtist = artist;
-        if (mSong == null || mArtist == null){
+		if (manualMode) {
+			if (mSong == null || mArtist == null) {
+				mText.setVisibility(View.GONE);
+			}
+			return;
+		}
+
+        if (mSong == null || mArtist == null) {
             hideIndication();
         }
     }

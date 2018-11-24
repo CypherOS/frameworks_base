@@ -660,6 +660,8 @@ public class StatusBar extends SystemUI implements DemoMode,
     private AmbientIndicationManager mAmbientIndicationManager;
     private boolean mRecognitionEnabled;
     private boolean mRecognitionEnabledOnKeyguard;
+	private boolean mRecognitionManualMode;
+	private boolean mIsRecognized = false;
     private Handler ambientClearingHandler;
     private Runnable ambientClearingRunnable;
 
@@ -1150,14 +1152,15 @@ public class StatusBar extends SystemUI implements DemoMode,
                 @Override
                 public void run() {
                     if (mRecognitionEnabled && mRecognitionEnabledOnKeyguard){
-                        ((AmbientIndicationContainer) mAmbientIndicationContainer).setIndication(observed.Song, observed.Artist);
+						mIsRecognized = true;
+                        ((AmbientIndicationContainer) mAmbientIndicationContainer).setIndication(observed.Song, observed.Artist, mRecognitionManualMode);
                         if (isKeyguardShowing()){
-                            showAmbientPlayIndication();
+                            showAmbientPlayIndication(mIsRecognized);
                             hideAmbientPlayIndication(mAmbientIndicationManager.getAmbientClearViewInterval(), true);
-                        }else{
+                        } else {
                             hideAmbientPlayIndication(0, true);
                         }
-                    }else{
+                    } else {
                         hideAmbientPlayIndication(0, true);
                     }
                 }
@@ -1178,17 +1181,23 @@ public class StatusBar extends SystemUI implements DemoMode,
         public void onSettingsChanged(String key, boolean newValue) {
             if (key.equals(Settings.System.AMBIENT_RECOGNITION)){
                 mRecognitionEnabled = newValue;
-            }else if (key.equals(Settings.System.AMBIENT_RECOGNITION_KEYGUARD)){
+            } else if (key.equals(Settings.System.AMBIENT_RECOGNITION_KEYGUARD)){
                 mRecognitionEnabledOnKeyguard = newValue;
+            } else if (key.equals(Settings.System.AMBIENT_RECOGNITION_MANUAL_MODE)){
+                mRecognitionManualMode = newValue;
             }
         }
     };
 
-    private void showAmbientPlayIndication(){
+    private void showAmbientPlayIndication(boolean recognized){
         try {
             if (mAmbientIndicationContainer != null){
                 mAmbientIndicationContainer.setVisibility(View.VISIBLE);
-                ((AmbientIndicationContainer) mAmbientIndicationContainer).showIndication();
+				if (mRecognitionManualMode) {
+					((AmbientIndicationContainer) mAmbientIndicationContainer).showManualIndication(recognized);
+				} else {
+					((AmbientIndicationContainer) mAmbientIndicationContainer).showIndication();
+				}
             }
         } catch (Exception e) {
         }
@@ -1201,10 +1210,12 @@ public class StatusBar extends SystemUI implements DemoMode,
                 @Override
                 public void run() {
                     if (mAmbientIndicationContainer != null){
-                        ((AmbientIndicationContainer) mAmbientIndicationContainer).hideIndication();
-                        mAmbientIndicationContainer.setVisibility(View.GONE);
+						if (!mRecognitionManualMode) {
+							((AmbientIndicationContainer) mAmbientIndicationContainer).hideIndication();
+							mAmbientIndicationContainer.setVisibility(View.GONE);
+						}
                         if (forceClear){
-                            ((AmbientIndicationContainer) mAmbientIndicationContainer).setIndication(null, null);
+                            ((AmbientIndicationContainer) mAmbientIndicationContainer).setIndication(null, null, mRecognitionManualMode);
                         }
                     }
                 }
@@ -3985,7 +3996,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             }
             if (mStatusBarView != null) mStatusBarView.removePendingHideExpandedRunnables();
             if (mAmbientIndicationContainer != null && mRecognitionEnabled && mRecognitionEnabledOnKeyguard) {
-                showAmbientPlayIndication();
+                showAmbientPlayIndication(mIsRecognized);
             }
         } else {
             mKeyguardIndicationController.setVisible(false);

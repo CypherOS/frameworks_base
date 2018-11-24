@@ -53,6 +53,7 @@ public class AmbientIndicationManager {
     private boolean isRecognitionEnabled;
     private boolean isRecognitionEnabledOnKeyguard;
     private boolean isRecognitionNotificationEnabled;
+	private boolean mManualMode;
     private RecognitionObserver mRecognitionObserver;
     private String ACTION_UPDATE_AMBIENT_INDICATION = "update_ambient_indication";
     private AlarmManager mAlarmManager;
@@ -66,7 +67,7 @@ public class AmbientIndicationManager {
     private List<AmbientIndicationManagerCallback> mCallbacks;
 
     private boolean needsUpdate() {
-        if (!isRecognitionEnabled) {
+        if (!isRecognitionEnabled || mManualMode) {
             return false;
         }
         return System.currentTimeMillis() - lastUpdated > lastAlarmInterval;
@@ -80,7 +81,7 @@ public class AmbientIndicationManager {
             return;
         }
         lastAlarmInterval = 0;
-        if (!isRecognitionEnabled) return;
+        if (!isRecognitionEnabled || mManualMode) return;
         int networkStatus = getNetworkStatus();
         int duration = 150000; // Default
 
@@ -228,6 +229,8 @@ public class AmbientIndicationManager {
                 dispatchSettingsChanged(Settings.System.AMBIENT_RECOGNITION_KEYGUARD, isRecognitionEnabledOnKeyguard);
             } else if (uri.equals(Settings.System.getUriFor(Settings.System.AMBIENT_RECOGNITION_NOTIFICATION))) {
                 dispatchSettingsChanged(Settings.System.AMBIENT_RECOGNITION_NOTIFICATION, isRecognitionNotificationEnabled);
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.AMBIENT_RECOGNITION_MANUAL_MODE))) {
+                dispatchSettingsChanged(Settings.System.AMBIENT_RECOGNITION_MANUAL_MODE, mManualMode);
             }
         }
 
@@ -238,6 +241,8 @@ public class AmbientIndicationManager {
                     Settings.System.AMBIENT_RECOGNITION_KEYGUARD, 1, UserHandle.USER_CURRENT) != 0;
             isRecognitionNotificationEnabled = Settings.System.getIntForUser(mContentResolver,
                     Settings.System.AMBIENT_RECOGNITION_NOTIFICATION, 1, UserHandle.USER_CURRENT) != 0;
+			mManualMode = Settings.System.getIntForUser(mContentResolver,
+                    Settings.System.AMBIENT_RECOGNITION_MANUAL_MODE, 0, UserHandle.USER_CURRENT) != 0;
         }
     }
 
@@ -250,6 +255,7 @@ public class AmbientIndicationManager {
         callback.onSettingsChanged(Settings.System.AMBIENT_RECOGNITION, isRecognitionEnabled);
         callback.onSettingsChanged(Settings.System.AMBIENT_RECOGNITION_KEYGUARD, isRecognitionEnabledOnKeyguard);
         callback.onSettingsChanged(Settings.System.AMBIENT_RECOGNITION_NOTIFICATION, isRecognitionNotificationEnabled);
+		callback.onSettingsChanged(Settings.System.AMBIENT_RECOGNITION_MANUAL_MODE, mManualMode);
     }
 
     public void dispatchRecognitionResult(RecognitionObserver.Observable observed) {
