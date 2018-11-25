@@ -18,6 +18,8 @@ package com.android.systemui.ambient.play;
 
 public interface AmbientIndicationManagerCallback {
 
+    void onRecognizing();
+
     void onRecognitionResult(RecognitionObserver.Observable observed);
 
     void onRecognitionNoResult();

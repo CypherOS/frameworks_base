@@ -15,7 +15,10 @@
  */
 package com.android.systemui.ambient.play;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,6 +33,7 @@ import com.android.systemui.statusbar.phone.StatusBar;
 public class AmbientIndicationContainer extends AutoReinflateContainer {
     private View mAmbientIndication;
     private boolean mDozing;
+	private boolean mManualMode = false;
     private LottieAnimationView mIcon;
     private CharSequence mIndication;
     private StatusBar mStatusBar;
@@ -57,9 +61,44 @@ public class AmbientIndicationContainer extends AutoReinflateContainer {
             mText.setText(String.format(mContext.getResources().getString(
                     com.android.internal.R.string.ambient_recognition_information), mSong, mArtist));
             mIcon.setAnimation(R.raw.ambient_music_note);
+			mIcon.loop(false);
             mIcon.playAnimation();
         }
     }
+
+	public void showManualIndication() {
+		mAmbientIndication.setVisibility(View.VISIBLE);
+		mAmbientIndication.setClickable(true);
+		mIcon.setAnimation(R.raw.ambient_music_manual_mode);
+		mIcon.loop(false);
+		mIcon.playAnimation();
+		mIcon.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mIcon.setAnimation(R.raw.ambient_music_manual_mode_start);
+				mIcon.loop(false);
+				mIcon.playAnimation();
+				mStatusBar.startManualRecognition();
+			}
+		});
+	}
+
+	public void onRecognizing() {
+		mIcon.setAnimation(R.raw.ambient_music_manual_mode_listen);
+		mIcon.loop(true);
+		mIcon.playAnimation();
+	}
+	
+	public void onRecognized() {
+		mRecognized = true;
+		mIcon.setAnimation(R.raw.ambient_music_manual_mode);
+		mIcon.loop(false);
+		mIcon.playAnimation();
+		if (mAmbientIndication != null && mSong != null && mArtist != null) {
+			mText.setText(String.format(mContext.getResources().getString(
+				    com.android.internal.R.string.ambient_recognition_information), mSong, mArtist));
+		}
+	}
 
     public void initializeView(StatusBar statusBar) {
         mStatusBar = statusBar;
@@ -70,13 +109,21 @@ public class AmbientIndicationContainer extends AutoReinflateContainer {
         mAmbientIndication = findViewById(R.id.ambient_indication);
         mText = (TextView) findViewById(R.id.ambient_indication_text);
         mIcon = (LottieAnimationView) findViewById(R.id.ambient_indication_icon);
-        setIndication(mSong, mArtist);
+        setIndication(mSong, mArtist, mManualMode);
     }
 
-    public void setIndication(String song, String artist) {
+    public void setIndication(String song, String artist, boolean manualMode) {
         mSong = song;
         mArtist = artist;
-        if (mSong == null || mArtist == null){
+		mManualMode = manualMode;
+		if (manualMode) {
+			if (mSong == null || mArtist == null) {
+				mText.setVisibility(View.GONE);
+			}
+			return;
+		}
+
+        if (mSong == null || mArtist == null) {
             hideIndication();
         }
     }

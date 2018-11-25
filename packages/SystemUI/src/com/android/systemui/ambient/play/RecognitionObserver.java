@@ -63,6 +63,11 @@ public class RecognitionObserver implements AmbientIndicationManagerCallback {
         manager.registerCallback(this);
     }
 
+	@Override
+    public void onRecognizing() {
+
+    }
+
     @Override
     public void onRecognitionResult(Observable observed) {
 
@@ -258,6 +263,7 @@ public class RecognitionObserver implements AmbientIndicationManagerCallback {
             return;
         }
         isRecording = true;
+		mManager.dispatchRecognizing();
         // Only start recording audio if we have internet connectivity.
         if (mManager.getNetworkStatus() != -1) {
             new Thread() {
