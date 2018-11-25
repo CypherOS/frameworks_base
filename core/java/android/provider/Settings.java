@@ -4302,6 +4302,17 @@ public final class Settings {
         private static final Validator AMBIENT_RECOGNITION_NOTIFICATION_VALIDATOR =
                 BOOLEAN_VALIDATOR;
 
+		/**
+         * Whether Ambient Play manual mode is enabled
+         *
+         * @hide
+         */
+        public static final String AMBIENT_RECOGNITION_MANUAL_MODE = "ambient_recognition_manual_mode";
+
+        /** @hide */
+        private static final Validator AMBIENT_RECOGNITION_MANUAL_MODE_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
         /**
          * Weather lockscreen temperature scale
          * @hide
@@ -4532,6 +4543,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(AMBIENT_RECOGNITION);
             PRIVATE_SETTINGS.add(AMBIENT_RECOGNITION_KEYGUARD);
             PRIVATE_SETTINGS.add(AMBIENT_RECOGNITION_NOTIFICATION);
+			PRIVATE_SETTINGS.add(AMBIENT_RECOGNITION_MANUAL_MODE);
             PRIVATE_SETTINGS.add(WEATHER_LOCKSCREEN_UNIT);
             PRIVATE_SETTINGS.add(ONEHANDED_MODE);
             PRIVATE_SETTINGS.add(DEVICE_INTRODUCTION_COMPLETED);
@@ -4629,6 +4641,7 @@ public final class Settings {
             VALIDATORS.put(AMBIENT_RECOGNITION, AMBIENT_RECOGNITION_VALIDATOR);
             VALIDATORS.put(AMBIENT_RECOGNITION_KEYGUARD, AMBIENT_RECOGNITION_KEYGUARD_VALIDATOR);
             VALIDATORS.put(AMBIENT_RECOGNITION_NOTIFICATION, AMBIENT_RECOGNITION_NOTIFICATION_VALIDATOR);
+			VALIDATORS.put(AMBIENT_RECOGNITION_MANUAL_MODE, AMBIENT_RECOGNITION_MANUAL_MODE_VALIDATOR);
             VALIDATORS.put(WEATHER_LOCKSCREEN_UNIT, WEATHER_LOCKSCREEN_UNIT_VALIDATOR);
             VALIDATORS.put(DEVICE_INTRODUCTION_COMPLETED, DEVICE_INTRODUCTION_COMPLETED_VALIDATOR);
         }
