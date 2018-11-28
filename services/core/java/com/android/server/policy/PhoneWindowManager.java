@@ -1146,7 +1146,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 UserHandle.USER_CURRENT) == 1;
         final boolean isFingerprintNavigation = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_supportsFingerprintNavigation);
-        final boolean canUse = mScreenOnFully && !isKeyguardShowingAndNotOccluded() && !navBarEnabled;
+        final boolean canUse = mScreenOnFully && !navBarEnabled;
         if (isFingerprintNavigation) {
             try {
                 mBiometricTransactor = new BiometricTransactor(mContext);
@@ -7738,6 +7738,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
         reportScreenStateToVrManager(false);
+        updateFingerprintNavigation();
     }
 
     private long getKeyguardDrawnTimeout() {
@@ -7863,6 +7864,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             } catch (RemoteException unhandled) {
             }
         }
+        updateFingerprintNavigation();
     }
 
     private void handleHideBootMessage() {
