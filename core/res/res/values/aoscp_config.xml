@@ -152,4 +152,9 @@
 
     <!-- Determines whether the device supports fingerprint navigation -->
     <bool name="config_supportsFingerprintNavigation">false</bool>
+
+    <!-- Descriptor: Path to the vendors biometrics hal, required to send commands.
+         TransactionId: The transaction id required to send to the biometrics hal. -->
+    <string name="config_BiometricTransactorDescriptor" translatable="false"></string>
+    <integer name="config_BiometricTransactorTransactionId">0</integer>
 </resources>

@@ -183,6 +183,7 @@ import android.database.ContentObserver;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.hardware.biometrics.BiometricTransactor;
 import android.hardware.display.DisplayManager;
 import android.hardware.input.InputManager;
 import android.hardware.hdmi.HdmiControlManager;
@@ -300,6 +301,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.Throwable;
 import java.util.List;
 
 /**
@@ -904,6 +906,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int MSG_REQUEST_TRANSIENT_BARS_ARG_STATUS = 0;
     private static final int MSG_REQUEST_TRANSIENT_BARS_ARG_NAVIGATION = 1;
 
+    private BiometricTransactor mBiometricTransactor;
+
     private boolean mHasAlertSlider = false;
 
     private class PolicyHandler extends Handler {
@@ -1144,7 +1148,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 com.android.internal.R.bool.config_supportsFingerprintNavigation);
         final boolean canUse = mScreenOnFully && !isKeyguardShowingAndNotOccluded() && !navBarEnabled;
         if (isFingerprintNavigation) {
-            SystemProperties.set("sys.fpnav.enabled", canUse ? "1" : "0");
+            try {
+                mBiometricTransactor = new BiometricTransactor(mContext);
+            } catch (Throwable t) { }
+            if (mBiometricTransactor != null) {
+                mBiometricTransactor.sendCmdToHal(canUse
+                        ? mBiometricTransactor.sendMsgEnable()
+                        : mBiometricTransactor.sendMsgDisable());
+                Log.d(TAG, "BiometricTransactor: Sending navigation command");
+            }
         }
     }
 

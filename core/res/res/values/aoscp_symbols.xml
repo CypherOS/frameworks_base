@@ -138,4 +138,9 @@
   <java-symbol type="drawable" name="weather_sunny" />
   <java-symbol type="drawable" name="weather_thunderstorms" />
   <java-symbol type="drawable" name="weather_windy" />
+
+  <!-- Descriptor: Path to the vendors biometrics hal, required to send commands.
+       TransactionId: The transaction id required to send to the biometrics hal. -->
+  <java-symbol type="string" name="config_BiometricTransactorDescriptor" />
+  <java-symbol type="integer" name="config_BiometricTransactorTransactionId" />
 </resources>
