@@ -173,4 +173,10 @@
 
     <!-- Should we filter any display modes which are unampped? -->
     <bool name="config_filterDisplayModes">false</bool>
+
+    <!-- Does the device support handwave for doze pulse?
+         Handwave sensor type must be set and must be a proximity
+         type sensor -->
+    <bool name="config_dozePulseHandWave">true</bool>
+    <string name="config_dozeHandWaveSensorType" translatable="false"></string>
 </resources>
