@@ -160,4 +160,7 @@
 
     <!-- Doze Addon: should the TYPE_PROXIMITY sensor be used as a pulse signal. -->
     <bool name="config_dozePulseHandWave">true</bool>
+
+	<!-- Doze Addon: should the TYPE_TILT_DETECTOR sensor be used as a pulse signal. -->
+    <bool name="config_dozePulsePickupWithTilt">false</bool>
 </resources>

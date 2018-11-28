@@ -45,7 +45,8 @@ public class AmbientDisplayConfiguration {
 
     public boolean available() {
         return pulseOnNotificationAvailable() || pulseOnPickupAvailable()
-                || pulseOnDoubleTapAvailable() || pulseOnHandWaveAvailable();
+		        || pulseOnPickupWithTiltAvailable() || pulseOnDoubleTapAvailable() 
+				|| pulseOnHandWaveAvailable();
     }
 
     public boolean pulseOnNotificationEnabled(int user) {
@@ -58,7 +59,7 @@ public class AmbientDisplayConfiguration {
 
     public boolean pulseOnPickupEnabled(int user) {
         boolean settingEnabled = boolSettingDefaultOn(Settings.Secure.DOZE_PULSE_ON_PICK_UP, user);
-        return (settingEnabled || alwaysOnEnabled(user)) && pulseOnPickupAvailable();
+        return (settingEnabled || alwaysOnEnabled(user)) && pulseOnPickupAvailable() || pulseOnPickupWithTiltAvailable();
     }
 
     public boolean pulseOnPickupAvailable() {
@@ -71,6 +72,11 @@ public class AmbientDisplayConfiguration {
 
     public boolean pulseOnPickupCanBeModified(int user) {
         return !alwaysOnEnabled(user);
+    }
+
+	public boolean pulseOnPickupWithTiltAvailable() {
+        return mContext.getResources().getBoolean(R.bool.config_dozePulsePickupWithTilt) 
+		        && ambientDisplayAvailable();
     }
 
     public boolean pulseOnHandWaveEnabled(int user) {
