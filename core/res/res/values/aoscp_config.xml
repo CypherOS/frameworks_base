@@ -157,4 +157,7 @@
          TransactionId: The transaction id required to send to the biometrics hal. -->
     <string name="config_BiometricTransactorDescriptor" translatable="false"></string>
     <integer name="config_BiometricTransactorTransactionId">0</integer>
+
+    <!-- Doze Addon: should the TYPE_PROXIMITY sensor be used as a pulse signal. -->
+    <bool name="config_dozePulseHandWave">true</bool>
 </resources>
