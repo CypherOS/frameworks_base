@@ -128,6 +128,7 @@ public class DozeTriggers implements DozeMachine.Part {
         boolean isDoubleTap = pulseReason == DozeLog.PULSE_REASON_SENSOR_DOUBLE_TAP;
         boolean isPickup = pulseReason == DozeLog.PULSE_REASON_SENSOR_PICKUP;
         boolean isLongPress = pulseReason == DozeLog.PULSE_REASON_SENSOR_LONG_PRESS;
+		boolean isHandWave = pulseReason == DozeLog.PULSE_REASON_SENSOR_HAND_WAVE;
 
         if (mConfig.alwaysOnEnabled(UserHandle.USER_CURRENT) && !isLongPress) {
             proximityCheckThenCall((result) -> {
@@ -154,6 +155,10 @@ public class DozeTriggers implements DozeMachine.Part {
                     timeSinceNotification < mDozeParameters.getPickupVibrationThreshold();
             DozeLog.tracePickupPulse(mContext, withinVibrationThreshold);
         }
+
+		if (isHandWave) {
+			DozeLog.traceHandWavePulse(mContext);
+		}
     }
 
     private void onProximityFar(boolean far) {
