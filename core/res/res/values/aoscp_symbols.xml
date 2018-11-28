@@ -146,4 +146,7 @@
 
   <!-- Doze Addon: should the TYPE_PROXIMITY sensor be used as a pulse signal. -->
   <java-symbol type="bool" name="config_dozePulseHandWave" />
+
+  <!-- Doze Addon: should the TYPE_TILT_DETECTOR sensor be used as a pulse signal. -->
+  <java-symbol type="bool" name="config_dozePulsePickupWithTilt" />
 </resources>
