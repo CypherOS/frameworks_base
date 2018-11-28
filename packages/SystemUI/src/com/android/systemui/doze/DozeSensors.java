@@ -36,6 +36,9 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
+import aoscp.hardware.DeviceHardwareManager;
+import aoscp.hardware.DozeHardwareSensor;
+
 import com.android.internal.hardware.AmbientDisplayConfiguration;
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto;
@@ -57,6 +60,7 @@ public class DozeSensors {
     private final AlarmManager mAlarmManager;
     private final SensorManager mSensorManager;
     private final TriggerSensor[] mSensors;
+	private final DozeHardwareSensor[] mHwSensors;
     private final ContentResolver mResolver;
     private final TriggerSensor mPickupSensor;
     private final DozeParameters mDozeParameters;
@@ -68,6 +72,7 @@ public class DozeSensors {
     private final Handler mHandler = new Handler();
     private final ProxSensor mProxSensor;
 
+    private boolean mHasDozeHwSensor;
 
     public DozeSensors(Context context, AlarmManager alarmManager, SensorManager sensorManager,
             DozeParameters dozeParameters,
@@ -112,6 +117,12 @@ public class DozeSensors {
                         true /* touchscreen */),
         };
 
+		final DeviceHardwareManager hwManager = DeviceHardwareManager.getInstance(mContext);
+		mHasDozeHwSensor = hwManager.isSupported(DeviceHardwareManager.FEATURE_DOZE_SENSOR);
+        mHwSensors = new DozeHardwareSensor[] {
+                new DozeHardwareSensor(Settings.Secure.DOZE_PULSE_ON_HAND_WAVE),
+        };
+
         mProxSensor = new ProxSensor(policy);
         mCallback = callback;
     }
@@ -140,6 +151,16 @@ public class DozeSensors {
                 s.registerSettingsObserver(mSettingsObserver);
             }
         }
+
+		if (mHasDozeHwSensor) {
+		    for (DozeHardwareSensor s : mHwSensors) {
+                s.setListening(listen);
+                if (listen) {
+                    s.registerSettingsObserver(mSettingsObserver);
+                }
+            }
+		}
+
         if (!listen) {
             mResolver.unregisterContentObserver(mSettingsObserver);
         }
@@ -161,12 +182,27 @@ public class DozeSensors {
         for (TriggerSensor s : mSensors) {
             s.setListening(true);
         }
+
+		if (mHasDozeHwSensor) {
+		    for (DozeHardwareSensor s : mHwSensors) {
+                s.setListening(false);
+            }
+		    for (DozeHardwareSensor s : mHwSensors) {
+                s.setListening(true);
+            }
+		}
     }
 
     public void onUserSwitched() {
         for (TriggerSensor s : mSensors) {
             s.updateListener();
         }
+
+		if (mHasDozeHwSensor) {
+		    for (DozeHardwareSensor s : mHwSensors) {
+                s.updateListener();
+            }
+		}
     }
 
     public void setProxListening(boolean listen) {
@@ -182,6 +218,12 @@ public class DozeSensors {
             for (TriggerSensor s : mSensors) {
                 s.updateListener();
             }
+
+			if (mHasDozeHwSensor) {
+			    for (DozeHardwareSensor s : mHwSensors) {
+                    s.updateListener();
+                }
+			}
         }
     };
 
