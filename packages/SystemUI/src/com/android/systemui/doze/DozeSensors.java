@@ -119,7 +119,13 @@ public class DozeSensors {
                         Settings.Secure.DOZE_PULSE_ON_HAND_WAVE,
                         config.pulseOnHandWaveAvailable(),
                         DozeLog.PULSE_REASON_SENSOR_HAND_WAVE),
-        };
+
+				new GestureSensor(
+				        mSensorManager.getDefaultSensor(Sensor.TYPE_TILT_DETECTOR),
+                        Settings.Secure.DOZE_PULSE_ON_PICK_UP,
+                        config.pulseOnPickupWithTiltAvailable(),
+                        DozeLog.PULSE_REASON_SENSOR_PICKUP),
+		};
 
         mProxSensor = new ProxSensor(policy);
         mCallback = callback;
@@ -262,7 +268,7 @@ public class DozeSensors {
             if (!mConfigured || mSensor == null) return;
             if (mListening && !mRegistered && enabledBySetting()) {
                 mRegistered = mSensorManager.registerListener(this, mSensor,
-                        SensorManager.SENSOR_DELAY_NORMAL, 0);
+                        SensorManager.SENSOR_DELAY_NORMAL, 100 * 1000);
             } else if (mRegistered) {
                 mSensorManager.unregisterListener(this);
                 mRegistered = false;
