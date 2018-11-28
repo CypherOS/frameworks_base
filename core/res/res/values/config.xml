@@ -2101,7 +2101,7 @@
          turned off and the screen off animation has been performed. -->
     <bool name="config_dozeAfterScreenOffByDefault">false</bool>
 
-    <!-- Doze: should the TYPE_PICK_UP_GESTURE sensor be used as a pulse signal. -->
+    <!-- Doze: should the specified sensor be used as a pulse signal. -->
     <bool name="config_dozePulsePickup">false</bool>
 
     <!-- Type of the double tap sensor. Empty if double tap is not supported. -->
@@ -2109,6 +2109,9 @@
 
     <!-- Type of the long press sensor. Empty if long press is not supported. -->
     <string name="config_dozeLongPressSensorType" translatable="false"></string>
+
+	<!-- Type of the pickup sensor. Defaults to android pickup sensor. -->
+    <string name="config_dozePickupSensorType" translatable="false">android.sensor.pick_up_gesture</string>
 
     <!-- Control whether the always on display mode is available. This should only be enabled on
          devices where the display has been tuned to be power efficient in DOZE and/or DOZE_SUSPEND

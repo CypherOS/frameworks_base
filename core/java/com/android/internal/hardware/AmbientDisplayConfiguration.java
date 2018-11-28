@@ -65,7 +65,8 @@ public class AmbientDisplayConfiguration {
     }
 
     public boolean dozePulsePickupSensorAvailable() {
-        return mContext.getResources().getBoolean(R.bool.config_dozePulsePickup);
+        return mContext.getResources().getBoolean(R.bool.config_dozePulsePickup)
+		        && !TextUtils.isEmpty(pickupSensorType());
     }
 
     public boolean pulseOnPickupCanBeModified(int user) {
@@ -91,6 +92,10 @@ public class AmbientDisplayConfiguration {
 
     public String longPressSensorType() {
         return mContext.getResources().getString(R.string.config_dozeLongPressSensorType);
+    }
+
+	public String pickupSensorType() {
+        return mContext.getResources().getString(R.string.config_dozePickupSensorType);
     }
 
     public boolean pulseOnLongPressEnabled(int user) {

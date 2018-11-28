@@ -90,7 +90,7 @@ public class DozeSensors {
                         DozeLog.PULSE_REASON_SENSOR_SIGMOTION, false /* touchCoords */,
                         false /* touchscreen */),
                 mPickupSensor = new TriggerSensor(
-                        mSensorManager.getDefaultSensor(Sensor.TYPE_PICK_UP_GESTURE),
+                        findSensorWithType(config.pickupSensorType()),
                         Settings.Secure.DOZE_PULSE_ON_PICK_UP,
                         config.pulseOnPickupAvailable(),
                         DozeLog.PULSE_REASON_SENSOR_PICKUP, false /* touchCoords */,
@@ -365,14 +365,10 @@ public class DozeSensors {
             mHandler.post(mWakeLock.wrap(() -> {
                 if (DEBUG) Log.d(TAG, "onTrigger: " + triggerEventToString(event));
                 boolean sensorPerformsProxCheck = false;
-                if (mSensor.getType() == Sensor.TYPE_PICK_UP_GESTURE) {
-                    int subType = (int) event.values[0];
-                    MetricsLogger.action(
-                            mContext, MetricsProto.MetricsEvent.ACTION_AMBIENT_GESTURE,
-                            subType);
-                    sensorPerformsProxCheck =
-                            mDozeParameters.getPickupSubtypePerformsProxCheck(subType);
-                }
+                int subType = (int) event.values[0];
+				MetricsLogger.action(
+			            mContext, MetricsProto.MetricsEvent.ACTION_AMBIENT_GESTURE, subType);
+				sensorPerformsProxCheck = mDozeParameters.getPickupSubtypePerformsProxCheck(subType);
 
                 mRegistered = false;
                 float screenX = -1;
