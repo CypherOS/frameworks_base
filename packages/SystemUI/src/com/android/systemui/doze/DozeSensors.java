@@ -58,6 +58,7 @@ public class DozeSensors {
     private final SensorManager mSensorManager;
     private final TriggerSensor[] mSensors;
     private final ContentResolver mResolver;
+    private final GestureSensor[] mGestureSensors;
     private final TriggerSensor mPickupSensor;
     private final DozeParameters mDozeParameters;
     private final AmbientDisplayConfiguration mConfig;
@@ -112,6 +113,14 @@ public class DozeSensors {
                         true /* touchscreen */),
         };
 
+        mGestureSensors = new GestureSensor[] {
+                new GestureSensor(
+                        mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY),
+                        Settings.Secure.DOZE_PULSE_ON_HAND_WAVE,
+                        config.pulseOnHandWaveAvailable(),
+                        DozeLog.PULSE_REASON_SENSOR_HAND_WAVE),
+        };
+
         mProxSensor = new ProxSensor(policy);
         mCallback = callback;
     }
@@ -143,6 +152,7 @@ public class DozeSensors {
         if (!listen) {
             mResolver.unregisterContentObserver(mSettingsObserver);
         }
+        mGestureSensors.setListening(listen);
     }
 
     /** Set the listening state of only the sensors that require the touchscreen. */
@@ -161,12 +171,15 @@ public class DozeSensors {
         for (TriggerSensor s : mSensors) {
             s.setListening(true);
         }
+        mGestureSensors.setListening(false);
+        mGestureSensors.setListening(true);
     }
 
     public void onUserSwitched() {
         for (TriggerSensor s : mSensors) {
             s.updateListener();
         }
+        mGestureSensors.updateListener();
     }
 
     public void setProxListening(boolean listen) {
@@ -182,6 +195,7 @@ public class DozeSensors {
             for (TriggerSensor s : mSensors) {
                 s.updateListener();
             }
+            mGestureSensors.updateListener();
         }
     };
 
@@ -202,6 +216,62 @@ public class DozeSensors {
      */
     public Boolean isProximityCurrentlyFar() {
         return mProxSensor.mCurrentlyFar;
+    }
+
+    private class GestureSensor implements SensorEventListener {
+
+        Sensor mSensor;
+		String mSetting;
+        boolean mConfigured;
+		int mPulseReason;
+        boolean mListening;
+        boolean mRegistered;
+        boolean mSawNear = false;
+
+        public GestureSensor(Sensor sensor, String setting, boolean configured, int pulseReason) {
+            mSensor = sensor;
+			mSetting = setting;
+			mConfigured = configured;
+			mPulseReason = pulseReason;
+        }
+
+        void setListening(boolean listen) {
+            if (mListening == listen) return;
+            mListening = listen;
+            updateListener();
+        }
+
+        void updateListener() {
+            if (!mConfigured || mSensor == null) return;
+            if (mListening && !mRegistered && enabledBySetting()) {
+                mRegistered = mSensorManager.registerListener(this, mSensor,
+                        SensorManager.SENSOR_DELAY_NORMAL, 0);
+            } else if (mRegistered) {
+                mSensorManager.unregisterListener(this);
+                mRegistered = false;
+            }
+        }
+
+        boolean enabledBySetting() {
+            return Settings.Secure.getIntForUser(mContext.getContentResolver(), mSetting, 0, UserHandle.USER_CURRENT) != 0;
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+			DozeLog.traceSensor(mContext, mPulseReason);
+            boolean mCurrentlyNear = event.values[0] < mSensor.getMaximumRange();
+            if (mSawNear && !mCurrentlyNear) {
+                if (enabledBySetting()) {
+					mCallback.onSensorPulse(mPulseReason, false, -1, -1);
+					updateListener();
+                }
+            }
+            mSawNear = mCurrentlyNear;
+        }
     }
 
     private class ProxSensor implements SensorEventListener {

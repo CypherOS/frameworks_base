@@ -44,6 +44,7 @@ public class DozeLog {
     public static final int PULSE_REASON_SENSOR_PICKUP = 3;
     public static final int PULSE_REASON_SENSOR_DOUBLE_TAP = 4;
     public static final int PULSE_REASON_SENSOR_LONG_PRESS = 5;
+	public static final int PULSE_REASON_SENSOR_HAND_WAVE = 6;
 
     private static boolean sRegisterKeyguardCallback = true;
 
@@ -60,6 +61,7 @@ public class DozeLog {
     private static SummaryStats sScreenOnPulsingStats;
     private static SummaryStats sScreenOnNotPulsingStats;
     private static SummaryStats sEmergencyCallStats;
+	private static SummaryStats sHandWavePulseStats;
     private static SummaryStats[][] sProxStats; // [reason][near/far]
 
     public static void tracePickupPulse(Context context, boolean withinVibrationThreshold) {
@@ -89,6 +91,13 @@ public class DozeLog {
         sNotificationPulseStats.append();
     }
 
+	public static void traceHandWavePulse(Context context) {
+        if (!ENABLED) return;
+        init(context);
+        log("handWavePulse");
+        sHandWavePulseStats.append();
+    }
+
     private static void init(Context context) {
         synchronized (DozeLog.class) {
             if (sMessages == null) {
@@ -101,6 +110,7 @@ public class DozeLog {
                 sScreenOnPulsingStats = new SummaryStats();
                 sScreenOnNotPulsingStats = new SummaryStats();
                 sEmergencyCallStats = new SummaryStats();
+				sHandWavePulseStats = new SummaryStats();
                 sProxStats = new SummaryStats[PULSE_REASONS][2];
                 for (int i = 0; i < PULSE_REASONS; i++) {
                     sProxStats[i][0] = new SummaryStats();
@@ -186,6 +196,7 @@ public class DozeLog {
             case PULSE_REASON_SENSOR_PICKUP: return "pickup";
             case PULSE_REASON_SENSOR_DOUBLE_TAP: return "doubletap";
             case PULSE_REASON_SENSOR_LONG_PRESS: return "longpress";
+			case PULSE_REASON_SENSOR_HAND_WAVE: return "handwave";
             default: throw new IllegalArgumentException("bad reason: " + pulseReason);
         }
     }
@@ -211,6 +222,7 @@ public class DozeLog {
             sScreenOnPulsingStats.dump(pw, "Screen on (pulsing)");
             sScreenOnNotPulsingStats.dump(pw, "Screen on (not pulsing)");
             sEmergencyCallStats.dump(pw, "Emergency call");
+			sHandWavePulseStats.dump(pw, "Handwave pulse");
             for (int i = 0; i < PULSE_REASONS; i++) {
                 final String reason = pulseReasonToString(i);
                 sProxStats[i][0].dump(pw, "Proximity near (" + reason + ")");
