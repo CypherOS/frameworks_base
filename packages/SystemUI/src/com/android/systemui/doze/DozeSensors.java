@@ -57,6 +57,7 @@ public class DozeSensors {
     private final AlarmManager mAlarmManager;
     private final SensorManager mSensorManager;
     private final TriggerSensor[] mSensors;
+	private final TriggerSensorHw[] mSensorsHw;
     private final ContentResolver mResolver;
     private final TriggerSensor mPickupSensor;
     private final DozeParameters mDozeParameters;
@@ -112,6 +113,14 @@ public class DozeSensors {
                         true /* touchscreen */),
         };
 
+        mSensorsHw = new TriggerSensorHw[] {
+                new TriggerSensorHw(
+                        findSensorWithType(config.handWaveSensorType()),
+                        Settings.Secure.DOZE_PULSE_ON_HAND_WAVE,
+                        config.pulseOnHandWaveAvailable(),
+                        DozeLog.PULSE_REASON_SENSOR_HAND_WAVE),
+        };
+
         mProxSensor = new ProxSensor(policy);
         mCallback = callback;
     }
@@ -140,6 +149,13 @@ public class DozeSensors {
                 s.registerSettingsObserver(mSettingsObserver);
             }
         }
+		
+		for (TriggerSensorHw sHw : mSensorsHw) {
+            sHw.setListening(listen);
+            if (listen) {
+                sHw.registerSettingsObserver(mSettingsObserver);
+            }
+        }
         if (!listen) {
             mResolver.unregisterContentObserver(mSettingsObserver);
         }
@@ -161,11 +177,22 @@ public class DozeSensors {
         for (TriggerSensor s : mSensors) {
             s.setListening(true);
         }
+		
+		for (TriggerSensorHw sHw : mSensorsHw) {
+            sHw.setListening(false);
+        }
+		for (TriggerSensorHw sHw : mSensorsHw) {
+            sHw.setListening(true);
+        }
     }
 
     public void onUserSwitched() {
         for (TriggerSensor s : mSensors) {
             s.updateListener();
+        }
+		
+		for (TriggerSensorHw sHw : mSensorsHw) {
+            sHw.updateListener();
         }
     }
 
@@ -181,6 +208,10 @@ public class DozeSensors {
             }
             for (TriggerSensor s : mSensors) {
                 s.updateListener();
+            }
+			
+			for (TriggerSensorHw sHw : mSensorsHw) {
+                sHw.updateListener();
             }
         }
     };
@@ -202,6 +233,76 @@ public class DozeSensors {
      */
     public Boolean isProximityCurrentlyFar() {
         return mProxSensor.mCurrentlyFar;
+    }
+
+    private class TriggerSensorHw implements SensorEventListener {
+		
+		private static final int MIN_PULSE_INTERVAL_MS = 2500;
+
+        Sensor mSensor;
+        String mSetting;
+        boolean mConfigured;
+        int mPulseReason;
+        boolean mListening;
+        boolean mRegistered;
+
+        public TriggerSensorHw(Sensor sensor, String setting, boolean configured, int pulseReason) {
+            mSensor = sensor;
+            mSetting = setting;
+            mConfigured = configured;
+            mPulseReason = pulseReason;
+        }
+
+        void setListening(boolean listen) {
+            if (mListening == listen) return;
+            mListening = listen;
+            updateListener();
+        }
+
+        void updateListener() {
+            if (!mConfigured || mSensor == null) return;
+            if (mListening && !mRegistered && enabledBySetting()) {
+				mEntryTimestamp = SystemClock.elapsedRealtime();
+                mRegistered = mSensorManager.registerListener(this, mSensor,
+                        SensorManager.SENSOR_DELAY_NORMAL, 0);
+            } else if (mRegistered) {
+                mSensorManager.unregisterListener(this);
+                mRegistered = false;
+            }
+        }
+
+        boolean enabledBySetting() {
+            return Settings.Secure.getIntForUser(mContext.getContentResolver(), mSetting, 0, UserHandle.USER_CURRENT) != 0;
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            DozeLog.traceSensor(mContext, mPulseReason);
+			long millis = SystemClock.elapsedRealtime() - mEntryTimestamp;
+			if (millis < MIN_PULSE_INTERVAL_MS) {
+				return;
+			}
+
+			mEntryTimestamp = SystemClock.elapsedRealtime();
+			if (event.values[0] == 1) {
+				if (enabledBySetting()) {
+                    mCallback.onSensorPulse(mPulseReason, false, -1, -1);
+                    updateListener();
+                }
+			}
+        }
+      
+        public void registerSettingsObserver(ContentObserver settingsObserver) {
+            if (mConfigured && !TextUtils.isEmpty(mSetting)) {
+                mResolver.registerContentObserver(
+                        Settings.Secure.getUriFor(mSetting), false /* descendants */,
+                        mSettingsObserver, UserHandle.USER_ALL);
+            }
+        }
     }
 
     private class ProxSensor implements SensorEventListener {
