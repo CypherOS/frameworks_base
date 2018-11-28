@@ -39,12 +39,13 @@ public class AmbientDisplayConfiguration {
                 || pulseOnPickupEnabled(user)
                 || pulseOnDoubleTapEnabled(user)
                 || pulseOnLongPressEnabled(user)
-                || alwaysOnEnabled(user);
+                || alwaysOnEnabled(user)
+                || pulseOnHandWaveEnabled(user);
     }
 
     public boolean available() {
         return pulseOnNotificationAvailable() || pulseOnPickupAvailable()
-                || pulseOnDoubleTapAvailable();
+                || pulseOnDoubleTapAvailable() || pulseOnHandWaveAvailable();
     }
 
     public boolean pulseOnNotificationEnabled(int user) {
@@ -72,6 +73,20 @@ public class AmbientDisplayConfiguration {
         return !alwaysOnEnabled(user);
     }
 
+    public boolean pulseOnHandWaveEnabled(int user) {
+        boolean settingEnabled = boolSettingDefaultOn(Settings.Secure.DOZE_PULSE_ON_HAND_WAVE, user);
+        return (settingEnabled || alwaysOnEnabled(user)) && pulseOnHandWaveAvailable();
+    }
+
+    public boolean pulseOnHandWaveAvailable() {
+        return mContext.getResources().getBoolean(R.bool.config_dozePulseHandWave)
+                && ambientDisplayAvailable() && !TextUtils.isEmpty(handWaveSensorType());
+    }
+
+    public boolean pulseOnHandWaveCanBeModified(int user) {
+        return !alwaysOnEnabled(user);
+    }
+
     public boolean pulseOnDoubleTapEnabled(int user) {
         return boolSettingDefaultOn(Settings.Secure.DOZE_PULSE_ON_DOUBLE_TAP, user)
                 && pulseOnDoubleTapAvailable();
@@ -91,6 +106,10 @@ public class AmbientDisplayConfiguration {
 
     public String longPressSensorType() {
         return mContext.getResources().getString(R.string.config_dozeLongPressSensorType);
+    }
+
+	public String handWaveSensorType() {
+        return mContext.getResources().getString(R.string.config_dozeHandWaveSensorType);
     }
 
     public boolean pulseOnLongPressEnabled(int user) {
