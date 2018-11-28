@@ -143,4 +143,7 @@
        TransactionId: The transaction id required to send to the biometrics hal. -->
   <java-symbol type="string" name="config_BiometricTransactorDescriptor" />
   <java-symbol type="integer" name="config_BiometricTransactorTransactionId" />
+
+  <!-- Doze Addon: should the TYPE_PROXIMITY sensor be used as a pulse signal. -->
+  <java-symbol type="bool" name="config_dozePulseHandWave" />
 </resources>

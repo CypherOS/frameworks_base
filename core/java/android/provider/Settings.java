@@ -7368,6 +7368,14 @@ public final class Settings {
         private static final Validator DOZE_PULSE_ON_PICK_UP_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * Whether the device should pulse on hand wave gesture.
+         * @hide
+         */
+        public static final String DOZE_PULSE_ON_HAND_WAVE = "doze_pulse_on_hand_wave";
+		
+		private static final Validator DOZE_PULSE_ON_HAND_WAVE_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
          * Whether the device should pulse on long press gesture.
          * @hide
          */
@@ -8303,6 +8311,7 @@ public final class Settings {
             QS_TILES,
             DOZE_ENABLED,
             DOZE_PULSE_ON_PICK_UP,
+            DOZE_PULSE_ON_HAND_WAVE,
             DOZE_PULSE_ON_DOUBLE_TAP,
             NFC_PAYMENT_DEFAULT_COMPONENT,
             AUTOMATIC_STORAGE_MANAGER_DAYS_TO_RETAIN,
@@ -8441,6 +8450,7 @@ public final class Settings {
             VALIDATORS.put(DOZE_ENABLED, DOZE_ENABLED_VALIDATOR);
             VALIDATORS.put(DOZE_PULSE_ON_PICK_UP, DOZE_PULSE_ON_PICK_UP_VALIDATOR);
             VALIDATORS.put(DOZE_PULSE_ON_DOUBLE_TAP, DOZE_PULSE_ON_DOUBLE_TAP_VALIDATOR);
+			VALIDATORS.put(DOZE_PULSE_ON_HAND_WAVE, DOZE_PULSE_ON_HAND_WAVE_VALIDATOR);
             VALIDATORS.put(NFC_PAYMENT_DEFAULT_COMPONENT, NFC_PAYMENT_DEFAULT_COMPONENT_VALIDATOR);
             VALIDATORS.put(AUTOMATIC_STORAGE_MANAGER_DAYS_TO_RETAIN,
                     AUTOMATIC_STORAGE_MANAGER_DAYS_TO_RETAIN_VALIDATOR);
