@@ -138,4 +138,7 @@
   <java-symbol type="drawable" name="weather_sunny" />
   <java-symbol type="drawable" name="weather_thunderstorms" />
   <java-symbol type="drawable" name="weather_windy" />
+
+  <!-- Doze Addon: should the TYPE_PROXIMITY sensor be used as a pulse signal. -->
+  <java-symbol type="bool" name="config_dozePulseHandWave" />
 </resources>
