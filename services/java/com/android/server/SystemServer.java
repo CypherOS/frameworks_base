@@ -63,6 +63,7 @@ import com.android.internal.os.BinderInternal;
 import com.android.internal.util.ConcurrentUtils;
 import com.android.internal.util.EmergencyAffordanceManager;
 import com.android.internal.widget.ILockSettings;
+import com.android.server.DeviceHardwareService;
 import com.android.server.accessibility.AccessibilityManagerService;
 import com.android.server.am.ActivityManagerService;
 import com.android.server.audio.AudioService;
@@ -681,6 +682,13 @@ public final class SystemServer {
         OverlayManagerService overlayManagerService = new OverlayManagerService(
                 mSystemContext, installer);
         mSystemServiceManager.startService(overlayManagerService);
+        traceEnd();
+
+		// Manages hardware features per device.
+        traceBeginAndSlog("StartDeviceHardwareService");
+		DeviceHardwareService deviceHwService = new DeviceHardwareService(
+		        mSystemContext);
+        mSystemServiceManager.startService(deviceHwService);
         traceEnd();
 
         if (SystemProperties.getInt("persist.sys.displayinset.top", 0) > 0) {
