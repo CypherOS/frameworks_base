@@ -317,6 +317,28 @@ public class SystemServiceManager {
         }
     }
 
+	public String getHardwareFeatures() {
+        Slog.i(TAG, "Calling getHardwareFeatures" + userHandle);
+        final int serviceLen = mServices.size();
+		String features = null;
+        for (int i = 0; i < serviceLen; i++) {
+            final SystemService service = mServices.get(i);
+            Trace.traceBegin(Trace.TRACE_TAG_SYSTEM_SERVER, "getHardwareFeatures"
+                    + service.getClass().getName());
+            long time = SystemClock.elapsedRealtime();
+            try {
+                features = service.getHardwareFeatures();
+            } catch (Exception ex) {
+                Slog.wtf(TAG, "Failure reporting hardware features" + userHandle
+                        + " to service " + service.getClass().getName(), ex);
+				features = ex.toString();
+            }
+            warnIfTooLong(SystemClock.elapsedRealtime() - time, service, "getHardwareFeatures");
+            Trace.traceEnd(Trace.TRACE_TAG_SYSTEM_SERVER);
+        }
+		return features;
+    }
+
     /**
      * Outputs the state of this manager to the System log.
      */
