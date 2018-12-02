@@ -200,6 +200,13 @@ public abstract class SystemService {
     public void onCleanupUser(int userHandle) {}
 
     /**
+     * Called when device hardware features are requested by a service
+     * and returns to declared list of features for the given device.
+     * When this method returns, the service should be published.
+     */
+    public abstract String getHardwareFeatures();
+
+    /**
      * Publish the service so it is accessible to other services and apps.
      *
      * @param name the name of the new service
