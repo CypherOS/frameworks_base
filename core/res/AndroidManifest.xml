@@ -608,6 +608,9 @@
 
     <!-- Ambient Indication -->
     <protected-broadcast android:name="com.android.internal.util.ambient.play.AMBIENT_PLAY_SONG_MATCH" />
+	
+	<!-- Device Hardware -->
+	<protected-broadcast android:name="android.intent.action.INITIALIZE_DEVICE_HARDWARE" />
 
     <!-- ====================================================================== -->
     <!--                          RUNTIME PERMISSIONS                           -->
@@ -3996,6 +3999,11 @@
          @hide <p>Not for use by third-party applications. -->
     <permission android:name="android.permission.DISABLE_HIDDEN_API_CHECKS"
                 android:protectionLevel="signature" />
+
+	<!-- Allows an application access to the aoscp hardware abstraction framework
+        <p>Not for use by third-party applications. -->
+    <permission android:name="android.permission.DEVICE_HARDWARE_ACCESS"
+                android:protectionLevel="signature|privileged" />
 
     <application android:process="system"
                  android:persistent="true"
