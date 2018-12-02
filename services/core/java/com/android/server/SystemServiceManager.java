@@ -22,9 +22,13 @@ import android.os.SystemClock;
 import android.os.Trace;
 import android.util.Slog;
 
+import com.android.server.SystemService.HwSystemService;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+
+import static java.util.Arrays.asList;
 
 /**
  * Manages creating, starting, and other lifecycle events of
@@ -44,6 +48,9 @@ public class SystemServiceManager {
 
     // Services that should receive lifecycle events.
     private final ArrayList<SystemService> mServices = new ArrayList<SystemService>();
+	private final ArrayList<HwSystemService> mHwServices = new ArrayList<HwSystemService>(
+	        asList("DeviceHardwareService")
+	);
 
     private int mCurrentPhase = -1;
 
@@ -315,6 +322,28 @@ public class SystemServiceManager {
             Slog.w(TAG, "Service " + service.getClass().getName() + " took " + duration + " ms in "
                     + operation);
         }
+    }
+
+    public String getHardwareFeatures() {
+        Slog.i(TAG, "Calling getHardwareFeatures");
+        final int serviceLen = mHwServices.size();
+        String hwFeatures = null;
+        for (int i = 0; i < serviceLen; i++) {
+            final HwSystemService service = mHwServices.get(i);
+            Trace.traceBegin(Trace.TRACE_TAG_SYSTEM_SERVER, "getHardwareFeatures"
+                    + service.getClass().getName());
+            long time = SystemClock.elapsedRealtime();
+            try {
+                hwFeatures = service.getHardwareFeatures();
+            } catch (Exception ex) {
+                Slog.wtf(TAG, "Failure reporting hardware features"
+                        + " to service " + service.getClass().getName(), ex);
+                hwFeatures = ex.toString();
+            }
+            warnIfTooLong(SystemClock.elapsedRealtime() - time, service, "getHardwareFeatures");
+            Trace.traceEnd(Trace.TRACE_TAG_SYSTEM_SERVER);
+        }
+        return hwFeatures;
     }
 
     /**

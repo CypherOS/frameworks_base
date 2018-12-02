@@ -55,6 +55,8 @@ import android.util.Slog;
 import android.util.TimingsTraceLog;
 import android.view.WindowManager;
 
+import co.aoscp.server.DeviceHardwareService;
+
 import com.android.internal.R;
 import com.android.internal.app.ColorDisplayController;
 import com.android.internal.logging.MetricsLogger;
@@ -1637,6 +1639,15 @@ public final class SystemServer {
             traceBeginAndSlog("StartAutoFillService");
             mSystemServiceManager.startService(AUTO_FILL_MANAGER_SERVICE_CLASS);
             traceEnd();
+        }
+
+        if (context.getPackageManager().hasSystemFeature(mSystemServiceManager.getHardwareFeatures())) {
+            // Device Hardware Service
+            traceBeginAndSlog("StartDeviceHardwareService");
+            mSystemServiceManager.startService(DeviceHardwareService.class);
+            traceEnd();
+        } else {
+            Slog.i(TAG, "Not starting DeviceHardwareService, because no features were found");
         }
 
         // It is now time to start up the app processes...
