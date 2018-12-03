@@ -260,4 +260,18 @@ public abstract class SystemService {
     private SystemServiceManager getManager() {
         return LocalServices.getService(SystemServiceManager.class);
     }
+
+	public abstract class HwSystemService extends SystemService {
+
+		public HwSystemService(Context context) {
+			super(context);
+		}
+		
+		/**
+		 * Called when device hardware features are requested by a service
+		 * and returns to declared list of features for the given device.
+		 * When this method returns, the service should be published.
+		 */
+		public abstract String getHardwareFeatures();
+	}
 }
