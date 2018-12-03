@@ -232,6 +232,9 @@ public final class SystemServer {
     private static final String CAR_SERVICE_HELPER_SERVICE_CLASS =
             "com.android.internal.car.CarServiceHelperService";
 
+	private static final String DEVICE_HARDWARE_SERVICE_CLASS =
+            "co.aoscp.server.DeviceHardwareService";
+
     private static final String PERSISTENT_DATA_BLOCK_PROP = "ro.frp.pst";
 
     private static final String UNCRYPT_PACKAGE_FILE = "/cache/recovery/uncrypt_file";
@@ -1637,6 +1640,15 @@ public final class SystemServer {
             traceBeginAndSlog("StartAutoFillService");
             mSystemServiceManager.startService(AUTO_FILL_MANAGER_SERVICE_CLASS);
             traceEnd();
+        }
+
+        if (mPackageManager.hasSystemFeature(mSystemServiceManager.getHardwareFeatures())) {
+            // Device Hardware Service
+            traceBeginAndSlog("StartDeviceHardwareService");
+            mSystemServiceManager.startHwService(DEVICE_HARDWARE_SERVICE_CLASS);
+            traceEnd();
+        } else {
+            Slog.i(TAG, "Not starting DeviceHardwareService, because no features were found");
         }
 
         // It is now time to start up the app processes...
