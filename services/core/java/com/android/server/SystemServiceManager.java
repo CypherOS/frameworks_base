@@ -22,6 +22,8 @@ import android.os.SystemClock;
 import android.os.Trace;
 import android.util.Slog;
 
+import com.android.server.SystemService.HwSystemService;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -44,6 +46,7 @@ public class SystemServiceManager {
 
     // Services that should receive lifecycle events.
     private final ArrayList<SystemService> mServices = new ArrayList<SystemService>();
+	private final ArrayList<HwSystemService> mHwServices = new ArrayList<HwSystemService>();
 
     private int mCurrentPhase = -1;
 
@@ -69,6 +72,28 @@ public class SystemServiceManager {
                     + "feature is available on this device before trying to start the "
                     + "services that implement it", ex);
         }
+        return startService(serviceClass);
+    }
+
+	/**
+     * Starts a hardware service by class name.
+     *
+     * @return The service instance.
+     */
+    @SuppressWarnings("unchecked")
+    public SystemService startHwService(String className) {
+        final Class<SystemService> serviceClass;
+        try {
+            serviceClass = (Class<SystemService>)Class.forName(className);
+        } catch (ClassNotFoundException ex) {
+            Slog.i(TAG, "Starting " + className);
+            throw new RuntimeException("Failed to create service " + className
+                    + ": service class not found, usually indicates that the caller should "
+                    + "have called PackageManager.hasSystemFeature() on getHardwareFeatures() "
+                    + "to check whether the feature is available on this device before trying "
+                    + "to start the services that implement it", ex);
+        }
+		mHwServices.add(serviceClass);
         return startService(serviceClass);
     }
 
@@ -315,6 +340,28 @@ public class SystemServiceManager {
             Slog.w(TAG, "Service " + service.getClass().getName() + " took " + duration + " ms in "
                     + operation);
         }
+    }
+
+    public String getHardwareFeatures() {
+        Slog.i(TAG, "Calling getHardwareFeatures");
+        final int serviceLen = mHwServices.size();
+        String hwFeatures = null;
+        for (int i = 0; i < serviceLen; i++) {
+            final HwSystemService service = mHwServices.get(i);
+            Trace.traceBegin(Trace.TRACE_TAG_SYSTEM_SERVER, "getHardwareFeatures"
+                    + service.getClass().getName());
+            long time = SystemClock.elapsedRealtime();
+            try {
+                hwFeatures = service.getHardwareFeatures();
+            } catch (Exception ex) {
+                Slog.wtf(TAG, "Failure reporting hardware features"
+                        + " to service " + service.getClass().getName(), ex);
+                hwFeatures = ex.toString();
+            }
+            warnIfTooLong(SystemClock.elapsedRealtime() - time, service, "getHardwareFeatures");
+            Trace.traceEnd(Trace.TRACE_TAG_SYSTEM_SERVER);
+        }
+        return hwFeatures;
     }
 
     /**
