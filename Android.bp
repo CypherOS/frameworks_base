@@ -663,6 +663,7 @@ java_library {
         "okhttp",
         "bouncycastle",
         "ext",
+        "hardware.aoscp.controllers",
     ],
 
     static_libs: [

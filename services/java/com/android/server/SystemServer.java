@@ -232,6 +232,9 @@ public final class SystemServer {
     private static final String CAR_SERVICE_HELPER_SERVICE_CLASS =
             "com.android.internal.car.CarServiceHelperService";
 
+    private static final String DEVICE_HARDWARE_SERVICE_CLASS =
+            "co.aoscp.server.DeviceHardwareService";
+
     private static final String PERSISTENT_DATA_BLOCK_PROP = "ro.frp.pst";
 
     private static final String UNCRYPT_PACKAGE_FILE = "/cache/recovery/uncrypt_file";
@@ -254,6 +257,7 @@ public final class SystemServer {
 
     private Context mSystemContext;
     private SystemServiceManager mSystemServiceManager;
+    private SystemServiceHelper mSystemServiceHelper;
 
     // TODO: remove all of these references by improving dependency resolution and boot phases
     private PowerManagerService mPowerManagerService;
@@ -423,6 +427,9 @@ public final class SystemServer {
             mSystemServiceManager.setStartInfo(mRuntimeRestart,
                     mRuntimeStartElapsedTime, mRuntimeStartUptime);
             LocalServices.addService(SystemServiceManager.class, mSystemServiceManager);
+
+            // Create the system service helper
+            mSystemServiceHelper = new SystemServiceHelper(mSystemContext);
             // Prepare the thread pool for init tasks that can be parallelized
             SystemServerInitThreadPool.get();
         } finally {
@@ -1637,6 +1644,15 @@ public final class SystemServer {
             traceBeginAndSlog("StartAutoFillService");
             mSystemServiceManager.startService(AUTO_FILL_MANAGER_SERVICE_CLASS);
             traceEnd();
+        }
+
+        HwSystemService hwSystemService =  mSystemServiceHelper.getServiceFor(DEVICE_HARDWARE_SERVICE_CLASS);
+        if (mPackageManager.hasSystemFeature(hwSystemService.getHardwareFeatures())) {
+            traceBeginAndSlog("StartDeviceHardwareService");
+            mSystemServiceManager.startService(hwSystemService.getClass());
+            traceEnd();
+        } else {
+            Slog.i(TAG, "Not starting DeviceHardwareService, because no features were found");
         }
 
         // It is now time to start up the app processes...
