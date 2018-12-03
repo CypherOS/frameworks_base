@@ -157,4 +157,15 @@
          TransactionId: The transaction id required to send to the biometrics hal. -->
     <string name="config_BiometricTransactorDescriptor" translatable="false"></string>
     <integer name="config_BiometricTransactorTransactionId">0</integer>
+	
+	<!-- Display mode remapping table.
+         If the mode names returned by the backend do not match
+         the predefined and translated strings in the Settings
+         app, they can be remapped here. The format is
+         "oldname:newname", one per entry. -->
+    <string-array name="config_displayModeMappings" translatable="false">
+    </string-array>
+
+    <!-- Should we filter any display modes which are unampped? -->
+    <bool name="config_filterDisplayModes">false</bool>
 </resources>

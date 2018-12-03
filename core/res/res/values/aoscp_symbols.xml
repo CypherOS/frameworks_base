@@ -143,4 +143,8 @@
        TransactionId: The transaction id required to send to the biometrics hal. -->
   <java-symbol type="string" name="config_BiometricTransactorDescriptor" />
   <java-symbol type="integer" name="config_BiometricTransactorTransactionId" />
+
+  <!-- DisplayEngine (DisplayMode) Mappings -->
+  <java-symbol type="bool" name="config_filterDisplayModes" />
+  <java-symbol type="array" name="config_displayModeMappings" />
 </resources>
