@@ -183,7 +183,6 @@ import android.database.ContentObserver;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.hardware.biometrics.BiometricTransactor;
 import android.hardware.display.DisplayManager;
 import android.hardware.input.InputManager;
 import android.hardware.hdmi.HdmiControlManager;
@@ -269,6 +268,8 @@ import android.view.animation.AnimationUtils;
 import android.view.autofill.AutofillManagerInternal;
 import android.view.inputmethod.InputMethodManagerInternal;
 
+import aoscp.hardware.DeviceHardwareManager;
+
 import com.android.internal.R;
 import com.android.internal.accessibility.AccessibilityShortcutController;
 import com.android.internal.annotations.GuardedBy;
@@ -301,7 +302,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.Throwable;
 import java.util.List;
 
 /**
@@ -906,8 +906,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int MSG_REQUEST_TRANSIENT_BARS_ARG_STATUS = 0;
     private static final int MSG_REQUEST_TRANSIENT_BARS_ARG_NAVIGATION = 1;
 
-    private BiometricTransactor mBiometricTransactor;
-
     private boolean mHasAlertSlider = false;
 
     private class PolicyHandler extends Handler {
@@ -1144,19 +1142,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         final boolean navBarEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.NAVIGATION_BAR_ENABLED, defaultToNavigationBar ? 1 : 0,
                 UserHandle.USER_CURRENT) == 1;
-        final boolean isFingerprintNavigation = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_supportsFingerprintNavigation);
+        final DeviceHardwareManager hwManager = DeviceHardwareManager.getInstance(mContext);
+        final boolean isFingerprintNavigation = hwManager.isSupported(DeviceHardwareManager.FEATURE_FINGERPRINT_NAVIGATION);
         final boolean canUse = mScreenOnFully && !navBarEnabled;
         if (isFingerprintNavigation) {
-            try {
-                mBiometricTransactor = new BiometricTransactor(mContext);
-            } catch (Throwable t) { }
-            if (mBiometricTransactor != null) {
-                mBiometricTransactor.sendCmdToHal(canUse
-                        ? mBiometricTransactor.sendMsgEnable()
-                        : mBiometricTransactor.sendMsgDisable());
-                Log.d(TAG, "BiometricTransactor: Sending navigation command");
-            }
+            hwManager.setFingerprintNavigation(canUse);
         }
     }
 

@@ -100,9 +100,6 @@
   <!-- Whether to cleanup fingerprints upon connection to the daemon and when user switches -->
   <java-symbol type="bool" name="config_cleanupUnusedFingerprints" />
 
-  <!-- Determines whether the device supports fingerprint navigation -->
-  <java-symbol type="bool" name="config_supportsFingerprintNavigation" />
-
   <!-- Immersive cling -->
   <java-symbol type="color" name="immersive_cling_bg_color" />
   <java-symbol type="color" name="immersive_cling_text_color" />
@@ -138,9 +135,4 @@
   <java-symbol type="drawable" name="weather_sunny" />
   <java-symbol type="drawable" name="weather_thunderstorms" />
   <java-symbol type="drawable" name="weather_windy" />
-
-  <!-- Descriptor: Path to the vendors biometrics hal, required to send commands.
-       TransactionId: The transaction id required to send to the biometrics hal. -->
-  <java-symbol type="string" name="config_BiometricTransactorDescriptor" />
-  <java-symbol type="integer" name="config_BiometricTransactorTransactionId" />
 </resources>
