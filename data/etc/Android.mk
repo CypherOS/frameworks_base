@@ -47,3 +47,30 @@ LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)/sysconfig
 LOCAL_SRC_FILES := $(LOCAL_MODULE)
 include $(BUILD_PREBUILT)
+
+########################
+include $(CLEAR_VARS)
+LOCAL_MODULE := privapp_whitelist_com.android.settings
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_RELATIVE_PATH := permissions
+LOCAL_MODULE_STEM := com.android.settings.xml
+LOCAL_SRC_FILES := com.android.settings.xml
+include $(BUILD_PREBUILT)
+
+########################
+include $(CLEAR_VARS)
+LOCAL_MODULE := privapp_whitelist_com.android.systemui
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_RELATIVE_PATH := permissions
+LOCAL_MODULE_STEM := com.android.systemui.xml
+LOCAL_SRC_FILES := com.android.systemui.xml
+include $(BUILD_PREBUILT)
+
+
+########################
+include $(CLEAR_VARS)
+LOCAL_MODULE := com.android.timezone.updater.xml
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_RELATIVE_PATH := permissions
+LOCAL_SRC_FILES := $(LOCAL_MODULE)
+include $(BUILD_PREBUILT)
