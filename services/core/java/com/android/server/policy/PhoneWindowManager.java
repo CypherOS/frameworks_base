@@ -1137,6 +1137,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     private void updateFingerprintNavigation() {
+        // Wait until system is ready before initiating this
+        // method to ensure hw services are up and running.
+        if (!mSystemReady) return;
         final boolean defaultToNavigationBar = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_defaultToNavigationBar);
         final boolean navBarEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
