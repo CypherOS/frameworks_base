@@ -907,6 +907,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int MSG_REQUEST_TRANSIENT_BARS_ARG_NAVIGATION = 1;
 
     private boolean mHasAlertSlider = false;
+	private DeviceHardwareManager mHwManager;
 
     private class PolicyHandler extends Handler {
         @Override
@@ -1137,17 +1138,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     private void updateFingerprintNavigation() {
-        final boolean defaultToNavigationBar = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_defaultToNavigationBar);
-        final boolean navBarEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.NAVIGATION_BAR_ENABLED, defaultToNavigationBar ? 1 : 0,
-                UserHandle.USER_CURRENT) == 1;
-        final DeviceHardwareManager hwManager = DeviceHardwareManager.getInstance(mContext);
-        final boolean isFingerprintNavigation = hwManager.isSupported(DeviceHardwareManager.FEATURE_FINGERPRINT_NAVIGATION);
-        final boolean canUse = mScreenOnFully && !navBarEnabled;
-        if (isFingerprintNavigation) {
-            hwManager.setFingerprintNavigation(canUse);
-        }
+		if (mHwManager != null && mSystemReady) {
+			final boolean defaultToNavigationBar = mContext.getResources().getBoolean(
+			        com.android.internal.R.bool.config_defaultToNavigationBar);
+            final boolean navBarEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_ENABLED, defaultToNavigationBar ? 1 : 0,
+                    UserHandle.USER_CURRENT) == 1;
+            final boolean isFingerprintNavigation = mHwManager.isSupported(DeviceHardwareManager.FEATURE_FINGERPRINT_NAVIGATION);
+            final boolean canUse = mScreenOnFully && !navBarEnabled;
+            if (isFingerprintNavigation) {
+                mHwManager.setFingerprintNavigation(canUse);
+            }
+		}
     }
 
     class MyWakeGestureListener extends WakeGestureListener {
@@ -2281,7 +2283,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mOrientationListener.setCurrentRotation(windowManager.getDefaultDisplayRotation());
         } catch (RemoteException ex) { }
         mSettingsObserver = new SettingsObserver(mHandler);
-        mSettingsObserver.observe();
         mShortcutManager = new ShortcutManager(context);
         mUiMode = context.getResources().getInteger(
                 com.android.internal.R.integer.config_defaultUiModeType);
@@ -8425,6 +8426,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mAlertSliderObserver = new AlertSliderObserver(mContext);
             mAlertSliderObserver.startObserving(com.android.internal.R.string.alert_slider_uevent_match_path);
         }
+
+		mHwManager = DeviceHardwareManager.getInstance(mContext);
+		mSettingsObserver.observe();
 
         readCameraLensCoverState();
         updateUiMode();
