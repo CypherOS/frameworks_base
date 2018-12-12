@@ -907,6 +907,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int MSG_REQUEST_TRANSIENT_BARS_ARG_NAVIGATION = 1;
 
     private boolean mHasAlertSlider = false;
+	private DeviceHardwareManager mHwManager;
 
     private class PolicyHandler extends Handler {
         @Override
@@ -1131,22 +1132,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             } else {
                 updateSettings();
                 updateRotation(false);
-                updateFingerprintNavigation();
             }
-        }
-    }
-
-    private void updateFingerprintNavigation() {
-        final boolean defaultToNavigationBar = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_defaultToNavigationBar);
-        final boolean navBarEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.NAVIGATION_BAR_ENABLED, defaultToNavigationBar ? 1 : 0,
-                UserHandle.USER_CURRENT) == 1;
-        final DeviceHardwareManager hwManager = DeviceHardwareManager.getInstance(mContext);
-        final boolean isFingerprintNavigation = hwManager.isSupported(DeviceHardwareManager.FEATURE_FINGERPRINT_NAVIGATION);
-        final boolean canUse = mScreenOnFully && !navBarEnabled;
-        if (isFingerprintNavigation) {
-            hwManager.setFingerprintNavigation(canUse);
         }
     }
 
@@ -2281,7 +2267,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mOrientationListener.setCurrentRotation(windowManager.getDefaultDisplayRotation());
         } catch (RemoteException ex) { }
         mSettingsObserver = new SettingsObserver(mHandler);
-        mSettingsObserver.observe();
         mShortcutManager = new ShortcutManager(context);
         mUiMode = context.getResources().getInteger(
                 com.android.internal.R.integer.config_defaultUiModeType);
@@ -2847,6 +2832,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                                 Settings.System.BUTTON_BRIGHTNESS_ENABLED, 0);
                     }
                 }
+				if (mHwManager != null) {
+					final boolean isFingerprintNavigation = mHwManager.isSupported(DeviceHardwareManager.FEATURE_FINGERPRINT_NAVIGATION);
+					final boolean canUse = mScreenOnFully && !mNavBarEnabled;
+					if (isFingerprintNavigation) {
+                        mHwManager.setFingerprintNavigation(canUse);
+                    }
+				}
             }
 
             readConfigurationDependentBehaviors();
@@ -2891,7 +2883,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (mImmersiveModeConfirmation != null) {
                 mImmersiveModeConfirmation.loadSetting(mCurrentUserId);
             }
-            updateFingerprintNavigation();
         }
         synchronized (mWindowManagerFuncs.getWindowManagerLock()) {
             PolicyControl.reloadFromSetting(mContext);
@@ -7731,7 +7722,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
         reportScreenStateToVrManager(false);
-        updateFingerprintNavigation();
     }
 
     private long getKeyguardDrawnTimeout() {
@@ -7857,7 +7847,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             } catch (RemoteException unhandled) {
             }
         }
-        updateFingerprintNavigation();
     }
 
     private void handleHideBootMessage() {
@@ -8425,6 +8414,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mAlertSliderObserver = new AlertSliderObserver(mContext);
             mAlertSliderObserver.startObserving(com.android.internal.R.string.alert_slider_uevent_match_path);
         }
+
+		mHwManager = DeviceHardwareManager.getInstance(mContext);
+		mSettingsObserver.observe();
 
         readCameraLensCoverState();
         updateUiMode();
