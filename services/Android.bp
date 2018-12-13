@@ -30,11 +30,11 @@ java_library {
         "services.usb",
         "services.voiceinteraction",
         "android.hidl.base-V1.0-java",
-        "hardware.aoscp",
     ],
 
     libs: [
         "android.hidl.manager-V1.0-java",
+		"hardware.aoscp",
     ],
 
     // Uncomment to enable output of certain warnings (deprecated, unchecked)
