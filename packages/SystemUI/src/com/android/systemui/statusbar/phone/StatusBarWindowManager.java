@@ -253,6 +253,7 @@ public class StatusBarWindowManager implements RemoteInputController.Callback, D
         applyBrightness(state);
         applyHasTopUi(state);
         applySleepToken(state);
+        applyNotTouchable(state);
         if (mLp.copyFrom(mLpChanged) != 0) {
             mWindowManager.updateViewLayout(mStatusBarView, mLp);
         }
@@ -294,6 +295,14 @@ public class StatusBarWindowManager implements RemoteInputController.Callback, D
 
     private void applyHasTopUi(State state) {
         mHasTopUiChanged = isExpanded(state);
+    }
+
+    private void applyNotTouchable(State state) {
+        if (state.notTouchable) {
+            mLpChanged.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        } else {
+            mLpChanged.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        }
     }
 
     private void applySleepToken(State state) {
@@ -428,6 +437,11 @@ public class StatusBarWindowManager implements RemoteInputController.Callback, D
         apply(mCurrentState);
     }
 
+    public void setNotTouchable(boolean notTouchable) {
+        mCurrentState.notTouchable = notTouchable;
+        apply(mCurrentState);
+    }
+
     public void setStateListener(OtherwisedCollapsedListener listener) {
         mListener = listener;
     }
@@ -458,6 +472,7 @@ public class StatusBarWindowManager implements RemoteInputController.Callback, D
         boolean forceUserActivity;
         boolean backdropShowing;
         boolean wallpaperSupportsAmbientMode;
+        boolean notTouchable;
 
         /**
          * The {@link StatusBar} state from the status bar.
