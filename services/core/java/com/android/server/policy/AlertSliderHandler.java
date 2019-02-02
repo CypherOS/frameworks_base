@@ -51,10 +51,10 @@ public class AlertSliderHandler {
     private int mSliderModeBottom;
 
     public AlertSliderHandler(Context context) {
-        mAudioManager = mContext.getSystemService(AudioManager.class);
+        mAudioManager = context.getSystemService(AudioManager.class);
         mContext = context;
         mHandler = new Handler();
-        mVibrator = mContext.getSystemService(Vibrator.class);
+        mVibrator = context.getSystemService(Vibrator.class);
 
         mSliderModeTop = mContext.getResources().getInteger(R.integer.config_sliderTopCode);
         mSliderModeMiddle = mContext.getResources().getInteger(R.integer.config_sliderMiddleCode);
