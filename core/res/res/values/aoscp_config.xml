@@ -152,4 +152,14 @@
 
     <!-- Whether to allow process with media UID to access CameraServiceProxy -->
     <bool name="config_allowMediaUidForCameraServiceProxy">false</bool>
+
+	<string-array translatable="false" name="config_platformBlackTheme">
+        <item>co.aoscp.theme.black</item>
+        <item>co.aoscp.theme.settings.black</item>
+    </string-array>
+
+	<string-array translatable="false" name="config_platformDarkTheme">
+        <item>co.aoscp.theme.dark</item>
+        <item>co.aoscp.theme.settings.dark</item>
+    </string-array>
 </resources>

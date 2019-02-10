@@ -22,6 +22,7 @@ import android.content.om.OverlayInfo;
 import android.os.RemoteException;
 import android.provider.Settings;
 
+import com.android.internal.R;
 import com.android.systemui.statusbar.NotificationLockscreenUserManager;
 
 /**
@@ -35,15 +36,6 @@ public class ColorManagerHelper {
     // Theme Packages
     private static final String THEME_BLACK = "co.aoscp.theme.black";
     private static final String THEME_DARK = "co.aoscp.theme.dark";
-
-    public static final String[] BLACK_THEME = {
-            "co.aoscp.theme.black",
-            "co.aoscp.theme.settings.black",
-    };
-    public static final String[] DARK_THEME = {
-            "co.aoscp.theme.dark",
-            "co.aoscp.theme.settings.dark",
-    };
 
     // Accent Packages
     private static final String ACCENT_DEFAULT = "default";
@@ -96,6 +88,9 @@ public class ColorManagerHelper {
             ACCENT_GREY,
             ACCENT_WHITE,
     };
+
+	public static final String[] BLACK_THEME = R.array.config_platformBlackTheme;
+	public static final String[] DARK_THEME = R.array.config_platformDarkTheme;
 
     public static boolean isUsingDarkTheme(IOverlayManager om, NotificationLockscreenUserManager lockUserManager) {
         OverlayInfo themeInfo = null;
