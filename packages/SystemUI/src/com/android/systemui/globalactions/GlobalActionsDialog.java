@@ -487,19 +487,16 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener,
             addedKeys.add(actionKey);
         }
         mAdapter = new MyAdapter();
-        OnItemLongClickListener onItemLongClickListener = new OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
-                    long id) {
-                final Action action = mAdapter.getItem(position);
-                if (action instanceof LongPressAction) {
-                    mDialog.dismiss();
-                    return ((LongPressAction) action).onLongPress();
-                }
-                return false;
+        OnItemLongClickListener onItemLongClickListener = (parent, view, position, id) -> {
+            final Action action = mAdapter.getItem(position);
+            if (action instanceof LongPressAction) {
+                mDialog.dismiss();
+                return ((LongPressAction) action).onLongPress();
             }
+            return false;
         };
-        ActionsDialog dialog = new ActionsDialog(mContext, this, mAdapter, onItemLongClickListener);
+        ActionsDialog dialog = new ActionsDialog(mContext, this, mAdapter, onItemLongClickListener,
+                mSeparatedEmergencyButtonEnabled);
         dialog.setCanceledOnTouchOutside(false); // Handled by the custom class.
         dialog.setKeyguardShowing(mKeyguardShowing);
         dialog.setOnDismissListener(this);
