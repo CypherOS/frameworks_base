@@ -163,4 +163,14 @@
     <!-- Do the battery/notification LEDs support pulsing?
          Used to decide if we show pulse settings -->
     <bool name="config_ledCanPulse">false</bool>
+
+	<string-array translatable="false" name="config_platformBlackTheme">
+        <item>co.aoscp.theme.black</item>
+        <item>co.aoscp.theme.settings.black</item>
+    </string-array>
+
+	<string-array translatable="false" name="config_platformDarkTheme">
+        <item>co.aoscp.theme.dark</item>
+        <item>co.aoscp.theme.settings.dark</item>
+    </string-array>
 </resources>
