@@ -46,6 +46,12 @@
         android:layout_weight="1"
         android:gravity="center_vertical|center_horizontal" />
 
+	<com.google.android.material.chip.Chip
+        android:id="@+id/user_info"
+		style="@style/Widget.MaterialComponents.Chip.Action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <com.android.systemui.BatteryMeterView
         android:id="@+id/battery"
         android:layout_height="match_parent"
