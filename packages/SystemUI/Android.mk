@@ -51,7 +51,7 @@ LOCAL_STATIC_ANDROID_LIBRARIES := \
     android-slices-builders \
     android-arch-core-runtime \
     android-arch-lifecycle-extensions \
-    aoscp-support-lottie
+	aoscp-support-lottie
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     SystemUI-tags \
@@ -60,6 +60,8 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
 LOCAL_JAVA_LIBRARIES := telephony-common \
     android.car
 
+LOCAL_STATIC_JAVA_AAR_LIBRARIES := android-material-components
+
 LOCAL_PACKAGE_NAME := SystemUI
 LOCAL_PRIVATE_PLATFORM_APIS := true
 LOCAL_CERTIFICATE := platform
@@ -67,6 +69,8 @@ LOCAL_PRIVILEGED_MODULE := true
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res-keyguard $(LOCAL_PATH)/res
+LOCAL_RESOURCE_DIR += $(foreach lib, $(LOCAL_STATIC_JAVA_AAR_LIBRARIES),\
+  $(call intermediates-dir-for,JAVA_LIBRARIES,$(lib),,COMMON)/aar/res)
 
 ifneq ($(INCREMENTAL_BUILDS),)
     LOCAL_PROGUARD_ENABLED := disabled

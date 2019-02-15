@@ -25,12 +25,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.UserInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.media.AudioManager;
 import android.os.Handler;
+import android.os.UserHandle;
+import android.os.UserManager;
 import android.provider.AlarmClock;
 import android.service.notification.ZenModeConfig;
 import android.support.annotation.VisibleForTesting;
@@ -64,6 +67,9 @@ import com.android.systemui.statusbar.policy.DateView;
 import com.android.systemui.statusbar.policy.NextAlarmController;
 import com.android.systemui.statusbar.policy.ZenModeController;
 
+import com.google.android.material.chip.Chip;
+
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -118,6 +124,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private BatteryMeterView mBatteryMeterView;
     private Clock mClockView;
     private DateView mDateView;
+	private Chip mUserInfoView;
 
     private NextAlarmController mAlarmController;
     private ZenModeController mZenController;
@@ -184,6 +191,38 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mClockView = findViewById(R.id.clock);
         mClockView.setOnClickListener(this);
         mDateView = findViewById(R.id.date);
+		addUserInfo();
+    }
+	
+	private void addUserInfo() {
+		boolean isMultiUserV2 = UserManager.getMultiUserVersion() == UserManager.MULTI_USER_V2;
+		mUserInfoView = (Chip) findViewById(R.id.user_info);
+		if (!isMultiUserV2) {
+			mUserInfoView.setVisibility(View.GONE);
+			return;
+		}
+		mUserInfoView.setVisibility(View.VISIBLE);
+		updateUserInfo();
+	}
+
+	private void updateUserInfo() {
+		UserManager um = (UserManager) getContext().getSystemService(
+                Context.USER_SERVICE);
+        UserInfo info = getExistingUser(um, android.os.Process.myUserHandle());
+		mUserInfoView.setText(info.name);
+		mUserInfoView.setChipIcon(
+		        com.android.settingslib.Utils.getUserIcon(getContext(), um, info));
+	}
+
+	public UserInfo getExistingUser(UserManager um, UserHandle checkUser) {
+        final List<UserInfo> users = um.getUsers(true);
+        final int checkUserId = checkUser.getIdentifier();
+        for (UserInfo user : users) {
+            if (user.id == checkUserId) {
+                return user;
+            }
+        }
+        return null;
     }
 
     private void updateStatusText() {
