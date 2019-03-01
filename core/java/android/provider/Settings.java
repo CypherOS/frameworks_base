@@ -4341,6 +4341,33 @@ public final class Settings {
          */
         public static final String ONEHANDED_MODE = "onehanded_mode";
 
+		/**
+         * Enable battery light
+		 * 0: Never
+		 * 1: Always
+		 * 2: Except when charging
+         * @hide
+         */
+        public static final String BATTERY_LIGHT = "battery_light";
+
+		/**
+         * Low battery charging color
+         * @hide
+         */
+        public static final String BATTERY_LIGHT_LOW_COLOR = "battery_light_low_color";
+
+        /**
+         * Medium battery charging color
+         * @hide
+         */
+        public static final String BATTERY_LIGHT_MEDIUM_COLOR = "battery_light_medium_color";
+
+        /**
+         * Full battery charging color
+         * @hide
+         */
+        public static final String BATTERY_LIGHT_FULL_COLOR = "battery_light_full_color";
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
