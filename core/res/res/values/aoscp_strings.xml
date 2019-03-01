@@ -34,9 +34,5 @@
     <!-- Alert slider proc nodes paths. -->
     <string name="alert_slider_state_path"></string>
     <string name="alert_slider_uevent_match_path"></string>
-	
-	<!-- AmbientPlay: The contents of the displayed recognition. -->
-    <string name="ambient_recognition_notification">Now Playing</string>
-    <string name="ambient_recognition_information">%1$s by %2$s</string>
 
 </resources>
