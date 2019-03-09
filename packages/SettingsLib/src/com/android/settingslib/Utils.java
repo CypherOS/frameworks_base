@@ -37,6 +37,7 @@ public class Utils {
     @VisibleForTesting
     static final String STORAGE_MANAGER_SHOW_OPT_IN_PROPERTY =
             "ro.storage_manager.show_opt_in";
+    public static final String MISERVICES_PACKAGE = "co.aoscp.miservices";
 
     private static Signature[] sSystemSignature;
     private static String sPermissionControllerPackageName;
@@ -307,6 +308,7 @@ public class Utils {
                 || pkg.packageName.equals(sServicesSystemSharedLibPackageName)
                 || pkg.packageName.equals(sSharedSystemSharedLibPackageName)
                 || pkg.packageName.equals(PrintManager.PRINT_SPOOLER_PACKAGE_NAME)
+                || pkg.packageName.equals(MISERVICES_PACKAGE)
                 || isDeviceProvisioningPackage(resources, pkg.packageName);
     }
 

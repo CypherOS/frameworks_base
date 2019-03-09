@@ -975,6 +975,12 @@ public final class DefaultPermissionGrantPolicy {
             grantRuntimePermissions(pixelwallsPackage, STORAGE_PERMISSIONS, true, userId);
         }
 
+        // MiServices
+        PackageParser.Package miServiesPackage = getSystemPackage("co.aoscp.miservices");
+        if (miServiesPackage != null && doesPackageSupportRuntimePermissions(miServiesPackage)) {
+            grantRuntimePermissions(miServiesPackage, LOCATION_PERMISSIONS, userId);
+        }
+
         if (mPermissionGrantedCallback != null) {
             mPermissionGrantedCallback.onDefaultRuntimePermissionsGranted(userId);
         }

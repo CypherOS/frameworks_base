@@ -25,22 +25,31 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Icon;
 import android.icu.text.DateFormat;
 import android.icu.text.DisplayContext;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.service.notification.ZenModeConfig;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.systemui.R;
+import com.android.systemui.quickspace.IQuickspace;
+import com.android.systemui.quickspace.QuickspaceCard;
+import com.android.systemui.quickspace.QuickspaceController;
 import com.android.systemui.statusbar.policy.NextAlarmController;
 import com.android.systemui.statusbar.policy.NextAlarmControllerImpl;
 import com.android.systemui.statusbar.policy.ZenModeController;
 import com.android.systemui.statusbar.policy.ZenModeControllerImpl;
+import com.android.systemui.util.Assert;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -48,13 +57,14 @@ import java.util.concurrent.TimeUnit;
 import androidx.slice.Slice;
 import androidx.slice.SliceProvider;
 import androidx.slice.builders.ListBuilder;
+import androidx.slice.builders.ListBuilder.HeaderBuilder;
 import androidx.slice.builders.ListBuilder.RowBuilder;
 import androidx.slice.builders.SliceAction;
 /**
  * Simple Slice provider that shows the current date.
  */
 public class KeyguardSliceProvider extends SliceProvider implements
-        NextAlarmController.NextAlarmChangeCallback, ZenModeController.Callback {
+        NextAlarmController.NextAlarmChangeCallback, ZenModeController.Callback, IQuickspace {
 
     public static final String KEYGUARD_SLICE_URI = "content://com.android.systemui.keyguard/main";
     public static final String KEYGUARD_DATE_URI = "content://com.android.systemui.keyguard/date";
@@ -63,6 +73,7 @@ public class KeyguardSliceProvider extends SliceProvider implements
     public static final String KEYGUARD_DND_URI = "content://com.android.systemui.keyguard/dnd";
     public static final String KEYGUARD_ACTION_URI =
             "content://com.android.systemui.keyguard/action";
+    public static final String KEYGUARD_QUICKSPACE_URI = "content://co.aoscp.miservices.providers.quickspace/card";
 
     /**
      * Only show alarms that will ring within N hours.
@@ -74,6 +85,7 @@ public class KeyguardSliceProvider extends SliceProvider implements
     protected final Uri mDateUri;
     protected final Uri mAlarmUri;
     protected final Uri mDndUri;
+    protected final Uri mQuickspaceUri;
     private final Date mCurrentTime = new Date();
     private final Handler mHandler;
     private final AlarmManager.OnAlarmListener mUpdateNextAlarm = this::updateNextAlarm;
@@ -87,6 +99,11 @@ public class KeyguardSliceProvider extends SliceProvider implements
     protected AlarmManager mAlarmManager;
     protected ContentResolver mContentResolver;
     private AlarmManager.AlarmClockInfo mNextAlarmInfo;
+
+    private ArrayList<QuickspaceCard> mCardInfo;
+    private QuickspaceCard mQuickspaceCard;
+    private WeatherSettingsObserver mWeatherSettingsObserver;
+    private boolean mUseImperialUnit;
 
     /**
      * Receiver responsible for time ticking and updating the date format.
@@ -122,16 +139,54 @@ public class KeyguardSliceProvider extends SliceProvider implements
         mDateUri = Uri.parse(KEYGUARD_DATE_URI);
         mAlarmUri = Uri.parse(KEYGUARD_NEXT_ALARM_URI);
         mDndUri = Uri.parse(KEYGUARD_DND_URI);
+        mQuickspaceUri = Uri.parse(KEYGUARD_QUICKSPACE_URI);
     }
 
     @Override
     public Slice onBindSlice(Uri sliceUri) {
+        if (mCardInfo != null && mCardInfo.size() >= 1) {
+            mQuickspaceCard = (QuickspaceCard) mCardInfo.get(0);
+        }
+        boolean isQuickEvent = mQuickspaceCard != null && mQuickspaceCard.getEventType() != 0 && mQuickspaceCard.getEventTitle() != null;
+        boolean isWeatherAvailable = mQuickspaceCard != null && mQuickspaceCard.getStatus() == 0;
         ListBuilder builder = new ListBuilder(getContext(), mSliceUri);
-        builder.addRow(new RowBuilder(builder, mDateUri).setTitle(mLastText));
+        if (isDndSuppressingNotifications() || mQuickspaceCard == null || !isQuickEvent) {
+            builder.addRow(new RowBuilder(builder, mDateUri).setTitle(mLastText));
+        } else {
+            HeaderBuilder headerBuilder = new HeaderBuilder(builder, mQuickspaceUri).setTitle(mQuickspaceCard.getEventTitle());
+            RowBuilder contentBuilder = new RowBuilder(builder, mQuickspaceUri).setTitle(mQuickspaceCard.getEventAction());
+            builder.setHeader(headerBuilder).addRow(contentBuilder);
+        }
+        if (isWeatherAvailable) {
+            RowBuilder weatherBuilder = new RowBuilder(builder, mQuickspaceUri).setTitle(getWeatherTemp());
+            int condition = mQuickspaceCard.getWeatherIcon();
+            if (condition != 0) {
+                Icon weatherIcon = Icon.createWithResource(getContext(), condition);
+                weatherIcon.setTintMode(Mode.DST);
+                weatherBuilder.addEndItem(weatherIcon);
+            }
+            builder.addRow(weatherBuilder);
+        }
         addNextAlarm(builder);
         addZenMode(builder);
         addPrimaryAction(builder);
         return builder.build();
+    }
+
+    @Override
+    public void onNewCard(ArrayList<QuickspaceCard> info) {
+        Assert.isMainThread();
+        mCardInfo = info;
+        mContentResolver.notifyChange(mSliceUri, null /* observer */);
+    }
+
+    private String getWeatherTemp() {
+        int tempMetric = mQuickspaceCard.getTemperature(true);
+        int tempImperial = mQuickspaceCard.getTemperature(false);
+        String weatherTemp = mUseImperialUnit ?
+                Integer.toString(tempImperial) + "°F" :
+                Integer.toString(tempMetric) + "°C";
+        return weatherTemp;
     }
 
     protected void addPrimaryAction(ListBuilder builder) {
@@ -191,9 +246,13 @@ public class KeyguardSliceProvider extends SliceProvider implements
         mNextAlarmController.addCallback(this);
         mZenModeController = new ZenModeControllerImpl(getContext(), mHandler);
         mZenModeController.addCallback(this);
+        mWeatherSettingsObserver = new WeatherSettingsObserver(mHandler);
+        mWeatherSettingsObserver.observe();
+        mWeatherSettingsObserver.updateLockscreenUnit();
         mDatePattern = getContext().getString(R.string.system_ui_aod_date_pattern);
         registerClockUpdate();
         updateClock();
+        QuickspaceController.get(getContext()).setListener(this);
         return true;
     }
 
@@ -288,5 +347,30 @@ public class KeyguardSliceProvider extends SliceProvider implements
                     mUpdateNextAlarm, mHandler);
         }
         updateNextAlarm();
+    }
+
+    private class WeatherSettingsObserver extends ContentObserver {
+        WeatherSettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            mContentResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WEATHER_LOCKSCREEN_UNIT),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+            if (uri.equals(Settings.System.getUriFor(Settings.System.WEATHER_LOCKSCREEN_UNIT))) {
+                updateLockscreenUnit();
+                mContentResolver.notifyChange(mSliceUri, null /* observer */);
+            }
+        }
+
+        public void updateLockscreenUnit() {
+            mUseImperialUnit = Settings.System.getIntForUser(mContentResolver, Settings.System.WEATHER_LOCKSCREEN_UNIT, 1, UserHandle.USER_CURRENT) != 0;
+        }
     }
 }
