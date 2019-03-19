@@ -47,20 +47,21 @@ import com.android.systemui.Interpolators;
 import com.android.systemui.R;
 import com.android.systemui.doze.DozeReceiver;
 import com.android.systemui.ambientindication.AmbientStateController.StateListener;
+import com.android.systemui.ambientplay.AmbientPlayManager;
 import com.android.systemui.statusbar.phone.StatusBar;
 import com.android.systemui.util.wakelock.DelayedWakeLock;
 import com.android.systemui.util.wakelock.WakeLock;
 
 import java.util.Locale;
 
-public class AmbientIndicationContainer extends AutoReinflateContainer implements OnClickListener, OnLayoutChangeListener, 
+public class AmbientIndicationContainer extends AutoReinflateContainer implements OnLayoutChangeListener, 
     StateListener, AnimatorUpdateListener {
 
+    private AmbientPlayManager mAmbientPlayManager;
     private Context mContext;
     private View mAmbientIndication;
     private int mAmbientIndicationIconSize;
     private Drawable mAmbientMusicAnimation;
-    private PendingIntent mAmbientMusicIntent;
     private CharSequence mAmbientMusicText;
     private int mBurnInPreventionOffset;
     private float mDozeAmount;
@@ -87,6 +88,7 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
 
     public void initializeView(StatusBar statusBar) {
         mStatusBar = statusBar;
+		mAmbientPlayManager = new AmbientPlayManager(mContext, this);
         addInflateListener(new AmbientIndicationInflateListener(this));
         addOnLayoutChangeListener(this);
     }
@@ -122,16 +124,15 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
         AmbientStateController.getInstance(mContext).removeListener();
     }
 
-    public void setAmbientMusic(CharSequence charSequence, PendingIntent pendingIntent) {
-        mAmbientMusicText = charSequence;
-        mAmbientMusicIntent = pendingIntent;
+    public void setAmbientMusic(String song, String artist) {
+        mAmbientMusicText = String.format(mContext.getResources().getString(
+                R.string.ambient_recognition_information), song, artist);
         updatePill();
     }
 
     private void updatePill() {
         int visibility = View.VISIBLE;
         mText.setText(mAmbientMusicText);
-        mText.setClickable(mAmbientMusicIntent != null);
         mAmbientIndication.setContentDescription(mAmbientMusicText);
         if (mAmbientMusicAnimation != null) {
             mAmbientMusicAnimation.setBounds(0, 0, mAmbientIndicationIconSize, mAmbientIndicationIconSize);
@@ -191,14 +192,6 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
 
     public void hideAmbientMusic() {
         setAmbientMusic(null, null);
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (mAmbientMusicIntent != null) {
-            mStatusBar.wakeUpIfDozing(SystemClock.uptimeMillis(), mAmbientIndication);
-            mStatusBar.startPendingIntentDismissingKeyguard(mAmbientMusicIntent);
-        }
     }
 
     @Override
