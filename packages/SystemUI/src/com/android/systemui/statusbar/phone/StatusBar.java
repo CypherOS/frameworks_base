@@ -157,6 +157,8 @@ import com.android.systemui.RecentsComponent;
 import com.android.systemui.SystemUI;
 import com.android.systemui.SystemUIFactory;
 import com.android.systemui.UiOffloadThread;
+import com.android.systemui.ambientindication.AmbientIndicationContainer;
+import com.android.systemui.ambientindication.AmbientStateController;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.charging.WirelessChargingAnimation;
 import com.android.systemui.classifier.FalsingLog;
@@ -642,6 +644,8 @@ public class StatusBar extends SystemUI implements DemoMode,
     private boolean mVibrateOnOpening;
     private VibratorHelper mVibratorHelper;
 
+	private AmbientStateController mAmbientStateController;
+
     @Override
     public void start() {
         mGroupManager = Dependency.get(NotificationGroupManager.class);
@@ -809,6 +813,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         KeyguardUpdateMonitor.getInstance(mContext).registerCallback(mUpdateCallback);
         putComponent(DozeHost.class, mDozeServiceHost);
 
+		mAmbientStateController = AmbientStateController.getInstance(mContext);
+
         mScreenPinningRequest = new ScreenPinningRequest(mContext);
         mFalsingManager = FalsingManager.getInstance(mContext);
 
@@ -960,9 +966,11 @@ public class StatusBar extends SystemUI implements DemoMode,
                         mNotificationPanel.getLockIcon());
         mNotificationPanel.setKeyguardIndicationController(mKeyguardIndicationController);
 
-
         mAmbientIndicationContainer = mStatusBarWindow.findViewById(
                 R.id.ambient_indication_container);
+        if (mAmbientIndicationContainer != null) {
+            ((AmbientIndicationContainer) mAmbientIndicationContainer).initializeView(this);
+        }
 
         // set the initial view visibility
         setAreThereNotifications();
@@ -4875,8 +4883,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             mKeyguardViewMediator.setAodShowing(mDozing);
             mStatusBarWindowManager.setDozing(mDozing);
             mStatusBarKeyguardViewManager.setDozing(mDozing);
-            if (mAmbientIndicationContainer instanceof DozeReceiver) {
-                ((DozeReceiver) mAmbientIndicationContainer).setDozing(mDozing);
+            if (mAmbientStateController != null) {
+                mAmbientStateController.setDozing(mDozing);
             }
             mEntryManager.updateNotifications();
             updateDozingState();
@@ -5738,7 +5746,14 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     @Override
     public void onZenChanged(int zen) {
+		boolean isNotificationsHidden = areNotificationsHidden();
         updateEmptyShadeView();
+		if (isNotificationsHidden != areNotificationsHidden()) {
+			isNotificationsHidden = areNotificationsHidden();
+            if (mAmbientIndicationContainer != null) {
+                ((AmbientIndicationContainer) mAmbientIndicationContainer).setNotificationsHidden(isNotificationsHidden);
+            }
+		}
     }
 
     @Override
