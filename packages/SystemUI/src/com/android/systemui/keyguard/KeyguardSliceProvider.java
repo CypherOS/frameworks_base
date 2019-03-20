@@ -146,18 +146,11 @@ public class KeyguardSliceProvider extends SliceProvider implements
     public Slice onBindSlice(Uri sliceUri) {
         if (mCardInfo != null && mCardInfo.size() >= 1) {
             mQuickspaceCard = (QuickspaceCard) mCardInfo.get(0);
-        }
-        boolean isQuickEvent = mQuickspaceCard != null && mQuickspaceCard.getEventType() != 0 && mQuickspaceCard.getEventTitle() != null;
         boolean isWeatherAvailable = mQuickspaceCard != null && mQuickspaceCard.getStatus() == 0;
         ListBuilder builder = new ListBuilder(getContext(), mSliceUri);
-        if (isDndSuppressingNotifications() || mQuickspaceCard == null || !isQuickEvent) {
+        if (isDndSuppressingNotifications() || mQuickspaceCard == null || !isWeatherAvailable) {
             builder.addRow(new RowBuilder(builder, mDateUri).setTitle(mLastText));
         } else {
-            HeaderBuilder headerBuilder = new HeaderBuilder(builder, mQuickspaceUri).setTitle(mQuickspaceCard.getEventTitle());
-            RowBuilder contentBuilder = new RowBuilder(builder, mQuickspaceUri).setTitle(mQuickspaceCard.getEventAction());
-            builder.setHeader(headerBuilder).addRow(contentBuilder);
-        }
-        if (isWeatherAvailable) {
             RowBuilder weatherBuilder = new RowBuilder(builder, mQuickspaceUri).setTitle(getWeatherTemp());
             int condition = mQuickspaceCard.getWeatherIcon();
             if (condition != 0) {
