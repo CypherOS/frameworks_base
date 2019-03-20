@@ -66,6 +66,7 @@ import com.android.systemui.classifier.FalsingManager;
 import com.android.systemui.fragments.FragmentHostManager;
 import com.android.systemui.fragments.FragmentHostManager.FragmentListener;
 import com.android.systemui.plugins.qs.QS;
+import com.android.systemui.quickspace.ambientindication.AmbientStateController;
 import com.android.systemui.statusbar.ExpandableNotificationRow;
 import com.android.systemui.statusbar.ExpandableView;
 import com.android.systemui.statusbar.FlingAnimationUtils;
@@ -308,6 +309,8 @@ public class NotificationPanelView extends PanelView implements
     private int mStatusBarHeaderHeight;
     private GestureDetector mDoubleTapGesture;
 
+    private AmbientStateController mAmbientStateController;
+
     public NotificationPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(!DEBUG);
@@ -317,6 +320,7 @@ public class NotificationPanelView extends PanelView implements
         setAccessibilityPaneTitle(determineAccessibilityPaneTitle());
         mAlphaPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
         setPanelAlpha(255, false /* animate */);
+        mAmbientStateController = AmbientStateController.getInstance(context);
 
         mSettingsObserver = new SettingsObserver(mHandler);
         mDoubleTapGesture = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
@@ -2320,6 +2324,9 @@ public class NotificationPanelView extends PanelView implements
             if (animate) {
                 animateKeyguardStatusBarIn(DOZE_ANIMATION_DURATION);
             }
+        }
+        if (mAmbientStateController != null) {
+            mAmbientStateController.setDozeAmount(mDozing ? 1.0f : 0.0f, animate);
         }
     }
 
