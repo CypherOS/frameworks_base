@@ -47,20 +47,21 @@ import com.android.systemui.Interpolators;
 import com.android.systemui.R;
 import com.android.systemui.doze.DozeReceiver;
 import com.android.systemui.ambientindication.AmbientStateController.StateListener;
+import com.android.systemui.ambientplay.AmbientPlayManager;
 import com.android.systemui.statusbar.phone.StatusBar;
 import com.android.systemui.util.wakelock.DelayedWakeLock;
 import com.android.systemui.util.wakelock.WakeLock;
 
 import java.util.Locale;
 
-public class AmbientIndicationContainer extends AutoReinflateContainer implements OnClickListener, OnLayoutChangeListener, 
+public class AmbientIndicationContainer extends AutoReinflateContainer implements OnLayoutChangeListener, 
     StateListener, AnimatorUpdateListener {
 
+    private AmbientPlayManager mAmbientPlayManager;
     private Context mContext;
     private View mAmbientIndication;
     private int mAmbientIndicationIconSize;
-    private Drawable mAmbientMusicAnimation;
-    private PendingIntent mAmbientMusicIntent;
+    private AnimatedVectorDrawable mAmbientMusicAnimation;
     private CharSequence mAmbientMusicText;
     private int mBurnInPreventionOffset;
     private float mDozeAmount;
@@ -87,6 +88,7 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
 
     public void initializeView(StatusBar statusBar) {
         mStatusBar = statusBar;
+		mAmbientPlayManager = new AmbientPlayManager(mContext, this);
         addInflateListener(new AmbientIndicationInflateListener(this));
         addOnLayoutChangeListener(this);
     }
@@ -100,14 +102,13 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
     public void updateView(View view) {
         mAmbientIndication = findViewById(R.id.ambient_indication);
         mText = (TextView) findViewById(R.id.ambient_indication_text);
-        mAmbientMusicAnimation = getResources().getDrawable(R.drawable.audioanim_animation, mContext.getTheme());
+		mAmbientMusicAnimation = (AnimatedVectorDrawable) mContext.getDrawable(R.drawable.audioanim_animation).getConstantState().newDrawable();
         mTextColor = mText.getCurrentTextColor();
         mText.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         mAmbientIndicationIconSize = getResources().getDimensionPixelSize(R.dimen.ambient_indication_icon_size);
         mBurnInPreventionOffset = getResources().getDimensionPixelSize(R.dimen.default_burn_in_prevention_offset);
         updateColors();
         updatePill();
-        mText.setOnClickListener(this);
     }
 
     @Override
@@ -122,44 +123,29 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
         AmbientStateController.getInstance(mContext).removeListener();
     }
 
-    public void setAmbientMusic(CharSequence charSequence, PendingIntent pendingIntent) {
-        mAmbientMusicText = charSequence;
-        mAmbientMusicIntent = pendingIntent;
+    public void setAmbientMusic(String song, String artist) {
+        mAmbientMusicText = String.format(mContext.getResources().getString(
+                R.string.ambient_recognition_information), song, artist);
         updatePill();
     }
 
     private void updatePill() {
-        int visibility = View.VISIBLE;
         mText.setText(mAmbientMusicText);
-        mText.setClickable(mAmbientMusicIntent != null);
         mAmbientIndication.setContentDescription(mAmbientMusicText);
         if (mAmbientMusicAnimation != null) {
             mAmbientMusicAnimation.setBounds(0, 0, mAmbientIndicationIconSize, mAmbientIndicationIconSize);
         }
         boolean rtl = TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL;
         mText.setCompoundDrawables(rtl ? null : mAmbientMusicAnimation, null, rtl ? mAmbientMusicAnimation : null, null);
-        boolean hasNoMusic = (TextUtils.isEmpty(mAmbientMusicText) || mNotificationsHidden);
-        if (hasNoMusic) {
-            visibility = View.INVISIBLE;
-        }
-        mAmbientIndication.setVisibility(visibility);
-        if (hasNoMusic) {
+        if (TextUtils.isEmpty(mAmbientMusicText) || mNotificationsHidden) {
             mText.animate().cancel();
-            if (mAmbientMusicAnimation instanceof AnimatedVectorDrawable) {
-                ((AnimatedVectorDrawable) mAmbientMusicAnimation).reset();
-            }
-            mHandler.post(mWakeLock.wrap(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        // no op
-                    }}));
-        } else if (mAmbientIndication.getVisibility() != View.VISIBLE) {
+            mAmbientMusicAnimation.reset();
+			mAmbientIndication.setVisibility(View.INVISIBLE);
+        } else {
             mWakeLock.acquire();
-            if (mAmbientMusicAnimation instanceof AnimatedVectorDrawable) {
-                ((AnimatedVectorDrawable) mAmbientMusicAnimation).start();
-            }
-            mText.setTranslationY((float) (mText.getHeight() / 2));
+			mAmbientIndication.setVisibility(View.VISIBLE);
+			mAmbientMusicAnimation.start();
+			mText.setTranslationY((float) (mText.getHeight() / 2));
             mText.setAlpha(0.0f);
             mText.animate().withLayer().alpha(1.0f).translationY(0.0f).setStartDelay(150).setDuration(100).setListener(
                 new AnimatorListenerAdapter() {
@@ -168,13 +154,6 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
                         mWakeLock.release();
                     }
                 }).setInterpolator(Interpolators.DECELERATE_QUINT).start();
-        } else {
-            mHandler.post(mWakeLock.wrap(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        // no op
-                    }}));
         }
         updateBottomPadding();
     }
@@ -191,14 +170,6 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
 
     public void hideAmbientMusic() {
         setAmbientMusic(null, null);
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (mAmbientMusicIntent != null) {
-            mStatusBar.wakeUpIfDozing(SystemClock.uptimeMillis(), mAmbientIndication);
-            mStatusBar.startPendingIntentDismissingKeyguard(mAmbientMusicIntent);
-        }
     }
 
     @Override
