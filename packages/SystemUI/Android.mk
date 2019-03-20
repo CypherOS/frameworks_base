@@ -56,7 +56,9 @@ LOCAL_STATIC_ANDROID_LIBRARIES := \
 LOCAL_STATIC_JAVA_LIBRARIES := \
     SystemUI-tags \
     SystemUI-proto \
-    apache-commons-lang-2.6
+    apache-commons-lang-2.6 \
+	libAcrCloud \
+	libMiServicesShared
 
 LOCAL_JAVA_LIBRARIES := telephony-common \
     android.car
@@ -87,5 +89,29 @@ LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
     apache-commons-lang-2.6:libs/commons-lang-2.6.jar
 
 include $(BUILD_MULTI_PREBUILT)
+
+#
+# Prebuilt AcrCloud Recognition SDK
+#
+include $(CLEAR_VARS)
+LOCAL_MODULE := libAcrCloud
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+LOCAL_SRC_FILES := libs/libAcrCloud.jar
+LOCAL_UNINSTALLABLE_MODULE := true
+LOCAL_SDK_VERSION := 27
+include $(BUILD_PREBUILT)
+
+#
+# Prebuilt MiServices Shared System
+#
+include $(CLEAR_VARS)
+LOCAL_MODULE := libMiServicesShared
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+LOCAL_SRC_FILES := libs/libMiServicesShared.jar
+LOCAL_UNINSTALLABLE_MODULE := true
+LOCAL_SDK_VERSION := 27
+include $(BUILD_PREBUILT)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
