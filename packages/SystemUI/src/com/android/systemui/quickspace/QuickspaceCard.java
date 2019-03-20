@@ -30,17 +30,15 @@ public class QuickspaceCard {
 
     private int eventType;
     private String eventTitle;
-    private String eventAction;
 
-    public QuickspaceCard(int status, String conditions, int temperatureMetric, int temperatureImperial,
-                int eventType, String eventTitle, String eventAction) {
+    public QuickspaceCard(int status, String conditions, int temperatureMetric, 
+	            int temperatureImperial, int eventType, String eventTitle) {
         this.status = status;
         this.conditions = conditions;
         this.temperatureMetric = temperatureMetric;
         this.temperatureImperial = temperatureImperial;
         this.eventType = eventType;
         this.eventTitle = eventTitle;
-        this.eventAction = eventAction;
     }
 
     public int getTemperature(boolean metric) {
@@ -65,10 +63,6 @@ public class QuickspaceCard {
 
     public String getEventTitle() {
         return this.eventTitle;
-    }
-
-    public String getEventAction() {
-        return this.eventAction;
     }
 
     public int getWeatherIcon() {
@@ -109,7 +103,6 @@ public class QuickspaceCard {
                 "temperatureMetric=" + getTemperature(true) + "," +
                 "temperatureImperial=" + getTemperature(false) + "," +
                 "eventType=" + getEventType() + "," +
-                "eventTitle=" + getEventTitle() + "," +
-                "eventAction=" + getEventAction();
+                "eventTitle=" + getEventTitle();
     }
 }
