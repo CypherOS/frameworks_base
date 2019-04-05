@@ -127,6 +127,11 @@ public class Dependency extends SystemUI {
     private static final String TAG = "Dependency";
 
     /**
+     * Key for getting a background Handler for background work.
+     */
+    public static final DependencyKey<Handler> BG_HANDLER = new DependencyKey("background_handler");
+
+    /**
      * Key for getting a background Looper for background work.
      */
     public static final DependencyKey<Looper> BG_LOOPER = new DependencyKey<>("background_looper");
@@ -163,6 +168,11 @@ public class Dependency extends SystemUI {
                     Process.THREAD_PRIORITY_BACKGROUND);
             thread.start();
             return thread.getLooper();
+        });
+        mProviders.put(BG_HANDLER, () -> {
+            HandlerThread thread = new HandlerThread("SysUiBgHandler");
+            thread.start();
+            return new Handler(thread.getLooper());
         });
         mProviders.put(MAIN_HANDLER, () -> new Handler(Looper.getMainLooper()));
         mProviders.put(ActivityStarter.class, () -> new ActivityStarterDelegate());
@@ -208,7 +218,7 @@ public class Dependency extends SystemUI {
                 new UserInfoControllerImpl(mContext));
 
         mProviders.put(BatteryController.class, () ->
-                new BatteryControllerImpl(mContext));
+                new BatteryControllerImpl(mContext, getDependency(EnhancedEstimates.class)));
 
         mProviders.put(ColorDisplayController.class, () ->
                 new ColorDisplayController(mContext));
@@ -319,7 +329,7 @@ public class Dependency extends SystemUI {
 
         mProviders.put(OverviewProxyService.class, () -> new OverviewProxyService(mContext));
 
-        mProviders.put(EnhancedEstimates.class, () -> new EnhancedEstimatesImpl());
+        mProviders.put(EnhancedEstimates.class, () -> new EnhancedEstimatesImpl(mContext));
 
         mProviders.put(AppOpsListener.class, () -> new AppOpsListener(mContext));
 

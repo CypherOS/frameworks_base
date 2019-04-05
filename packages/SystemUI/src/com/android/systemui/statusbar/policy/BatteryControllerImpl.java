@@ -29,10 +29,18 @@ import android.util.Log;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.settingslib.fuelgauge.BatterySaverUtils;
+import com.android.settingslib.utils.PowerUtil;
+
+import com.android.systemui.Dependency;
+import com.android.systemui.power.EnhancedEstimates;
+import com.android.systemui.power.Estimate;
+import com.android.systemui.statusbar.policy.BatteryController.EstimateFetchCompletion;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Default implementation of a {@link BatteryController}. This controller monitors for battery
@@ -59,18 +67,29 @@ public class BatteryControllerImpl extends BroadcastReceiver implements BatteryC
     private boolean mTestmode = false;
     private boolean mHasReceivedBattery = false;
 
-    public BatteryControllerImpl(Context context) {
-        this(context, context.getSystemService(PowerManager.class));
+    private Estimate mEstimate;
+    private final EnhancedEstimates mEstimates;
+    private final ArrayList<EstimateFetchCompletion> mFetchCallbacks = new ArrayList<>();
+    private boolean mFetchingEstimate;
+    private long mLastEstimateTimestamp;
+
+    public BatteryControllerImpl(Context context, EnhancedEstimates enhancedEstimates) {
+        this(context, enhancedEstimates, context.getSystemService(PowerManager.class));
     }
 
     @VisibleForTesting
-    BatteryControllerImpl(Context context, PowerManager powerManager) {
+    BatteryControllerImpl(Context context, EnhancedEstimates enhancedEstimates, PowerManager powerManager) {
         mContext = context;
         mHandler = new Handler();
         mPowerManager = powerManager;
 
+        mLastEstimateTimestamp = -1;
+        mFetchingEstimate = false;
+        mEstimates = enhancedEstimates;
+
         registerReceiver();
         updatePowerSave();
+        updateEstimate();
     }
 
     private void registerReceiver() {
@@ -178,6 +197,68 @@ public class BatteryControllerImpl extends BroadcastReceiver implements BatteryC
     @Override
     public boolean isAodPowerSave() {
         return mAodPowerSave;
+    }
+
+    @Override
+    public void getEstimatedTimeRemainingString(EstimateFetchCompletion efc) {
+        if (mEstimate == null || mLastEstimateTimestamp <= System.currentTimeMillis() - 60000) {
+            synchronized (mFetchCallbacks) {
+                mFetchCallbacks.add(efc);
+            }
+            updateEstimateInBackground();
+            return;
+        }
+        efc.onBatteryRemainingEstimateRetrieved(generateTimeRemainingString());
+    }
+
+    private String generateTimeRemainingString() {
+        if (mEstimate == null) {
+            return null;
+        }
+        NumberFormat.getPercentInstance().format(((double) mLevel) / 100.0d);
+        return PowerUtil.getBatteryRemainingShortStringFormatted(mContext, mEstimate.estimateMillis);
+    }
+
+    private void updateEstimateInBackground() {
+        if (!mFetchingEstimate) {
+            mFetchingEstimate = true;
+            ((Handler) Dependency.get(Dependency.BG_HANDLER)).post(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            updateEstimateInBackgroundInternal();
+                        }
+                    });
+        }
+    }
+
+    private void updateEstimateInBackgroundInternal() {
+        mEstimate = mEstimates.getEstimate();
+        mLastEstimateTimestamp = System.currentTimeMillis();
+        mFetchingEstimate = false;
+        ((Handler) Dependency.get(Dependency.MAIN_HANDLER)).post(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyEstimateFetchCallbacks();
+                    }
+                });
+    }
+
+    private void notifyEstimateFetchCallbacks() {
+        String newEstimate = generateTimeRemainingString();
+        synchronized (mFetchCallbacks) {
+            Iterator it = mFetchCallbacks.iterator();
+            while (it.hasNext()) {
+                ((EstimateFetchCompletion) it.next()).onBatteryRemainingEstimateRetrieved(newEstimate);
+            }
+            mFetchCallbacks.clear();
+        }
+    }
+
+    private void updateEstimate() {
+        mEstimate = mEstimates.getEstimate();
+        mLastEstimateTimestamp = System.currentTimeMillis();
     }
 
     private void updatePowerSave() {

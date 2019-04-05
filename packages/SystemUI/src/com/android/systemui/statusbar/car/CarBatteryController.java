@@ -249,6 +249,11 @@ public class CarBatteryController extends BroadcastReceiver implements BatteryCo
     }
 
     @Override
+    public void getEstimatedTimeRemainingString(EstimateFetchCompletion efc) {
+        // Not needed for car mode
+    }
+
+    @Override
     public boolean isPowerSave() {
         // Power save is not valid for the car, so always return false.
         return false;
