@@ -58,7 +58,8 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     SystemUI-proto \
     apache-commons-lang-2.6 \
     libAcrCloud \
-    libMiServicesShared
+    libMiServicesShared \
+	vendor.aoscp.biometrics.fingerprint.inscreen-V1.0-java
 
 LOCAL_JAVA_LIBRARIES := telephony-common \
     android.car
