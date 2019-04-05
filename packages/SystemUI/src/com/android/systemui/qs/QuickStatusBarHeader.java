@@ -115,7 +115,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private View mStatusSeparator;
     private ImageView mRingerModeIcon;
     private TextView mRingerModeTextView;
-    private BatteryMeterView mBatteryMeterView;
+    private BatteryMeterView mBatteryRemainingIcon;
     private Clock mClockView;
     private DateView mDateView;
 
@@ -178,9 +178,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         // Set the correct tint for the status icons so they contrast
         mIconManager.setTint(fillColor);
 
-        mBatteryMeterView = findViewById(R.id.battery);
-        mBatteryMeterView.setForceShowPercent(true);
-        mBatteryMeterView.setOnClickListener(this);
+        mBatteryRemainingIcon = (BatteryMeterView) findViewById(R.id.batteryRemainingIcon);
+        mBatteryRemainingIcon.setIgnoreTunerUpdates(true);
+
         mClockView = findViewById(R.id.clock);
         mClockView.setOnClickListener(this);
         mDateView = findViewById(R.id.date);
@@ -260,7 +260,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         // Update color schemes in landscape to use wallpaperTextColor
         boolean shouldUseWallpaperTextColor =
                 newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
-        mBatteryMeterView.useWallpaperTextColor(shouldUseWallpaperTextColor);
         mClockView.useWallpaperTextColor(shouldUseWallpaperTextColor);
     }
 
@@ -439,9 +438,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         if (v == mClockView) {
             Dependency.get(ActivityStarter.class).postStartActivityDismissingKeyguard(new Intent(
                     AlarmClock.ACTION_SHOW_ALARMS),0);
-        } else if (v == mBatteryMeterView) {
-            Dependency.get(ActivityStarter.class).postStartActivityDismissingKeyguard(new Intent(
-                    Intent.ACTION_POWER_USAGE_SUMMARY),0);
         }
     }
 
@@ -596,8 +592,11 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mHeaderQsPanel.setHost(host, null /* No customization in header */);
 
         // Use SystemUI context to get battery meter colors, and let it use the default tint (white)
-        mBatteryMeterView.setColorsFromContext(mHost.getContext());
-        mBatteryMeterView.onDarkChanged(new Rect(), 0, DarkIconDispatcher.DEFAULT_ICON_TINT);
+        Rect tintArea = new Rect(0, 0, 0, 0);
+        float colorIntensity = getColorIntensity(Utils.getColorAttr(getContext(), android.R.attr.colorForeground));
+        int fillColorForIntensity = fillColorForIntensity(colorIntensity, getContext());
+        mBatteryRemainingIcon.setColorsFromContext(mHost.getContext());
+        mBatteryRemainingIcon.onDarkChanged(tintArea, colorIntensity, fillColorForIntensity);
     }
 
     public void setCallback(Callback qsPanelCallback) {
