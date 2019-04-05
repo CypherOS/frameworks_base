@@ -208,7 +208,7 @@ public class Dependency extends SystemUI {
                 new UserInfoControllerImpl(mContext));
 
         mProviders.put(BatteryController.class, () ->
-                new BatteryControllerImpl(mContext));
+                new BatteryControllerImpl(mContext, getDependency(EnhancedEstimates.class)));
 
         mProviders.put(ColorDisplayController.class, () ->
                 new ColorDisplayController(mContext));
@@ -319,7 +319,7 @@ public class Dependency extends SystemUI {
 
         mProviders.put(OverviewProxyService.class, () -> new OverviewProxyService(mContext));
 
-        mProviders.put(EnhancedEstimates.class, () -> new EnhancedEstimatesImpl());
+        mProviders.put(EnhancedEstimates.class, () -> new EnhancedEstimatesImpl(mContext));
 
         mProviders.put(AppOpsListener.class, () -> new AppOpsListener(mContext));
 
