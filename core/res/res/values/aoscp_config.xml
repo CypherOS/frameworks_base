@@ -157,4 +157,9 @@
     <!-- Does the battery LED support multiple colors?
          Used to decide if the user can change the colors -->
     <bool name="config_multiColorBatteryLed">false</bool>
+
+	<!-- Show a custom view for FOD -->
+    <bool name="config_needCustomFODView">false</bool>
+
+    <bool name="config_usesOnePlusFOD">false</bool>
 </resources>

@@ -139,4 +139,8 @@
 
   <java-symbol type="string" name="status_bar_camera" />
   <java-symbol type="string" name="status_bar_microphone" />
+
+  <!-- FoD -->
+  <java-symbol type="bool" name="config_needCustomFODView" />
+  <java-symbol type="bool" name="config_usesOnePlusFOD" />
 </resources>
