@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+	android:id="@+id/container"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:fillViewport="true">
+
+    <LinearLayout
+	    android:orientation="vertical"
+		android:id="@+id/dialog_container"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+        <TextView
+		    android:textAppearance="@style/TextAppearance.AppOpsDialog.Title"
+		    android:textColor="@null"
+		    android:gravity="center"
+		    android:id="@+id/title"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginTop="@dimen/ongoing_appops_dialog_title_margin_top_bottom"
+		    android:layout_marginBottom="@dimen/ongoing_appops_dialog_title_margin_top_bottom"
+		    android:textDirection="locale"
+		    android:layout_marginStart="@dimen/ongoing_appops_dialog_title_margin_sides"
+		    android:layout_marginEnd="@dimen/ongoing_appops_dialog_title_margin_sides" />
+
+        <LinearLayout
+		    android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="@dimen/ongoing_appops_dialog_items_bottom_margin">
+
+            <LinearLayout
+			    android:gravity="start"
+				android:orientation="vertical"
+				android:id="@+id/items_container"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content" />
+
+            <include android:id="@+id/overflow" android:visibility="gone" layout="@layout/ongoing_privacy_dialog_item" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
