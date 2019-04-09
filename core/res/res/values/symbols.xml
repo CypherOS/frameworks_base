@@ -2743,10 +2743,12 @@
   <java-symbol type="string" name="status_bar_ime" />
   <java-symbol type="string" name="status_bar_sync_failing" />
   <java-symbol type="string" name="status_bar_sync_active" />
+  <java-symbol type="string" name="status_bar_camera" />
   <java-symbol type="string" name="status_bar_cast" />
   <java-symbol type="string" name="status_bar_hotspot" />
   <java-symbol type="string" name="status_bar_location" />
   <java-symbol type="string" name="status_bar_bluetooth" />
+  <java-symbol type="string" name="status_bar_microphone" />
   <java-symbol type="string" name="status_bar_nfc" />
   <java-symbol type="string" name="status_bar_tty" />
   <java-symbol type="string" name="status_bar_speakerphone" />
