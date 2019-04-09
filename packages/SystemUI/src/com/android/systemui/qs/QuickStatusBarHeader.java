@@ -52,6 +52,10 @@ import com.android.systemui.Dependency;
 import com.android.systemui.Prefs;
 import com.android.systemui.R;
 import com.android.systemui.plugins.ActivityStarter;
+import com.android.systemui.privacy.OngoingPrivacyChip;
+import com.android.systemui.privacy.OngoingPrivacyDialog;
+import com.android.systemui.privacy.PrivacyItem;
+import com.android.systemui.privacy.PrivacyItemController;
 import com.android.systemui.qs.QSDetail.Callback;
 import com.android.systemui.statusbar.phone.PhoneStatusBarView;
 import com.android.systemui.statusbar.phone.StatusBarIconController;
@@ -109,6 +113,16 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private int mRingerMode = AudioManager.RINGER_MODE_NORMAL;
     private AlarmManager.AlarmClockInfo mNextAlarm;
 
+    private OngoingPrivacyChip mPrivacyChip;
+	private PrivacyItemController.Callback mPICCallback = 
+	        new PrivacyItemController.Callback() {
+				@Override
+				public void privacyChanged(List<PrivacyItem> list) {
+					mPrivacyChip.setPrivacyList(list);
+					setChipVisibility(list.isEmpty());
+                }
+			};
+
     private ImageView mNextAlarmIcon;
     /** {@link TextView} containing the actual text indicating when the next alarm will go off. */
     private TextView mNextAlarmTextView;
@@ -137,10 +151,11 @@ public class QuickStatusBarHeader extends RelativeLayout implements
      */
     private final Runnable mAutoFadeOutTooltipRunnable = () -> hideLongPressTooltip(false);
 
-    public QuickStatusBarHeader(Context context, AttributeSet attrs) {
+    public QuickStatusBarHeader(Context context, AttributeSet attrs, PrivacyItemController privacyItemController) {
         super(context, attrs);
         mAlarmController = Dependency.get(NextAlarmController.class);
         mZenController = Dependency.get(ZenModeController.class);
+		mPrivacyItemController = privacyItemController;
         mShownCount = getStoredShownCount();
     }
 
@@ -178,6 +193,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         // Set the correct tint for the status icons so they contrast
         mIconManager.setTint(fillColor);
 
+		mPrivacyChip = (OngoingPrivacyChip) findViewById(R.id.privacy_chip);
+        mPrivacyChip.setOnClickListener(this);
+
         mBatteryRemainingIcon = (BatteryMeterView) findViewById(R.id.batteryRemainingIcon);
         mBatteryRemainingIcon.setIgnoreTunerUpdates(true);
 
@@ -195,6 +213,14 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             mStatusSeparator.setVisibility(alarmVisible && ringerVisible ? View.VISIBLE
                     : View.GONE);
             updateTooltipShow();
+        }
+    }
+
+	private void setChipVisibility(boolean isEmpty) {
+        if (!isEmpty) {
+            mPrivacyChip.setVisibility(View.VISIBLE);
+        } else {
+            mPrivacyChip.setVisibility(View.GONE);
         }
     }
 
@@ -306,6 +332,13 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         }
 
         setLayoutParams(lp);
+		if (mPrivacyChip != null) {
+            MarginLayoutParams params = (MarginLayoutParams) mPrivacyChip.getLayoutParams();
+            int leftMargin = params.leftMargin;
+            int topMargin = resources.getDimensionPixelSize(R.dimen.ongoing_appops_top_chip_margin);
+            params.setMargins(leftMargin, topMargin, leftMargin, topMargin);
+            mPrivacyChip.setLayoutParams(params);
+        }
 
         updateStatusIconAlphaAnimator();
         updateHeaderTextContainerAlphaAnimator();
@@ -403,6 +436,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             mSystemIconsView.setPadding(padding.first, 0, padding.second, 0);
 
         }
+		setChipVisibility(mPrivacyChip.getVisibility() == View.VISIBLE ? true : false);
         return super.onApplyWindowInsets(insets);
     }
 
@@ -426,9 +460,11 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             mAlarmController.addCallback(this);
             mContext.registerReceiver(mRingerReceiver,
                     new IntentFilter(AudioManager.INTERNAL_RINGER_MODE_CHANGED_ACTION));
+			mPrivacyItemController.addCallback(mPICCallback);
         } else {
             mZenController.removeCallback(this);
             mAlarmController.removeCallback(this);
+			mPrivacyItemController.removeCallback(mPICCallback);
             mContext.unregisterReceiver(mRingerReceiver);
         }
     }
@@ -438,7 +474,30 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         if (v == mClockView) {
             Dependency.get(ActivityStarter.class).postStartActivityDismissingKeyguard(new Intent(
                     AlarmClock.ACTION_SHOW_ALARMS),0);
+        } else if (v == mPrivacyChip) {
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+				@Override
+				public void run() {
+					onChipClicked(handler);
+				}
+			});
         }
+    }
+
+	private void onChipClicked(Handler handler) {
+        Dialog d = new OngoingPrivacyDialog(mContext, mPrivacyChip.getBuilder()).createDialog();
+        d.getWindow().setType(2009);
+        SystemUIDialog.setShowForAllUsers(d, true);
+        SystemUIDialog.registerDismissListener(d);
+        SystemUIDialog.setWindowOnTop(d);
+		handler.post(new Runnable() {
+				@Override
+				public void run() {
+					d.show();
+				}
+		});
+        mHost.collapsePanels();
     }
 
     @Override
@@ -621,12 +680,13 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     public void setMargins(int sideMargins) {
         for (int i = 0; i < getChildCount(); i++) {
             View v = getChildAt(i);
-            if (v == mSystemIconsView || v == mQuickQsStatusIcons || v == mHeaderQsPanel) {
-                continue;
-            }
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) v.getLayoutParams();
-            lp.leftMargin = sideMargins;
-            lp.rightMargin = sideMargins;
+			if (!(v == mSystemIconsView || v == mQuickQsStatusIcons || v == mHeaderQsPanel)) {
+				if (v != mPrivacyChip) {
+					RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) v.getLayoutParams();
+                    lp.leftMargin = sideMargins;
+                    lp.rightMargin = sideMargins;
+				}
+			}
         }
     }
 }

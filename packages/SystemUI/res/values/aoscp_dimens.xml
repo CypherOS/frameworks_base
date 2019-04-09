@@ -33,4 +33,25 @@
     <dimen name="ambient_indication_icon_size">20.0dip</dimen>
     <dimen name="default_burn_in_prevention_offset">15dp</dimen>
 
+	<!-- Privacy Chip -->
+	<dimen name="ongoing_appops_chip_bg_corner_radius">12.0dip</dimen>
+    <dimen name="ongoing_appops_chip_bg_padding">0.0dip</dimen>
+    <dimen name="ongoing_appops_chip_icon_margin">4.0dip</dimen>
+    <dimen name="ongoing_appops_chip_icon_size">18.0dip</dimen>
+    <dimen name="ongoing_appops_chip_margin">12.0dip</dimen>
+    <dimen name="ongoing_appops_chip_side_padding">6.0dip</dimen>
+    <dimen name="ongoing_appops_dialog_app_icon_size">32.0dip</dimen>
+    <dimen name="ongoing_appops_dialog_app_plus_size">24.0dip</dimen>
+    <dimen name="ongoing_appops_dialog_icon_margin">8.0dip</dimen>
+    <dimen name="ongoing_appops_dialog_icon_size">24.0dip</dimen>
+    <dimen name="ongoing_appops_dialog_item_size">16.0sp</dimen>
+    <dimen name="ongoing_appops_dialog_items_bottom_margin">24.0dip</dimen>
+    <dimen name="ongoing_appops_dialog_line_height">48.0dip</dimen>
+    <dimen name="ongoing_appops_dialog_sep">16.0dip</dimen>
+    <dimen name="ongoing_appops_dialog_text_padding">16.0dip</dimen>
+    <dimen name="ongoing_appops_dialog_title_margin_sides">24.0dip</dimen>
+    <dimen name="ongoing_appops_dialog_title_margin_top_bottom">18.0dip</dimen>
+    <dimen name="ongoing_appops_dialog_title_size">20.0sp</dimen>
+    <dimen name="ongoing_appops_top_chip_margin">12.0dip</dimen>
+
 </resources>
