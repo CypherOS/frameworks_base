@@ -77,6 +77,8 @@ android_app {
     name: "SystemUI",
     static_libs: [
         "SystemUI-core",
+		"libAcrCloud",
+		"libMiServicesShared",
     ],
     resource_dirs: [],
 
@@ -100,4 +102,16 @@ android_app {
     ],
     required: ["privapp_whitelist_com.android.systemui"],
 
+}
+
+java_import {
+    name: "libAcrCloud",
+    jars: ["libs/libAcrCloud.jar"],
+	installable: false,
+}
+
+java_import {
+    name: "libMiServicesShared",
+    jars: ["libs/libMiServicesShared.jar"],
+	installable: false,
 }
