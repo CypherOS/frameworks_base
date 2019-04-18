@@ -62,6 +62,7 @@ import android.util.Xml;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.app.IAppOpsActiveCallback;
 import com.android.internal.app.IAppOpsCallback;
+import com.android.internal.app.IAppOpsNotedCallback;
 import com.android.internal.app.IAppOpsService;
 import com.android.internal.os.Zygote;
 import com.android.internal.util.ArrayUtils;
@@ -438,6 +439,7 @@ public class AppOpsService extends IAppOpsService.Stub {
     final ArrayMap<String, ArraySet<ModeCallback>> mPackageModeWatchers = new ArrayMap<>();
     final ArrayMap<IBinder, ModeCallback> mModeWatchers = new ArrayMap<>();
     final ArrayMap<IBinder, SparseArray<ActiveCallback>> mActiveWatchers = new ArrayMap<>();
+	final ArrayMap<IBinder, SparseArray<NotedCallback>> mNotedWatchers = new ArrayMap();
     final SparseArray<SparseArray<Restriction>> mAudioRestrictions = new SparseArray<>();
 
     final class ModeCallback implements DeathRecipient {
@@ -488,6 +490,48 @@ public class AppOpsService extends IAppOpsService.Stub {
         @Override
         public void binderDied() {
             stopWatchingMode(mCallback);
+        }
+    }
+
+	final class NotedCallback implements DeathRecipient {
+        final IAppOpsNotedCallback mCallback;
+        final int mCallingPid;
+        final int mCallingUid;
+        final int mWatchingUid;
+
+        NotedCallback(IAppOpsNotedCallback callback, int watchingUid, int callingUid, int callingPid) {
+            mCallback = callback;
+            mWatchingUid = watchingUid;
+            mCallingUid = callingUid;
+            mCallingPid = callingPid;
+            try {
+                mCallback.asBinder().linkToDeath(this, 0);
+            } catch (RemoteException e) {
+            }
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder(128);
+            sb.append("NotedCallback{");
+            sb.append(Integer.toHexString(System.identityHashCode(this)));
+            sb.append(" watchinguid=");
+            UserHandle.formatUid(sb, mWatchingUid);
+            sb.append(" from uid=");
+            UserHandle.formatUid(sb, mCallingUid);
+            sb.append(" pid=");
+            sb.append(mCallingPid);
+            sb.append('}');
+            return sb.toString();
+        }
+
+        void destroy() {
+            mCallback.asBinder().unlinkToDeath(this, 0);
+        }
+
+        @Override
+        public void binderDied() {
+            stopWatchingNoted(mCallback);
         }
     }
 
@@ -1577,10 +1621,12 @@ public class AppOpsService extends IAppOpsService.Stub {
             if (ops == null) {
                 if (DEBUG) Slog.d(TAG, "noteOperation: no op for code " + code + " uid " + uid
                         + " package " + packageName);
+				scheduleOpNotedIfNeededLocked(code, uid, packageName, 1);
                 return AppOpsManager.MODE_ERRORED;
             }
             final Op op = getOpLocked(ops, code, true);
             if (isOpRestrictedLocked(uid, code, packageName)) {
+				scheduleOpNotedIfNeededLocked(code, uid, packageName, 1);
                 return AppOpsManager.MODE_IGNORED;
             }
             final UidState uidState = ops.uidState;
@@ -1600,6 +1646,7 @@ public class AppOpsService extends IAppOpsService.Stub {
                             + switchCode + " (" + code + ") uid " + uid + " package "
                             + packageName);
                     op.rejectTime[uidState.state] = System.currentTimeMillis();
+					scheduleOpNotedIfNeededLocked(code, uid, packageName, uidMode);
                     return uidMode;
                 }
             } else {
@@ -1610,6 +1657,7 @@ public class AppOpsService extends IAppOpsService.Stub {
                             + switchCode + " (" + code + ") uid " + uid + " package "
                             + packageName);
                     op.rejectTime[uidState.state] = System.currentTimeMillis();
+					scheduleOpNotedIfNeededLocked(op.op, uid, packageName, mode);
                     return mode;
                 }
             }
@@ -1619,6 +1667,7 @@ public class AppOpsService extends IAppOpsService.Stub {
             op.rejectTime[uidState.state] = 0;
             op.proxyUid = proxyUid;
             op.proxyPackageName = proxyPackageName;
+			scheduleOpNotedIfNeededLocked(code, uid, packageName, 0);
             return AppOpsManager.MODE_ALLOWED;
         }
     }
@@ -1670,6 +1719,55 @@ public class AppOpsService extends IAppOpsService.Stub {
                 if (i == 0) {
                     activeCallbacks.valueAt(i).destroy();
                 }
+            }
+        }
+    }
+
+	@Override
+	public void startWatchingNoted(int[] ops, IAppOpsNotedCallback callback) {
+        int watchedUid = -1;
+        int callingUid = Binder.getCallingUid();
+        int callingPid = Binder.getCallingPid();
+		if (mContext.checkCallingOrSelfPermission(Manifest.permission.WATCH_APPOPS)
+                != PackageManager.PERMISSION_GRANTED) {
+            watchedUid = callingUid;
+        }
+		if (ops != null) {
+            Preconditions.checkArrayElementsInRange(ops, 0,
+                    AppOpsManager._NUM_OP + 10, "Invalid op code in: " + Arrays.toString(ops));
+        }
+        if (callback == null) {
+            return;
+        }
+        int i = 0;
+		synchronized (this) {
+            SparseArray<NotedCallback> cb = mNotedWatchers.get(callback.asBinder());
+            if (cb == null) {
+                cb = new SparseArray<>();
+                mNotedWatchers.put(callback.asBinder(), cb);
+            }
+			final NotedCallback notedCallback = new NotedCallback(callback, watchedUid, callingUid, callingPid);
+			int length = ops.length;
+			while (i < length) {
+                cb.put(ops[i], notedCallback);
+                i++;
+            }
+        }
+    }
+
+	@Override
+	public void stopWatchingNoted(IAppOpsNotedCallback callback) {
+		if (callback == null) {
+            return;
+        }
+        synchronized (this) {
+            final SparseArray<NotedCallback> notedCallbacks = mNotedWatchers.remove(callback.asBinder());
+            if (notedCallbacks == null) {
+                return;
+            }
+            final int callbackCount = notedCallbacks.size();
+            for (int i = 0; i < callbackCount; i++) {
+                ((NotedCallback) notedCallbacks.valueAt(i)).destroy();
             }
         }
     }
@@ -1825,6 +1923,42 @@ public class AppOpsService extends IAppOpsService.Stub {
                     callback.mCallback.opActiveChanged(code, uid, packageName, active);
                 } catch (RemoteException e) {
                     /* do nothing */
+                }
+            }
+        } finally {
+            Binder.restoreCallingIdentity(identity);
+        }
+    }
+
+	private void scheduleOpNotedIfNeededLocked(int code, int uid, String packageName, int result) {
+        ArraySet<NotedCallback> dispatchedCallbacks = null;
+        int callbackListCount = mNotedWatchers.size();
+        for (int i = 0; i < callbackListCount; i++) {
+            NotedCallback callback = (NotedCallback) ((SparseArray) mNotedWatchers.valueAt(i)).get(code);
+            if (callback != null) {
+                if (callback.mWatchingUid < 0 || callback.mWatchingUid == uid) {
+                    if (dispatchedCallbacks == null) {
+                        dispatchedCallbacks = new ArraySet();
+                    }
+                    dispatchedCallbacks.add(callback);
+                }
+            }
+        }
+        if (dispatchedCallbacks != null) {
+			mHandler.sendMessage(PooledLambda.obtainMessage(
+                AppOpsService::notifyOpChecked,
+                this, dispatchedCallbacks, code, uid, packageName, result));
+        }
+    }
+
+	private void notifyOpChecked(ArraySet<NotedCallback> callbacks, int code, int uid, String packageName, int result) {
+        long identity = Binder.clearCallingIdentity();
+        try {
+            int callbackCount = callbacks.size();
+            for (int i = 0; i < callbackCount; i++) {
+                try {
+                    ((NotedCallback) callbacks.valueAt(i)).mCallback.opNoted(code, uid, packageName, result);
+                } catch (RemoteException e) {
                 }
             }
         } finally {
@@ -3161,6 +3295,46 @@ public class AppOpsService extends IAppOpsService.Stub {
                             pw.print(' ');
                         }
                         pw.print(AppOpsManager.opToName(activeWatchers.keyAt(i)));
+                        if (i < opCount - 1) {
+                            pw.print(',');
+                        }
+                    }
+                    pw.println("]");
+                    pw.print("        ");
+                    pw.println(cb);
+                }
+            }
+			if (mNotedWatchers.size() > 0 && dumpMode < 0) {
+				needSep = true;
+                boolean printedHeader = false;
+                for (int i = 0; i < mNotedWatchers.size(); i++) {
+                    final SparseArray<NotedCallback> notedWatchers = mNotedWatchers.valueAt(i);
+                    if (notedWatchers.size() <= 0) {
+                        continue;
+                    }
+                    final NotedCallback cb = notedWatchers.valueAt(0);
+                    if (dumpOp >= 0 && notedWatchers.indexOfKey(dumpOp) < 0) {
+                        continue;
+                    }
+                    if (dumpPackage != null && cb.mWatchingUid >= 0
+                            && dumpUid != UserHandle.getAppId(cb.mWatchingUid)) {
+                        continue;
+                    }
+                    if (!printedHeader) {
+                        pw.println("  All op noted watchers:");
+                        printedHeader = true;
+                    }
+                    pw.print("    ");
+                    pw.print(Integer.toHexString(System.identityHashCode(
+                            mNotedWatchers.keyAt(i))));
+                    pw.println(" ->");
+                    pw.print("        [");
+                    final int opCount = notedWatchers.size();
+                    for (i = 0; i < opCount; i++) {
+                        if (i > 0) {
+                            pw.print(' ');
+                        }
+                        pw.print(AppOpsManager.opToName(notedWatchers.keyAt(i)));
                         if (i < opCount - 1) {
                             pw.print(',');
                         }
