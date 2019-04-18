@@ -11,6 +11,20 @@ android_library {
         "androidx.lifecycle_lifecycle-runtime",
     ],
 
+	android_libs: [
+	    "android-support-v4",
+		"android-arch-lifecycle-runtime",
+		"android-support-v7-recyclerview",
+		"android-support-v7-preference",
+		"android-support-v7-appcompat",
+		"android-arch-lifecycle-runtime",
+	],
+
+	static_libs: [
+        "android-support-annotations",
+		"android-arch-lifecycle-common",
+    ],
+
     // ANDROIDMK TRANSLATION ERROR: unsupported assignment to LOCAL_SHARED_JAVA_LIBRARIES
     // LOCAL_SHARED_JAVA_LIBRARIES := androidx.lifecycle_lifecycle-common
 
