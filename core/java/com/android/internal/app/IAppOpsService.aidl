@@ -20,6 +20,7 @@ import android.app.AppOpsManager;
 import android.os.Bundle;
 import com.android.internal.app.IAppOpsCallback;
 import com.android.internal.app.IAppOpsActiveCallback;
+import com.android.internal.app.IAppOpsNotedCallback;
 
 interface IAppOpsService {
     // These first methods are also called by native code, so must
@@ -56,4 +57,7 @@ interface IAppOpsService {
     boolean isOperationActive(int code, int uid, String packageName);
 
     void startWatchingModeWithFlags(int op, String packageName, int flags, IAppOpsCallback callback);
+
+	void startWatchingNoted(in int[] ops, IAppOpsNotedCallback callback);
+    void stopWatchingNoted(IAppOpsNotedCallback callback);
 }
