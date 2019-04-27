@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="ongoing_privacy_chip_content_multiple_apps_single_op">
+        <item quantity="other">%1$d applications are using your %2$s.</item>
+        <item quantity="one">%1$d application is using your %2$s.</item>
+        <item quantity="few">%1$d applications are using your %2$s.</item>
+    </plurals>
+    <plurals name="ongoing_privacy_chip_multiple_apps">
+        <item quantity="other">%d apps</item>
+        <item quantity="one">%d app</item>
+        <item quantity="few">%d apps</item>
+    </plurals>
+    <plurals name="ongoing_privacy_dialog_overflow_text">
+        <item quantity="other">%d other apps</item>
+        <item quantity="one">%d other app</item>
+    </plurals>
+</resources>

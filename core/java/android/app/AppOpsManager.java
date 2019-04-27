@@ -36,6 +36,7 @@ import android.util.ArrayMap;
 
 import com.android.internal.app.IAppOpsActiveCallback;
 import com.android.internal.app.IAppOpsCallback;
+import com.android.internal.app.IAppOpsNotedCallback;
 import com.android.internal.app.IAppOpsService;
 import com.android.internal.util.Preconditions;
 
@@ -77,6 +78,7 @@ public class AppOpsManager {
     final Context mContext;
     final IAppOpsService mService;
     final ArrayMap<OnOpChangedListener, IAppOpsCallback> mModeWatchers = new ArrayMap<>();
+	final ArrayMap<OnOpNotedListener, IAppOpsNotedCallback> mNotedWatchers = new ArrayMap();
     final ArrayMap<OnOpActiveChangedListener, IAppOpsActiveCallback> mActiveWatchers =
             new ArrayMap<>();
 
@@ -1719,6 +1721,10 @@ public class AppOpsManager {
         void onOpActiveChanged(int code, int uid, String packageName, boolean active);
     }
 
+	public interface OnOpNotedListener {
+        void onOpNoted(int code, int uid, String packageName, int active);
+    }
+
     /**
      * Callback for notification of changes to operation state.
      * This allows you to see the raw op codes instead of strings.
@@ -2074,6 +2080,38 @@ public class AppOpsManager {
             if (cb != null) {
                 try {
                     mService.stopWatchingActive(cb);
+                } catch (RemoteException e) {
+                    throw e.rethrowFromSystemServer();
+                }
+            }
+        }
+    }
+
+	public void startWatchingNoted(int[] ops, @NonNull OnOpNotedListener callback) {
+        synchronized (mNotedWatchers) {
+            if (((IAppOpsNotedCallback) mNotedWatchers.get(callback)) != null) {
+                return;
+            }
+            IAppOpsNotedCallback cb = new IAppOpsNotedCallback.Stub() {
+                public void opNoted(int op, int uid, String packageName, int mode) {
+                    callback.onOpNoted(op, uid, packageName, mode);
+                }
+            };
+            mNotedWatchers.put(callback, cb);
+            try {
+                mService.startWatchingNoted(ops, cb);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    }
+
+    public void stopWatchingNoted(@NonNull OnOpNotedListener callback) {
+        synchronized (mNotedWatchers) {
+            IAppOpsNotedCallback cb = (IAppOpsNotedCallback) mNotedWatchers.get(callback);
+            if (cb != null) {
+                try {
+                    mService.stopWatchingNoted(cb);
                 } catch (RemoteException e) {
                     throw e.rethrowFromSystemServer();
                 }
