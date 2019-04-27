@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="ongoing_appops_dialog_max_apps">5</integer>
+</resources>
