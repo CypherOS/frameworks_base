@@ -2004,6 +2004,9 @@ public class ActivityManagerService extends IActivityManager.Stub
 
     private static String sTheRealBuildSerial = Build.UNKNOWN;
 
+    final SwipeToScreenshotObserver mSwipeToScreenshotObserver;
+    private boolean mIsSwipeToScrenshotEnabled;
+
     /**
      * Current global configuration information. Contains general settings for the entire system,
      * also corresponds to the merged configuration of the default display.
@@ -3059,6 +3062,7 @@ public class ActivityManagerService extends IActivityManager.Stub
         mProcStartHandlerThread = null;
         mProcStartHandler = null;
         mHiddenApiBlacklist = null;
+        mSwipeToScreenshotObserver = null;
     }
 
     // Note: This method is invoked on the main thread but may need to attach various
@@ -3207,6 +3211,7 @@ public class ActivityManagerService extends IActivityManager.Stub
             Slog.w(TAG, "Setting background thread cpuset failed");
         }
 
+        mSwipeToScreenshotObserver = new SwipeToScreenshotObserver(mHandler, mContext);
     }
 
     protected ActivityStackSupervisor createStackSupervisor() {
@@ -15196,6 +15201,7 @@ public class ActivityManagerService extends IActivityManager.Stub
             }
             mWaitForNetworkTimeoutMs = waitForNetworkTimeoutMs;
         }
+        mSwipeToScreenshotObserver.registerObserver();
     }
 
     public void systemReady(final Runnable goingCallback, TimingsTraceLog traceLog) {
@@ -15409,6 +15415,39 @@ public class ActivityManagerService extends IActivityManager.Stub
 
             traceLog.traceEnd(); // ActivityManagerStartApps
             traceLog.traceEnd(); // PhaseActivityManagerReady
+        }
+    }
+
+    private class SwipeToScreenshotObserver extends ContentObserver {
+
+        private final Context mContext;
+
+        public SwipeToScreenshotObserver(Handler handler, Context context) {
+            super(handler);
+            mContext = context;
+        }
+
+        public void registerObserver() {
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.SWIPE_TO_SCREENSHOT),
+                    false, this, UserHandle.USER_ALL);
+            update();
+        }
+
+        private void update() {
+            mIsSwipeToScrenshotEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.SWIPE_TO_SCREENSHOT, 0, UserHandle.USER_CURRENT) == 1;
+        }
+
+        public void onChange(boolean selfChange) {
+            update();
+        }
+    }
+
+    @Override
+    public boolean isSwipeToScreenshotGestureActive() {
+        synchronized (this) {
+            return mIsSwipeToScrenshotEnabled;
         }
     }
 
