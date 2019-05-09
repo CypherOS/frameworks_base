@@ -64,6 +64,7 @@ import com.android.systemui.DockedStackExistsListener;
 import com.android.systemui.R;
 import com.android.systemui.SysUiServiceProvider;
 import com.android.systemui.UiOffloadThread;
+import com.android.systemui.aoscp.PrivacyController;
 import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.recents.misc.SysUiTaskStackChangeListener;
@@ -118,6 +119,7 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
     private final String mSlotHeadset;
     private final String mSlotDataSaver;
     private final String mSlotLocation;
+    private final String mSlotMicrophone;
 
     private final Context mContext;
     private final Handler mHandler = new Handler();
@@ -136,6 +138,7 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
     private final LocationController mLocationController;
     private final ArraySet<Pair<String, Integer>> mCurrentNotifs = new ArraySet<>();
     private final UiOffloadThread mUiOffloadThread = Dependency.get(UiOffloadThread.class);
+    private final PrivacyController mPrivacyController;
 
     // Assume it's all good unless we hear otherwise.  We don't always seem
     // to get broadcasts that it *is* there.
@@ -167,6 +170,7 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
         mProvisionedController = Dependency.get(DeviceProvisionedController.class);
         mKeyguardMonitor = Dependency.get(KeyguardMonitor.class);
         mLocationController = Dependency.get(LocationController.class);
+        mPrivacyController = Dependency.get(PrivacyController.class);
 
         mSlotCast = context.getString(com.android.internal.R.string.status_bar_cast);
         mSlotHotspot = context.getString(com.android.internal.R.string.status_bar_hotspot);
@@ -181,6 +185,7 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
         mSlotHeadset = context.getString(com.android.internal.R.string.status_bar_headset);
         mSlotDataSaver = context.getString(com.android.internal.R.string.status_bar_data_saver);
         mSlotLocation = context.getString(com.android.internal.R.string.status_bar_location);
+        mSlotMicrophone = context.getString(com.android.internal.R.string.status_bar_microphone);
 
         // listen for broadcasts
         IntentFilter filter = new IntentFilter();
@@ -239,6 +244,10 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
                 context.getString(R.string.accessibility_data_saver_on));
         mIconController.setIconVisibility(mSlotDataSaver, false);
 
+        // microphone
+        mIconController.setIcon(mSlotMicrophone, R.drawable.stat_sys_mic_none, null);
+        mIconController.setIconVisibility(mSlotMicrophone, mPrivacyController.getActiveOps() > 0);
+
         mRotationLockController.addCallback(this);
         mBluetooth.addCallback(this);
         mProvisionedController.addCallback(this);
@@ -249,6 +258,7 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
         mDataSaver.addCallback(this);
         mKeyguardMonitor.addCallback(this);
         mLocationController.addCallback(this);
+        mPrivacyController.addCallback(mPrivacyCallback);
 
         SysUiServiceProvider.getComponent(mContext, CommandQueue.class).addCallbacks(this);
         ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskListener);
@@ -277,6 +287,7 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
         mDataSaver.removeCallback(this);
         mKeyguardMonitor.removeCallback(this);
         mLocationController.removeCallback(this);
+        mPrivacyController.removeCallback(mPrivacyCallback);
         SysUiServiceProvider.getComponent(mContext, CommandQueue.class).removeCallbacks(this);
         mContext.unregisterReceiver(mIntentReceiver);
 
@@ -713,6 +724,13 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
                     updateAlarm();
                 }
             };
+
+    private final PrivacyController.Callback mPrivacyCallback = new PrivacyController.Callback() {
+        @Override
+        public void onPrivacyChanged(int activeOps, int opCode, String opPackage) {
+            mIconController.setIconVisibility(mSlotMicrophone, activeOps > 0);
+        }
+    };
 
     @Override
     public void appTransitionStarting(long startTime, long duration, boolean forced) {
