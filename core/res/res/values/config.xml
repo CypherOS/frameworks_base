@@ -43,10 +43,12 @@
         <item><xliff:g id="id">@string/status_bar_phone_signal</xliff:g></item>
         <item><xliff:g id="id">@string/status_bar_secure</xliff:g></item>
         <item><xliff:g id="id">@string/status_bar_managed_profile</xliff:g></item>
+        <item><xliff:g id="id">@string/status_bar_camera</xliff:g></item>
         <item><xliff:g id="id">@string/status_bar_cast</xliff:g></item>
         <item><xliff:g id="id">@string/status_bar_vpn</xliff:g></item>
         <item><xliff:g id="id">@string/status_bar_bluetooth</xliff:g></item>
         <item><xliff:g id="id">@string/status_bar_location</xliff:g></item>
+        <item><xliff:g id="id">@string/status_bar_microphone</xliff:g></item>
         <item><xliff:g id="id">@string/status_bar_mute</xliff:g></item>
         <item><xliff:g id="id">@string/status_bar_volume</xliff:g></item>
         <item><xliff:g id="id">@string/status_bar_zen</xliff:g></item>
@@ -65,10 +67,12 @@
     <string translatable="false" name="status_bar_ime">ime</string>
     <string translatable="false" name="status_bar_sync_failing">sync_failing</string>
     <string translatable="false" name="status_bar_sync_active">sync_active</string>
+    <string translatable="false" name="status_bar_camera">camera</string>
     <string translatable="false" name="status_bar_cast">cast</string>
     <string translatable="false" name="status_bar_hotspot">hotspot</string>
     <string translatable="false" name="status_bar_location">location</string>
     <string translatable="false" name="status_bar_bluetooth">bluetooth</string>
+    <string translatable="false" name="status_bar_microphone">microphone</string>
     <string translatable="false" name="status_bar_nfc">nfc</string>
     <string translatable="false" name="status_bar_tty">tty</string>
     <string translatable="false" name="status_bar_speakerphone">speakerphone</string>
