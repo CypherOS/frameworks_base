@@ -18,9 +18,11 @@ package com.android.systemui.statusbar;
 
 import android.app.AppOpsManager;
 import android.content.Context;
+import android.os.Handler;
 
 import com.android.systemui.Dependency;
 import com.android.systemui.ForegroundServiceController;
+import com.android.systemui.aoscp.privacy.PrivacyChipController;
 
 /**
  * This class handles listening to notification updates and passing them along to
@@ -37,10 +39,14 @@ public class AppOpsListener implements AppOpsManager.OnOpActiveChangedListener {
     protected NotificationPresenter mPresenter;
     protected NotificationEntryManager mEntryManager;
     protected final AppOpsManager mAppOps;
+	protected PrivacyChipController mPrivacyChipController;
+	private Handler mMainThread;
 
     protected static final int[] OPS = new int[] {AppOpsManager.OP_CAMERA,
             AppOpsManager.OP_SYSTEM_ALERT_WINDOW,
-            AppOpsManager.OP_RECORD_AUDIO};
+            AppOpsManager.OP_RECORD_AUDIO,
+            AppOpsManager.OP_COARSE_LOCATION,
+			AppOpsManager.OP_FINE_LOCATION};
 
     public AppOpsListener(Context context) {
         mContext = context;
@@ -51,6 +57,8 @@ public class AppOpsListener implements AppOpsManager.OnOpActiveChangedListener {
             NotificationEntryManager entryManager) {
         mPresenter = presenter;
         mEntryManager = entryManager;
+		mMainThread = Dependency.get(Dependency.MAIN_HANDLER);
+		mPrivacyChipController = PrivacyChipController.get(mContext);
         mAppOps.startWatchingActive(OPS, this);
     }
 
@@ -64,5 +72,10 @@ public class AppOpsListener implements AppOpsManager.OnOpActiveChangedListener {
         mPresenter.getHandler().post(() -> {
           mEntryManager.updateNotificationsForAppOp(code, uid, packageName, active);
         });
+		if (mPrivacyChipController != null) {
+		    mMainThread.post(() -> {
+				mPrivacyChipController.updateChipForAppOp(code, uid, packageName, active);
+			});
+		}
     }
 }
