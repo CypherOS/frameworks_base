@@ -32,6 +32,8 @@ import com.android.internal.logging.MetricsLogger;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.Preconditions;
 import com.android.settingslib.bluetooth.LocalBluetoothManager;
+import com.android.systemui.aoscp.PrivacyController;
+import com.android.systemui.aoscp.PrivacyControllerImpl;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.colorextraction.SysuiColorExtractor;
 import com.android.systemui.fragments.FragmentService;
@@ -327,6 +329,8 @@ public class Dependency extends SystemUI {
 
         mProviders.put(IStatusBarService.class, () -> IStatusBarService.Stub.asInterface(
                 ServiceManager.getService(Context.STATUS_BAR_SERVICE)));
+
+        mProviders.put(PrivacyController.class,() -> new PrivacyControllerImpl(mContext));
 
         // Put all dependencies above here so the factory can override them if it wants.
         SystemUIFactory.getInstance().injectDependencies(mProviders, mContext);

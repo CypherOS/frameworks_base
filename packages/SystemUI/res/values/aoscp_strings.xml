@@ -32,4 +32,18 @@
 	<!-- AmbientPlay: The contents of the displayed recognition. -->
     <string name="ambient_recognition_information">%1$s by %2$s</string>
 
+    <!-- Privacy Chip -->
+	<string name="ongoing_privacy_chip_content_multiple_apps">Applications are using your %s.</string>
+    <string name="ongoing_privacy_chip_content_single_app">%1$s is using your %2$s.</string>
+    <string name="ongoing_privacy_dialog_last_separator">" and "</string>
+    <string name="ongoing_privacy_dialog_multiple_apps_title">Apps using your %s</string>
+    <string name="ongoing_privacy_dialog_ok">Got it</string>
+    <string name="ongoing_privacy_dialog_open_settings">Privacy settings</string>
+    <string name="ongoing_privacy_dialog_separator">", "</string>
+    <string name="ongoing_privacy_dialog_single_app_title">App using your %s</string>
+	<string name="privacy_type_camera">camera</string>
+    <string name="privacy_type_location">location</string>
+    <string name="privacy_type_microphone">microphone</string>
+	<string name="device_services">Device Services</string>
+
 </resources>
