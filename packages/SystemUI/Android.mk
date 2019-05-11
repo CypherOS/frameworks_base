@@ -58,7 +58,10 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     SystemUI-proto \
     apache-commons-lang-2.6 \
     libAcrCloud \
-    libMiServicesShared
+    libMiServicesShared \
+	libJetBrainsAnnotations \
+	libKotlin \
+	libKotlin-common
 
 LOCAL_JAVA_LIBRARIES := telephony-common \
     android.car
@@ -112,6 +115,39 @@ LOCAL_MODULE_CLASS := JAVA_LIBRARIES
 LOCAL_SRC_FILES := libs/libMiServicesShared.jar
 LOCAL_UNINSTALLABLE_MODULE := true
 LOCAL_SDK_VERSION := 27
+include $(BUILD_PREBUILT)
+
+#
+# Prebuilt Kotlin Programming Language
+#
+include $(CLEAR_VARS)
+LOCAL_MODULE := libKotlin
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+LOCAL_SRC_FILES := libs/libKotlin.jar
+LOCAL_UNINSTALLABLE_MODULE := true
+LOCAL_PRIVATE_PLATFORM_APIS := true
+LOCAL_CERTIFICATE := platform
+include $(BUILD_PREBUILT)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := libJetBrainsAnnotations
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+LOCAL_SRC_FILES := libs/libJetBrainsAnnotations.jar
+LOCAL_UNINSTALLABLE_MODULE := true
+LOCAL_PRIVATE_PLATFORM_APIS := true
+LOCAL_CERTIFICATE := platform
+include $(BUILD_PREBUILT)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := libKotlin-common
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+LOCAL_SRC_FILES := libs/libKotlin-common.jar
+LOCAL_UNINSTALLABLE_MODULE := true
+LOCAL_PRIVATE_PLATFORM_APIS := true
+LOCAL_CERTIFICATE := platform
 include $(BUILD_PREBUILT)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
