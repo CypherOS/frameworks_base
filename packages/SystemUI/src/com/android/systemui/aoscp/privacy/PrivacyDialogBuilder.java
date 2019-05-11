@@ -1,0 +1,164 @@
+/*
+ * Copyright (C) 2019 CypherOS
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.android.systemui.aoscp.privacy;
+
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.util.Pair;
+
+import com.android.systemui.R;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+public class PrivacyDialogBuilder {
+
+    private PrivacyApplication mApp;
+    private ArrayList mAppsAndTypes;
+    private Context mContext;
+    private String mLastSeparator;
+    private String mSeparator;
+    private List<PrivacyType> mTypes;
+
+    public PrivacyDialogBuilder(Context context, List<PrivacyItem> list) {
+        mContext = context;
+		mLastSeparator = mContext.getString(R.string.ongoing_privacy_dialog_last_separator);
+		mSeparator = mContext.getString(R.string.ongoing_privacy_dialog_separator);
+        LinkedHashMap privacyItems = new LinkedHashMap();
+        for (PrivacyItem privacyItem : list) {
+            PrivacyApplication app = privacyItem.getApplication();
+            ArrayList privacyApp = (ArrayList) privacyItems.get(app);
+            if (privacyApp == null) {
+                privacyApp = new ArrayList();
+                privacyItems.put(app, privacyApp);
+            }
+            privacyApp.add(privacyItem.getPrivacyType());
+        }
+		mAppsAndTypes = new ArrayList(privacyItems.values());
+		ArrayList privacyTypes = new ArrayList(list instanceof Collection ? ((Collection) list).size() : 10);
+        for (PrivacyItem privacyType : list) {
+            privacyTypes.add(privacyType.getPrivacyType());
+        }
+        mTypes = Collections.sort(OpUtils.distinctInList(privacyTypes));
+		mApp = mAppsAndTypes.size() != 1 ? null : app;
+    }
+
+    public ArrayList getAppsAndTypes() {
+        return mAppsAndTypes;
+    }
+
+    public List<PrivacyType> getTypes() {
+        return mTypes;
+    }
+
+    public PrivacyApplication getApp() {
+        return mApp;
+    }
+
+    public List<Drawable> generateIconsForApp(List<? extends PrivacyType> list) {
+        List<PrivacyType> sorted = generateAndSort(list);
+		ArrayList generatedForApp = new ArrayList(sorted instanceof Collection ? ((Collection) sorted).size() : 10);
+        for (PrivacyType icon : sorted) {
+            generatedForApp.add(icon.getIcon(mContext));
+        }
+        return generatedForApp;
+    }
+
+    public List<Drawable> generateIcons() {
+		ArrayList generated = new ArrayList(mTypes instanceof Collection ? ((Collection) mTypes).size() : 10);
+        for (PrivacyType icon : mTypes) {
+            generated.add(icon.getIcon(mContext));
+        }
+        return generated;
+    }
+	
+	private <T extends Comparable<? super T>> List<T> generateAndSort(Iterable<? extends T> list) {
+		if (list instanceof Collection) {
+			Collection collection = (Collection) list;
+            if (collection.size() <= 1) {
+                return OpUtils.toList(list);
+            }
+            Object[] toArray = collection.toArray(new Comparable[0]);
+            if (toArray != null) {
+                Comparable[] cArray = (Comparable[]) toArray;
+                if (cArray != null) {
+                    Arrays.sort(cArray);
+                    return Arrays.asList(cArray);
+                }
+            }
+        }
+		List toMutableList = OpUtils.toMutableList((Iterable) list);
+		Collections.sort(toMutableList);
+		return toMutableList;
+	}
+
+    private <T> StringBuilder joinWithAnd(List<? extends T> list) {
+        List subList = list.subList(0, list.size() - 1);
+        Appendable sbAppend = new StringBuilder();
+        joinTo(subList, sbAppend, mSeparator);
+        StringBuilder sb = (StringBuilder) sbAppend;
+        sb.append(mLastSeparator);
+        sb.append(list.get(list.size() - 1));
+        return sb;
+    }
+
+    public String joinTypes() {
+        if (mTypes.size() == 0) {
+            return "";
+        }
+        String sb;
+        if (mTypes.size() != 1) {
+            List<PrivacyType> list = mTypes;
+            ArrayList privacyName = new ArrayList(list instanceof Collection ? ((Collection) list).size() : 10);
+            for (PrivacyType name : list) {
+                privacyName.add(name.getName(mContext));
+            }
+            sb = joinWithAnd(privacyName).toString();
+            return sb;
+        }
+        sb = ((PrivacyType) mTypes.get(0)).getName(mContext);
+        return sb;
+    }
+
+	private <T, A extends Appendable> A joinTo(Iterable<? extends T> iterable, A a, String s) {
+		int size = 0;
+		for (Object obj : iterable) {
+            size++;
+            if (size > 1) {
+                a.append(s);
+            }
+			if (obj != null) {
+				a.append(String.valueOf(obj));
+			}
+        }
+        return a;
+	}
+
+    public String getDialogTitle() {
+        String title;
+        if (mApp != null) {
+            title = mContext.getString(R.string.ongoing_privacy_dialog_single_app_title, new Object[]{joinTypes()});
+            return title;
+        }
+        title = mContext.getString(R.string.ongoing_privacy_dialog_multiple_apps_title, new Object[]{joinTypes()});
+        return title;
+    }
+}
