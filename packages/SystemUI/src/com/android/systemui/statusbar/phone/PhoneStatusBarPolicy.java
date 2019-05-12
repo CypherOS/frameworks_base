@@ -26,6 +26,7 @@ import android.app.ActivityManager.StackInfo;
 import android.app.AlarmManager;
 import android.app.AlarmManager.AlarmClockInfo;
 import android.app.AppGlobals;
+import android.app.AppOpsManager;
 import android.app.Notification;
 import android.app.Notification.Action;
 import android.app.NotificationManager;
@@ -64,6 +65,9 @@ import com.android.systemui.DockedStackExistsListener;
 import com.android.systemui.R;
 import com.android.systemui.SysUiServiceProvider;
 import com.android.systemui.UiOffloadThread;
+import com.android.systemui.aoscp.LiveOpsController;
+import com.android.systemui.aoscp.privacy.PrivacyItem;
+import com.android.systemui.aoscp.privacy.PrivacyType;
 import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.recents.misc.SysUiTaskStackChangeListener;
@@ -118,6 +122,8 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
     private final String mSlotHeadset;
     private final String mSlotDataSaver;
     private final String mSlotLocation;
+    private final String mSlotMicrophone;
+    private final String mSlotCamera;
 
     private final Context mContext;
     private final Handler mHandler = new Handler();
@@ -136,6 +142,7 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
     private final LocationController mLocationController;
     private final ArraySet<Pair<String, Integer>> mCurrentNotifs = new ArraySet<>();
     private final UiOffloadThread mUiOffloadThread = Dependency.get(UiOffloadThread.class);
+    private final LiveOpsController mLiveOpsController;
 
     // Assume it's all good unless we hear otherwise.  We don't always seem
     // to get broadcasts that it *is* there.
@@ -167,6 +174,7 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
         mProvisionedController = Dependency.get(DeviceProvisionedController.class);
         mKeyguardMonitor = Dependency.get(KeyguardMonitor.class);
         mLocationController = Dependency.get(LocationController.class);
+        mLiveOpsController = Dependency.get(LiveOpsController.class);
 
         mSlotCast = context.getString(com.android.internal.R.string.status_bar_cast);
         mSlotHotspot = context.getString(com.android.internal.R.string.status_bar_hotspot);
@@ -181,6 +189,8 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
         mSlotHeadset = context.getString(com.android.internal.R.string.status_bar_headset);
         mSlotDataSaver = context.getString(com.android.internal.R.string.status_bar_data_saver);
         mSlotLocation = context.getString(com.android.internal.R.string.status_bar_location);
+        mSlotMicrophone = context.getString(com.android.internal.R.string.status_bar_microphone);
+        mSlotCamera = context.getString(com.android.internal.R.string.status_bar_camera);
 
         // listen for broadcasts
         IntentFilter filter = new IntentFilter();
@@ -239,6 +249,14 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
                 context.getString(R.string.accessibility_data_saver_on));
         mIconController.setIconVisibility(mSlotDataSaver, false);
 
+        // microphone
+        mIconController.setIcon(mSlotMicrophone, R.drawable.stat_sys_mic_none, null);
+        mIconController.setIconVisibility(mSlotMicrophone, false);
+
+        // camera
+        mIconController.setIcon(mSlotCamera, R.drawable.stat_sys_camera, null);
+        mIconController.setIconVisibility(mSlotCamera, false);
+
         mRotationLockController.addCallback(this);
         mBluetooth.addCallback(this);
         mProvisionedController.addCallback(this);
@@ -249,6 +267,7 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
         mDataSaver.addCallback(this);
         mKeyguardMonitor.addCallback(this);
         mLocationController.addCallback(this);
+        mLiveOpsController.addCallback(mPrivacyCallback);
 
         SysUiServiceProvider.getComponent(mContext, CommandQueue.class).addCallbacks(this);
         ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskListener);
@@ -277,6 +296,7 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
         mDataSaver.removeCallback(this);
         mKeyguardMonitor.removeCallback(this);
         mLocationController.removeCallback(this);
+        mLiveOpsController.removeCallback(mPrivacyCallback);
         SysUiServiceProvider.getComponent(mContext, CommandQueue.class).removeCallbacks(this);
         mContext.unregisterReceiver(mIntentReceiver);
 
@@ -713,6 +733,42 @@ public class PhoneStatusBarPolicy implements Callback, Callbacks,
                     updateAlarm();
                 }
             };
+
+    private final LiveOpsController.Callback mPrivacyCallback = new LiveOpsController.Callback() {
+        @Override
+        public void onPrivacyChanged(List<PrivacyItem> list) {
+			updatePrivacyItems(list);
+        }
+    };
+
+	private void updatePrivacyItems(List<PrivacyItem> list) {
+        boolean isTypeCamera = false;
+        boolean isTypeMicrophone = false;
+        for (PrivacyItem item : list) {
+			int type = PrivacyTypeCoordinator.ORDERED_TYPES[item.getPrivacyType().ordinal()];
+            if (type == 1) {
+                isTypeCamera = true;
+            } else if (type != 2) {
+                if (type == 3) {
+                    isTypeMicrophone = true;
+                }
+            }
+        }
+        mIconController.setIconVisibility(mSlotCamera, isTypeCamera);
+        mIconController.setIconVisibility(mSlotMicrophone, isTypeMicrophone);
+    }
+
+	static class PrivacyTypeCoordinator {
+        static final int[] ORDERED_TYPES = new int[PrivacyType.values().length];
+        static {
+            ORDERED_TYPES[PrivacyType.TYPE_CAMERA.ordinal()] = 1;
+            ORDERED_TYPES[PrivacyType.TYPE_LOCATION.ordinal()] = 2;
+            try {
+                ORDERED_TYPES[PrivacyType.TYPE_MICROPHONE.ordinal()] = 3;
+            } catch (NoSuchFieldError unused) {
+            }
+        }
+    }
 
     @Override
     public void appTransitionStarting(long startTime, long duration, boolean forced) {
