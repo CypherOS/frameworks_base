@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.ColorInt;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.media.AudioManager;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.AlarmClock;
 import android.service.notification.ZenModeConfig;
 import android.support.annotation.VisibleForTesting;
@@ -51,6 +53,11 @@ import com.android.systemui.BatteryMeterView;
 import com.android.systemui.Dependency;
 import com.android.systemui.Prefs;
 import com.android.systemui.R;
+import com.android.systemui.aoscp.LiveOpsController;
+import com.android.systemui.aoscp.privacy.LiveOpsPrivacyChip;
+import com.android.systemui.aoscp.privacy.LiveOpsPrivacyDialog;
+import com.android.systemui.aoscp.privacy.PrivacyItem;
+import com.android.systemui.aoscp.privacy.PrivacyTypeCoordinator;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.qs.QSDetail.Callback;
 import com.android.systemui.statusbar.phone.PhoneStatusBarView;
@@ -58,12 +65,14 @@ import com.android.systemui.statusbar.phone.StatusBarIconController;
 import com.android.systemui.statusbar.phone.StatusBarIconController.TintedIconManager;
 import com.android.systemui.statusbar.policy.Clock;
 import com.android.systemui.statusbar.phone.StatusIconContainer;
+import com.android.systemui.statusbar.phone.SystemUIDialog;
 import com.android.systemui.statusbar.policy.DarkIconDispatcher;
 import com.android.systemui.statusbar.policy.DarkIconDispatcher.DarkReceiver;
 import com.android.systemui.statusbar.policy.DateView;
 import com.android.systemui.statusbar.policy.NextAlarmController;
 import com.android.systemui.statusbar.policy.ZenModeController;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -74,7 +83,7 @@ import java.util.Objects;
  */
 public class QuickStatusBarHeader extends RelativeLayout implements
         View.OnClickListener, NextAlarmController.NextAlarmChangeCallback,
-        ZenModeController.Callback {
+        ZenModeController.Callback, LiveOpsController.Callback {
     private static final String TAG = "QuickStatusBarHeader";
     private static final boolean DEBUG = false;
 
@@ -109,6 +118,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private int mRingerMode = AudioManager.RINGER_MODE_NORMAL;
     private AlarmManager.AlarmClockInfo mNextAlarm;
 
+    private LiveOpsPrivacyChip mPrivacyChip;
+
     private ImageView mNextAlarmIcon;
     /** {@link TextView} containing the actual text indicating when the next alarm will go off. */
     private TextView mNextAlarmTextView;
@@ -121,6 +132,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
 
     private NextAlarmController mAlarmController;
     private ZenModeController mZenController;
+	private LiveOpsController mLiveOpsController;
     /** Counts how many times the long press tooltip has been shown to the user. */
     private int mShownCount;
 
@@ -141,6 +153,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         super(context, attrs);
         mAlarmController = Dependency.get(NextAlarmController.class);
         mZenController = Dependency.get(ZenModeController.class);
+        mLiveOpsController = Dependency.get(LiveOpsController.class);
         mShownCount = getStoredShownCount();
     }
 
@@ -178,6 +191,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         // Set the correct tint for the status icons so they contrast
         mIconManager.setTint(fillColor);
 
+		mPrivacyChip = (LiveOpsPrivacyChip) findViewById(R.id.privacy_chip);
+        mPrivacyChip.setOnClickListener(this);
+
         mBatteryRemainingIcon = (BatteryMeterView) findViewById(R.id.batteryRemainingIcon);
         mBatteryRemainingIcon.setIgnoreTunerUpdates(true);
 
@@ -197,6 +213,35 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             updateTooltipShow();
         }
     }
+
+	private void setChipVisibility(List<PrivacyItem> list) {
+		boolean isTypeCamera = false;
+        boolean isTypeMicrophone = false;
+		for (PrivacyItem item : list) {
+			int type = PrivacyTypeCoordinator.ORDERED_TYPES[item.getPrivacyType().ordinal()];
+            if (type == 1) {
+                isTypeCamera = true;
+            } else if (type != 2) {
+                if (type == 3) {
+                    isTypeMicrophone = true;
+                }
+            }
+        }
+		mPrivacyChip.setVisibility(hasLiveOp(isTypeCamera, isTypeMicrophone) ? View.VISIBLE : View.GONE);
+    }
+
+	private boolean hasLiveOp(boolean isTypeCamera, boolean isTypeMicrophone) {
+		if (isTypeCamera && isTypeMicrophone) {
+			return true;
+		} else if (isTypeCamera) {
+			return true;
+		} else if (isTypeMicrophone) {
+			return true;
+		} else {
+			return false;
+		}
+		return false;
+	}
 
     private boolean updateRingerStatus() {
         boolean isOriginalVisible = mRingerModeTextView.getVisibility() == View.VISIBLE;
@@ -306,6 +351,13 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         }
 
         setLayoutParams(lp);
+		if (mPrivacyChip != null) {
+            MarginLayoutParams params = (MarginLayoutParams) mPrivacyChip.getLayoutParams();
+            int leftMargin = params.leftMargin;
+            int topMargin = resources.getDimensionPixelSize(R.dimen.ongoing_appops_top_chip_margin);
+            params.setMargins(leftMargin, topMargin, leftMargin, topMargin);
+            mPrivacyChip.setLayoutParams(params);
+        }
 
         updateStatusIconAlphaAnimator();
         updateHeaderTextContainerAlphaAnimator();
@@ -325,10 +377,11 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     }
 
     public void setExpanded(boolean expanded) {
-        if (mExpanded == expanded) return;
-        mExpanded = expanded;
-        mHeaderQsPanel.setExpanded(expanded);
-        updateEverything();
+		if (mExpanded != expanded) {
+            mExpanded = expanded;
+            mHeaderQsPanel.setExpanded(expanded);
+            updateEverything();
+        }
     }
 
     /**
@@ -403,6 +456,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             mSystemIconsView.setPadding(padding.first, 0, padding.second, 0);
 
         }
+		setChipVisibility(mPrivacyChip.getVisibility() == View.VISIBLE ? true : false);
         return super.onApplyWindowInsets(insets);
     }
 
@@ -426,9 +480,11 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             mAlarmController.addCallback(this);
             mContext.registerReceiver(mRingerReceiver,
                     new IntentFilter(AudioManager.INTERNAL_RINGER_MODE_CHANGED_ACTION));
+			mLiveOpsController.addCallback(this);
         } else {
             mZenController.removeCallback(this);
             mAlarmController.removeCallback(this);
+			mLiveOpsController.removeCallback(this);
             mContext.unregisterReceiver(mRingerReceiver);
         }
     }
@@ -438,7 +494,30 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         if (v == mClockView) {
             Dependency.get(ActivityStarter.class).postStartActivityDismissingKeyguard(new Intent(
                     AlarmClock.ACTION_SHOW_ALARMS),0);
+        } else if (v == mPrivacyChip) {
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+				@Override
+				public void run() {
+					onChipClicked(handler);
+				}
+			});
         }
+    }
+
+	private void onChipClicked(Handler handler) {
+        Dialog d = new LiveOpsPrivacyDialog(mContext, mPrivacyChip.getBuilder()).createDialog();
+        d.getWindow().setType(2009);
+        SystemUIDialog.setShowForAllUsers(d, true);
+        SystemUIDialog.registerDismissListener(d);
+        SystemUIDialog.setWindowOnTop(d);
+		handler.post(new Runnable() {
+				@Override
+				public void run() {
+					d.show();
+				}
+		});
+        mHost.collapsePanels();
     }
 
     @Override
@@ -457,6 +536,12 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     public void onConfigChanged(ZenModeConfig config) {
         updateStatusText();
     }
+
+	@Override
+    public void onPrivacyChanged(List<PrivacyItem> privacyList) {
+		mPrivacyChip.setPrivacyList(privacyList);
+		setChipVisibility(privacyList);
+	}
 
     private void updateTooltipShow() {
         if (hasStatusText()) {
@@ -577,7 +662,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     }
 
     public void updateEverything() {
-        post(() -> setClickable(false));
+        post(() -> setClickable(mExpanded));
     }
 
     public void setQSPanel(final QSPanel qsPanel) {
@@ -621,12 +706,13 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     public void setMargins(int sideMargins) {
         for (int i = 0; i < getChildCount(); i++) {
             View v = getChildAt(i);
-            if (v == mSystemIconsView || v == mQuickQsStatusIcons || v == mHeaderQsPanel) {
-                continue;
-            }
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) v.getLayoutParams();
-            lp.leftMargin = sideMargins;
-            lp.rightMargin = sideMargins;
+			if (!(v == mSystemIconsView || v == mQuickQsStatusIcons || v == mHeaderQsPanel)) {
+				if (v != mPrivacyChip) {
+					RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) v.getLayoutParams();
+                    lp.leftMargin = sideMargins;
+                    lp.rightMargin = sideMargins;
+				}
+			}
         }
     }
 }
