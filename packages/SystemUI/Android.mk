@@ -58,7 +58,8 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     SystemUI-proto \
     apache-commons-lang-2.6 \
     libAcrCloud \
-    libMiServicesShared
+    libMiServicesShared \
+	libMiCodeShared
 
 LOCAL_JAVA_LIBRARIES := telephony-common \
     android.car
@@ -110,6 +111,18 @@ LOCAL_MODULE := libMiServicesShared
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_CLASS := JAVA_LIBRARIES
 LOCAL_SRC_FILES := libs/libMiServicesShared.jar
+LOCAL_UNINSTALLABLE_MODULE := true
+LOCAL_SDK_VERSION := 27
+include $(BUILD_PREBUILT)
+
+#
+# Prebuilt MiCode Shared System
+#
+include $(CLEAR_VARS)
+LOCAL_MODULE := libMiCodeShared
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+LOCAL_SRC_FILES := libs/libMiCodeShared.jar
 LOCAL_UNINSTALLABLE_MODULE := true
 LOCAL_SDK_VERSION := 27
 include $(BUILD_PREBUILT)
