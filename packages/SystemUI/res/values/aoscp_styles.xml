@@ -24,4 +24,16 @@
         <item name="android:alpha">0.0</item>
     </style>
 
+    <style name="TextAppearance.AppOpsDialog" parent="@style/TextAppearance" />
+
+    <style name="TextAppearance.AppOpsDialog.Item" parent="@style/TextAppearance.AppOpsDialog">
+        <item name="android:textSize">@dimen/ongoing_appops_dialog_item_size</item>
+        <item name="android:fontFamily">@*android:string/config_defaultTrustAgent</item>
+    </style>
+
+    <style name="TextAppearance.AppOpsDialog.Title" parent="@style/TextAppearance.AppOpsDialog">
+        <item name="android:textSize">@dimen/ongoing_appops_dialog_title_size</item>
+        <item name="android:fontFamily">@*android:string/config_wallpaperCropperPackage</item>
+    </style>
+
 </resources>
