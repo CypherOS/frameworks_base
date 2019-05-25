@@ -28,7 +28,7 @@
 
         <TextView
             android:textAppearance="@style/TextAppearance.AppOpsDialog.Title"
-            android:textColor="@null"
+            android:textColor="?android:attr/textColorPrimary"
             android:gravity="center"
             android:id="@+id/title"
             android:layout_width="match_parent"

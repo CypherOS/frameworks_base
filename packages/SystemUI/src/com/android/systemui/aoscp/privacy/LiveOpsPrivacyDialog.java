@@ -58,6 +58,7 @@ public class LiveOpsPrivacyDialog {
     private final int MAX_ITEMS = 5;
     private Context mContext;
     private IconDrawableFactory mIconFactory;
+	private int mIconColor;
     private int mIconMargin;
     private int mIconSize;
     private int mPlusColor;
@@ -70,6 +71,7 @@ public class LiveOpsPrivacyDialog {
         mContext = context;
         mActiveOps = activeOps;
         mActivePackages = activePkgs;
+		mIconColor = Utils.getColorAttr(context, android.R.attr.colorControlNormal);
         mIconFactory = IconDrawableFactory.newInstance(context, true);
         mIconMargin = context.getResources().getDimensionPixelSize(R.dimen.ongoing_appops_dialog_icon_margin);
         mIconSize = context.getResources().getDimensionPixelSize(R.dimen.ongoing_appops_dialog_icon_size);
@@ -164,6 +166,7 @@ public class LiveOpsPrivacyDialog {
                                 Drawable icon = (Drawable) iconsForApp;
                                 icon.setBounds(0, 0, mIconSize, mIconSize);
                                 ImageView iconView = new ImageView(mContext);
+								iconView.setImageTintList(ColorStateList.valueOf(mIconColor));
                                 iconView.setImageDrawable(icon);
                                 icons.addView(iconView, params);
                             }
