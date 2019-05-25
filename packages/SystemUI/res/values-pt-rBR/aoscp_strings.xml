@@ -22,4 +22,23 @@
     <string name="keyguard_indication_fast_charging_time">Carregando rapidamente (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> until full)</string>
     <string name="keyguard_plugged_in_fast_charging">Carregando rapidamente</string>
 
+    <!-- Heads Up QS Tile -->
+    <string name="quick_settings_heads_up_label">Heads up</string>
+    <string name="accessibility_quick_settings_heads_up_off">Heads up desativado.</string>
+    <string name="accessibility_quick_settings_heads_up_on">Heads up ativado.</string>
+    <string name="accessibility_quick_settings_heads_up_changed_off">Heads up desligado.</string>
+    <string name="accessibility_quick_settings_heads_up_changed_on">Heads up ativado.</string>
+
+    <!-- AmbientPlay: The contents of the displayed recognition. -->
+    <string name="ambient_recognition_information">%1$s por %2$s</string>
+
+    <!-- Live Ops -->
+    <string name="ongoing_privacy_dialog_ok">Ok</string>
+    <string name="ongoing_privacy_dialog_view_details">Ver detalhes</string>
+    <string name="ongoing_privacy_dialog_single_app_title">Aplicativo usando %s</string>
+    <string name="ongoing_privacy_dialog_multiple_apps_title">Aplicativos usando %s</string>
+    <string name="op_type_camera">câmera</string>
+    <string name="op_type_location">localização</string>
+    <string name="op_type_microphone">microfone</string>
+
 </resources>
