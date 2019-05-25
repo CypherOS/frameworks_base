@@ -38,7 +38,7 @@
 
     <TextView
         android:textAppearance="@style/TextAppearance.AppOpsDialog.Item"
-        android:textColor="@null"
+        android:textColor="?android:attr/textColorPrimary"
         android:gravity="start|center"
         android:id="@+id/app_name"
         android:layout_width="0.0dip"
