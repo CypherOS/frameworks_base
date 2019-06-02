@@ -77,6 +77,7 @@ public class FingerprintDialogView extends LinearLayout {
     private int mLastState;
     private boolean mAnimatingAway;
     private boolean mWasForceRemoved;
+	private boolean mFaceUnlocked;
 
     private final float mDisplayWidth;
 

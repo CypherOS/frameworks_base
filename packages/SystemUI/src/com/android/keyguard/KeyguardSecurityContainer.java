@@ -41,6 +41,7 @@ public class KeyguardSecurityContainer extends FrameLayout implements KeyguardSe
     private static final int USER_TYPE_WORK_PROFILE = 2;
     private static final int USER_TYPE_SECONDARY_USER = 3;
 
+    private Animation mFacelockAnimationSet;
     private KeyguardSecurityModel mSecurityModel;
     private LockPatternUtils mLockPatternUtils;
 
@@ -49,6 +50,8 @@ public class KeyguardSecurityContainer extends FrameLayout implements KeyguardSe
     private SecurityMode mCurrentSecuritySelection = SecurityMode.Invalid;
     private SecurityCallback mSecurityCallback;
     private AlertDialog mAlertDialog;
+	private View mSecurityIcon;
+    private View mSecurityIconSwap;
 
     private final KeyguardUpdateMonitor mUpdateMonitor;
 
@@ -65,6 +68,7 @@ public class KeyguardSecurityContainer extends FrameLayout implements KeyguardSe
          */
         public void finish(boolean strongAuth, int targetUserId);
         public void reset();
+		public void tryToStartFaceLockFromBouncer();
     }
 
     public KeyguardSecurityContainer(Context context, AttributeSet attrs) {
@@ -80,6 +84,7 @@ public class KeyguardSecurityContainer extends FrameLayout implements KeyguardSe
         mSecurityModel = new KeyguardSecurityModel(context);
         mLockPatternUtils = new LockPatternUtils(context);
         mUpdateMonitor = KeyguardUpdateMonitor.getInstance(mContext);
+		mFacelockAnimationSet = AnimationUtils.loadAnimation(mContext, R.anim.facelock_lock_blink);
     }
 
     public void setSecurityCallback(SecurityCallback callback) {
@@ -118,6 +123,89 @@ public class KeyguardSecurityContainer extends FrameLayout implements KeyguardSe
         return false;
     }
 
+	private void updateSecurityIcon(KeyguardSecurityView view) {
+        if (view != null) {
+            mSecurityIcon = ((ViewGroup) view).findViewById(R.id.fingerprint_icon);
+            mSecurityIconSwap = ((ViewGroup) view).findViewById(R.id.fingerprint_icon_swap);
+        }
+        updateSecurityIcon();
+    }
+
+    public void updateSecurityIcon() {
+        if (mSecurityIcon != null) {
+            ImageView icon = (ImageView) mSecurityIcon.findViewById(R.id.security_image);
+			FingerprintManager fpm = (FingerprintManager) mContext.getSystemService(Context.FINGERPRINT_SERVICE);
+            boolean isFaceUnlock = mUpdateMonitor.isFacelockAvailable() || mUpdateMonitor.isFacelockRecognizing();
+            boolean isFingerprintRunning = mUpdateMonitor.isFingerprintDetectionRunning();
+            boolean canUnlockWithFp = mUpdateMonitor.isUnlockingWithFingerprintAllowed() && !mUpdateMonitor.isFingerprintLockout();
+			boolean hasEnrolledFingerprints = fpm.hasEnrolledFingerprints()
+            boolean hasSecurityIcon = false;
+            if (mUpdateMonitor.isKeyguardDone()) {
+                hasSecurityIcon = false;
+            } else if (isFaceUnlock) {
+                hasSecurityIcon = true;
+                icon.setImageResource(R.drawable.facelock_bouncer_icon);
+            } else if (hasEnrolledFingerprints && isFingerprintRunning && canUnlockWithFp) {
+                List<Fingerprint> items = fpm.getEnrolledFingerprints();
+                boolean z = fpm.isHardwareDetected() && (items != null ? items.size() : 0) > 0;
+                hasSecurityIcon = z;
+                icon.setImageResource(R.drawable.ic_fingerprint_lockscreen_blow);
+            }
+            mSecurityIcon.setVisibility(hasSecurityIcon ? View.VISIBLE : View.INVISIBLE);
+            if (mSecurityIconSwap != null) {
+                mSecurityIconSwap.setVisibility(!hasSecurityIcon ? View.VISIBLE : View.GONE);
+            }
+            if (hasSecurityIcon && isFaceUnlock) {
+                mSecurityIcon.setClickable(true);
+                mSecurityIcon.setOnClickListener(new OnClickListener() {
+                    public void onClick(View v) {
+                        Log.d(TAG, "restart facelock from bouncer");
+                        if (mCallback != null) {
+                            mCallback.userActivity();
+                            mCallback.tryToStartFaceLockFromBouncer();
+                        }
+                    }
+                });
+                Log.d(TAG, "show bouncer face icon");
+            } else {
+                Log.d(TAG, "hide bouncer face icon");
+                mSecurityIcon.setClickable(false);
+            }
+            updateIconAnimation();
+        }
+    }
+	
+	private void updateIconAnimation() {
+        if (mSecurityIcon != null && mFacelockAnimationSet != null) {
+            if (mUpdateMonitor.isFacelockRecognizing()) {
+                mFacelockAnimationSet.setAnimationListener(new AnimationListener() {
+					@Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        if (mUpdateMonitor.isFacelockRecognizing() && mFacelockAnimationSet != null && mSecurityIcon != null) {
+                            Log.d(TAG, "start again");
+                            mFacelockAnimationSet.setAnimationListener(this);
+                            mSecurityIcon.startAnimation(mFacelockAnimationSet);
+                        }
+                    }
+                });
+                Log.d(TAG, "start anim");
+                mSecurityIcon.startAnimation(mFacelockAnimationSet);
+            } else {
+                Log.d(TAG, "stop anim");
+                mSecurityIcon.clearAnimation();
+                mFacelockAnimationSet.setAnimationListener(null);
+            }
+        }
+    }
+
     public CharSequence getTitle() {
         return mSecurityViewFlipper.getTitle();
     }
@@ -140,8 +228,8 @@ public class KeyguardSecurityContainer extends FrameLayout implements KeyguardSe
             mSecurityViewFlipper.addView(v);
             updateSecurityView(v);
             view = (KeyguardSecurityView)v;
-            view.reset();
         }
+		updateSecurityIcon(view);
 
         return view;
     }
@@ -442,6 +530,14 @@ public class KeyguardSecurityContainer extends FrameLayout implements KeyguardSe
         public void reset() {
             mSecurityCallback.reset();
         }
+
+		public void tryToStartFaceLockFromBouncer() {
+            mSecurityCallback.tryToStartFaceLockFromBouncer();
+        }
+
+        public void hideSecurityIcon() {
+            hideSecurityIcon();
+        }
     };
 
     // The following is used to ignore callbacks from SecurityViews that are no longer current
@@ -458,6 +554,10 @@ public class KeyguardSecurityContainer extends FrameLayout implements KeyguardSe
         public void dismiss(boolean securityVerified, int targetUserId) { }
         @Override
         public void reset() {}
+		@Override
+		public void tryToStartFaceLockFromBouncer() {}
+		@Override
+		public void hideSecurityIcon() {}
     };
 
     private int getSecurityViewIdForMode(SecurityMode securityMode) {
