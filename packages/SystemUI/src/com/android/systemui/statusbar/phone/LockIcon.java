@@ -104,6 +104,16 @@ public class LockIcon extends KeyguardAffordanceView implements OnUserInfoChange
         update();
     }
 
+	public void setFaceUnlockRunning(int type, boolean update) {
+		int faceUnlockType = 0;
+        if (faceUnlockType != type) {
+            faceUnlockType = type;
+            if (update) {
+                update(true);
+            }
+        }
+    }
+
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -311,7 +321,7 @@ public class LockIcon extends KeyguardAffordanceView implements OnUserInfoChange
             return STATE_FINGERPRINT_ERROR;
         } else if (mUnlockMethodCache.canSkipBouncer()) {
             return STATE_LOCK_OPEN;
-        } else if (mUnlockMethodCache.isFaceUnlockRunning()) {
+        } else if (mUnlockMethodCache.isFaceUnlockRunning() || updateMonitor.shouldShowFaceUnlockIcon()) {
             return STATE_FACE_UNLOCK;
         } else if (fingerprintRunning && unlockingAllowed) {
             return STATE_FINGERPRINT;

@@ -235,6 +235,13 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
     private final DevicePolicyManager mDevicePolicyManager;
     private boolean mLogoutEnabled;
     private final boolean mFingerprintWakeAndUnlock;
+	private boolean mFingerprintAlreadyAuthenticated;
+
+    private boolean mLockoutState = false;
+	private boolean mIsFaceAdded = false;
+    private int mFaceUnlockRunningType = 0;
+    private boolean mFaceUnlocking;
+	private boolean mSkipBouncerByFaceUnlock = false;
 
     /**
      * Short delay before restarting fingerprint authentication after a successful try
@@ -491,6 +498,9 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
      * @param occluded
      */
     public void setKeyguardOccluded(boolean occluded) {
+		if (mFpm.hasEnrolledFingerprints() && mKeyguardOccluded && !occluded && !mIsKeyguardDone) {
+            showFPDialogWhenNoWindow();
+        }
         mKeyguardOccluded = occluded;
         updateFingerprintListeningState();
     }
@@ -524,6 +534,10 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
         }
         // Don't send cancel if authentication succeeds
         mFingerprintCancelSignal = null;
+		mFingerprintAlreadyAuthenticated = isUnlockingWithFingerprintAllowed();
+		if (mFpm.hasEnrolledFingerprints() && mFingerprintDialogView != null && mFingerprintAlreadyAuthenticated) {
+            mFingerprintDialogView.notifyFingerprintAuthenticated();
+        }
         for (int i = 0; i < mCallbacks.size(); i++) {
             KeyguardUpdateMonitorCallback cb = mCallbacks.get(i).get();
             if (cb != null) {
@@ -595,6 +609,21 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
             }
         }
     }
+	
+	private void showFPDialogWhenNoWindow() {
+        if (mFpm.hasEnrolledFingerprints()) {
+            try {
+                Log.d(TAG, "showFPDialogWhenNoWindow");
+                Bundle b = new Bundle();
+                b.putString("key_fingerprint_package_name", "forceShow-keyguard");
+                if (mFingerprintDialogView != null) {
+                    mFingerprintDialogView.showFingerprintDialog(b, null);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "error: ", e);
+            }
+        }
+    }
 
     private Runnable mRetryFingerprintAuthentication = new Runnable() {
         @Override
@@ -606,6 +635,18 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
     };
 
     private void handleFingerprintError(int msgId, String errString) {
+		if (msgId == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT  || (mFpm.hasEnrolledFingerprints() && msgId == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT)) {
+            mLockoutState = true;
+            if (mFpm.hasEnrolledFingerprints()) {
+                if (mFingerprintDialogView != null) {
+                    mFingerprintDialogView.updateFpDaemonStatus(6);
+                }
+                if (mKeyguardIsVisible && isUnlockWithFingerprintPossible(getCurrentUser()) && (mFingerprintDialogView == null || !mFingerprintDialogView.isDialogShowing())) {
+                    showFPDialogWhenNoWindow();
+                }
+            }
+        }
+
         if (msgId == FingerprintManager.FINGERPRINT_ERROR_CANCELED
                 && mFingerprintRunningState == FINGERPRINT_STATE_CANCELLING_RESTARTING) {
             setFingerprintRunningState(FINGERPRINT_STATE_STOPPED);
@@ -662,6 +703,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
             }
         }
     }
+
     private void handleFaceUnlockStateChanged(boolean running, int userId) {
         checkIsHandlerThread();
         mUserFaceUnlockRunning.put(userId, running);
@@ -671,6 +713,14 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
                 cb.onFaceUnlockStateChanged(running, userId);
             }
         }
+    }
+
+	public boolean isFingerprintAlreadyAuthenticated() {
+        return mFingerprintAlreadyAuthenticated;
+    }
+
+    public void resetFingerprintAlreadyAuthenticated() {
+        mFingerprintAlreadyAuthenticated = false;
     }
 
     public boolean isFaceUnlockRunning(int userId) {
@@ -1097,6 +1147,9 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
                 cb.onStartedWakingUp();
             }
         }
+		if (mFpm.hasEnrolledFingerprints() && !mDeviceInteractive && mIsDreaming && !isUnlockingWithFingerprintAllowed()) {
+            showFPDialogWhenNoWindow();
+        }
         Trace.endSection();
     }
 
@@ -1110,6 +1163,10 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
             }
         }
         mGoingToSleep = true;
+		mFingerprintAlreadyAuthenticated = false;
+		if (mFpm.hasEnrolledFingerprints()) {
+            showFPDialogWhenNoWindow();
+        }
         updateFingerprintListeningState();
     }
 
@@ -1302,7 +1359,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
             return (mKeyguardIsVisible || mBouncer || shouldListenForFingerprintAssistant() ||
                     (mKeyguardOccluded && mIsDreaming)) && mDeviceInteractive && !mGoingToSleep
                     && !mSwitchingUser && !isFingerprintDisabled(getCurrentUser())
-                    && !mKeyguardGoingAway;
+                    && !mKeyguardGoingAway && mFaceUnlockRunningType != 4 && !mFingerprintAlreadyAuthenticated;
         } else {
             return (mKeyguardIsVisible || !mDeviceInteractive ||
                     (mBouncer && !mKeyguardGoingAway) || mGoingToSleep ||
@@ -1417,6 +1474,12 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
             if (cb != null) {
                 cb.onDevicePolicyManagerStateChanged();
             }
+        }
+		if (!isFaceUnlockRecognizing()) {
+            return;
+        }
+        if (!isFaceUnlockAllowed() || !isUnlockingWithFingerprintAllowed()) {
+            updateFaceUnlockState();
         }
     }
 
@@ -1678,6 +1741,9 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
                 cb.onKeyguardVisibilityChangedRaw(showing);
             }
         }
+		if (!showing) {
+            mFingerprintAlreadyAuthenticated = false;
+        }
         updateFingerprintListeningState();
     }
 
@@ -1876,6 +1942,10 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
         return mDeviceProvisioned;
     }
 
+	public void clearFailedUnlockAttempts() {
+        clearFailedFaceUnlockAttempts();
+    }
+
     public ServiceState getServiceState(int subId) {
         return mServiceStates.get(subId);
     }
@@ -1953,6 +2023,208 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
             data.simState = state;
         }
         return changed;
+    }
+
+	public void notifyFaceUnlockStateChanged(int type) {
+        int lastType = mFaceUnlockRunningType;
+        mFaceUnlockRunningType = type;
+        StringBuilder sb = new StringBuilder();
+        sb.append("notifyFaceUnlockStateChanged, type: ");
+        sb.append(type);
+        Log.d(TAG, sb.toString());
+        if (type == 4 && mFpm.hasEnrolledFingerprints()) {
+            mHandler.sendEmptyMessage(MSG_FINGERPRINT_AUTHENTICATION_CONTINUE);
+        }
+        mHandler.post(new Runnable() {
+			@Override
+            public void run() {
+                for (int i = 0; i < mCallbacks.size(); i++) {
+                    KeyguardUpdateMonitorCallback cb = (KeyguardUpdateMonitorCallback) ((WeakReference) mCallbacks.get(i)).get();
+                    if (cb != null) {
+                        cb.onFacelockStateChanged(type);
+                    }
+                }
+                if (lastType != type) {
+                    if (type == 2) {
+                        updateFaceUnlockTrustState(true);
+                    } else {
+                        updateFaceUnlockTrustState(false);
+                    }
+                }
+            }
+        });
+    }
+
+	private void updateFaceUnlockTrustState(boolean skipBouncer) {
+        mSkipBouncerByFaceUnlock = skipBouncer;
+        StringBuilder sb = new StringBuilder();
+        sb.append("FacelockTrust,");
+        sb.append(skipBouncer);
+        Log.d(TAG, sb.toString());
+        for (int i = 0; i < mCallbacks.size(); i++) {
+            KeyguardUpdateMonitorCallback cb = (KeyguardUpdateMonitorCallback) ((WeakReference) mCallbacks.get(i)).get();
+            if (cb != null) {
+                cb.onTrustChanged(getCurrentUser());
+            }
+        }
+    }
+
+	public int getFaceUnlockRunningType() {
+        return mFaceUnlockRunningType;
+    }
+
+    public boolean isFaceUnlockAvailable() {
+        if (mFaceUnlockRunningType == 5 || mFaceUnlockRunningType == 6 || mFaceUnlockRunningType == 7) {
+            return true;
+        }
+        return false;
+    }
+
+	public boolean isFaceUnlockRecognizing() {
+        if (mFaceUnlockRunningType == 3) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean shouldShowFaceUnlockIcon() {
+        if (mFaceUnlockRunningType == 3 || mFaceUnlockRunningType == 4 || mFaceUnlockRunningType == 5 || mFaceUnlockRunningType == 6 || mFaceUnlockRunningType == 7) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isCameraErrorState() {
+        if (mFaceUnlockRunningType == 8 || mFaceUnlockRunningType == 9) {
+            return true;
+        }
+        return false;
+    }
+
+	private void clearFailedFaceUnlockAttempts() {
+        for (int i = 0; i < mCallbacks.size(); i++) {
+            KeyguardUpdateMonitorCallback cb = (KeyguardUpdateMonitorCallback) ((WeakReference) mCallbacks.get(i)).get();
+            if (cb != null) {
+                cb.onclearFailedFaceUnlockAttempts();
+            }
+        }
+        notifyFaceUnlockStateChanged(0);
+    }
+
+	public boolean isFaceUnlockEnabled() {
+        return !TextUtils.isEmpty(mContext.getResources().getString(R.config.config_faceUnlockComponent));
+    }
+
+    public boolean isAutoFaceUnlockEnabled() {
+        return isFaceUnlockEnabled();
+    }
+
+    public boolean isFaceUnlockAllowed() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("isFaceUnlockAllowed, visible:");
+        sb.append(mKeyguardIsVisible);
+        sb.append(", inter:");
+        sb.append(mDeviceInteractive);
+        sb.append(", bouncer:");
+        sb.append(mBouncer);
+        sb.append(", done:");
+        sb.append(mIsKeyguardDone);
+        sb.append(", switching:");
+        sb.append(mSwitchingUser);
+        sb.append(", enabled:");
+        sb.append(isFaceUnlockEnabled());
+        sb.append(", added:");
+        sb.append(mIsFaceAdded);
+        sb.append(", simpin:");
+        sb.append(isSimPinSecure());
+        sb.append(", user:");
+        sb.append(getCurrentUser());
+        sb.append(", fp authenticated:");
+        sb.append(mFingerprintAlreadyAuthenticated);
+        sb.append(", on:");
+        sb.append(mScreenOn);
+        Log.d(TAG, sb.toString());
+        if (!allowShowingLock() || !mDeviceInteractive || mSwitchingUser || ((mFingerprintAlreadyAuthenticated && !mScreenOn) || !isUnlockWithFacePossible())) {
+            return false;
+        }
+        return true;
+    }
+	
+	public void resetFPTimeout() {
+        if (mFpm != null) {
+            mFpm.resetTimeout(null);
+        }
+    }
+
+	public boolean allowShowingLock() {
+        if (mKeyguardIsVisible) {
+            return true;
+        }
+        if (!mBouncer || mKeyguardGoingAway) {
+            return false;
+        }
+        return true;
+    }
+
+    public void setIsFaceAdded(boolean isAdded) {
+        mIsFaceAdded = isAdded;
+    }
+
+    public int getFaceUnlockNotifyMsgId(int type) {
+        int notifyMsg;
+        if (type != 1) {
+            switch (type) {
+                case 5:
+                    notifyMsg = R.string.face_unlock_tap_to_retry;
+                    break;
+                case 6:
+                    notifyMsg = R.string.face_unlock_no_face;
+                    break;
+                case 7:
+                    notifyMsg = R.string.face_unlock_fail;
+                    break;
+                case 8:
+                    notifyMsg = R.string.face_unlock_camera_error;
+                    break;
+                case 9:
+                    notifyMsg = R.string.face_unlock_no_permission;
+                    break;
+                default:
+                    return 0;
+            }
+        }
+        notifyMsg = R.string.face_unlock_timeout;
+        return notifyMsg;
+    }
+
+    public boolean shouldPlayFaceUnlockFailAnim() {
+        if (mFaceUnlockRunningType == 1 || mFaceUnlockRunningType == 6 || mFaceUnlockRunningType == 7 || mFaceUnlockRunningType == 8 || mFaceUnlockRunningType == 9) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean canSkipBouncerByFaceUnlock() {
+        return mSkipBouncerByFaceUnlock;
+    }
+
+    public void onFaceUnlocking(boolean unlocked) {
+        mFaceUnlocking = unlocked;
+    }
+
+    public boolean isFaceUnlocking() {
+        return mFaceUnlocking;
+    }
+
+    public boolean isUnlockWithFacePossible() {
+        if (isFaceUnlockEnabled() && mIsFaceAdded && mLockPatternUtils.isSecure(getCurrentUser()) && !isSimPinSecure() && getCurrentUser() == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isFaceAdded() {
+        return mIsFaceAdded;
     }
 
     public static boolean isSimPinSecure(IccCardConstants.State state) {

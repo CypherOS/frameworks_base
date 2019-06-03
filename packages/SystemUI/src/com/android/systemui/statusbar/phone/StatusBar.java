@@ -158,6 +158,7 @@ import com.android.systemui.SystemUI;
 import com.android.systemui.SystemUIFactory;
 import com.android.systemui.UiOffloadThread;
 import com.android.systemui.assist.AssistManager;
+import com.android.systemui.aoscp.faceunlock.FaceUnlockController;
 import com.android.systemui.charging.WirelessChargingAnimation;
 import com.android.systemui.classifier.FalsingLog;
 import com.android.systemui.classifier.FalsingManager;
@@ -516,6 +517,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             updateAccent();
         }
     };
+
+	private FaceUnlockController mFaceUnlockController;
 
     protected boolean mDozing;
     private boolean mDozingRequested;
@@ -1223,6 +1226,9 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (mAmbientIndicationContainer instanceof AutoReinflateContainer) {
             ((AutoReinflateContainer) mAmbientIndicationContainer).inflateLayout();
         }
+		if (mFaceUnlockController != null) {
+            mFaceUnlockController.setKeyguardIndicationController(mKeyguardIndicationController);
+        }
     }
 
     protected void reevaluateStyles() {
@@ -1421,6 +1427,10 @@ public class StatusBar extends SystemUI implements DemoMode,
         mKeyguardViewMediatorCallback = keyguardViewMediator.getViewMediatorCallback();
         mLightBarController.setFingerprintUnlockController(mFingerprintUnlockController);
         Dependency.get(KeyguardDismissUtil.class).setDismissHandler(this::executeWhenUnlocked);
+		mFaceUnlockController = new FaceUnlockController(mContext, keyguardViewMediator, this, mStatusBarKeyguardViewManager, mStatusBarWindowManager, mFingerprintUnlockController);
+		if (mFaceUnlockController != null) {
+            mFaceUnlockController.setKeyguardIndicationController(mKeyguardIndicationController);
+        }
         Trace.endSection();
     }
 
@@ -2875,6 +2885,12 @@ public class StatusBar extends SystemUI implements DemoMode,
         pw.println("  mMediaManager: ");
         if (mMediaManager != null) {
             mMediaManager.dump(fd, pw, args);
+        }
+
+		if (mFaceUnlockController != null) {
+            pw.println();
+            mFaceUnlockController.dump(fd, pw, args);
+            pw.println();
         }
 
         pw.println("  Panels: ");
@@ -4834,6 +4850,14 @@ public class StatusBar extends SystemUI implements DemoMode,
                 mLaunchCameraOnScreenTurningOn = true;
             }
         }
+
+		if (mFaceUnlockController != null) {
+            mFaceUnlockController.notifyCameraLaunch(true, source);
+        }
+    }
+
+	public FaceUnlockController getFaceUnlockController() {
+        return mFaceUnlockController;
     }
 
     boolean isCameraAllowedByAdmin() {

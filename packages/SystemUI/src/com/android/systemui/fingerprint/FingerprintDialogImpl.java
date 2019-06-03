@@ -50,6 +50,7 @@ public class FingerprintDialogImpl extends SystemUI implements CommandQueue.Call
     private WindowManager mWindowManager;
     private IBiometricPromptReceiver mReceiver;
     private boolean mDialogShowing;
+	private boolean mIsFaceUnlocked = false;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -222,5 +223,9 @@ public class FingerprintDialogImpl extends SystemUI implements CommandQueue.Call
 
     private void handleUserCanceled() {
         handleHideDialog(true /* userCanceled */);
+    }
+
+	public void onFaceUnlocked() {
+        mIsFaceUnlocked = true;
     }
 }

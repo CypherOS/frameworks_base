@@ -196,6 +196,33 @@ public class FingerprintUnlockController extends KeyguardUpdateMonitorCallback {
         }
         startWakeAndUnlock(calculateMode());
     }
+	
+	public void startWakeAndUnlockForFace(int mode) {
+		Log.v(TAG, "startWakeAndUnlock(" + mode + ")");
+        boolean wasDeviceInteractive = mUpdateMonitor.isDeviceInteractive();
+        if (mode != MODE_WAKE_AND_UNLOCK) {
+            switch (mode) {
+                case MODE_UNLOCK:
+                    if (!wasDeviceInteractive) {
+                        mStatusBarKeyguardViewManager.notifyDeviceWakeUpRequested();
+                        mPendingShowBouncer = true;
+                        break;
+                    }
+                    showBouncer();
+                    break;
+                case MODE_DISMISS_BOUNCER:
+                    mStatusBarKeyguardViewManager.notifyKeyguardAuthenticated(true);
+                    break;
+            }
+        }
+        mStatusBarWindowManager.setStatusBarFocusable(false);
+        mKeyguardViewMediator.onWakeAndUnlocking(isLauncherOnTop());
+        if (mStatusBar.getNavigationBarView() != null && mStatusBar.getNavigationBarWindow() != null) {
+            mStatusBar.getNavigationBarView().setWakeAndUnlocking(true);
+        }
+        Trace.endSection();
+        mStatusBar.notifyFpAuthModeChanged();
+    }
 
     public void startWakeAndUnlock(int mode) {
         // TODO(b/62444020): remove when this bug is fixed
@@ -320,6 +347,14 @@ public class FingerprintUnlockController extends KeyguardUpdateMonitorCallback {
                 && mPendingAuthenticatedUserId == KeyguardUpdateMonitor.getCurrentUser();
     }
 
+	private boolean isLauncherOnTop() {
+        try {
+            int type = ((RunningTaskInfo) ActivityManager.getService().getTasks(1).get(0)).configuration.windowConfiguration.getActivityType();
+            return type == 2;
+        } catch (Exception e) {
+        }
+    }
+
     public int getMode() {
         return mMode;
     }
@@ -356,11 +391,13 @@ public class FingerprintUnlockController extends KeyguardUpdateMonitorCallback {
 
     @Override
     public void onFingerprintAuthFailed() {
+		onFingerprintUnlockCancel(0);
         cleanup();
     }
 
     @Override
     public void onFingerprintError(int msgId, String errString) {
+		onFingerprintUnlockCancel(2);
         cleanup();
     }
 

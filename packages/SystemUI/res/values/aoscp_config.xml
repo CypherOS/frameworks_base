@@ -23,4 +23,16 @@
          the sensor embedded in the power key and listening all the time
          causes a poor experience. -->
     <bool name="config_fingerprintWakeAndUnlock">true</bool>
+
+	<!-- A custom third party component used for face unlock. 
+	     Must be a system package with a dedicated service -->
+    <string name="config_faceUnlockComponent"></string>
+
+	<!-- A custom settings associated with a face unlock component.
+         Optional -->
+    <string name="config_faceUnlockComponentSetting"></string>
+	
+	<!-- A dedicated intent that gets published when face unlock
+	     settings change. Optional -->
+    <string name="config_faceUnlockSettingIntent"></string>
 </resources>
