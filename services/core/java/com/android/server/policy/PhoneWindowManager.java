@@ -4812,6 +4812,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             return -1;
         }
 
+        if (isValidTriStateKey(event)) {
+            return -1;
+        }
+
         if (down) {
             long shortcutCode = keyCode;
             if (event.isCtrlPressed()) {
@@ -4915,6 +4919,21 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 Slog.e(TAG, "Error taking bugreport", e);
             }
         }
+    }
+
+    private boolean isValidTriStateKey(KeyEvent event) {
+        if (mAlertSliderHandler != null) {
+            try {
+                event = mAlertSliderHandler.handleKeyEvent(event);
+                if (event == null) {
+                    return true;
+                }
+            } catch (Exception e) {
+                Slog.w(TAG, "Could not dispatch event to AlertSliderHandler", e);
+            }
+            return false;
+        }
+        return false;
     }
 
     /** {@inheritDoc} */
@@ -6842,12 +6861,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     + ", canApplyCustomPolicy = " + canApplyCustomPolicy(keyCode));
         }
 
-        if (mAlertSliderHandler != null) {
-            if (mAlertSliderHandler.handleKeyEvent(event)) {
-                return 0;
-            }
-        }
-
         // Apply custom policy for supported key codes.
         if (canApplyCustomPolicy(keyCode) && !isCustomSource) {
             if (mNavBarEnabled && !navBarKey /* TODO> && !isADBVirtualKeyOrAnyOtherKeyThatWeNeedToHandleAKAWhenMonkeyTestOrWHATEVER! */) {
@@ -6946,6 +6959,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 && event.getRepeatCount() == 0
                 // Trigger haptic feedback only for "real" events.
                 && source != InputDevice.SOURCE_CUSTOM;
+
+        if (isValidTriStateKey(event)) {
+            return 0;
+        }
 
         // Handle special keys.
         switch (keyCode) {
