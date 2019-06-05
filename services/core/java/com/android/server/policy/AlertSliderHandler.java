@@ -74,7 +74,7 @@ public class AlertSliderHandler {
         mSystemReady = true;
     }
 
-    public boolean handleKeyEvent(KeyEvent event) {
+    public KeyEvent handleKeyEvent(KeyEvent event) {
         int scanCode = event.getScanCode();
         if (!mSystemReady || !mHasAlertSlider) {
             return false;
@@ -90,22 +90,28 @@ public class AlertSliderHandler {
         if (!mSliderSwapped) {
             if (scanCode == mSliderModeTop) {
                 mAudioManager.setRingerModeInternal(AudioManager.RINGER_MODE_NORMAL);
+                return event;
             } else if (scanCode == mSliderModeMiddle) {
                 mAudioManager.setRingerModeInternal(AudioManager.RINGER_MODE_VIBRATE);
+                return event;
             } else if (scanCode == mSliderModeBottom) {
                 mAudioManager.setRingerModeInternal(AudioManager.RINGER_MODE_SILENT);
+                return event;
             }
         } else {
             if (scanCode == mSliderModeTop) {
                 mAudioManager.setRingerModeInternal(AudioManager.RINGER_MODE_SILENT);
+                return event;
             } else if (scanCode == mSliderModeMiddle) {
                 mAudioManager.setRingerModeInternal(AudioManager.RINGER_MODE_VIBRATE);
+                return event;
             } else if (scanCode == mSliderModeBottom) {
                 mAudioManager.setRingerModeInternal(AudioManager.RINGER_MODE_NORMAL);
+                return event;
             }
         }
         doHapticFeedback();
-        return true;
+        return null;
     }
 
     private void doHapticFeedback() {
