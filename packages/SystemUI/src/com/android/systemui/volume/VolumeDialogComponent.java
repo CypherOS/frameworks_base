@@ -30,6 +30,9 @@ import android.view.WindowManager.LayoutParams;
 import com.android.settingslib.applications.InterestingConfigChanges;
 import com.android.systemui.Dependency;
 import com.android.systemui.SystemUI;
+import com.android.systemui.aoscp.TriStateUiController;
+import com.android.systemui.aoscp.TriStateUiControllerImpl;
+import com.android.systemui.aoscp.TriStateUiController.UserActivityListener;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.PluginDependencyProvider;
@@ -45,7 +48,7 @@ import java.io.PrintWriter;
 /**
  * Implementation of VolumeComponent backed by the new volume dialog.
  */
-public class VolumeDialogComponent implements VolumeComponent, TunerService.Tunable,
+public class VolumeDialogComponent implements UserActivityListener, VolumeComponent, TunerService.Tunable,
         VolumeDialogControllerImpl.UserActivityListener{
 
     public static final String VOLUME_DOWN_SILENT = "sysui_volume_down_silent";
@@ -59,6 +62,7 @@ public class VolumeDialogComponent implements VolumeComponent, TunerService.Tuna
     private final SystemUI mSysui;
     private final Context mContext;
     private final VolumeDialogControllerImpl mController;
+	private TriStateUiControllerImpl mTriStateController;
     private final InterestingConfigChanges mConfigChanges = new InterestingConfigChanges(
             ActivityInfo.CONFIG_FONT_SCALE | ActivityInfo.CONFIG_LOCALE
             | ActivityInfo.CONFIG_ASSETS_PATHS);
@@ -75,6 +79,8 @@ public class VolumeDialogComponent implements VolumeComponent, TunerService.Tuna
         mContext = context;
         mController = (VolumeDialogControllerImpl) Dependency.get(VolumeDialogController.class);
         mController.setUserActivityListener(this);
+		boolean hasTriState = mContext.getResources().
+                getBoolean(com.android.internal.R.bool.config_hasAlertSlider)
         // Allow plugins to reference the VolumeDialogController.
         Dependency.get(PluginDependencyProvider.class)
                 .allowPluginDependency(VolumeDialogController.class);
@@ -88,6 +94,13 @@ public class VolumeDialogComponent implements VolumeComponent, TunerService.Tuna
                     }
                     mDialog = dialog;
                     mDialog.init(LayoutParams.TYPE_VOLUME_OVERLAY, mVolumeDialogCallback);
+					if (hasTriState) {
+						if (mTriStateController != null) {
+							mTriStateController.destroy();
+						}
+						mTriStateController = new TriStateUiControllerImpl(mContext);
+						mTriStateController.init(LayoutParams.TYPE_VOLUME_OVERLAY, this);
+					}
                 }).build();
         applyConfiguration();
         Dependency.get(TunerService.class).addTunable(this, VOLUME_DOWN_SILENT, VOLUME_UP_SILENT,
@@ -181,6 +194,11 @@ public class VolumeDialogComponent implements VolumeComponent, TunerService.Tuna
     private void startSettings(Intent intent) {
         Dependency.get(ActivityStarter.class).startActivity(intent,
                 true /* onlyProvisioned */, true /* dismissShade */);
+    }
+
+    @Override
+	public void onTriStateUserActivity() {
+        onUserActivity();
     }
 
     private final VolumeDialogImpl.Callback mVolumeDialogCallback = new VolumeDialogImpl.Callback() {
