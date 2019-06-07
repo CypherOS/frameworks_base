@@ -508,7 +508,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     AccessibilityManager mAccessibilityManager;
     BurnInProtectionHelper mBurnInProtectionHelper;
     AppOpsManager mAppOpsManager;
-    AlertSliderHandler mAlertSliderHandler;
     AlertSliderObserver mAlertSliderObserver;
     private ScreenshotHelper mScreenshotHelper;
     private boolean mHasFeatureWatch;
@@ -2514,15 +2513,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mKeyDoubleTapRunnable.put(keyCode, createDoubleTapTimeoutRunnable(keyCode));
             mKeyDoubleTapBehaviorDefaultResId.put(keyCode, getKeyDoubleTapBehaviorResId(keyCode));
             mKeyLongPressBehaviorDefaultResId.put(keyCode, getKeyLongPressBehaviorResId(keyCode));
-        }
-
-        boolean hasAlertSliderKeycode = context.getResources().
-                getBoolean(com.android.internal.R.bool.config_hasAlertSlider)
-                && context.getResources().getInteger(com.android.internal.R.integer.config_sliderTopCode) != 0
-                && context.getResources().getInteger(com.android.internal.R.integer.config_sliderMiddleCode) != 0
-                && context.getResources().getInteger(com.android.internal.R.integer.config_sliderBottomCode) != 0;
-        if (hasAlertSliderKeycode) {
-            mAlertSliderHandler = new AlertSliderHandler(mContext);
         }
 
         mWindowManagerInternal.registerAppTransitionListener(new AppTransitionListener() {
@@ -4812,6 +4802,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             return -1;
         }
 
+        if (isValidTriStateKey(event)) {
+            return -1;
+        }
+
         if (down) {
             long shortcutCode = keyCode;
             if (event.isCtrlPressed()) {
@@ -4915,6 +4909,25 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 Slog.e(TAG, "Error taking bugreport", e);
             }
         }
+    }
+
+    private boolean isValidTriStateKey(KeyEvent event) {
+        if (mHwManager != null) {
+            boolean hasAlertSlider = mHwManager.isSupported(DeviceHardwareManager.FEATURE_ALERT_SLIDER);
+            if (hasAlertSlider) {
+                try {
+                    event = mHwManager.handleTriStateEvent(event);
+                    if (event == null) {
+                        return true;
+                    }
+                } catch (Exception e) {
+                    Slog.w(TAG, "Could not dispatch event to Tri-state key", e);
+                }
+                return false;
+            }
+            return false;
+        }
+        return false;
     }
 
     /** {@inheritDoc} */
@@ -6842,12 +6855,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     + ", canApplyCustomPolicy = " + canApplyCustomPolicy(keyCode));
         }
 
-        if (mAlertSliderHandler != null) {
-            if (mAlertSliderHandler.handleKeyEvent(event)) {
-                return 0;
-            }
-        }
-
         // Apply custom policy for supported key codes.
         if (canApplyCustomPolicy(keyCode) && !isCustomSource) {
             if (mNavBarEnabled && !navBarKey /* TODO> && !isADBVirtualKeyOrAnyOtherKeyThatWeNeedToHandleAKAWhenMonkeyTestOrWHATEVER! */) {
@@ -6946,6 +6953,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 && event.getRepeatCount() == 0
                 // Trigger haptic feedback only for "real" events.
                 && source != InputDevice.SOURCE_CUSTOM;
+
+        if (isValidTriStateKey(event)) {
+            return 0;
+        }
 
         // Handle special keys.
         switch (keyCode) {
@@ -8468,8 +8479,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mSystemGestures.systemReady();
         mImmersiveModeConfirmation.systemReady();
 
-        if (mAlertSliderHandler != null) {
-            mAlertSliderHandler.systemReady();
+        boolean hasAlertSlider = mHwManager.isSupported(DeviceHardwareManager.FEATURE_ALERT_SLIDER);
+        if (hasAlertSlider) {
+            mHwManager.triStateReady();
         }
 
         mAutofillManagerInternal = LocalServices.getService(AutofillManagerInternal.class);
