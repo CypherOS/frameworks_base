@@ -57,7 +57,7 @@
     <string name="usb_accessory_permission_prompt" msgid="2465531696941369047">"Payagan ang <xliff:g id="APPLICATION">%1$s</xliff:g> na ma-access ang <xliff:g id="USB_ACCESSORY">%2$s</xliff:g>?"</string>
     <string name="usb_device_confirm_prompt" msgid="7440562274256843905">"Buksan ang <xliff:g id="APPLICATION">%1$s</xliff:g> upang pamahalaan ang <xliff:g id="USB_DEVICE">%2$s</xliff:g>?"</string>
     <string name="usb_accessory_confirm_prompt" msgid="4333670517539993561">"Buksan ang <xliff:g id="APPLICATION">%1$s</xliff:g> upang pamahalaan ang <xliff:g id="USB_ACCESSORY">%2$s</xliff:g>?"</string>
-    <string name="usb_accessory_uri_prompt" msgid="513450621413733343">"Wala sa mga na-install na app ang gumagana sa USB accessory na ito. Matuto nang higit pa tungkol sa accessory na ito sa <xliff:g id="URL">%1$s</xliff:g>"</string>
+    <string name="usb_accessory_uri_prompt" msgid="513450621413733343">"Wala sa mga na-install na app ang gumagana sa USB accessory na ito. Matuto pa tungkol sa accessory na ito sa <xliff:g id="URL">%1$s</xliff:g>"</string>
     <string name="title_usb_accessory" msgid="4966265263465181372">"USB accessory"</string>
     <string name="label_view" msgid="6304565553218192990">"Tingnan"</string>
     <string name="always_use_device" msgid="4015357883336738417">"Palaging buksan ang <xliff:g id="APPLICATION">%1$s</xliff:g> kapag nakakonekta ang <xliff:g id="USB_DEVICE">%2$s</xliff:g>"</string>
@@ -399,6 +399,7 @@
     <string name="interruption_level_none_twoline" msgid="3957581548190765889">"Ganap na\nkatahimikan"</string>
     <string name="interruption_level_priority_twoline" msgid="1564715335217164124">"Priyoridad\nlang"</string>
     <string name="interruption_level_alarms_twoline" msgid="3266909566410106146">"Mga alarm\nlang"</string>
+    <string name="keyguard_indication_charging_time_wireless" msgid="5376059837186496558">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • Wireless na Nagcha-charge (<xliff:g id="CHARGING_TIME_LEFT">%1$s</xliff:g> bago mapuno)"</string>
     <string name="keyguard_indication_charging_time" msgid="2056340799276374421">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • Nagcha-charge (<xliff:g id="CHARGING_TIME_LEFT">%s</xliff:g> hanggang mapuno)"</string>
     <string name="keyguard_indication_charging_time_fast" msgid="7767562163577492332">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • Mabilis na nagcha-charge (<xliff:g id="CHARGING_TIME_LEFT">%s</xliff:g> na lang)"</string>
     <string name="keyguard_indication_charging_time_slowly" msgid="3769655133567307069">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • Mabagal na nagcha-charge (<xliff:g id="CHARGING_TIME_LEFT">%s</xliff:g> na lang)"</string>

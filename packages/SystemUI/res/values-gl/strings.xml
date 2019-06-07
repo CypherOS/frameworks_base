@@ -299,7 +299,7 @@
     <string name="quick_settings_location_off_label" msgid="7464544086507331459">"Localización desactivada"</string>
     <string name="quick_settings_media_device_label" msgid="1302906836372603762">"Dispositivo multimedia"</string>
     <string name="quick_settings_rssi_label" msgid="7725671335550695589">"RSSI"</string>
-    <string name="quick_settings_rssi_emergency_only" msgid="2713774041672886750">"Só chamadas de urxencia"</string>
+    <string name="quick_settings_rssi_emergency_only" msgid="2713774041672886750">"Só chamadas de emerxencia"</string>
     <string name="quick_settings_settings_label" msgid="5326556592578065401">"Configuración"</string>
     <string name="quick_settings_time_label" msgid="4635969182239736408">"Hora"</string>
     <string name="quick_settings_user_label" msgid="5238995632130897840">"Eu"</string>
@@ -399,6 +399,7 @@
     <string name="interruption_level_none_twoline" msgid="3957581548190765889">"Silencio\ntotal"</string>
     <string name="interruption_level_priority_twoline" msgid="1564715335217164124">"Só\nprioridade"</string>
     <string name="interruption_level_alarms_twoline" msgid="3266909566410106146">"Só\nalarmas"</string>
+    <string name="keyguard_indication_charging_time_wireless" msgid="5376059837186496558">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • Cargando sen fíos (<xliff:g id="CHARGING_TIME_LEFT">%1$s</xliff:g> para completar a carga)"</string>
     <string name="keyguard_indication_charging_time" msgid="2056340799276374421">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • Cargando (<xliff:g id="CHARGING_TIME_LEFT">%s</xliff:g> para completar a carga)"</string>
     <string name="keyguard_indication_charging_time_fast" msgid="7767562163577492332">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • Cargando rapidamente (<xliff:g id="CHARGING_TIME_LEFT">%s</xliff:g> para completar a carga)"</string>
     <string name="keyguard_indication_charging_time_slowly" msgid="3769655133567307069">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • Cargando lentamente (<xliff:g id="CHARGING_TIME_LEFT">%s</xliff:g> para completar a carga)"</string>

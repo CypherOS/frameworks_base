@@ -295,7 +295,7 @@
     <string name="quick_settings_rotation_locked_portrait_label" msgid="5102691921442135053">"直向"</string>
     <string name="quick_settings_rotation_locked_landscape_label" msgid="8553157770061178719">"橫向"</string>
     <string name="quick_settings_ime_label" msgid="7073463064369468429">"輸入法"</string>
-    <string name="quick_settings_location_label" msgid="5011327048748762257">"位置資訊"</string>
+    <string name="quick_settings_location_label" msgid="5011327048748762257">"定位"</string>
     <string name="quick_settings_location_off_label" msgid="7464544086507331459">"位置資訊已關閉"</string>
     <string name="quick_settings_media_device_label" msgid="1302906836372603762">"媒體裝置"</string>
     <string name="quick_settings_rssi_label" msgid="7725671335550695589">"RSSI"</string>
@@ -399,6 +399,7 @@
     <string name="interruption_level_none_twoline" msgid="3957581548190765889">"完全\n靜音"</string>
     <string name="interruption_level_priority_twoline" msgid="1564715335217164124">"僅限\n優先"</string>
     <string name="interruption_level_alarms_twoline" msgid="3266909566410106146">"僅限\n鬧鐘"</string>
+    <string name="keyguard_indication_charging_time_wireless" msgid="5376059837186496558">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • 無線充電中 (<xliff:g id="CHARGING_TIME_LEFT">%1$s</xliff:g>後完成充電)"</string>
     <string name="keyguard_indication_charging_time" msgid="2056340799276374421">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • 正在充電 (<xliff:g id="CHARGING_TIME_LEFT">%s</xliff:g>後完成充電)"</string>
     <string name="keyguard_indication_charging_time_fast" msgid="7767562163577492332">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • 正在快速充電 (<xliff:g id="CHARGING_TIME_LEFT">%s</xliff:g>後完成充電)"</string>
     <string name="keyguard_indication_charging_time_slowly" msgid="3769655133567307069">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • 正在慢速充電 (<xliff:g id="CHARGING_TIME_LEFT">%s</xliff:g>後完成)"</string>

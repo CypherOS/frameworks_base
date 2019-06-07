@@ -399,6 +399,7 @@
     <string name="interruption_level_none_twoline" msgid="3957581548190765889">"Helt\ntyst"</string>
     <string name="interruption_level_priority_twoline" msgid="1564715335217164124">"Endast\nprioriterade"</string>
     <string name="interruption_level_alarms_twoline" msgid="3266909566410106146">"Endast\nalarm"</string>
+    <string name="keyguard_indication_charging_time_wireless" msgid="5376059837186496558">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • Laddas trådlöst (fulladdat om <xliff:g id="CHARGING_TIME_LEFT">%1$s</xliff:g>)"</string>
     <string name="keyguard_indication_charging_time" msgid="2056340799276374421">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • Laddas (fulladdat om <xliff:g id="CHARGING_TIME_LEFT">%s</xliff:g>)"</string>
     <string name="keyguard_indication_charging_time_fast" msgid="7767562163577492332">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • Laddas snabbt (fulladdat om <xliff:g id="CHARGING_TIME_LEFT">%s</xliff:g>)"</string>
     <string name="keyguard_indication_charging_time_slowly" msgid="3769655133567307069">"<xliff:g id="PERCENTAGE">%2$s</xliff:g> • Laddas långsamt (fulladdat om <xliff:g id="CHARGING_TIME_LEFT">%s</xliff:g>)"</string>
@@ -784,7 +785,7 @@
     <string name="pip_phone_minimize" msgid="1079119422589131792">"Minimera"</string>
     <string name="pip_phone_close" msgid="8416647892889710330">"Stäng"</string>
     <string name="pip_phone_settings" msgid="8080777499521528521">"Inställningar"</string>
-    <string name="pip_phone_dismiss_hint" msgid="6351678169095923899">"Tryck och dra nedåt för att avvisa"</string>
+    <string name="pip_phone_dismiss_hint" msgid="6351678169095923899">"Tryck och dra nedåt för att ta bort"</string>
     <string name="pip_menu_title" msgid="4707292089961887657">"Meny"</string>
     <string name="pip_notification_title" msgid="3204024940158161322">"<xliff:g id="NAME">%s</xliff:g> visas i bild-i-bild"</string>
     <string name="pip_notification_message" msgid="5619512781514343311">"Om du inte vill att den här funktionen används i <xliff:g id="NAME">%s</xliff:g> öppnar du inställningarna genom att trycka. Sedan inaktiverar du funktionen."</string>

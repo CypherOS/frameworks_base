@@ -102,9 +102,11 @@ public class WebViewClient {
 
     /**
      * Notify the host application that a page has finished loading. This method
-     * is called only for main frame. When onPageFinished() is called, the
-     * rendering picture may not be updated yet. To get the notification for the
-     * new Picture, use {@link WebView.PictureListener#onNewPicture}.
+     * is called only for main frame. Receiving an {@code onPageFinished()} callback does not
+     * guarantee that the next frame drawn by WebView will reflect the state of the DOM at this
+     * point. In order to be notified that the current DOM state is ready to be rendered, request a
+     * visual state callback with {@link WebView#postVisualStateCallback} and wait for the supplied
+     * callback to be triggered.
      *
      * @param view The WebView that is initiating the callback.
      * @param url The url of the page.
@@ -370,10 +372,15 @@ public class WebViewClient {
 
     /**
      * Notify the host application that an SSL error occurred while loading a
-     * resource. The host application must call either handler.cancel() or
-     * handler.proceed(). Note that the decision may be retained for use in
+     * resource. The host application must call either {@link SslErrorHandler#cancel} or
+     * {@link SslErrorHandler#proceed}. Note that the decision may be retained for use in
      * response to future SSL errors. The default behavior is to cancel the
      * load.
+     * <p>
+     * This API is only called for recoverable SSL certificate errors. In the case of
+     * non-recoverable errors (such as when the server fails the client), WebView will call {@link
+     * #onReceivedError(WebView, WebResourceRequest, WebResourceError)} with {@link
+     * #ERROR_FAILED_SSL_HANDSHAKE}.
      * <p>
      * Applications are advised not to prompt the user about SSL errors, as
      * the user is unlikely to be able to make an informed security decision
@@ -382,10 +389,10 @@ public class WebViewClient {
      * <p>
      * Application overrides of this method may display custom error pages or
      * silently log issues, but it is strongly recommended to always call
-     * handler.cancel() and never allow proceeding past errors.
+     * {@link SslErrorHandler#cancel} and never allow proceeding past errors.
      *
      * @param view The WebView that is initiating the callback.
-     * @param handler An SslErrorHandler object that will handle the user's
+     * @param handler An {@link SslErrorHandler} that will handle the user's
      *            response.
      * @param error The SSL error object.
      */
