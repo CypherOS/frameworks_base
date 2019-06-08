@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright 2017-2018 CypherOS
+<!-- Copyright 2017-2019 CypherOS
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -34,6 +34,11 @@
     <style name="TextAppearance.AppOpsDialog.Title" parent="@style/TextAppearance.AppOpsDialog">
         <item name="android:textSize">@dimen/ongoing_appops_dialog_title_size</item>
         <item name="android:fontFamily">@*android:string/config_wallpaperCropperPackage</item>
+    </style>
+
+    <style name="TriStateUiText">
+        <item name="android:textSize">11.0sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
 </resources>
