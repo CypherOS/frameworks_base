@@ -40,5 +40,9 @@
     <string name="op_type_camera">camera</string>
     <string name="op_type_location">location</string>
     <string name="op_type_microphone">microphone</string>
+	
+	<string name="tri_state_ring">Ring</string>
+    <string name="tri_state_slient">Silent</string>
+    <string name="tri_state_vibrate">Vibrate</string>
 
 </resources>
