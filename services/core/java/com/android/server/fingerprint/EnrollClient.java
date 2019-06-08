@@ -31,7 +31,7 @@ import com.android.internal.statusbar.IStatusBarService;
 
 import java.util.Arrays;
 
-import vendor.oneplus.fingerprint.extension.V1_0.IVendorFingerprintExtensions;
+import vendor.aoscp.fingerprint.extension.V1_0.IVendorFingerprintExtensions;
 
 /**
  * A class to keep track of the enrollment state for a given client.

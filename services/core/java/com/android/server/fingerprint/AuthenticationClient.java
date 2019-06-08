@@ -35,7 +35,7 @@ import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.internal.statusbar.IStatusBarService;
 
-import vendor.oneplus.fingerprint.extension.V1_0.IVendorFingerprintExtensions;
+import vendor.aoscp.fingerprint.extension.V1_0.IVendorFingerprintExtensions;
 
 /**
  * A class to keep track of the authentication state for a given client.

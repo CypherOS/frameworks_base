@@ -43,7 +43,7 @@ import com.android.systemui.R;
 
 import java.io.PrintWriter;
 
-import vendor.oneplus.hardware.display.V1_0.IOneplusDisplay;
+import vendor.aoscp.hardware.oneplus.display.V1_0.IOneplusDisplay;
 
 public class FODCircleView extends ImageView implements OnTouchListener {
     private final int mX, mY, mW, mH;

@@ -60,8 +60,8 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     libAcrCloud \
     libMiServicesShared \
 	libMiCodeShared \
-	vendor.oneplus.fingerprint.extension-V1.0-java \
-    vendor.oneplus.hardware.display-V1.0-java
+	vendor.aoscp.fingerprint.extension-V1.0-java \
+    vendor.aoscp.hardware.oneplus.display-V1.0-java
 
 LOCAL_JAVA_LIBRARIES := telephony-common \
     android.car
