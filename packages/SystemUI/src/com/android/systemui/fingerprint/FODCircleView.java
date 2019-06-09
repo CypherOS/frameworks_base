@@ -36,6 +36,8 @@ import android.view.WindowManager;
 import android.util.Log;
 import android.util.Slog;
 
+import aoscp.hardware.DeviceHardwareManager;
+
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
 import com.android.internal.telephony.IccCardConstants.State;
@@ -43,13 +45,11 @@ import com.android.systemui.R;
 
 import java.io.PrintWriter;
 
-import vendor.oneplus.hardware.display.V1_0.IOneplusDisplay;
-
 public class FODCircleView extends ImageView implements OnTouchListener {
     private final int mX, mY, mW, mH;
     private final Paint mPaintFingerprint = new Paint();
     private final Paint mPaintShow = new Paint();
-    private IOneplusDisplay mDisplayDaemon = null;
+    private DeviceHardwareManager mHwManager;
     private boolean mInsideCircle = false;
     private final WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
 
@@ -118,8 +118,8 @@ public class FODCircleView extends ImageView implements OnTouchListener {
         @Override
         public void onStartedWakingUp() {
             try {
-                mDisplayDaemon.setMode(DISPLAY_NOTIFY_PRESS, 0);
-                mDisplayDaemon.setMode(DISPLAY_AOD_MODE, 0);
+                mHwManager.setOpDisplayMode(DISPLAY_NOTIFY_PRESS, 0);
+                mHwManager.setOpDisplayMode(DISPLAY_AOD_MODE, 0);
             } catch (RemoteException e) {}
             super.onStartedWakingUp();
             mChange = true;
@@ -161,8 +161,8 @@ public class FODCircleView extends ImageView implements OnTouchListener {
             super.onFingerprintAuthenticated(userId);
             mInsideCircle = false;
             try {
-                mDisplayDaemon.setMode(DISPLAY_AOD_MODE, 0);
-                mDisplayDaemon.setMode(DISPLAY_NOTIFY_PRESS, 0);
+                mHwManager.setOpDisplayMode(DISPLAY_AOD_MODE, 0);
+                mHwManager.setOpDisplayMode(DISPLAY_NOTIFY_PRESS, 0);
             } catch (RemoteException e) {}
             mChange = true;
         }
@@ -186,9 +186,7 @@ public class FODCircleView extends ImageView implements OnTouchListener {
         setOnTouchListener(this);
         mWM = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
 
-        try {
-            mDisplayDaemon = IOneplusDisplay.getService();
-        } catch (Exception e) {}
+        mHwManager = DeviceHardwareManager.getInstance(context);
 
         mUpdateMonitor = KeyguardUpdateMonitor.getInstance(context);
         mUpdateMonitor.registerCallback(mMonitorCallback);
@@ -203,15 +201,15 @@ public class FODCircleView extends ImageView implements OnTouchListener {
             canvas.drawCircle(mW/2, mH/2, (float) (mW/2.0f), this.mPaintFingerprint);
             try {
                 //if (mIsDreaming) {
-                    mDisplayDaemon.setMode(DISPLAY_AOD_MODE, 2);
+                    mHwManager.setOpDisplayMode(DISPLAY_AOD_MODE, 2);
                 //}
-                mDisplayDaemon.setMode(DISPLAY_NOTIFY_PRESS, 1);
+                mHwManager.setOpDisplayMode(DISPLAY_NOTIFY_PRESS, 1);
             } catch (RemoteException e) {}
         } else {
             if (mChange) {
                 try {
-                    mDisplayDaemon.setMode(DISPLAY_AOD_MODE, 0);
-                    mDisplayDaemon.setMode(DISPLAY_NOTIFY_PRESS, 0);
+                    mHwManager.setOpDisplayMode(DISPLAY_AOD_MODE, 0);
+                    mHwManager.setOpDisplayMode(DISPLAY_NOTIFY_PRESS, 0);
                     //canvas.drawCircle(mW/2, mH/2, (float) (mW/2.0f), this.mPaintShow);
                 } catch (RemoteException e) {}
             }
@@ -230,8 +228,8 @@ public class FODCircleView extends ImageView implements OnTouchListener {
             newInside = false;
             try {
                 setImageResource(R.drawable.fod_icon_default);
-                mDisplayDaemon.setMode(DISPLAY_AOD_MODE, 0);
-                mDisplayDaemon.setMode(DISPLAY_NOTIFY_PRESS, 0);
+                mHwManager.setOpDisplayMode(DISPLAY_AOD_MODE, 0);
+                mHwManager.setOpDisplayMode(DISPLAY_NOTIFY_PRESS, 0);
             } catch (RemoteException e) {}
         }
 
@@ -289,7 +287,7 @@ public class FODCircleView extends ImageView implements OnTouchListener {
         mIsEnrolling = isEnrolling;
         if (mIsEnrolling) {
             try {
-               mDisplayDaemon.setMode(DISPLAY_SET_DIM, 1);
+               mHwManager.setOpDisplayMode(DISPLAY_SET_DIM, 1);
             } catch (RemoteException e) {}
         }
         mParams.gravity = Gravity.TOP | Gravity.LEFT;
@@ -302,12 +300,12 @@ public class FODCircleView extends ImageView implements OnTouchListener {
         if(mX == -1 || mY == -1 || mW == -1 || mH == -1) return;
 
         try {
-            mDisplayDaemon.setMode(DISPLAY_AOD_MODE, 0);
-            mDisplayDaemon.setMode(DISPLAY_NOTIFY_PRESS, 0);
+            mHwManager.setOpDisplayMode(DISPLAY_AOD_MODE, 0);
+            mHwManager.setOpDisplayMode(DISPLAY_NOTIFY_PRESS, 0);
         } catch (RemoteException e) {}
         if (mIsEnrolling) {
             try {
-               mDisplayDaemon.setMode(DISPLAY_SET_DIM, 0);
+               mHwManager.setOpDisplayMode(DISPLAY_SET_DIM, 0);
             } catch (RemoteException e) {}
         }
         mInsideCircle = false;
