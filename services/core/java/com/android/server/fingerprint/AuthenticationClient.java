@@ -31,11 +31,11 @@ import android.os.RemoteException;
 import android.content.pm.PackageManager;
 import android.util.Slog;
 
+import aoscp.hardware.DeviceHardwareManager;
+
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.internal.statusbar.IStatusBarService;
-
-import vendor.oneplus.fingerprint.extension.V1_0.IVendorFingerprintExtensions;
 
 /**
  * A class to keep track of the authentication state for a given client.
@@ -60,7 +60,7 @@ public abstract class AuthenticationClient extends ClientMonitor {
     protected boolean mDialogDismissed;
 
     private boolean mDisplayFODView;
-    private IVendorFingerprintExtensions mExtDaemon = null;
+	private DeviceHardwareManager mHwManager;
     private final String mKeyguardPackage;
     private static final int DISABLE_FP_LONGPRESS = 4;
     private static final int ENABLE_FP_LONGPRESS = 3;
@@ -110,6 +110,7 @@ public abstract class AuthenticationClient extends ClientMonitor {
         mDisplayFODView = context.getResources().getBoolean(com.android.internal.R.bool.config_needCustomFODView);
         mKeyguardPackage = ComponentName.unflattenFromString(context.getResources().getString(
                 com.android.internal.R.string.config_keyguardComponent)).getPackageName();
+		mHwManager = DeviceHardwareManager.getInstance(context);
     }
 
     @Override
@@ -268,13 +269,12 @@ public abstract class AuthenticationClient extends ClientMonitor {
 
         if (mDisplayFODView) {
             try {
-                mExtDaemon = IVendorFingerprintExtensions.getService();
                 Slog.w(TAG, "getOwnerString : " + isKeyguard(getOwnerString()));
 
                 if (isKeyguard(getOwnerString())) {
-                    mExtDaemon.updateStatus(ENABLE_FP_LONGPRESS);
+					mHwManager.updateFodStatus(ENABLE_FP_LONGPRESS);
                 } else {
-                    mExtDaemon.updateStatus(DISABLE_FP_LONGPRESS);
+					mHwManager.updateFodStatus(DISABLE_FP_LONGPRESS);
                 }
 
                 mStatusBarService.handleInDisplayFingerprintView(true, false);
