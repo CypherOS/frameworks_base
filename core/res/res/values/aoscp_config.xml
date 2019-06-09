@@ -162,4 +162,17 @@
     <bool name="config_needCustomFODView">false</bool>
 
     <bool name="config_usesOnePlusFOD">false</bool>
+	
+	<bool name="config_usesOnePlusFOD">false</bool>
+
+	<!-- Display mode remapping table.
+         If the mode names returned by the backend do not match
+         the predefined and translated strings in the Settings
+         app, they can be remapped here. The format is
+         "oldname:newname", one per entry. -->
+    <string-array name="config_displayModeMappings" translatable="false">
+    </string-array>
+
+	<!-- Should we filter any display modes which are unampped? -->
+    <bool name="config_filterDisplayModes">false</bool>
 </resources>
