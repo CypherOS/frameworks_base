@@ -452,23 +452,14 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
         updateTriStateLayout();
     }
 
-    public void applyTheme() {
-        boolean isDarkTheme = mThemeMode == 2 || mThemeMode == 3;
-        mIconColor = getAttrColor(android.R.attr.textColorPrimary);
-        mTextColor = mIconColor;
+    private void updateTheme(boolean force) {
+		if (!force) return;
+		mIconColor = getAttrColor(android.R.attr.colorAccent);
+        mTextColor = getAttrColor(android.R.attr.textColorPrimary);
         mBackgroundColor = getAttrColor(android.R.attr.colorPrimary);
         mDialogView.setBackgroundTintList(ColorStateList.valueOf(mBackgroundColor));
         mTriStateText.setTextColor(mTextColor);
         mTriStateIcon.setColorFilter(mIconColor);
-    }
-
-    private void updateTheme(boolean force) {
-        int theme = Settings.Secure.getInt(mContext.getContentResolver(), Settings.Secure.SYSTEM_THEME, 0);
-        boolean change = mThemeMode == theme ? false : true;
-        if (change || force) {
-            mThemeMode = theme;
-            applyTheme();
-        }
     }
 
     public int getAttrColor(int attr) {
