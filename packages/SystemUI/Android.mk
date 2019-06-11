@@ -64,7 +64,8 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     vendor.oneplus.hardware.display-V1.0-java
 
 LOCAL_JAVA_LIBRARIES := telephony-common \
-    android.car
+    android.car \
+    telephony-ext
 
 LOCAL_PACKAGE_NAME := SystemUI
 LOCAL_PRIVATE_PLATFORM_APIS := true

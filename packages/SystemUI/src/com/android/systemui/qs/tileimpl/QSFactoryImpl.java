@@ -30,6 +30,7 @@ import com.android.systemui.qs.tiles.CastTile;
 import com.android.systemui.qs.tiles.CellularTile;
 import com.android.systemui.qs.tiles.ColorInversionTile;
 import com.android.systemui.qs.tiles.DataSaverTile;
+import com.android.systemui.qs.tiles.DataSwitchTile;
 import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.FlashlightTile;
 import com.android.systemui.qs.tiles.HeadsUpTile;
@@ -101,6 +102,8 @@ public class QSFactoryImpl implements QSFactory {
                 return new NfcTile(mHost);
             case "heads_up":
                 return new HeadsUpTile(mHost);
+            case "dataswitch":
+                return new DataSwitchTile(mHost);
         }
 
         // Intent tiles.
