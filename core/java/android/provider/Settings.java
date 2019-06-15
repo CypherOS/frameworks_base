@@ -4330,6 +4330,12 @@ public final class Settings {
          */
         public static final String ONEHANDED_MODE = "onehanded_mode";
 
+        /** Whether to skip music track with volume rocker
+        /**
+         * @hide
+         */
+        public static final String VOLUME_BUTTON_MUSIC_CONTROL = "volume_button_music_control";
+
         /**
          * Enable battery light
          * 0: Never
@@ -4563,6 +4569,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(WEATHER_LOCKSCREEN_UNIT);
             PRIVATE_SETTINGS.add(ONEHANDED_MODE);
             PRIVATE_SETTINGS.add(DEVICE_INTRODUCTION_COMPLETED);
+            PRIVATE_SETTINGS.add(VOLUME_BUTTON_MUSIC_CONTROL);
         }
 
         /**
