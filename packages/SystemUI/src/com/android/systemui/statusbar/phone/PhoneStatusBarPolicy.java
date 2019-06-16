@@ -66,7 +66,7 @@ import com.android.systemui.R;
 import com.android.systemui.SysUiServiceProvider;
 import com.android.systemui.UiOffloadThread;
 import com.android.systemui.aoscp.LiveOpsController;
-import com.android.systemui.aoscp.micode.LiveOp;
+import com.android.systemui.aoscp.privacy.LiveOp;
 import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.recents.misc.SysUiTaskStackChangeListener;

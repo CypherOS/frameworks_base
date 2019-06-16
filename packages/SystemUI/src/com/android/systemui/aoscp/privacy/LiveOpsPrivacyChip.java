@@ -37,7 +37,7 @@ import android.widget.TextView;
 import com.android.systemui.Dependency;
 import com.android.systemui.R;
 import com.android.systemui.aoscp.LiveOpsController;
-import com.android.systemui.aoscp.micode.LiveOp;
+import com.android.systemui.aoscp.privacy.LiveOp;
 
 import java.util.ArrayList;
 import java.util.List;

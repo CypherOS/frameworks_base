@@ -44,7 +44,7 @@ import android.widget.TextView;
 import com.android.settingslib.Utils;
 import com.android.systemui.Dependency;
 import com.android.systemui.R;
-import com.android.systemui.aoscp.micode.LiveOp;
+import com.android.systemui.aoscp.privacy.LiveOp;
 import com.android.systemui.plugins.ActivityStarter;
 
 import java.io.IOException;
