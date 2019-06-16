@@ -16,7 +16,7 @@
 
 package com.android.systemui.aoscp;
 
-import com.android.systemui.aoscp.micode.LiveOp;
+import com.android.systemui.aoscp.privacy.LiveOp;
 
 import java.util.List;
 import java.util.Set;

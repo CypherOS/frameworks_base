@@ -53,7 +53,7 @@ import com.android.systemui.BatteryMeterView;
 import com.android.systemui.Dependency;
 import com.android.systemui.Prefs;
 import com.android.systemui.R;
-import com.android.systemui.aoscp.micode.LiveOp;
+import com.android.systemui.aoscp.privacy.LiveOp;
 import com.android.systemui.aoscp.privacy.LiveOpsPrivacyChip;
 import com.android.systemui.aoscp.privacy.LiveOpsPrivacyDialog;
 import com.android.systemui.plugins.ActivityStarter;

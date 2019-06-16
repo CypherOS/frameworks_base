@@ -23,7 +23,7 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import com.android.systemui.R;
-import com.android.systemui.aoscp.micode.LiveOp;
+import com.android.systemui.aoscp.privacy.LiveOp;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -179,6 +179,6 @@ public class LiveOpsControllerImpl implements LiveOpsController, AppOpsManager.O
     @Override
     public void onOpActiveChanged(int op, int uid, String packageName, boolean active) {
         Log.d(TAG, "Operation changed for " + packageName + " to " + active);
-        updateActiveOps(op, uid, packageName, active);
+		updateActiveOps(op, uid, packageName, active);
     }
 }
