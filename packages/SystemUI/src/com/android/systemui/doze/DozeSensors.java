@@ -36,6 +36,8 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
+import aoscp.hardware.DeviceHardwareManager;
+
 import com.android.internal.hardware.AmbientDisplayConfiguration;
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto;
@@ -68,6 +70,8 @@ public class DozeSensors {
     private final Handler mHandler = new Handler();
     private final ProxSensor mProxSensor;
 
+    private DeviceHardwareManager mHwManager;
+    private boolean mHasDozeHwSensor;
 
     public DozeSensors(Context context, AlarmManager alarmManager, SensorManager sensorManager,
             DozeParameters dozeParameters,
@@ -112,6 +116,9 @@ public class DozeSensors {
                         true /* touchscreen */),
         };
 
+		mHwManager = DeviceHardwareManager.getInstance(mContext);
+		mHasDozeHwSensor = mHwManager.isSupported(DeviceHardwareManager.FEATURE_DOZE_SENSOR);
+
         mProxSensor = new ProxSensor(policy);
         mCallback = callback;
     }
@@ -140,6 +147,14 @@ public class DozeSensors {
                 s.registerSettingsObserver(mSettingsObserver);
             }
         }
+
+		if (mHasDozeHwSensor) {
+			mHwManager.setSensor(listen);
+			if (listen) {
+				mHwManager.registerDozeObserver(mSettingsObserver);
+			}
+		}
+
         if (!listen) {
             mResolver.unregisterContentObserver(mSettingsObserver);
         }
@@ -161,12 +176,21 @@ public class DozeSensors {
         for (TriggerSensor s : mSensors) {
             s.setListening(true);
         }
+
+		if (mHasDozeHwSensor) {
+			mHwManager.setSensor(false);
+			mHwManager.setSensor(true);
+		}
     }
 
     public void onUserSwitched() {
         for (TriggerSensor s : mSensors) {
             s.updateListener();
         }
+
+		if (mHasDozeHwSensor) {
+			mHwManager.updateSensor();
+		}
     }
 
     public void setProxListening(boolean listen) {
@@ -182,6 +206,10 @@ public class DozeSensors {
             for (TriggerSensor s : mSensors) {
                 s.updateListener();
             }
+
+			if (mHasDozeHwSensor) {
+				mHwManager.updateSensor();
+			}
         }
     };
 
