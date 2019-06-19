@@ -317,12 +317,16 @@ public class BatteryMeterView extends LinearLayout implements
                 .getIntForUser(getContext().getContentResolver(),
                 SHOW_BATTERY_PERCENT, 0, mUser);
 
-        if ((mShowPercentAvailable && mShowPercent) || mForceShowPercent || mBatteryEstimate != null) {
+        if ((mShowPercentAvailable && mShowPercent) || mForceShowPercent) {
             createPercentView();
         } else {
-            if (mBatteryPercentView != null) {
-                removeView(mBatteryPercentView);
-                mBatteryPercentView = null;
+            if (mBatteryEstimate != null) {
+                createPercentView();
+            } else {
+                if (mBatteryPercentView != null) {
+                    removeView(mBatteryPercentView);
+                    mBatteryPercentView = null;
+                }
             }
         }
     }
