@@ -296,28 +296,26 @@ public class BatteryMeterView extends LinearLayout implements
         updateShowPercent();
     }
 
-    private TextView loadPercentView() {
-        return (TextView) LayoutInflater.from(getContext())
-                .inflate(R.layout.battery_percentage_view, null);
-    }
-
     private void updatePercentText() {
         if (!(mBatteryController == null || mBatteryPercentView == null)) {
             if (mShowPercent || mCharging) {
                 mBatteryPercentView.setText(
                         NumberFormat.getPercentInstance().format(mLevel / 100f));
             } else {
-                mBatteryPercentView.setText(mBatteryEstimate);
+                if (mBatteryEstimate != null) {
+                    mBatteryPercentView.setText(mBatteryEstimate);
+                    mBatteryEstimate = null;
+                }
             }
         }
     }
 
     private void updateShowPercent() {
-        mShowPercent = 0 != Settings.System
-                .getIntForUser(getContext().getContentResolver(),
-                SHOW_BATTERY_PERCENT, 0, mUser);
-
-        if ((mShowPercentAvailable && mShowPercent) || mForceShowPercent || mBatteryEstimate != null) {
+        mShowPercent = Settings.System.getIntForUser(getContext().getContentResolver(),
+                SHOW_BATTERY_PERCENT, 0, mUser) != 0;
+        if ((mShowPercentAvailable && mShowPercent)
+                || mForceShowPercent
+                || (mBatteryEstimate != null && !mShowPercent)) {
             createPercentView();
         } else {
             if (mBatteryPercentView != null) {
@@ -329,16 +327,17 @@ public class BatteryMeterView extends LinearLayout implements
 
     private void createPercentView() {
         if (mBatteryPercentView == null) {
-            mBatteryPercentView = loadPercentView();
+            mBatteryPercentView = (TextView) LayoutInflater.from(getContext())
+                    .inflate(R.layout.battery_percentage_view, null);
             if (mTextColor != 0) mBatteryPercentView.setTextColor(mTextColor);
             updatePercentText();
             addView(mBatteryPercentView,
                     new ViewGroup.LayoutParams(
                             LayoutParams.WRAP_CONTENT,
                             LayoutParams.MATCH_PARENT));
-            return;
+        } else {
+            updatePercentText();
         }
-        updatePercentText();
     }
 
     @Override
