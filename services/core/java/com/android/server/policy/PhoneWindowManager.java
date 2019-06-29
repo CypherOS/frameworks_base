@@ -269,6 +269,7 @@ import android.view.autofill.AutofillManagerInternal;
 import android.view.inputmethod.InputMethodManagerInternal;
 
 import aoscp.hardware.DeviceHardwareManager;
+import aoscp.os.HardwareKeyHandler;
 
 import com.android.internal.R;
 import com.android.internal.accessibility.AccessibilityShortcutController;
@@ -298,10 +299,14 @@ import com.android.server.wm.DisplayFrames;
 import com.android.server.wm.WindowManagerInternal;
 import com.android.server.wm.WindowManagerInternal.AppTransitionListener;
 
+import dalvik.system.PathClassLoader;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -872,6 +877,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private final MutableBoolean mTmpBoolean = new MutableBoolean(false);
 
     private boolean mAodShowing;
+
+	private final List<HardwareKeyHandler> mHwKeyHandlers = new ArrayList<>();
 
     private static final int MSG_ENABLE_POINTER_LOCATION = 1;
     private static final int MSG_DISABLE_POINTER_LOCATION = 2;
@@ -2541,6 +2548,28 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     }
                 });
         mScreenshotHelper = new ScreenshotHelper(mContext);
+
+		final Resources res = mContext.getResources();
+        final String[] hwKeyHandlerLibs = res.getStringArray(
+                com.android.internal.R.array.config_deviceKeyHandlerLibs);
+        final String[] hwKeyHandlerClasses = res.getStringArray(
+                com.android.internal.R.array.config_deviceKeyHandlerClasses);
+
+        for (int i = 0;
+                i < hwKeyHandlerLibs.length && i < hwKeyHandlerClasses.length; i++) {
+            try {
+                PathClassLoader loader = new PathClassLoader(
+                        hwKeyHandlerLibs[i], getClass().getClassLoader());
+                Class<?> klass = loader.loadClass(hwKeyHandlerClasses[i]);
+                Constructor<?> constructor = klass.getConstructor(Context.class);
+                mHwKeyHandlers.add((HardwareKeyHandler) constructor.newInstance(mContext));
+            } catch (Exception e) {
+                Slog.w(TAG, "Could not instantiate device key handler "
+                        + hwKeyHandlerLibs[i] + " from class "
+                        + hwKeyHandlerClasses[i], e);
+            }
+        }
+        if (DEBUG) Slog.d(TAG, "" + mHwKeyHandlers.size() + " device key handlers loaded");
     }
 
     /**
@@ -4802,7 +4831,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             return -1;
         }
 
-        if (isValidTriStateKey(event)) {
+        // Specific device key handling
+        if (dispatchKeyToKeyHandlers(event)) {
             return -1;
         }
 
@@ -4911,8 +4941,26 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
-    private boolean isValidTriStateKey(KeyEvent event) {
-        if (mHwManager != null) {
+    private boolean dispatchKeyToKeyHandlers(KeyEvent event) {
+		dispatchTriStateKey(event)
+		for (HardwareKeyHandler handler : mHwKeyHandlers) {
+            try {
+                if (DEBUG_INPUT) {
+                    Log.d(TAG, "Dispatching key event " + event + " to handler " + handler);
+                }
+                event = handler.handleKeyEvent(event);
+                if (event == null) {
+                    return true;
+                }
+            } catch (Exception e) {
+                Slog.w(TAG, "Could not dispatch event to device key handler", e);
+            }
+        }
+        return false;
+    }
+
+	private boolean dispatchTriStateKey(KeyEvent event) {
+		if (mHwManager != null) {
             boolean hasAlertSlider = mHwManager.isSupported(DeviceHardwareManager.FEATURE_ALERT_SLIDER);
             if (hasAlertSlider) {
                 try {
@@ -6954,7 +7002,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // Trigger haptic feedback only for "real" events.
                 && source != InputDevice.SOURCE_CUSTOM;
 
-        if (isValidTriStateKey(event)) {
+        // Specific device key handling
+        if (dispatchKeyToKeyHandlers(event)) {
             return 0;
         }
 
