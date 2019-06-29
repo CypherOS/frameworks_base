@@ -152,4 +152,8 @@
        type sensor -->
   <java-symbol type="bool" name="config_dozePulseHandWave" />
   <java-symbol type="string" name="config_dozeHandWaveSensorType" />
+
+  <!-- Device keyhandlers -->
+  <java-symbol type="array" name="config_deviceKeyHandlerLibs" />
+  <java-symbol type="array" name="config_deviceKeyHandlerClasses" />
 </resources>
