@@ -23,4 +23,7 @@
          the sensor embedded in the power key and listening all the time
          causes a poor experience. -->
     <bool name="config_fingerprintWakeAndUnlock">true</bool>
+
+    <!-- Color of the In-Display Fingerprint view -->
+    <color name="config_inDisplayFingerprintColor">#00ff00</color>
 </resources>
