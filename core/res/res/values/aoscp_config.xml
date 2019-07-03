@@ -158,11 +158,6 @@
          Used to decide if the user can change the colors -->
     <bool name="config_multiColorBatteryLed">false</bool>
 
-    <!-- Show a custom view for FOD -->
-    <bool name="config_needCustomFODView">false</bool>
-
-    <bool name="config_usesOnePlusFOD">false</bool>
-
     <!-- Display mode remapping table.
          If the mode names returned by the backend do not match
          the predefined and translated strings in the Settings
