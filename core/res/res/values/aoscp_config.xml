@@ -186,9 +186,11 @@
 
     <!-- Paths to the libraries that contain device specific key handlers -->
     <string-array name="config_deviceKeyHandlerLibs" translatable="false">
+        <item>/system/priv-app/Settings/Settings.apk</item>
     </string-array>
 
     <!-- Names of the key handler classes -->
     <string-array name="config_deviceKeyHandlerClasses" translatable="false">
+        <item>com.android.settings.aoscp.gestures.GestureHandler</item>
     </string-array>
 </resources>
