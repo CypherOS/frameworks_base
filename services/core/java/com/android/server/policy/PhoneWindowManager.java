@@ -4941,27 +4941,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
-    private boolean dispatchTriStateKey(KeyEvent event) {
-        if (mHwManager != null) {
-            boolean hasAlertSlider = mHwManager.isSupported(DeviceHardwareManager.FEATURE_ALERT_SLIDER);
-            if (hasAlertSlider) {
-                try {
-                    event = mHwManager.handleTriStateEvent(event);
-                    if (event == null) {
-                        return true;
-                    }
-                } catch (Exception e) {
-                    Slog.w(TAG, "Could not dispatch event to Tri-state key", e);
-                }
-                return false;
-            }
-            return false;
-        }
-        return false;
-    }
-
     private boolean dispatchKeyToKeyHandlers(KeyEvent event) {
-        dispatchTriStateKey(event);
         for (DeviceKeyHandler handler : mDeviceKeyHandlers) {
             try {
                 if (DEBUG_INPUT) {
@@ -8538,11 +8518,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         mSystemGestures.systemReady();
         mImmersiveModeConfirmation.systemReady();
-
-        boolean hasAlertSlider = mHwManager.isSupported(DeviceHardwareManager.FEATURE_ALERT_SLIDER);
-        if (hasAlertSlider) {
-            mHwManager.triStateReady();
-        }
 
         mAutofillManagerInternal = LocalServices.getService(AutofillManagerInternal.class);
     }
