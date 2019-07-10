@@ -197,15 +197,14 @@ public class AmbientPlayManager implements IACRCloudListener {
         }
     }
 
-    protected void setEnabled(boolean isEnabled) {
-        if (mIsEnabled != isEnabled) {
-            mIsEnabled = isEnabled;
-            if (mIsEnabled) {
-                initUpdateReceiver();
-            } else {
-                cancelRecognition();
-                mContext.unregisterReceiver(mReceiver);
-            }
+    protected void setEnabled(boolean enabled) {
+		if (enabled) {
+			Log.d(TAG, "Turning on");
+			initUpdateReceiver();
+		} else {
+			Log.d(TAG, "Turning off");
+            cancelRecognition();
+            mContext.unregisterReceiver(mReceiver);
         }
     }
 
