@@ -256,6 +256,7 @@ public class AmbientPlayManager implements IACRCloudListener {
                         mHandler.postDelayed(() -> {
                             mAmbientIndication.hideAmbientMusic();
                         }, AMBIENT_EVENT_DURATION);
+						cancelRecognition();
                         updateAlarm(false);
                     }
                 }
@@ -269,6 +270,7 @@ public class AmbientPlayManager implements IACRCloudListener {
                 } else {
                     NO_MATCH_COUNT = 0;
                 }
+				cancelRecognition();
                 updateAlarm(false);
             } else {
                 Log.d(TAG, "Something went wrong" + mResultCode);
@@ -278,12 +280,12 @@ public class AmbientPlayManager implements IACRCloudListener {
                 } else {
                     NO_MATCH_COUNT = 0;
                 }
+				cancelRecognition();
                 updateAlarm(false);
             }
           } catch (JSONException e) {
             e.printStackTrace();
         }
-        cancelRecognition();
     }
 
     @Override
