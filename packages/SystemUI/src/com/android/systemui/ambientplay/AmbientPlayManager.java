@@ -90,6 +90,7 @@ public class AmbientPlayManager implements IACRCloudListener {
     private long mLastUpdated = 0;
     private int NO_MATCH_COUNT = 0;
 
+    private boolean mReceiverRegistered = false;
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -153,6 +154,7 @@ public class AmbientPlayManager implements IACRCloudListener {
         filter.addAction(ACTION_UPDATE_AMBIENT_INDICATION);
         filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
         mContext.registerReceiver(mReceiver, filter);
+        mReceiverRegistered = true;
     }
 
     private boolean needsUpdate() {
@@ -197,14 +199,16 @@ public class AmbientPlayManager implements IACRCloudListener {
         }
     }
 
-    protected void setEnabled(boolean isEnabled) {
-        if (mIsEnabled != isEnabled) {
-            mIsEnabled = isEnabled;
-            if (mIsEnabled) {
-                initUpdateReceiver();
-            } else {
-                cancelRecognition();
+    protected void setEnabled(boolean enabled) {
+        if (enabled) {
+            Log.d(TAG, "Turning on");
+            initUpdateReceiver();
+        } else {
+            Log.d(TAG, "Turning off");
+            cancelRecognition();
+            if (mReceiverRegistered) {
                 mContext.unregisterReceiver(mReceiver);
+                mReceiverRegistered = false;
             }
         }
     }
