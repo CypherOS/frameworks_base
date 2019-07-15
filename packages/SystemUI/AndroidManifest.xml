@@ -229,6 +229,9 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <protected-broadcast android:name="co.aoscp.miservices.ambient.play.SONG_MATCH" />
 
+    <!-- Screenrecord -->
+    <uses-permission android:name="android.permission.ACCESS_SURFACE_FLINGER" />
+
     <application
         android:name=".SystemUIApplication"
         android:persistent="true"
@@ -287,6 +290,12 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
+
+        <!-- Started from PhoneWindowManager
+             TODO: Should have an android:permission attribute -->
+        <service android:name=".screenrecord.TakeScreenrecordService"
+            android:process=":screenrecord"
+            android:exported="false" />
 
         <service android:name=".ImageWallpaper"
                 android:permission="android.permission.BIND_WALLPAPER"
