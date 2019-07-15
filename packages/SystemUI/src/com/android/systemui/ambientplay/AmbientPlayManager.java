@@ -196,15 +196,14 @@ public class AmbientPlayManager implements IACRCloudListener {
             mClient.cancel();
             mClient.stopPreRecord();
             Log.d(TAG, "Canceling recognition");
+            updateAlarm(true);
         }
     }
 
     protected void setEnabled(boolean enabled) {
         if (enabled) {
-            Log.d(TAG, "Turning on");
             initUpdateReceiver();
         } else {
-            Log.d(TAG, "Turning off");
             cancelRecognition();
             if (mReceiverRegistered) {
                 mContext.unregisterReceiver(mReceiver);
@@ -217,6 +216,7 @@ public class AmbientPlayManager implements IACRCloudListener {
     public void onResult(String result) {
         if (mClient != null) {
             mClient.cancel();
+            mClient.stopPreRecord();
             mProcessing = false;
         }
         if (!mIsEnabled) return;
@@ -283,7 +283,6 @@ public class AmbientPlayManager implements IACRCloudListener {
           } catch (JSONException e) {
             e.printStackTrace();
         }
-        cancelRecognition();
     }
 
     @Override
