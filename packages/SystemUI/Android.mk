@@ -57,7 +57,8 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     SystemUI-tags \
     SystemUI-proto \
     apache-commons-lang-2.6 \
-    hardware.aoscp \
+	gson-2.8.5 \
+	hardware.aoscp \
     libAcrCloud \
     libMiServicesShared \
 	vendor.aoscp.biometrics.fingerprint.inscreen-V1.0-java
@@ -88,7 +89,8 @@ include $(BUILD_PACKAGE)
 
 include $(CLEAR_VARS)
 LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
-    apache-commons-lang-2.6:libs/commons-lang-2.6.jar
+    apache-commons-lang-2.6:libs/commons-lang-2.6.jar \
+	gson-2.8.5:libs/gson-2.8.5.jar
 
 include $(BUILD_MULTI_PREBUILT)
 

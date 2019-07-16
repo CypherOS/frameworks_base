@@ -46,11 +46,14 @@ import co.aoscp.miservices.shared.Bits;
 
 import com.android.internal.aoscp.AmbientHistoryManager;
 
+import com.android.systemui.ambientplay.PlayApi.Song;
 import com.android.systemui.quickspace.ambientindication.AmbientIndicationContainer;
 
 import com.acrcloud.rec.sdk.ACRCloudClient;
 import com.acrcloud.rec.sdk.ACRCloudConfig;
 import com.acrcloud.rec.sdk.IACRCloudListener;
+
+import com.google.gson.GsonBuilder;
 
 import java.io.File;
 
@@ -133,16 +136,12 @@ public class AmbientPlayManager implements IACRCloudListener {
         }
         mConfig = new ACRCloudConfig();
         mConfig.acrcloudListener = this;
-        mConfig.context = mContext;
-        mConfig.host = "identify-global.acrcloud.com";
+        mConfig.context = this;
+        mConfig.host = "us-west-2.api.acrcloud.com";
         mConfig.dbPath = path;
-        mConfig.accessKey = Bits.getKey();
-        mConfig.accessSecret = Bits.getSecret();
-        mConfig.protocol = ACRCloudConfig.ACRCloudNetworkProtocol.PROTOCOL_HTTP;
+        mConfig.accessKey = "c3bbf6fb258c4175d78548a3a3bcddc3";
+        mConfig.accessSecret = "6XcxeirzpHb5A6pSaZxyrj0YFT25mmxo4YqLTnnb";
         mConfig.reqMode = ACRCloudConfig.ACRCloudRecMode.REC_MODE_REMOTE;
-
-        mClient = new ACRCloudClient();
-        mIsProperState = mClient.initWithConfig(mConfig);
     }
 
     private void initUpdateReceiver() {
@@ -165,11 +164,11 @@ public class AmbientPlayManager implements IACRCloudListener {
     }
 
     public void startRecognition() {
-        if (!mIsProperState) {
+		mClient = new ACRCloudClient();
+        if (!mClient.initWithConfig(mConfig)) {
             Log.d(TAG, "Client configuration is not proper");
             return;
         }
-        mClient.startPreRecord(3000);
         if (mIsEnabled) {
             if (!mProcessing) {
                 mProcessing = true;
@@ -181,22 +180,12 @@ public class AmbientPlayManager implements IACRCloudListener {
         }
     }
 
-    protected void stopRecognition() {
-        if (mProcessing && mClient != null) {
-            mClient.stopRecordToRecognize();
-            mClient.stopPreRecord();
-            Log.d(TAG, "Stopping record to recognize");
-        }
-        mProcessing = false;
-    }
-
     protected void cancelRecognition() {
         if (mProcessing && mClient != null) {
+			mClient.cancel();
+			mClient.release();
             mProcessing = false;
-            mClient.cancel();
-            mClient.stopPreRecord();
             Log.d(TAG, "Canceling recognition");
-            updateAlarm(true);
         }
     }
 
@@ -210,80 +199,68 @@ public class AmbientPlayManager implements IACRCloudListener {
                 mReceiverRegistered = false;
             }
         }
+        mLastUpdated = 0;
+        mLastAlarm = 0;
+        updateAlarm(true);
     }
 
     @Override
     public void onResult(String result) {
         if (mClient != null) {
             mClient.cancel();
-            mClient.stopPreRecord();
+            mClient.release();
             mProcessing = false;
         }
         if (!mIsEnabled) return;
-        try {
-            JSONObject info = new JSONObject(result);
-            mResultCode = info.getJSONObject("status").getInt("code");
-            if (mResultCode == 0) {
-                JSONObject metadata = info.getJSONObject("metadata");
-                if (metadata.has("music")) {
-                    JSONObject music = (JSONObject) metadata.getJSONArray("music").get(0);
-                    mSong = music.getString("title");
-                    JSONArray artists = music.getJSONArray("artists");
-                    for (int t = 0; t < artists.length(); t++) {
-                        JSONObject art = (JSONObject) artists.get(t);
-                        if (artists.length() > 1) {
-                            boolean contains = false;
-                            for (String ss : art.getString("name").split(" ")) {
-                                if (!contains) {
-                                    contains = mArtist.matches(".*\\b" + ss + "\\b.*");
-                                }
-                            }
-                            if (!contains) {
-                                if (t == 0) {
-                                    mArtist = art.getString("name");
-                                } else if (t > 0) {
-                                    mArtist += " - " + art.getString("name");
-                                }
-                            }
-                        } else {
-                            mArtist = art.getString("name");
-                        }
-                        Log.d(TAG, "Found a match, showing song in AmbientIndication");
-                        AmbientHistoryManager.addSong(mSong, mArtist, mContext);
-                        mAmbientIndication.setAmbientMusic(mSong, mArtist);
-                        mLastUpdated = System.currentTimeMillis();
-                        NO_MATCH_COUNT = 0;
-                        mHandler.postDelayed(() -> {
-                            mAmbientIndication.hideAmbientMusic();
-                        }, AMBIENT_EVENT_DURATION);
-                        updateAlarm(false);
-                    }
-                }
-                return;
-            }
-            if (mResultCode == 1001) {
-                Log.d(TAG, "No results found");
-                mLastUpdated = System.currentTimeMillis();
-                if (!mBatteryManager.isCharging()){
-                    NO_MATCH_COUNT++;
-                } else {
-                    NO_MATCH_COUNT = 0;
-                }
-                updateAlarm(false);
-            } else {
-                Log.d(TAG, "Something went wrong" + mResultCode);
-                mLastUpdated = System.currentTimeMillis();
-                if (!mBatteryManager.isCharging()){
-                    NO_MATCH_COUNT++;
-                } else {
-                    NO_MATCH_COUNT = 0;
-                }
-                updateAlarm(false);
-            }
-          } catch (JSONException e) {
-            e.printStackTrace();
+		PlayApi api = (PlayApi) new GsonBuilder().create().fromJson(result, PlayApi.class);
+		Song song;
+
+		if (!api.status.isSuccess()) {
+			onResultError(api.status.code);
+        } else if (api.metadata.music.size() > 0) {
+            song = (Song) api.metadata.music.get(0);
+            onResultSuccess(song.title, song.getPrimaryArtistName());
+        } else if (api.metadata.humming.size() > 0) {
+            song = (Song) api.metadata.humming.get(0);
+            onResultSuccess(song.title, song.getPrimaryArtistName());
+        } else {
+            Log.d(TAG, "Failed to get a valid result");
         }
     }
+
+	private void onResultSuccess(String song, String artist) {
+		Log.d(TAG, "Found a match, showing song in AmbientIndication");
+		AmbientHistoryManager.addSong(song, artist, mContext);
+		mAmbientIndication.setAmbientMusic(song, artist);
+		mLastUpdated = System.currentTimeMillis();
+		NO_MATCH_COUNT = 0;
+		mHandler.postDelayed(() -> {
+			mAmbientIndication.hideAmbientMusic();
+		}, AMBIENT_EVENT_DURATION);
+		updateAlarm(false);
+	}
+
+	private void onResultError(int resultCode) {
+		if (resultCode == 1001) {
+			Log.d(TAG, "No results found");
+			mLastUpdated = System.currentTimeMillis();
+			if (!mBatteryManager.isCharging()) {
+				NO_MATCH_COUNT++;
+			} else {
+				NO_MATCH_COUNT = 0;
+			}
+			updateAlarm(false);
+		} else {
+			Log.d(TAG, "Something went wrong " + resultCode);
+			mLastUpdated = System.currentTimeMillis();
+			if (!mBatteryManager.isCharging()) {
+				NO_MATCH_COUNT++;
+			} else {
+				NO_MATCH_COUNT = 0;
+			}
+			updateAlarm(false);
+		}
+	}
 
     @Override
     public void onVolumeChanged(double volume) {
