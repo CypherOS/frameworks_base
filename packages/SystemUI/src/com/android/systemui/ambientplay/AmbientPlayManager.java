@@ -196,7 +196,6 @@ public class AmbientPlayManager implements IACRCloudListener {
             mClient.cancel();
             mClient.stopPreRecord();
             Log.d(TAG, "Canceling recognition");
-            updateAlarm(true);
         }
     }
 
@@ -210,6 +209,9 @@ public class AmbientPlayManager implements IACRCloudListener {
                 mReceiverRegistered = false;
             }
         }
+        mLastUpdated = 0;
+        mLastAlarm = 0;
+        updateAlarm(true);
     }
 
     @Override
