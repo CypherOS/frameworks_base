@@ -86,4 +86,7 @@
     <dimen name="tri_state_up_top_left_radius">63.0px</dimen>
     <dimen name="tri_state_up_top_right_radius">63.0px</dimen>
 
+	<!-- Bottom margin size when fingerprint in display is active -->
+	<dimen name="keyguard_indication_margin_bottom_fingerprint_in_display">55dp</dimen>
+
 </resources>
