@@ -50,6 +50,7 @@ import com.android.keyguard.KeyguardUpdateMonitorCallback;
 import com.android.settingslib.Utils;
 import com.android.systemui.Dependency;
 import com.android.systemui.Interpolators;
+import com.android.systemui.quickspace.ambientindication.AmbientIndicationContainer;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.KeyguardIndicationTextView;
 import com.android.systemui.statusbar.phone.LockIcon;
@@ -76,6 +77,7 @@ public class KeyguardIndicationController {
     private static final long TRANSIENT_FP_ERROR_TIMEOUT = 1300;
 
     private final Context mContext;
+    private AmbientIndicationContainer mAmbientIndication;
     private ViewGroup mIndicationArea;
     private KeyguardIndicationTextView mTextView;
     private KeyguardIndicationTextView mDisclosure;
@@ -360,7 +362,8 @@ public class KeyguardIndicationController {
     }
 
     private void updateChargingIndication() {
-        if (!mDozing && mPowerPluggedIn && !hasActiveInDisplayFp()) {
+        if (!mDozing && mPowerPluggedIn
+            && !hasActiveInDisplayFp() && !isAmbientIndicationShowing()) {
             mChargingIndication.setVisibility(View.VISIBLE);
             mChargingIndication.playAnimation();
         } else {
@@ -374,6 +377,10 @@ public class KeyguardIndicationController {
         int userId = KeyguardUpdateMonitor.getCurrentUser();
         FingerprintManager fpm = (FingerprintManager) mContext.getSystemService(Context.FINGERPRINT_SERVICE);
         return hasInDisplayFingerprint && fpm.getEnrolledFingerprints(userId).size() > 0;
+    }
+
+    private boolean isAmbientIndicationShowing() {
+        return mAmbientIndication != null && mAmbientIndication.isShowing();
     }
 
     // animates textView - textView moves up and bounces down
@@ -427,7 +434,7 @@ public class KeyguardIndicationController {
                             ? R.string.keyguard_indication_charging_time_fast
                             : R.string.keyguard_plugged_in_charging_fast;
                     break;
-				case KeyguardUpdateMonitor.BatteryStatus.CHARGING_FAST_OEM:
+                case KeyguardUpdateMonitor.BatteryStatus.CHARGING_FAST_OEM:
                     chargingId = hasChargingTime
                             ? R.string.keyguard_indication_fast_charging_time
                             : R.string.keyguard_plugged_in_fast_charging;
@@ -507,6 +514,10 @@ public class KeyguardIndicationController {
         mDozing = dozing;
         updateIndication(false);
         updateDisclosure();
+    }
+
+    public void setAmbientIndication(AmbientIndicationContainer ambientIndicationContainer) {
+        mAmbientIndication = ambientIndicationContainer;
     }
 
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {

@@ -260,6 +260,11 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
         }
     }
 
+    public boolean isShowing() {
+        return mIsEnabled && mAllowedOnKeyguard
+                && mAmbientIndication.getVisibility() == View.VISIBLE;
+    }
+
     private class AmbientIndicationInflateListener implements InflateListener {
         private Object mContainer;
 

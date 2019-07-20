@@ -972,6 +972,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             ((AmbientIndicationContainer) mAmbientIndicationContainer).initializeView(this);
         }
 
+        mKeyguardIndicationController.setAmbientIndication((AmbientIndicationContainer) mAmbientIndicationContainer);
+
         // set the initial view visibility
         setAreThereNotifications();
 
@@ -1214,6 +1216,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                         mStatusBarWindow.findViewById(R.id.keyguard_indication_area),
                         mNotificationPanel.getLockIcon());
         mNotificationPanel.setKeyguardIndicationController(mKeyguardIndicationController);
+        mKeyguardIndicationController.setAmbientIndication((AmbientIndicationContainer) mAmbientIndicationContainer);
         mKeyguardIndicationController
                 .setStatusBarKeyguardViewManager(mStatusBarKeyguardViewManager);
         mKeyguardIndicationController.setVisible(mState == StatusBarState.KEYGUARD);
@@ -1247,6 +1250,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                         mStatusBarWindow.findViewById(R.id.keyguard_indication_area),
                         mNotificationPanel.getLockIcon());
         mNotificationPanel.setKeyguardIndicationController(mKeyguardIndicationController);
+        mKeyguardIndicationController.setAmbientIndication((AmbientIndicationContainer) mAmbientIndicationContainer);
         mKeyguardIndicationController
                 .setStatusBarKeyguardViewManager(mStatusBarKeyguardViewManager);
         mKeyguardIndicationController.setVisible(mState == StatusBarState.KEYGUARD);
