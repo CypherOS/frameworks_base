@@ -32,6 +32,8 @@
     <!-- Ambient Indication -->
     <dimen name="ambient_indication_icon_size">20.0dip</dimen>
     <dimen name="default_burn_in_prevention_offset">15dp</dimen>
+    <dimen name="ambient_indication_margin_bottom">71dp</dimen>
+    <dimen name="ambient_indication_margin_bottom_fingerprint_in_display">90dp</dimen>
 
     <!-- Privacy Chip -->
     <dimen name="ongoing_appops_chip_bg_corner_radius">16.0dip</dimen>
