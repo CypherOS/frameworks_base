@@ -142,6 +142,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
 
     private boolean mUserSetupComplete;
     private boolean mPrewarmBound;
+    private boolean mIsFingerprintRunning;
     private Messenger mPrewarmMessenger;
     private final ServiceConnection mPrewarmConnection = new ServiceConnection() {
 
@@ -170,6 +171,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     private boolean mDozing;
     private int mIndicationBottomMargin;
     private int mIndicationBottomMarginAmbient;
+    private int mIndicationBottomMarginFod;
     private float mDarkAmount;
     private int mBurnInXOffset;
     private int mBurnInYOffset;
@@ -246,6 +248,8 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
                 R.dimen.keyguard_indication_margin_bottom);
         mIndicationBottomMarginAmbient = getResources().getDimensionPixelSize(
                 R.dimen.keyguard_indication_margin_bottom_ambient);
+        mIndicationBottomMarginFod = getResources().getDimensionPixelSize(
+                R.dimen.keyguard_indication_margin_bottom_fingerprint_in_display);
         mBurnInYOffset = getResources().getDimensionPixelSize(
                 R.dimen.charging_indication_burn_in_prevention_offset_y);
         updateCameraVisibility();
@@ -316,17 +320,9 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mIndicationBottomMargin = getResources().getDimensionPixelSize(
-                R.dimen.keyguard_indication_margin_bottom);
-        mIndicationBottomMarginAmbient = getResources().getDimensionPixelSize(
-                R.dimen.keyguard_indication_margin_bottom_ambient);
-        mBurnInYOffset = getResources().getDimensionPixelSize(
-                R.dimen.charging_indication_burn_in_prevention_offset_y);
-        MarginLayoutParams mlp = (MarginLayoutParams) mIndicationArea.getLayoutParams();
-        if (mlp.bottomMargin != mIndicationBottomMargin) {
-            mlp.bottomMargin = mIndicationBottomMargin;
-            mIndicationArea.setLayoutParams(mlp);
-        }
+
+        // Update the bottom margin of the indication area
+        updateIndicationAreaPadding();
 
         // Respect font size setting.
         mEnterpriseDisclosure.setTextSize(TypedValue.COMPLEX_UNIT_PX,
@@ -398,6 +394,31 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         }
         mRightAffordanceView.setVisibility(!mDozing && mRightButton.getIcon().isVisible
                 ? View.VISIBLE : View.GONE);
+    }
+
+    private void updateIndicationAreaPadding() {
+        mIndicationBottomMargin = getResources().getDimensionPixelSize(
+                R.dimen.keyguard_indication_margin_bottom);
+        mIndicationBottomMarginAmbient = getResources().getDimensionPixelSize(
+                R.dimen.keyguard_indication_margin_bottom_ambient);
+        mIndicationBottomMarginFod = getResources().getDimensionPixelSize(
+                R.dimen.keyguard_indication_margin_bottom_fingerprint_in_display);
+        mBurnInYOffset = getResources().getDimensionPixelSize(
+                R.dimen.charging_indication_burn_in_prevention_offset_y);
+        MarginLayoutParams mlp = (MarginLayoutParams) mIndicationArea.getLayoutParams();
+
+        boolean hasInDisplayFingerprint = mContext.getResources().getBoolean(com.android.internal.R.bool.config_supportsInDisplayFingerprint);
+        if (hasInDisplayFingerprint && mIsFingerprintRunning) {
+            if (mlp.bottomMargin != mIndicationBottomMarginFod) {
+                mlp.bottomMargin = mIndicationBottomMarginFod;
+                mIndicationArea.setLayoutParams(mlp);
+            }
+        } else {
+            if (mlp.bottomMargin != mIndicationBottomMargin) {
+                mlp.bottomMargin = mIndicationBottomMargin;
+                mIndicationArea.setLayoutParams(mlp);
+            }
+        }
     }
 
     /**
@@ -773,7 +794,9 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
 
                 @Override
                 public void onFingerprintRunningStateChanged(boolean running) {
+                    mIsFingerprintRunning = running;
                     mLockIcon.update();
+                    updateIndicationAreaPadding();
                 }
 
                 @Override
