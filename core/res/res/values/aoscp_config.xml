@@ -175,9 +175,6 @@
     <bool name="config_dozePulseHandWave">false</bool>
     <string name="config_dozeHandWaveSensorType" translatable="false"></string>
 
-    <!-- Shows the required view for in-display fingerprint -->
-    <bool name="config_supportsInDisplayFingerprint">false</bool>
-
     <!-- Default value for proximity check on screen wake
      NOTE ! - Enable for devices that have a fast response proximity sensor (ideally < 300ms)-->
     <bool name="config_proximityCheckOnWake">false</bool>

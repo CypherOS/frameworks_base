@@ -93,7 +93,8 @@ public class CommandQueue extends IStatusBar.Stub {
     private static final int MSG_SHOW_CHARGING_ANIMATION       = 44 << MSG_SHIFT;
     private static final int MSG_SHOW_PINNING_TOAST_ENTER_EXIT = 45 << MSG_SHIFT;
     private static final int MSG_SHOW_PINNING_TOAST_ESCAPE     = 46 << MSG_SHIFT;
-    private static final int MSG_IN_DISPLAY_FINGERPRINT        = 47 << MSG_SHIFT;
+    private static final int MSG_SHOW_IN_DISPLAY_FINGERPRINT_VIEW = 47 << MSG_SHIFT;
+    private static final int MSG_HIDE_IN_DISPLAY_FINGERPRINT_VIEW = 48 << MSG_SHIFT
 
     public static final int FLAG_EXCLUDE_NONE = 0;
     public static final int FLAG_EXCLUDE_SEARCH_PANEL = 1 << 0;
@@ -168,7 +169,8 @@ public class CommandQueue extends IStatusBar.Stub {
         default void onFingerprintHelp(String message) { }
         default void onFingerprintError(String error) { }
         default void hideFingerprintDialog() { }
-        default void handleInDisplayFingerprintView(boolean show, boolean isEnrolling) { }
+        default void showInDisplayFingerprintView(boolean enrolling) { }
+        default void hideInDisplayFingerprintView() { }
     }
 
     @VisibleForTesting
@@ -557,13 +559,16 @@ public class CommandQueue extends IStatusBar.Stub {
     }
 
     @Override
-    public void handleInDisplayFingerprintView(boolean show, boolean isEnrolling) {
+    public void showInDisplayFingerprintView(boolean enrolling) {
         synchronized (mLock) {
-            SomeArgs args = SomeArgs.obtain();
-            args.arg1 = show;
-            args.arg2 = isEnrolling;
-            mHandler.obtainMessage(MSG_IN_DISPLAY_FINGERPRINT, args)
-                    .sendToTarget();
+            mHandler.obtainMessage(MSG_SHOW_IN_DISPLAY_FINGERPRINT_VIEW).sendToTarget();
+        }
+    }
+
+    @Override
+    public void hideInDisplayFingerprintView() {
+        synchronized (mLock) {
+            mHandler.obtainMessage(MSG_HIDE_IN_DISPLAY_FINGERPRINT_VIEW).sendToTarget();
         }
     }
 
@@ -813,11 +818,14 @@ public class CommandQueue extends IStatusBar.Stub {
                         mCallbacks.get(i).showPinningEscapeToast();
                     }
                     break;
-                case MSG_IN_DISPLAY_FINGERPRINT:
+                case MSG_SHOW_IN_DISPLAY_FINGERPRINT_VIEW:
                     for (int i = 0; i < mCallbacks.size(); i++) {
-                        mCallbacks.get(i).handleInDisplayFingerprintView(
-                                (boolean)((SomeArgs)msg.obj).arg1,
-                                (boolean)((SomeArgs)msg.obj).arg2);
+                        mCallbacks.get(i).showInDisplayFingerprintView((boolean)((SomeArgs)msg.obj).arg1);
+                    }
+                    break;
+                case MSG_HIDE_IN_DISPLAY_FINGERPRINT_VIEW:
+                    for (int i = 0; i < mCallbacks.size(); i++) {
+                        mCallbacks.get(i).hideInDisplayFingerprintView();
                     }
                     break;
             }
