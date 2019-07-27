@@ -24,6 +24,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.hardware.fingerprint.FingerprintManager;
@@ -372,8 +373,8 @@ public class KeyguardIndicationController {
     }
 
     private boolean hasActiveInDisplayFp() {
-        boolean hasInDisplayFingerprint = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_supportsInDisplayFingerprint);
+        PackageManager pm = mContext.getPackageManager();
+        boolean hasInDisplayFingerprint = pm.hasSystemFeature(aoscp.content.Context.Features.INSCREEN_FINGERPRINT);
         int userId = KeyguardUpdateMonitor.getCurrentUser();
         FingerprintManager fpm = (FingerprintManager) mContext.getSystemService(Context.FINGERPRINT_SERVICE);
         return hasInDisplayFingerprint && fpm.getEnrolledFingerprints(userId).size() > 0;
