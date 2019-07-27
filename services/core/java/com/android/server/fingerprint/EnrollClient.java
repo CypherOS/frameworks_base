@@ -17,6 +17,7 @@
 package com.android.server.fingerprint;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint;
 import android.hardware.fingerprint.FingerprintManager;
 import android.hardware.fingerprint.IFingerprintServiceReceiver;
@@ -28,10 +29,9 @@ import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.internal.statusbar.IStatusBarService;
 
-import java.util.Arrays;
-import java.util.NoSuchElementException;
-
 import vendor.aoscp.biometrics.fingerprint.inscreen.V1_0.IFingerprintInscreen;
+
+import java.util.Arrays;
 
 /**
  * A class to keep track of the enrollment state for a given client.
@@ -40,18 +40,18 @@ public abstract class EnrollClient extends ClientMonitor {
     private static final long MS_PER_SEC = 1000;
     private static final int ENROLLMENT_TIMEOUT_MS = 60 * 1000; // 1 minute
     private byte[] mCryptoToken;
-    private boolean mHasInDisplayFingerprint;
+    private final boolean mHasInDisplayFingerprint;
     private IStatusBarService mStatusBarService;
-    private IFingerprintInscreen mExtDaemon = null;
 
     public EnrollClient(Context context, long halDeviceId, IBinder token,
             IFingerprintServiceReceiver receiver, int userId, int groupId, byte [] cryptoToken,
             boolean restricted, String owner, IStatusBarService statusBarService) {
         super(context, halDeviceId, token, receiver, userId, groupId, restricted, owner);
         mCryptoToken = Arrays.copyOf(cryptoToken, cryptoToken.length);
-        mHasInDisplayFingerprint = context.getResources().getBoolean(
-                com.android.internal.R.bool.config_supportsInDisplayFingerprint);
         mStatusBarService = statusBarService;
+
+        PackageManager pm = context.getPackageManager();
+        mHasInDisplayFingerprint = pm.hasSystemFeature(aoscp.content.Context.Features.INSCREEN_FINGERPRINT);
     }
 
     @Override
@@ -80,17 +80,18 @@ public abstract class EnrollClient extends ClientMonitor {
         try {
             receiver.onEnrollResult(getHalDeviceId(), fpId, groupId, remaining);
             if (remaining == 0 && mHasInDisplayFingerprint) {
-                try {
-                    mExtDaemon = IFingerprintInscreen.getService();
-                    mExtDaemon.onFinishEnroll();
-                } catch (NoSuchElementException | RemoteException e) {
-                    // do nothing
+                IFingerprintInscreen fodDaemon = getFingerprintInScreenDaemon();
+                if (fodDaemon != null) {
+                    try {
+                        fodDaemon.onFinishEnroll();
+                    } catch (RemoteException e) {
+                        Slog.e(TAG, "onFinishEnroll failed", e);
+                    }
                 }
-
                 try {
-                    mStatusBarService.handleInDisplayFingerprintView(false, true);
-                } catch (RemoteException ex) {
-                    // do nothing
+                    mStatusBarService.hideInDisplayFingerprintView();
+                } catch (RemoteException e) {
+                    Slog.e(TAG, "hideInDisplayFingerprintView failed", e);
                 }
             }
             return remaining == 0;
@@ -109,17 +110,18 @@ public abstract class EnrollClient extends ClientMonitor {
         }
 
         if (mHasInDisplayFingerprint) {
-            try {
-                mExtDaemon = IFingerprintInscreen.getService();
-                mExtDaemon.onStartEnroll();
-            } catch (NoSuchElementException | RemoteException e) {
-                // do nothing
+            IFingerprintInscreen fodDaemon = getFingerprintInScreenDaemon();
+            if (fodDaemon != null) {
+                try {
+                    fodDaemon.onStartEnroll();
+                } catch (RemoteException e) {
+                    Slog.e(TAG, "onStartEnroll failed", e);
+                }
             }
-
             try {
-                mStatusBarService.handleInDisplayFingerprintView(true, true);
-            } catch (RemoteException ex) {
-                // do nothing
+                mStatusBarService.showInDisplayFingerprintView(true);
+            } catch (RemoteException e) {
+                Slog.e(TAG, "showInDisplayFingerprintView failed", e);
             }
         }
 
@@ -147,9 +149,9 @@ public abstract class EnrollClient extends ClientMonitor {
 
         if (mHasInDisplayFingerprint) {
             try {
-                mStatusBarService.handleInDisplayFingerprintView(false, true);
+                mStatusBarService.hideInDisplayFingerprintView();
             } catch (RemoteException e) {
-                // do nothing
+                Slog.e(TAG, "hideInDisplayFingerprintView failed", e);
             }
         }
 

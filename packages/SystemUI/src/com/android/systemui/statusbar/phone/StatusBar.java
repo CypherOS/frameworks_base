@@ -1570,8 +1570,8 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     private boolean hasInDisplayFingerprint() {
-        return mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_supportsInDisplayFingerprint)
+        PackageManager pm = mContext.getPackageManager();
+        return pm.hasSystemFeature(aoscp.content.Context.Features.INSCREEN_FINGERPRINT)
                 && mIsFingerprintRunning;
     }
 

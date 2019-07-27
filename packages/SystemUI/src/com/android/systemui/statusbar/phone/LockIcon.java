@@ -17,6 +17,7 @@
 package com.android.systemui.statusbar.phone;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
@@ -66,8 +67,9 @@ public class LockIcon extends KeyguardAffordanceView implements OnUserInfoChange
         mTrustDrawable = new TrustDrawable(context);
         setBackground(mTrustDrawable);
         mUnlockMethodCache = UnlockMethodCache.getInstance(context);
-        mHasInDisplayFingerprint = context.getResources().getBoolean(
-                com.android.internal.R.bool.config_supportsInDisplayFingerprint);
+
+        PackageManager pm = context.getPackageManager();
+        mHasInDisplayFingerprint = pm.hasSystemFeature(aoscp.content.Context.Features.INSCREEN_FINGERPRINT);
     }
 
     @Override

@@ -18,6 +18,7 @@ package com.android.server.fingerprint;
 
 import android.content.Context;
 import android.content.ComponentName;
+import android.content.pm.PackageManager;
 import android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint;
 import android.hardware.biometrics.BiometricPrompt;
 import android.hardware.biometrics.IBiometricPromptReceiver;
@@ -60,7 +61,6 @@ public abstract class AuthenticationClient extends ClientMonitor {
     protected boolean mDialogDismissed;
 
     private boolean mHasInDisplayFingerprint;
-    private IFingerprintInscreen mExtDaemon = null;
     private final String mKeyguardPackage;
 
     // Receives events from SystemUI and handles them before forwarding them to FingerprintDialog
@@ -105,10 +105,11 @@ public abstract class AuthenticationClient extends ClientMonitor {
         mStatusBarService = statusBarService;
         mFingerprintManager = (FingerprintManager) getContext()
                 .getSystemService(Context.FINGERPRINT_SERVICE);
-        mHasInDisplayFingerprint = context.getResources().getBoolean(
-                com.android.internal.R.bool.config_supportsInDisplayFingerprint);
         mKeyguardPackage = ComponentName.unflattenFromString(context.getResources().getString(
                 com.android.internal.R.string.config_keyguardComponent)).getPackageName();
+
+        PackageManager pm = context.getPackageManager();
+        mHasInDisplayFingerprint = pm.hasSystemFeature(aoscp.content.Context.Features.INSCREEN_FINGERPRINT);
     }
 
     @Override
@@ -248,9 +249,9 @@ public abstract class AuthenticationClient extends ClientMonitor {
         }
         if (result && mHasInDisplayFingerprint) {
             try {
-                mStatusBarService.handleInDisplayFingerprintView(false, false);
+                mStatusBarService.hideInDisplayFingerprintView();
             } catch (RemoteException e) {
-                // do nothing
+                Slog.e(TAG, "hideInDisplayFingerprintView failed", e);
             }
         }
         return result;
@@ -268,17 +269,18 @@ public abstract class AuthenticationClient extends ClientMonitor {
         }
 
         if (mHasInDisplayFingerprint) {
-            try {
-                mExtDaemon = IFingerprintInscreen.getService();
-                mExtDaemon.setLongPressEnabled(isKeyguard(getOwnerString()));
-            } catch (NoSuchElementException | RemoteException e) {
-                // do nothing
+            IFingerprintInscreen fodDaemon = getFingerprintInScreenDaemon();
+            if (fodDaemon != null) {
+                try {
+                    fodDaemon.setLongPressEnabled(isKeyguard(getOwnerString()));
+                } catch (RemoteException e) {
+                    Slog.e(TAG, "setLongPressEnabled failed", e);
+                }
             }
-
             try {
-                mStatusBarService.handleInDisplayFingerprintView(true, false);
-            } catch (RemoteException ex) {
-                // do nothing
+                mStatusBarService.showInDisplayFingerprintView(true);
+            } catch (RemoteException e) {
+                Slog.e(TAG, "showInDisplayFingerprintView failed", e);
             }
         }
         onStart();
@@ -324,9 +326,9 @@ public abstract class AuthenticationClient extends ClientMonitor {
 
         if (mHasInDisplayFingerprint) {
             try {
-                mStatusBarService.handleInDisplayFingerprintView(false, false);
+                mStatusBarService.hideInDisplayFingerprintView();
             } catch (RemoteException e) {
-                // do nothing
+                Slog.e(TAG, "hideInDisplayFingerprintView failed", e);
             }
         }
 
