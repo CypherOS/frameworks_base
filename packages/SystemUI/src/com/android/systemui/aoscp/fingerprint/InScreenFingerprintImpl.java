@@ -30,20 +30,29 @@ public class InScreenFingerprintImpl extends SystemUI implements CommandQueue.Ca
 
     @Override
     public void start() {
-        if (mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)) {
-            getComponent(CommandQueue.class).addCallbacks(this);
+        PackageManager packageManager = mContext.getPackageManager();
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT) ||
+                !packageManager.hasSystemFeature(aoscp.content.Context.Features.INSCREEN_FINGERPRINT)) {
+            return;
+        }
+        getComponent(CommandQueue.class).addCallbacks(this);
+        try {
+            mInScreenFingerprint = new InScreenFingerprint(mContext);
+        } catch (RuntimeException e) {
+            Slog.e(TAG, "Failed to initialize InScreenFingerprint", e);
         }
     }
 
     @Override
-    public void handleInDisplayFingerprintView(boolean show, boolean isEnrolling) {
-        if (mInScreenFingerprint == null) {
-            mInScreenFingerprint = new InScreenFingerprint(mContext);
+    public void showInDisplayFingerprintView(boolean enrolling) {
+        if (mInScreenFingerprint != null) {
+            mInScreenFingerprint.show(enrolling);
         }
+    }
 
-        if (!mInScreenFingerprint.viewAdded && show) {
-            mInScreenFingerprint.show(isEnrolling);
-        } else if (mInScreenFingerprint.viewAdded) {
+    @Override
+    public void hideInDisplayFingerprintView() {
+        if (mInScreenFingerprint != null) {
             mInScreenFingerprint.hide();
         }
     }
