@@ -41,4 +41,23 @@
     <string name="op_type_location">localização</string>
     <string name="op_type_microphone">microfone</string>
 
+    <!-- Screenrecord Notification Ticker -->
+    <string name="screenrecord_notif_ticker">A tela está sendo gravada</string>
+    <string name="screenrecord_notif_final_ticker">Gravação concluída com sucesso</string>
+    <!-- Screenrecord notification title -->
+    <string name="screenrecord_notif_title">Gravando a tela</string>
+    <!-- Screenrecord notification action: Stop -->
+    <string name="screenrecord_notif_stop">Parar</string>
+    <string name="screenrecord_notif_completed">Gravação concluída com sucesso</string>
+    <!-- Screenrecord notification action: show/hide pointer -->
+    <string name="screenrecord_notif_pointer_on">Mostrar toque</string>
+    <string name="screenrecord_notif_pointer_off">Ocultar toque</string>
+    <!-- Screen record notification error title -->
+    <string name="screenrecord_notif_error">Gravação de tela indisponível</string>
+    <string name="notification_channel_screenrecord">Gravações de tela</string>
+    <!-- Screen record hint -->
+    <string name="screenrecord_hide_hint">Ocultar indicador</string>
+    <string name="screenrecord_show_hint">Mostrar indicador</string>
+    <!-- Screenrecord QS tile -->
+    <string name="quick_settings_screenrecord_label">Gravação de tela</string>
 </resources>
